@@ -1,11 +1,13 @@
 # -*- encoding: utf-8 -*-
 
 import logging
+import unittest
 import cookielib
 import urllib2
 from urllib import urlencode
 from urlparse import urljoin
 from BeautifulSoup import BeautifulSoup
+
 
 class Geocaching(object):
 
@@ -19,6 +21,7 @@ class Geocaching(object):
     # Useragent: which browser/platform should this script masquerade as
     useragent = "User-Agent=Mozilla/5.0 (X11; U; Linux i686; en-US; rv:666)"
 
+
     def __init__(self):
         # Installs a cookie jar and associates it with urllib2.
         # Important to keep us logged on to the website.
@@ -26,6 +29,7 @@ class Geocaching(object):
         cj = cookielib.LWPCookieJar()
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
         urllib2.install_opener(opener)
+
 
     def login(self, username, password):
         """Logs the user in.
@@ -71,8 +75,10 @@ class Geocaching(object):
             logging.error("Cannot access the website: %s", e)
             return False
 
+
     def _getURL(self, name):
         return urljoin(self.baseurl, self.urls[name])
+
 
     def _urlopen(self, url, *args, **kwargs):
         logging.debug("Making request on: %s", url)
@@ -80,12 +86,26 @@ class Geocaching(object):
         return urllib2.urlopen(request)
 
 
+
+class TestGeocaching(unittest.TestCase):
+
+    username, password = "cache-map", "pGUgNw59"
+
+    def setUp(self):
+        self.g = Geocaching()
+
+    def test_login(self):
+        # we have to try bad username first (cookies)
+        self.assertFalse( self.g.login("", "") )
+        self.assertTrue( self.g.login(self.username, self.password) )
+
+
 def main():
     """The main program"""
 
-    logging.basicConfig(level=logging.DEBUG)
-
-    g = Geocaching()
+    logging.basicConfig(level=logging.INFO)
+    #logging.basicConfig(level=logging.DEBUG)
+    unittest.main()
 
 
 if __name__ == "__main__":
