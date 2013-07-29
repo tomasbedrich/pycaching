@@ -1,0 +1,3 @@
+[submodule "lib/geopy"]
+	path = lib/geopy
+	url = https://github.com/geopy/geopy.git
