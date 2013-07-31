@@ -4,6 +4,7 @@ import re
 import urllib2
 import logging
 import unittest
+import codecs
 
 
 class Util(object):
@@ -55,6 +56,18 @@ class Util(object):
             return None
 
 
+    @staticmethod
+    def rot13encode(text):
+        """Returns a text encoded by rot13 cipher."""
+        return codecs.encode(text, "rot13")
+
+
+    @staticmethod
+    def rot13decode(text):
+        """Returns a text decoded from rot13."""
+        return codecs.decode(text, "rot13")
+
+
         
 class TestUtil(unittest.TestCase):
 
@@ -75,7 +88,10 @@ class TestUtil(unittest.TestCase):
 
     def test_urlopen(self):
         doctype = Util.urlopen("http://example.com").readline().strip()
-        self.assertEquals( doctype, "<!doctype html>" ) 
+        self.assertEquals( doctype, "<!doctype html>" )
+
+    def test_rot13(self):
+        self.assertEquals( Util.rot13encode("Text"), Util.rot13decode("Text") )
 
 
 def main():
