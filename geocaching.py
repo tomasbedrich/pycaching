@@ -5,6 +5,7 @@ import unittest
 import cookielib
 import urllib2
 import geopy as geo
+from util import Util
 from urllib import urlencode
 from urlparse import urljoin
 from BeautifulSoup import BeautifulSoup
@@ -39,7 +40,7 @@ class Geocaching(object):
 
         logging.info("Logging in...")
 
-        page = self._urlopen(self._getURL("loginPage"))
+        page = Util.urlopen(self._getURL("loginPage"))
         if not page:
             return False
         soup = BeautifulSoup(page.read())
@@ -74,7 +75,7 @@ class Geocaching(object):
 
         # login to the site
         logging.debug("Submiting login form.")
-        page = self._urlopen(url, postData, headers)
+        page = Util.urlopen(url, postData, headers)
         if not page:
             return False
         soup = BeautifulSoup(page.read())
@@ -95,7 +96,12 @@ class Geocaching(object):
 
         logging.info("Logging out.")
         self.cookieJar.clear()
-        
+
+
+    def search(self, point):
+        if not self.loggedIn or isinstance(point, geo.Point()):
+            return
+
 
     def getLoggedUser(self, soup=None):
         """Returns the name of curently logged user.
@@ -104,28 +110,13 @@ class Geocaching(object):
 
         if not isinstance(soup, BeautifulSoup):
             logging.debug("No 'soup' passed, loading login page on my own.")
-            page = self._urlopen(self._getURL("loginPage"))
+            page = Util.urlopen(self._getURL("loginPage"))
             soup = BeautifulSoup(page.read())
 
         logging.debug("Checking for already logged user.")
         try:
             return soup.find("div", "LoggedIn").find("strong").text
         except AttributeError:
-            return None
-
-
-    def _urlopen(self, url, *args, **kwargs):
-        """Makes a urllib request.
-
-        Returns opened stream of data or None on failure."""
-
-        try:
-            logging.debug("Making request on: %s", url)
-            request = urllib2.Request(url, *args, **kwargs)
-            return urllib2.urlopen(request)
-
-        except urllib2.URLError, e:
-            logging.error("Cannot access the website: %s", e)
             return None
 
 

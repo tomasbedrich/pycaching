@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 import re
+import urllib2
 import logging
 import unittest
 
@@ -38,6 +39,21 @@ class Util(object):
         except AttributeError:
             raise ValueError("Could not parse the coordinates entered manually.")
 
+    @staticmethod
+    def urlopen(url, *args, **kwargs):
+        """Makes a urllib request.
+
+        Returns opened stream of data or None on failure."""
+
+        try:
+            logging.debug("Making request on: %s", url)
+            request = urllib2.Request(url, *args, **kwargs)
+            return urllib2.urlopen(request)
+
+        except urllib2.URLError, e:
+            logging.error("Cannot access the website: %s", e)
+            return None
+
 
         
 class TestUtil(unittest.TestCase):
@@ -56,6 +72,10 @@ class TestUtil(unittest.TestCase):
         self.assertEquals( Util.parseRaw("N 49 45.123, E 013 22.123"), ((49, 45.123), (13, 22.123)) )
         self.assertEquals( Util.parseRaw("N 49 45.000 E 13 0.0"), ((49, 45), (13, 0)) )
         self.assertRaises( ValueError, Util.parseRaw, "123" )
+
+    def test_urlopen(self):
+        doctype = Util.urlopen("http://example.com").readline().strip()
+        self.assertEquals( doctype, "<!doctype html>" ) 
 
 
 def main():
