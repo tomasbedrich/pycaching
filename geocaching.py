@@ -99,7 +99,7 @@ class Geocaching(object):
 
 
     def search(self, point):
-        if not self.loggedIn or isinstance(point, geo.Point()):
+        if not self.loggedIn or isinstance(point, geo.Point):
             return
 
 
