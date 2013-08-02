@@ -2,9 +2,9 @@
 
 import logging
 import unittest
+import datetime
 import geopy as geo
 from types import *
-import datetime
 
 
 class Cache(object):
@@ -58,23 +58,23 @@ class Cache(object):
         "landf": (45, "Lost And Found Tour")
         }
 
-    typeMap = {
-        "traditional": "2",
-        "multicache": "3",
-        "ape": "ape_32",
-        "mystery": "8",
-        "letterbox": "5",
-        "whereigo": "1858",
-        "event": "6",
-        "megaevent": "mega",
-        "cito": "13",
-        "earthcache": "earthcache",
-        "adventuremaze": "1304",
-        "virtual": "4",
-        "webcam": "11",
-        "10years": "10Years_32",
-        "locationless": "12",
-        }
+    typeMap = [
+        "Traditional Cache",
+        "Multi-cache",
+        "Unknown Cache",
+        "Project APE Cache",
+        "Letterbox Hybrid",
+        "Wherigo Cache",
+        "Event Cache",
+        "Mega-Event Cache",
+        "Cache In Trash Out Event",
+        "Earthcache",
+        "GPS Adventures Exhibit",
+        "Virtual Cache",
+        "Webcam Cache",
+        "Lost and Found Event Cache",
+        "Locationless (Reverse) Cache",
+        ]
 
     sizeMap = [
         "micro",
@@ -86,13 +86,15 @@ class Cache(object):
         "virtual",
         ]
 
-    def __init__(self, wp, location=None, cacheType=None, state=None, size=None,
-        difficulty=None, terrain=None, author=None, hidden=None, attributes=None,
-        summary=None, description=None, hint=None):
+    def __init__(self, wp, name=None, cacheType=None, location=None, state=None,
+        found=None, size=None, difficulty=None, terrain=None, author=None, hidden=None,
+        attributes=None, summary=None, description=None, hint=None):
         self.wp = wp
-        self.location = location
+        self.name = name
         self.cacheType = cacheType
+        self.location = location
         self.state = state
+        self.found = found
         self.size = size
         self.difficulty = difficulty
         self.terrain = terrain
@@ -117,6 +119,18 @@ class Cache(object):
     def wp(self, wp):
         if isinstance(wp, StringTypes) and wp.strip()[:2] == "GC":
             self._wp = wp
+        elif wp:
+            logging.warning("Invalid WP '%s', ignoring.", wp)
+
+    
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        if isinstance(name, StringTypes):
+            self._name = name
 
     
     @property
@@ -135,8 +149,10 @@ class Cache(object):
 
     @cacheType.setter
     def cacheType(self, cacheType):
-        if cacheType in self.typeMap.keys():
+        if cacheType in self.typeMap:
             self._cacheType = cacheType
+        elif cacheType:
+            logging.warning("Invalid cache type '%s', ignoring.", cacheType)
 
 
     @property
@@ -147,6 +163,20 @@ class Cache(object):
     def state(self, state):
         if type(state) is BooleanType:
             self._state = state
+        elif state:
+            logging.warning("Invalid state '%s', ignoring.", state)
+
+
+    @property
+    def found(self):
+        return self._found
+
+    @found.setter
+    def found(self, found):
+        if type(found) is BooleanType:
+            self._found = found
+        elif found:
+            logging.warning("Invalid found state, ignoring.")
 
 
     @property
@@ -157,6 +187,8 @@ class Cache(object):
     def size(self, size):
         if size in self.sizeMap:
             self._size = size
+        elif size:
+            logging.warning("Invalid size '%s', ignoring.", size)
 
 
     @property
@@ -169,6 +201,8 @@ class Cache(object):
             difficulty >= 1 and difficulty <= 5 and \
             difficulty * 10 % 5 == 0:
             self._difficulty = difficulty
+        elif difficulty:
+            logging.warning("Invalid difficulty, ignoring.")
 
 
     @property
@@ -181,6 +215,8 @@ class Cache(object):
             terrain >= 1 and terrain <= 5 and \
             terrain * 10 % 5 == 0:
             self._terrain = terrain
+        elif terrain:
+            logging.warning("Invalid terrain, ignoring.")
 
 
     @property
@@ -189,7 +225,8 @@ class Cache(object):
 
     @author.setter
     def author(self, author):
-        self._author = author
+        if isinstance(author, StringTypes):
+            self._author = author
 
 
     @property
@@ -198,8 +235,10 @@ class Cache(object):
 
     @hidden.setter
     def hidden(self, hidden):
-        if type(hidden) is datetime.date: # test!!!
+        if type(hidden) is datetime.date:
             self._hidden = hidden
+        elif hidden:
+            logging.warning("Invalid hidden date, ignoring.")
 
 
     @property
@@ -210,6 +249,10 @@ class Cache(object):
     def attributes(self, attributes):
         if type(attributes) is ListType:
             self._attributes = filter(lambda attr: attr in Cache.attributesMap, attributes)
+            if len(self._attributes) != len(attributes):
+                logging.warning("Some unknown attributes were skipped.")
+        elif attributes:
+            logging.warning("Invalid attributes format (%s), ignoring.", type(attributes))
 
 
     @property
@@ -239,7 +282,11 @@ class Cache(object):
     @hint.setter
     def hint(self, hint):
         if isinstance(hint, StringTypes):
-            self.hint = hint
+            self._hint = hint
+
+
+    def __str__(self):
+        return self.wp
 
 
         
@@ -254,6 +301,24 @@ class TestUtil(unittest.TestCase):
     def test_difficulty(self):
         self.c.difficulty = 1.5
         self.assertEquals( self.c.difficulty, 1.5 )
+
+    def test_type(self):
+        self.c.cacheType = "Traditional Cache"
+        self.assertEquals( self.c.cacheType, "Traditional Cache" )
+        # filter invalid
+        self.c.cacheType = "xxx"
+        self.assertEquals( self.c.cacheType, "Traditional Cache" )
+
+    def test_description(self):
+        self.c.description = "test"
+        self.assertEquals( self.c.description, "test" )
+
+    def test_attributes(self):
+        self.c.attributes = ["onehour", "kids", "available"]
+        self.assertEquals( self.c.attributes, ["onehour", "kids", "available"] )
+        # filter unknown
+        self.c.attributes = ["onehour", "xxx"]
+        self.assertEquals( self.c.attributes, ["onehour"] )
 
 
 def main():

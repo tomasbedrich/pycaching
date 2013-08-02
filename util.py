@@ -5,9 +5,14 @@ import urllib2
 import logging
 import unittest
 import codecs
+from types import *
+from urllib import urlencode
 
 
 class Util(object):
+
+    # Useragent: which browser/platform should this script masquerade as
+    useragent = "User-Agent=Mozilla/5.0 (X11; U; Linux i686; en-US; rv:666)"
 
     @staticmethod
     def parseRaw(raw):
@@ -41,14 +46,26 @@ class Util(object):
             raise ValueError("Could not parse the coordinates entered manually.")
 
     @staticmethod
-    def urlopen(url, *args, **kwargs):
+    def urlopen(url, data=None, headers=None):
         """Makes a urllib request.
 
         Returns opened stream of data or None on failure."""
 
+        # headers
+        if type(headers) is not DictType:
+            headers = dict()
+        if "User-Agent" not in headers.keys():
+            logging.debug("Faking User-Agent header: %s", Util.useragent)
+            headers["User-Agent"] = Util.useragent
+
+        # POST
+        if type(data) is DictType:
+            data = urlencode(data)
+        logging.debug("POST data: %s", data)
+
         try:
             logging.debug("Making request on: %s", url)
-            request = urllib2.Request(url, *args, **kwargs)
+            request = urllib2.Request(url, data, headers)
             return urllib2.urlopen(request)
 
         except urllib2.URLError, e:
@@ -66,6 +83,18 @@ class Util(object):
     def rot13decode(text):
         """Returns a text decoded from rot13."""
         return codecs.decode(text, "rot13")
+
+
+    @staticmethod
+    def toDecimal(deg, min):
+        """Returns a decimal interpretation of coordinate in MinDec format."""
+        return round(deg + min/60, 5)
+
+
+    @staticmethod
+    def toMinDec(decimal):
+        """Returns a DecMin interpretation of coordinate in decimal format."""
+        return int(decimal), round(60 * (decimal - int(decimal)), 3)
 
 
         
@@ -93,12 +122,18 @@ class TestUtil(unittest.TestCase):
     def test_rot13(self):
         self.assertEquals( Util.rot13encode("Text"), Util.rot13decode("Text") )
 
+    def test_coordConversion(self):
+        self.assertEquals( Util.toDecimal(49, 43.850), 49.73083 )
+        self.assertEquals( Util.toDecimal(13, 22.905), 13.38175 )
+        self.assertEquals( Util.toMinDec(13.38175), (13, 22.905) )
+        self.assertEquals( Util.toMinDec(49.73083), (49, 43.850) )
+
 
 def main():
     """The main program"""
 
-    logging.basicConfig(level=logging.INFO)
-    #logging.basicConfig(level=logging.DEBUG)
+    # logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     unittest.main()
 
 
