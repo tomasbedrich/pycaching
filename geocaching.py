@@ -194,7 +194,6 @@ class Geocaching(object):
             # assemble cache object
             c = Cache(wp, name, cacheType, None, state, found, size, dif, ter, author, hidden)
             logging.debug("Parsing cache: %s", c)
-            logging.info("%s, found: %r", c.wp, c.found)
             result.append(c)
 
         return result
@@ -225,6 +224,7 @@ class Geocaching(object):
 
 class TestGeocaching(unittest.TestCase):
 
+    # please DO NOT CHANGE!
     username, password = "cache-map", "pGUgNw59"
 
     def setUp(self):
