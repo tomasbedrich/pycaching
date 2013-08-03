@@ -10,52 +10,54 @@ from types import *
 class Cache(object):
 
     attributesMap = {
-        "dog": (1, "Dogs"),
-        "dogs": (1, "Dogs allowed"),
-        "fee": (2, "Access or parking fee"),
-        "rappelling": (3, "Climbing gear"),
-        "boat": (4, "Boat"),
-        "scuba": (5, "Scuba gear"),
-        "kids": (6, "Recommended for kids"),
-        "onehour": (7, "Takes less than an hour"),
-        "scenic": (8, "Scenic view"),
-        "hiking": (9, "Significant hike"),
-        "climbing": (10, "Difficult climbing"),
-        "wading": (11, "May require wading"),
-        "swimming": (12, "May require swimming"),
-        "available": (13, "Available at all times"),
-        "night": (14, "Recommended at night"),
-        "winter": (15, "Available during winter"),
-        "poisonoak": (17, "Poison plants"),
-        "snakes": (18, "Snakes"),
-        "ticks": (19, "Ticks"),
-        "mines": (20, "Abandoned mines"),
-        "cliff": (21, "Cliff / falling rocks"),
-        "hunting": (22, "Hunting"),
-        "danger": (23, "Dangerous area"),
-        "wheelchair": (24, "Wheelchair accessible"),
-        "parking": (25, "Parking available"),
-        "public": (26, "Public transportation"),
-        "water": (27, "Drinking water nearby"),
-        "restrooms": (28, "Public restrooms nearby"),
-        "phone": (29, "Telephone nearby"),
-        "picnic": (30, "Picnic tables nearby"),
-        "camping": (31, "Camping available"),
-        "bicycles": (32, "Bicycles"),
-        "motorcycles": (33, "Motorcycles"),
-        "quads": (34, "Quads"),
-        "jeeps": (35, "Off-road vehicles"),
-        "snowmobiles": (36, "Snowmobiles"),
-        "horses": (37, "Horses"),
-        "campfires": (38, "Campfires"),
-        "thorns": (39, "Thorns"),
-        "thorn": (39, "Thorns!"),
-        "stealth": (40, "Stealth required"),
-        "stroller": (41, "Stroller accessible"),
-        "firstaid": (42, "Needs maintenance"),
-        "cow": (43, "Watch for livestock"),
-        "flashlight": (44, "Flashlight required"),
-        "landf": (45, "Lost And Found Tour")
+        "dog": "Dogs",
+        "dogs": "Dogs allowed",
+        "fee": "Access or parking fee",
+        "rappelling": "Climbing gear",
+        "boat": "Boat",
+        "scuba": "Scuba gear",
+        "kids": "Recommended for kids",
+        "onehour": "Takes less than an hour",
+        "scenic": "Scenic view",
+        "hike_med": "Hike between 1km - 10km",
+        "hiking": "Significant hike",
+        "climbing": "Difficult climbing",
+        "wading": "May require wading",
+        "swimming": "May require swimming",
+        "available": "Available at all times",
+        "night": "Recommended at night",
+        "winter": "Available during winter",
+        "poisonoak": "Poison plants",
+        "snakes": "Snakes",
+        "ticks": "Ticks",
+        "mines": "Abandoned mines",
+        "cliff": "Cliff / falling rocks",
+        "hunting": "Hunting",
+        "danger": "Dangerous area",
+        "wheelchair": "Wheelchair accessible",
+        "parkngrab": "Park and grab",
+        "parking": "Parking available",
+        "public": "Public transportation",
+        "water": "Drinking water nearby",
+        "restrooms": "Public restrooms nearby",
+        "phone": "Telephone nearby",
+        "picnic": "Picnic tables nearby",
+        "camping": "Camping available",
+        "bicycles": "Bicycles",
+        "motorcycles": "Motorcycles",
+        "quads": "Quads",
+        "jeeps": "Off-road vehicles",
+        "snowmobiles": "Snowmobiles",
+        "horses": "Horses",
+        "campfires": "Campfires",
+        "thorns": "Thorns",
+        "thorn": "Thorns!",
+        "stealth": "Stealth required",
+        "stroller": "Stroller accessible",
+        "firstaid": "Needs maintenance",
+        "cow": "Watch for livestock",
+        "flashlight": "Flashlight required",
+        "landf": "Lost And Found Tour",
         }
 
     typeMap = [
@@ -105,11 +107,6 @@ class Cache(object):
         self.description = description
         self.hint = hint
 
-
-    def load(self):
-        """Loads details from cache page."""
-        pass
-
     
     @property
     def wp(self):
@@ -117,7 +114,7 @@ class Cache(object):
 
     @wp.setter
     def wp(self, wp):
-        if isinstance(wp, StringTypes) and wp.strip()[:2] == "GC":
+        if isinstance(wp, StringTypes) and wp.startswith("GC"):
             self._wp = wp
         elif wp:
             logging.warning("Invalid WP '%s', ignoring.", wp)
@@ -247,10 +244,16 @@ class Cache(object):
 
     @attributes.setter
     def attributes(self, attributes):
-        if type(attributes) is ListType:
-            self._attributes = filter(lambda attr: attr in Cache.attributesMap, attributes)
-            if len(self._attributes) != len(attributes):
-                logging.warning("Some unknown attributes were skipped.")
+        if type(attributes) is ListType: # convert to dict
+            attributes = {a: True for a in attributes}
+
+        if type(attributes) is DictType:
+            self._attributes = {}
+            for name, allowed in attributes.iteritems():
+                if name in self.attributesMap:
+                    self._attributes[name] = allowed
+                else:
+                    logging.warning("Unknown attribute '%s', ignoring.", name)
         elif attributes:
             logging.warning("Invalid attributes format (%s), ignoring.", type(attributes))
 
@@ -315,10 +318,10 @@ class TestUtil(unittest.TestCase):
 
     def test_attributes(self):
         self.c.attributes = ["onehour", "kids", "available"]
-        self.assertEquals( self.c.attributes, ["onehour", "kids", "available"] )
+        self.assertEquals( self.c.attributes, {"onehour":1, "kids":1, "available":1} )
         # filter unknown
         self.c.attributes = ["onehour", "xxx"]
-        self.assertEquals( self.c.attributes, ["onehour"] )
+        self.assertEquals( self.c.attributes, {"onehour":1} )
 
 
 def main():

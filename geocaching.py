@@ -21,7 +21,7 @@ class Geocaching(object):
 
     urls = {
         "loginPage": "login/default.aspx",
-        "cacheByWPT": "seek/cache_details.aspx",
+        "cacheDetails": "seek/cache_details.aspx",
         "cachesNearest": "seek/nearest.aspx"
     }
 
@@ -46,6 +46,7 @@ class Geocaching(object):
 
         rawPage = Util.urlopen(self._getURL("loginPage"))
         if not rawPage:
+            logging.error("Cannot load login page.")
             return False
         soup = BeautifulSoup(rawPage.read())
 
@@ -79,6 +80,7 @@ class Geocaching(object):
         logging.debug("Submiting login form.")
         rawPage = Util.urlopen(url, postValues)
         if not rawPage:
+            logging.error("Cannot load response after login.")
             return False
         soup = BeautifulSoup(rawPage.read())
 
@@ -170,7 +172,7 @@ class Geocaching(object):
             for field in soup("input", type="hidden"):
                 self.paggingHelpers[field["name"]] = field["value"]
 
-        # parse data
+        # parse results table
         data = soup.find("table", "SearchResultsTable").findAll("tr", "Data")
         result = []
         for cache in data:
@@ -186,7 +188,7 @@ class Geocaching(object):
             cacheType = typeLink.find("img").get("alt")
             name = nameLink.span.text.strip().encode("ascii", "xmlcharrefreplace")
             state = not "Strike" in nameLink.get("class")
-            size = size.split(":")[1].strip().lower()
+            size = size.split()[1].lower()
             dif, ter = map(float, DandT.text.split("/"))
             hidden = datetime.strptime(placed.text, '%m/%d/%Y').date()
             author = author[3:].encode("ascii", "xmlcharrefreplace") # delete "by "
@@ -197,6 +199,66 @@ class Geocaching(object):
             result.append(c)
 
         return result
+
+
+    def loadCache(self, wp):
+        """Loads details from cache page."""
+
+        # if not self.loggedIn or not (isinstance(wp, StringTypes) and wp.startswith("GC")):
+        #     return
+
+        logging.info("Loading details about %s...", wp)
+
+        # assemble request
+        params = urlencode({"wp": wp})
+        url = self._getURL("cacheDetails") + "?" + params
+
+        # make request
+        rawPage = Util.urlopen(url)
+        if not rawPage:
+            logging.error("Cannot load search page.")
+            return
+        soup = BeautifulSoup(rawPage)
+
+        # parse raw data
+        cacheDetails = soup.find(id="cacheDetails")
+        name = cacheDetails.find("h2")
+        cacheType = cacheDetails.find("img").get("alt")
+        author = cacheDetails("a")[1]
+        hidden = cacheDetails.find("div", "minorCacheDetails").findAll("div")[1]
+        location = soup.find(id="uxLatLon")
+        state = soup.find("ul", "OldWarning")
+        found = soup.find("div", "StatusInformationWidget").find("img")
+        DandT = soup.find("div", "CacheStarImgs").findAll("img")
+        size = soup.find("div", "CacheSize").find("img")
+        attributesRaw = soup("div", "CacheDetailNavigationWidget")[1].findAll("img")
+        userContent = soup("div", "UserSuppliedContent")
+        hint = soup.find(id="div_hint")
+
+        # prettify data
+        name = name.text.encode("ascii", "xmlcharrefreplace")
+        author = author.text.encode("ascii", "xmlcharrefreplace")
+        hidden = datetime.strptime(hidden.text.split()[1], '%m/%d/%Y').date()
+        location = location.text.encode("ascii", "xmlcharrefreplace")
+        state = state is None
+        found = found and found.get("alt") == "Found It" or False
+        dif, ter = map(lambda e: float(e.get("alt").split()[0]), DandT)
+        size = size.get("alt").split()[1]
+        attributesRaw = map(lambda e: e.get("src").split('/')[-1].split("-"), attributesRaw)
+        attributes = {} # parse attributes by src to know yes/no
+        for name, appendix in attributesRaw:
+            if appendix.startswith("blank"):
+                continue
+            attributes[name] = appendix.startswith("yes")
+        summary = userContent[0].text.encode("ascii", "xmlcharrefreplace")
+        description = userContent[1]
+        hint = Util.rot13decode(hint.text.strip())
+
+        # assemble cache object 
+        c = Cache(wp, name, cacheType, location, state, found,
+            size, dif, ter, author, hidden, attributes,
+            summary, description, hint)
+        return c
 
 
     def getLoggedUser(self, soup=None):
@@ -252,7 +314,7 @@ class TestGeocaching(unittest.TestCase):
         self.assertTrue( self.g.login(self.username, self.password) )
         self.assertEquals( self.g.getLoggedUser(), self.username )
 
-    # @unittest.skip("tmp")
+    @unittest.skip("tmp")
     def test_search(self):
         self.assertTrue( self.g.login(self.username, self.password) )
 
@@ -266,6 +328,14 @@ class TestGeocaching(unittest.TestCase):
         caches = self.g.search(geo.Point(49.733867, 13.397091), 25)
         res = [c for c in caches]
         self.assertNotEquals(res[0], res[20])
+
+    # @unittest.skip("tmp")
+    def test_loadCache(self):
+        self.assertTrue( self.g.login(self.username, self.password) )
+
+        c = self.g.loadCache("GC4808G")
+        self.assertTrue( isinstance(c, Cache) )
+        self.assertEquals( "GC4808G", Cache.__str__(c) )
 
 
     def tearDown(self):
