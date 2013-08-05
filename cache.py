@@ -9,6 +9,7 @@ from types import *
 
 class Cache(object):
 
+    # attributes will probably require some maintenance
     attributesMap = {
         "dog": "Dogs",
         "dogs": "Dogs allowed",
