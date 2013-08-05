@@ -294,7 +294,7 @@ class Cache(object):
 
 
         
-class TestUtil(unittest.TestCase):
+class TestCache(unittest.TestCase):
 
     def setUp(self):
         self.c = Cache("GC12345")
