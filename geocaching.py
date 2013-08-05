@@ -5,6 +5,7 @@ import unittest
 import cookielib
 import urllib2
 import geopy as geo
+import json
 from util import Util
 from cache import Cache
 from functools import partial
@@ -18,12 +19,18 @@ from types import *
 class Geocaching(object):
 
     baseurl = "https://www.geocaching.com/"
+    mapurl = "http://tiles01.geocaching.com/map.details"
 
     urls = {
         "loginPage": "login/default.aspx",
         "cacheDetails": "seek/cache_details.aspx",
         "cachesNearest": "seek/nearest.aspx"
     }
+
+    # interesting URLs:
+    # http://tiles01.geocaching.com/map.details?i=GCNJ2Z
+    # http://tiles01.geocaching.com/map.info?x=8803&y=5576&z=14 (http://www.mapbox.com/developers/utfgrid/)
+    # http://tiles01.geocaching.com/map.png?x=8803&y=5576&z=14
 
 
     def __init__(self):
@@ -201,11 +208,50 @@ class Geocaching(object):
         return result
 
 
-    def loadCache(self, wp):
-        """Loads details from cache page."""
+    def loadCacheQuick(self, wp):
+        """Loads details from map server.
 
-        # if not self.loggedIn or not (isinstance(wp, StringTypes) and wp.startswith("GC")):
-        #     return
+        Loads just basic cache details, but very quickly"""
+
+        if not self.loggedIn or not (isinstance(wp, StringTypes) and wp.startswith("GC")):
+            return
+
+        logging.info("Loading quick details about %s...", wp)
+
+        # assemble request
+        params = urlencode({"i": wp})
+        url = self.mapurl + "?" + params
+
+        # make request
+        rawPage = Util.urlopen(url)
+        if not rawPage:
+            logging.error("Cannot load search page.")
+            return
+        res = json.loads(rawPage.read())
+
+        # check for success
+        if res["status"] != "success":
+            return None
+        data = res["data"][0]
+
+        # prettify some data
+        size = data["container"]["text"].lower()
+        hidden = datetime.strptime(data["hidden"], '%m/%d/%Y').date()
+
+        # assemble cache object 
+        c = Cache(wp, data["name"], data["type"]["text"], None, data["available"], None,
+            size, data["difficulty"]["text"], data["terrain"]["text"],
+            data["owner"]["text"], hidden, None)
+        return c
+
+
+    def loadCache(self, wp):
+        """Loads details from cache page.
+
+        Loads all cache details and return fully populated cache object."""
+
+        if not self.loggedIn or not (isinstance(wp, StringTypes) and wp.startswith("GC")):
+            return
 
         logging.info("Loading details about %s...", wp)
 
@@ -292,6 +338,7 @@ class TestGeocaching(unittest.TestCase):
     def setUp(self):
         self.g = Geocaching()
 
+
     @unittest.skip("tmp")
     def test_login(self):
         # bad username
@@ -303,16 +350,19 @@ class TestGeocaching(unittest.TestCase):
         # bad username automatic logout
         self.assertFalse( self.g.login("", "") )
 
+
     @unittest.skip("tmp")
     def test_logout(self):
         self.assertTrue( self.g.login(self.username, self.password) )
         self.g.logout()
         self.assertIsNone( self.g.getLoggedUser() )
 
+
     @unittest.skip("tmp")
     def test_getLoggedUser(self):
         self.assertTrue( self.g.login(self.username, self.password) )
         self.assertEquals( self.g.getLoggedUser(), self.username )
+
 
     @unittest.skip("tmp")
     def test_search(self):
@@ -329,11 +379,21 @@ class TestGeocaching(unittest.TestCase):
         res = [c for c in caches]
         self.assertNotEquals(res[0], res[20])
 
-    # @unittest.skip("tmp")
+
+    @unittest.skip("tmp")
     def test_loadCache(self):
         self.assertTrue( self.g.login(self.username, self.password) )
 
         c = self.g.loadCache("GC4808G")
+        self.assertTrue( isinstance(c, Cache) )
+        self.assertEquals( "GC4808G", Cache.__str__(c) )
+
+
+    @unittest.skip("tmp")
+    def test_loadCacheQuick(self):
+        self.assertTrue( self.g.login(self.username, self.password) )
+
+        c = self.g.loadCacheQuick("GC4808G")
         self.assertTrue( isinstance(c, Cache) )
         self.assertEquals( "GC4808G", Cache.__str__(c) )
 
