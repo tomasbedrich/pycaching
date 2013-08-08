@@ -1,9 +1,8 @@
 from distutils.core import setup
-from pycaching.version import version
 
 setup(    
     name='PyCaching',
-    version=version,
+    version="0.1.dev",
     author='Tomas Bedrich',
     author_email='ja@tbedrich.cz',
     packages=['pycaching',],
@@ -11,7 +10,7 @@ setup(
     description='Geocaching.com site crawler. Searches and loads caches.',
     long_description=open('README.txt').read(),
     install_requires=[
-	    "BeautifulSoup >= 3.2.1",
-	    "geopy == 0.95.1",
-	],
+        "BeautifulSoup >= 3.2.1",
+        "geopy == 0.95.1",
+    ],
 )

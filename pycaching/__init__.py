@@ -18,5 +18,8 @@ def login(username, password):
     A shortcut for Geocaching().login()."""
 
     g = Geocaching()
-    g.login(username, password)
+    
+    if not g.login(username, password):
+    	return
+
     return g
