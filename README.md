@@ -1,4 +1,4 @@
-# PyCaching - Geocaching.com website crawler
+# PyCaching - Geocaching for Python
 
 A Python interface for working with Geocaching.com website. I've used some code from two packages:
 
@@ -7,8 +7,9 @@ A Python interface for working with Geocaching.com website. I've used some code 
 
 ## Features
 - login to Geocaching.com
-- search for up to 200 Caches by any Point
-- load Cache details by WP
+- search for up to 200 caches around any point
+- load cache details by WP (2 ways)
+- utils for coordinate sanitization, rot13 conversion
 - _more coming soon_
 
 ## Requirements
@@ -17,12 +18,40 @@ A Python interface for working with Geocaching.com website. I've used some code 
 
 ## Example usage
 
+### Load one cache details
 
     import pycaching
 
     geocaching = pycaching.login("user", "pass")
     cache = geocaching.loadCache("GC12345")
     print cache["name"]
+
+### Find all traditional caches around
+
+    import pycaching
+    import geopy
+    
+    point = geopy.Point(10.123456, 10.123456)
+
+    geocaching = pycaching.login("user", "pass")
+    caches = geocaching.search(point)
+    for cache in caches:
+        if cache["type"] == "Traditional Cache"
+            print cache["wp"]
+
+### Find all caches on some adress
+
+    import pycaching
+    import geopy
+    from geopy import geocoders
+    
+    place, (lat, lng) = geocoders.GoogleV3().geocode("10900 Euclid Ave in Cleveland")
+    point = geopy.Point(lat, lng)
+    
+    geocaching = pycaching.login("user", "pass")
+    caches = geocaching.search(point)
+    for cache in caches:
+        print cache["wp"]
 
 ## Legal notice
 
@@ -31,5 +60,5 @@ Be sure to read Geocaching.com's terms of use (http://www.geocaching.com/about/t
 ## Author
 
 Tomas Bedrich  
-tbedrich.cz  
+www.tbedrich.cz  
 ja@tbedrich.cz
