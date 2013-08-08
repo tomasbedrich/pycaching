@@ -1,9 +1,13 @@
 # PyCaching - Geocaching for Python
 
-A Python interface for working with Geocaching.com website. I've used some code from two packages:
+A Python interface for working with Geocaching.com website.
+
+I've used some code from two packages:
 
 - Geocache Grabber (by Fuad Tabba) - http://www.cs.auckland.ac.nz/~fuad/geo.py
 - geocaching-py (by Lev Shamardin) - https://github.com/abbot/geocaching-py
+
+Thanks to authors of both packages.
 
 ## Features
 - login to Geocaching.com
@@ -11,6 +15,16 @@ A Python interface for working with Geocaching.com website. I've used some code 
 - load cache details by WP (2 ways)
 - utils for coordinate sanitization, rot13 conversion
 - _more coming soon_
+
+## Installation
+
+Using pip:
+
+    pip install pycaching
+
+Manually, from GIT:
+
+    git clone https://github.com/tomasbedrich/pycaching.git
 
 ## Requirements
 - BeautifulSoup >= 3.2.1
@@ -24,9 +38,11 @@ A Python interface for working with Geocaching.com website. I've used some code 
 
     geocaching = pycaching.login("user", "pass")
     cache = geocaching.loadCache("GC12345")
-    print cache["name"]
+    print cache.name
 
 ### Find all traditional caches around
+
+Notice the limit in search function. It is because search() returns a generator object, which would fetch the caches forever in case of simple loop.
 
     import pycaching
     import geopy
@@ -34,10 +50,10 @@ A Python interface for working with Geocaching.com website. I've used some code 
     point = geopy.Point(10.123456, 10.123456)
 
     geocaching = pycaching.login("user", "pass")
-    caches = geocaching.search(point)
+    caches = geocaching.search(point, limit=50)
     for cache in caches:
-        if cache["type"] == "Traditional Cache"
-            print cache["wp"]
+        if cache.type == "Traditional Cache"
+            print cache.wp
 
 ### Find all caches on some adress
 
@@ -49,9 +65,9 @@ A Python interface for working with Geocaching.com website. I've used some code 
     point = geopy.Point(lat, lng)
     
     geocaching = pycaching.login("user", "pass")
-    caches = geocaching.search(point)
+    caches = geocaching.search(point, limit=10)
     for cache in caches:
-        print cache["wp"]
+        print cache.wp
 
 ## Legal notice
 

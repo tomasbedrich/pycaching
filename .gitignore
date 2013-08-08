@@ -1,4 +1,15 @@
-geopy
-lib/geopy/
+## system junk
+
 *.pyc
 .DS_Store
+
+## libs
+
+geopy
+lib/geopy/
+
+## pypi
+
+build
+dist
+*.egg*
