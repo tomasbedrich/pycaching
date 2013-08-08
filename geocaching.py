@@ -9,7 +9,6 @@ import geopy as geo
 import json
 from util import Util
 from cache import Cache
-from functools import partial
 from urlparse import urljoin
 from urllib import urlencode
 from BeautifulSoup import BeautifulSoup
