@@ -5,7 +5,7 @@
 # (major, minor, micro, alpha/beta/rc/final, #)
 # (1, 1, 2, 'alpha', 0) => "1.1.2.dev"
 # (1, 2, 0, 'beta', 2) => "1.2b2"
-version_info = (0, 1, 1, "alpha", 0)
+version_info = (0, 1, 2, "final", 0)
 
 
 def _get_version():
@@ -26,3 +26,7 @@ def _get_version():
     return str(main + sub)
 
 version = _get_version()
+
+
+if __name__ == "__main__":
+    print _get_version()

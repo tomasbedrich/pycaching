@@ -10,7 +10,7 @@ long_description = f.read()
 
 setup(    
     name='PyCaching',
-    version="0.1.1.dev",
+    version="0.1.2",
     author='Tomas Bedrich',
     author_email='ja@tbedrich.cz',
     packages=['pycaching'],
