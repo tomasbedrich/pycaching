@@ -110,7 +110,7 @@ class Geocaching(object):
         self.loggedIn = False
 
 
-    def search(self, point, limit=float("infinity") ):
+    def search(self, point, limit=0 ):
         """Returns a generator object of caches around some point."""
 
         if not self.loggedIn or not isinstance(point, geo.Point) or type(limit) is not IntType:
@@ -126,7 +126,7 @@ class Geocaching(object):
                 yield cache
 
                 cacheNum += 1
-                if cacheNum >= limit:
+                if limit > 0 and cacheNum >= limit:
                     raise StopIteration()
 
             pageNum += 1
@@ -150,6 +150,7 @@ class Geocaching(object):
         if page == 1:
             data = None
         else:
+            # TODO handle searching on second page without first
             data = self.paggingHelpers
             data["__EVENTTARGET"] = self.paggingPostbacks[page]
             data["__EVENTARGUMENT"] = ""
@@ -188,14 +189,14 @@ class Geocaching(object):
             typeLink, nameLink = cache("a", "lnk")
             direction, info, DandT, placed, lastFound = cache("span", "small")
             found = cache.find("img", title="Found It!") is not None
-            size = cache.find("td", "AlignCenter").find("img").get("alt")
+            size = cache.find("td", "AlignCenter").find("img")
             author, wp, area = map(lambda t: t.strip(), info.text.split("|"))
 
             # prettify data
             cacheType = typeLink.find("img").get("alt")
             name = nameLink.span.text.strip().encode("ascii", "xmlcharrefreplace")
             state = not "Strike" in nameLink.get("class")
-            size = size.split()[1].lower()
+            size = " ".join(size.get("alt").split()[1:]).lower()
             dif, ter = map(float, DandT.text.split("/"))
             hidden = datetime.strptime(placed.text, '%m/%d/%Y').date()
             author = author[3:].encode("ascii", "xmlcharrefreplace") # delete "by "
@@ -289,7 +290,7 @@ class Geocaching(object):
         state = state is None
         found = found and found.get("alt") == "Found It" or False
         dif, ter = map(lambda e: float(e.get("alt").split()[0]), DandT)
-        size = size.get("alt").split()[1]
+        size = " ".join(size.get("alt").split()[1:]).lower()
         attributesRaw = map(lambda e: e.get("src").split('/')[-1].split("-"), attributesRaw)
         attributes = {} # parse attributes by src to know yes/no
         for name, appendix in attributesRaw:
@@ -364,7 +365,7 @@ class TestGeocaching(unittest.TestCase):
         self.assertEquals( self.g.getLoggedUser(), self.username )
 
 
-    @unittest.skip("tmp")
+    # @unittest.skip("tmp")
     def test_search(self):
         self.assertTrue( self.g.login(self.username, self.password) )
 
