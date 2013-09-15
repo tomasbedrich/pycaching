@@ -52,7 +52,7 @@ Notice the limit in search function. It is because search() returns a generator 
     geocaching = pycaching.login("user", "pass")
     caches = geocaching.search(point, limit=50)
     for cache in caches:
-        if cache.type == "Traditional Cache"
+        if cache.cacheType == "Traditional Cache":
             print cache.wp
 
 ### Find all caches on some adress
