@@ -304,8 +304,6 @@ class Geocaching(object):
         hint = Util.rot13decode(hint.text.strip())
         favorites = favorites and int(favorites.group(1)) or 0
 
-        import pdb; pdb.set_trace()
-
         # assemble cache object
         c = Cache(wp, name, cacheType, location, state, found,
             size, dif, ter, author, hidden, attributes,
