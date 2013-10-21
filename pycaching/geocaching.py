@@ -275,7 +275,7 @@ class Geocaching(object):
         hidden = cacheDetails.find("div", "minorCacheDetails").findAll("div")[1]
         location = soup.find(id="uxLatLon")
         state = soup.find("ul", "OldWarning")
-        found = soup.find("div", "FoundStatus").find('p')
+        found = soup.find("div", "FoundStatus")
         DandT = soup.find("div", "CacheStarLabels").findAll("img")
         size = soup.find("div", "CacheSize").find("img")
         attributesRaw = soup("div", "CacheDetailNavigationWidget")[1].findAll("img")
