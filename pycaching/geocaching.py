@@ -67,7 +67,7 @@ class Geocaching(object):
             else:
                 logging.info("Already logged as %s, but want to log in as %s.", logged, username)
                 self.logout()
-        
+
         # continue logging in
         postValues = dict()
         logging.debug("Assembling POST data.")
@@ -164,7 +164,7 @@ class Geocaching(object):
 
         # root of a few following elements
         pageBuilders = soup("td", "PageBuilderWidget")
-        
+
         # parse pagging widget
         total, page, pageCount = map(lambda elm: int(elm.text), pageBuilders[0].findAll("b"))
         logging.debug("Found %d results. Showing page %d of %d.", total, page, pageCount)
@@ -200,7 +200,7 @@ class Geocaching(object):
             dif, ter = map(float, DandT.text.split("/"))
             hidden = datetime.strptime(placed.text, '%m/%d/%Y').date()
             author = author[3:].encode("ascii", "xmlcharrefreplace") # delete "by "
-            
+
             # assemble cache object
             c = Cache(wp, name, cacheType, None, state, found, size, dif, ter, author, hidden)
             logging.debug("Parsing cache: %s", c)
@@ -239,7 +239,7 @@ class Geocaching(object):
         size = data["container"]["text"].lower()
         hidden = datetime.strptime(data["hidden"], '%m/%d/%Y').date()
 
-        # assemble cache object 
+        # assemble cache object
         c = Cache(wp, data["name"], data["type"]["text"], None, data["available"], None,
             size, data["difficulty"]["text"], data["terrain"]["text"],
             data["owner"]["text"], hidden, None)
@@ -275,8 +275,8 @@ class Geocaching(object):
         hidden = cacheDetails.find("div", "minorCacheDetails").findAll("div")[1]
         location = soup.find(id="uxLatLon")
         state = soup.find("ul", "OldWarning")
-        found = soup.find("div", "StatusInformationWidget").find("img")
-        DandT = soup.find("div", "CacheStarImgs").findAll("img")
+        found = soup.find("div", "FoundStatus")
+        DandT = soup.find("div", "CacheStarLabels").findAll("img")
         size = soup.find("div", "CacheSize").find("img")
         attributesRaw = soup("div", "CacheDetailNavigationWidget")[1].findAll("img")
         userContent = soup("div", "UserSuppliedContent")
@@ -285,10 +285,10 @@ class Geocaching(object):
         # prettify data
         name = name.text.encode("ascii", "xmlcharrefreplace")
         author = author.text.encode("ascii", "xmlcharrefreplace")
-        hidden = datetime.strptime(hidden.text.split()[1], '%m/%d/%Y').date()
+        hidden = datetime.strptime(hidden.text.split()[2], '%m/%d/%Y').date()
         location = location.text.encode("ascii", "xmlcharrefreplace")
         state = state is None
-        found = found and found.get("alt") == "Found It" or False
+        found = found and "Found It!" in found.text or False
         dif, ter = map(lambda e: float(e.get("alt").split()[0]), DandT)
         size = " ".join(size.get("alt").split()[1:]).lower()
         attributesRaw = map(lambda e: e.get("src").split('/')[-1].split("-"), attributesRaw)
@@ -301,7 +301,7 @@ class Geocaching(object):
         description = userContent[1]
         hint = Util.rot13decode(hint.text.strip())
 
-        # assemble cache object 
+        # assemble cache object
         c = Cache(wp, name, cacheType, location, state, found,
             size, dif, ter, author, hidden, attributes,
             summary, description, hint)
