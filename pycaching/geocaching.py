@@ -278,7 +278,7 @@ class Geocaching(object):
         found = soup.find("div", "FoundStatus")
         DandT = soup.find("div", "CacheStarLabels").findAll("img")
         size = soup.find("div", "CacheSize").find("img")
-        attributesRaw = soup("div", "CacheDetailNavigationWidget")[1].findAll("img")
+        attributesRaw = soup("div", "CacheDetailNavigationWidget")[0].findAll("img")
         userContent = soup("div", "UserSuppliedContent")
         hint = soup.find(id="div_hint")
 
