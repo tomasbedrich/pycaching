@@ -281,6 +281,7 @@ class Geocaching(object):
         attributesRaw = soup("div", "CacheDetailNavigationWidget")[0].findAll("img")
         userContent = soup("div", "UserSuppliedContent")
         hint = soup.find(id="div_hint")
+        favorites = soup.find("span", "favorite-value")
 
         # prettify data
         name = name.text.encode("ascii", "xmlcharrefreplace")
@@ -300,11 +301,12 @@ class Geocaching(object):
         summary = userContent[0].text.encode("ascii", "xmlcharrefreplace")
         description = userContent[1]
         hint = Util.rot13decode(hint.text.strip())
+        favorites = int(favorites.text)
 
         # assemble cache object
         c = Cache(wp, name, cacheType, location, state, found,
             size, dif, ter, author, hidden, attributes,
-            summary, description, hint)
+            summary, description, hint, favorites)
         return c
 
 

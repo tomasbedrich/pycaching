@@ -91,7 +91,7 @@ class Cache(object):
 
     def __init__(self, wp, name=None, cacheType=None, location=None, state=None,
         found=None, size=None, difficulty=None, terrain=None, author=None, hidden=None,
-        attributes=None, summary=None, description=None, hint=None):
+        attributes=None, summary=None, description=None, hint=None, favorites=None):
         self.wp = wp
         self.name = name
         self.cacheType = cacheType
@@ -107,8 +107,9 @@ class Cache(object):
         self.summary = summary
         self.description = description
         self.hint = hint
+        self.favorites = favorites
 
-    
+
     @property
     def wp(self):
         return self._wp
@@ -120,7 +121,7 @@ class Cache(object):
         elif wp:
             logging.warning("Invalid WP '%s', ignoring.", wp)
 
-    
+
     @property
     def name(self):
         return self._name
@@ -130,7 +131,7 @@ class Cache(object):
         if isinstance(name, StringTypes):
             self._name = name
 
-    
+
     @property
     def location(self):
         return self._location
@@ -288,12 +289,21 @@ class Cache(object):
         if isinstance(hint, StringTypes):
             self._hint = hint
 
+    @property
+    def favorites(self):
+        return self._favorites
+
+    @favorites.setter
+    def favorites(self, favorites):
+        if isinstance(favorites, int):
+            self._favorites = favorites
+
 
     def __str__(self):
         return self.wp
 
 
-        
+
 class TestCache(unittest.TestCase):
 
     def setUp(self):
