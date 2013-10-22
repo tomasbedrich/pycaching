@@ -7,7 +7,6 @@ import cookielib
 import urllib2
 import geopy as geo
 import json
-import re
 from util import Util
 from cache import Cache
 from urlparse import urljoin
@@ -282,7 +281,7 @@ class Geocaching(object):
         attributesRaw = soup("div", "CacheDetailNavigationWidget")[1].findAll("img")
         userContent = soup("div", "UserSuppliedContent")
         hint = soup.find(id="div_hint")
-        favorites = re.search('TODO!(\d+)Favorites', soup.text)
+        favorites = soup.find("span", "favorite-value")
 
         # prettify data
         name = name.text.encode("ascii", "xmlcharrefreplace")
@@ -302,7 +301,7 @@ class Geocaching(object):
         summary = userContent[0].text.encode("ascii", "xmlcharrefreplace")
         description = userContent[1]
         hint = Util.rot13decode(hint.text.strip())
-        favorites = favorites and int(favorites.group(1)) or 0
+        favorites = int(favorites.text)
 
         # assemble cache object
         c = Cache(wp, name, cacheType, location, state, found,
