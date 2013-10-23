@@ -15,7 +15,7 @@ except:
 
 setup(    
     name='PyCaching',
-    version="0.1.2",
+    version="0.1.3",
     author='Tomas Bedrich',
     author_email='ja@tbedrich.cz',
     url = 'https://github.com/tomasbedrich/pycaching',
