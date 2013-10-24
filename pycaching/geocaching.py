@@ -300,7 +300,7 @@ class Geocaching(object):
             attributes[name] = appendix.startswith("yes")
         summary = userContent[0].text.encode("ascii", "xmlcharrefreplace")
         description = userContent[1]
-        hint = Util.rot13decode(hint.text.strip())
+        hint = Util.rot13(hint.text.strip())
         favorites = int(favorites.text)
 
         # assemble cache object

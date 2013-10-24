@@ -5,7 +5,7 @@ import re
 import urllib2
 import logging
 import unittest
-import codecs
+import string
 from types import *
 from urllib import urlencode
 
@@ -14,6 +14,10 @@ class Util(object):
 
     # Useragent: which browser/platform should this script masquerade as
     useragent = "User-Agent=Mozilla/5.0 (X11; U; Linux i686; en-US; rv:666)"
+
+    _rot13from = "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    _rot13to =   "nopqrstuvwxyzabcdefghijklm" + "NOPQRSTUVWXYZABCDEFGHIJKLM"
+    rot13codeTable = string.maketrans(_rot13from, _rot13to)
 
     @staticmethod
     def parseRaw(raw):
@@ -75,15 +79,9 @@ class Util(object):
 
 
     @staticmethod
-    def rot13encode(text):
+    def rot13(text):
         """Returns a text encoded by rot13 cipher."""
-        return codecs.encode(text, "rot13")
-
-
-    @staticmethod
-    def rot13decode(text):
-        """Returns a text decoded from rot13."""
-        return codecs.decode(text, "rot13")
+        return string.translate(text, Util.rot13codeTable)
 
 
     @staticmethod
@@ -121,7 +119,8 @@ class TestUtil(unittest.TestCase):
         self.assertEquals( doctype, "<!doctype html>" )
 
     def test_rot13(self):
-        self.assertEquals( Util.rot13encode("Text"), Util.rot13decode("Text") )
+        self.assertEquals( Util.rot13("Text"), "Grkg" )
+        self.assertEquals( Util.rot13("abc'ř"), "nop'ř" )
 
     def test_coordConversion(self):
         self.assertEquals( Util.toDecimal(49, 43.850), 49.73083 )
