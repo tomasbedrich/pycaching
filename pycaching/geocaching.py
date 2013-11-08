@@ -294,10 +294,10 @@ class Geocaching(object):
         size = " ".join(size.get("alt").split()[1:]).lower()
         attributesRaw = map(lambda e: e.get("src").split('/')[-1].split("-"), attributesRaw)
         attributes = {} # parse attributes by src to know yes/no
-        for name, appendix in attributesRaw:
+        for attribute_name, appendix in attributesRaw:
             if appendix.startswith("blank"):
                 continue
-            attributes[name] = appendix.startswith("yes")
+            attributes[attribute_name] = appendix.startswith("yes")
         summary = userContent[0].text.encode("ascii", "xmlcharrefreplace")
         description = userContent[1]
         hint = Util.rot13(hint.text.strip().encode('utf-8'))
