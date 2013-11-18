@@ -294,13 +294,13 @@ class Geocaching(object):
         size = " ".join(size.get("alt").split()[1:]).lower()
         attributesRaw = map(lambda e: e.get("src").split('/')[-1].split("-"), attributesRaw)
         attributes = {} # parse attributes by src to know yes/no
-        for name, appendix in attributesRaw:
+        for attribute_name, appendix in attributesRaw:
             if appendix.startswith("blank"):
                 continue
-            attributes[name] = appendix.startswith("yes")
+            attributes[attribute_name] = appendix.startswith("yes")
         summary = userContent[0].text.encode("ascii", "xmlcharrefreplace")
         description = userContent[1]
-        hint = Util.rot13(hint.text.strip())
+        hint = Util.rot13(hint.text.strip().encode('utf-8'))
         favorites = int(favorites.text)
 
         # assemble cache object
@@ -383,13 +383,19 @@ class TestGeocaching(unittest.TestCase):
         self.assertNotEquals(res[0], res[20])
 
 
-    @unittest.skip("tmp")
+    # @unittest.skip("tmp")
     def test_loadCache(self):
         self.assertTrue( self.g.login(self.username, self.password) )
 
         c = self.g.loadCache("GC4808G")
         self.assertTrue( isinstance(c, Cache) )
         self.assertEquals( "GC4808G", Cache.__str__(c) )
+
+        # Cache with non-ascii chars
+        c = self.g.loadCache("GC4FRG5")
+        self.assertTrue( isinstance(c, Cache) )
+        self.assertEquals( "GC4FRG5", Cache.__str__(c) )
+
 
 
     @unittest.skip("tmp")
