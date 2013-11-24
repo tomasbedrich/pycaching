@@ -287,7 +287,11 @@ class Geocaching(object):
         name = name.text.encode("ascii", "xmlcharrefreplace")
         author = author.text.encode("ascii", "xmlcharrefreplace")
         hidden = datetime.strptime(hidden.text.split()[2], '%m/%d/%Y').date()
-        location = location.text.encode("ascii", "xmlcharrefreplace")
+        try:
+            lat, lon = Util.parseRaw(location.text)
+            location = geo.Point(Util.toDecimal(*lat), Util.toDecimal(*lon))
+        except ValueError:
+            loggin.debug("Could not parse coordinates")
         state = state is None
         found = found and "Found It!" in found.text or False
         dif, ter = map(lambda e: float(e.get("alt").split()[0]), DandT)
