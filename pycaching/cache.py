@@ -59,6 +59,9 @@ class Cache(object):
         "cow": "Watch for livestock",
         "flashlight": "Flashlight required",
         "landf": "Lost And Found Tour",
+        "s-tool": "Special tool required",
+        "field_puzzle": "Is field puzzle",
+        "treeclimbing": "Tree climbing required",
         }
 
     typeMap = [

@@ -284,8 +284,8 @@ class Geocaching(object):
         favorites = soup.find("span", "favorite-value")
 
         # prettify data
-        name = name.text.encode("ascii", "xmlcharrefreplace")
-        author = author.text.encode("ascii", "xmlcharrefreplace")
+        name = name.text.encode("utf-8", "xmlcharrefreplace")
+        author = author.text.encode("utf-8", "xmlcharrefreplace")
         hidden = datetime.strptime(hidden.text.split()[2], '%m/%d/%Y').date()
         try:
             lat, lon = Util.parseRaw(location.text)
@@ -296,13 +296,13 @@ class Geocaching(object):
         found = found and "Found It!" in found.text or False
         dif, ter = map(lambda e: float(e.get("alt").split()[0]), DandT)
         size = " ".join(size.get("alt").split()[1:]).lower()
-        attributesRaw = map(lambda e: e.get("src").split('/')[-1].split("-"), attributesRaw)
+        attributesRaw = map(lambda e: e.get("src").split('/')[-1].rsplit("-", 1), attributesRaw)
         attributes = {} # parse attributes by src to know yes/no
         for attribute_name, appendix in attributesRaw:
             if appendix.startswith("blank"):
                 continue
             attributes[attribute_name] = appendix.startswith("yes")
-        summary = userContent[0].text.encode("ascii", "xmlcharrefreplace")
+        summary = userContent[0].text.encode("utf-8", "xmlcharrefreplace")
         description = userContent[1]
         hint = Util.rot13(hint.text.strip().encode('utf-8'))
         favorites = int(favorites.text)
