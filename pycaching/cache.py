@@ -20,7 +20,9 @@ class Cache(object):
         "kids": "Recommended for kids",
         "onehour": "Takes less than an hour",
         "scenic": "Scenic view",
+        "hike_short": "Hike shorter than 1km",
         "hike_med": "Hike between 1km - 10km",
+        "hike_long": "Hike greater than 10km",
         "hiking": "Significant hike",
         "climbing": "Difficult climbing",
         "wading": "May require wading",
@@ -62,6 +64,8 @@ class Cache(object):
         "s-tool": "Special tool required",
         "field_puzzle": "Is field puzzle",
         "treeclimbing": "Tree climbing required",
+        "food": "Food nearby",
+        "UV": "UV light required",
         }
 
     typeMap = [
@@ -74,7 +78,7 @@ class Cache(object):
         "Event Cache",
         "Mega-Event Cache",
         "Cache In Trash Out Event",
-        "Earthcache",
+        "EarthCache",
         "GPS Adventures Exhibit",
         "Virtual Cache",
         "Webcam Cache",
