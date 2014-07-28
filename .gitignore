@@ -1,0 +1,8 @@
+## system junk
+*.pyc
+.DS_Store
+
+## pypi
+build
+dist
+*.egg*
