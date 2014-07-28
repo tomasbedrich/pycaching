@@ -13,7 +13,7 @@ from pycaching import Cache
 _username, _password = "cache-map", "pGUgNw59"
 
 
-class TestGeocaching(unittest.TestCase):
+class TestLoading(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -53,8 +53,29 @@ class TestGeocaching(unittest.TestCase):
         cls.g.logout()
 
 
+class TestLazyLoading(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.g = Geocaching()
+        cls.g.login(_username, _password)
+
+    def test_load_cache(self):
+        with self.subTest("normal"):
+            cache = Cache("GC4808G", self.g)
+            self.assertEqual("Nekonecne ticho", cache.name)
+
+        with self.subTest("non-ascii chars"):
+            cache = Cache("GC4FRG5", self.g)
+            self.assertEqual("Entre l'arbre et la grille.", cache.hint)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.g.logout()
+
+
 @unittest.skip("too long")
-class TestGeocachingLoginOperations(unittest.TestCase):
+class TestLoginOperations(unittest.TestCase):
 
     def setUp(self):
         self.g = Geocaching()

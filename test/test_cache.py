@@ -4,12 +4,13 @@ import unittest
 import logging
 
 from pycaching import Cache
+from pycaching import Geocaching
 
 
-class TestCache(unittest.TestCase):
+class TestProperties(unittest.TestCase):
 
     def setUp(self):
-        self.c = Cache("GC12345")
+        self.c = Cache("GC12345", Geocaching())
 
     def test_wp(self):
         self.assertEqual(self.c.wp, "GC12345")
@@ -19,12 +20,12 @@ class TestCache(unittest.TestCase):
         self.assertEqual(self.c.difficulty, 1.5)
 
     def test_type(self):
-        self.c.cacheType = "Traditional Cache"
-        self.assertEqual(self.c.cacheType, "Traditional Cache")
+        self.c.cache_type = "Traditional Cache"
+        self.assertEqual(self.c.cache_type, "Traditional Cache")
 
         with self.subTest("filter invalid"):
             with self.assertRaises(AssertionError):
-                self.c.cacheType = "xxx"
+                self.c.cache_type = "xxx"
 
     def test_description(self):
         self.c.description = "test"

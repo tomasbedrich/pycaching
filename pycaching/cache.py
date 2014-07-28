@@ -5,6 +5,22 @@ import datetime
 import geopy as geo
 
 
+def lazy_loaded(func):
+    """Decorator providing lazy loading."""
+
+    def wrapper(*args, **kwargs):
+        self = args[0]
+        assert isinstance(self, Cache)
+        try:
+            return func(*args, **kwargs)
+        except AttributeError:
+            logging.debug("Lazy loading: %s", func.__name__)
+            self.geocaching.load_cache(self.wp, self)
+            return func(*args, **kwargs)
+
+    return wrapper
+
+
 class Cache(object):
 
     # attributes will probably require some maintenance
@@ -100,14 +116,15 @@ class Cache(object):
         "other"
     }
 
-    def __init__(self, wp, name=None, cacheType=None, location=None, state=None,
+    def __init__(self, wp, geocaching, *, name=None, cache_type=None, location=None, state=None,
                  found=None, size=None, difficulty=None, terrain=None, author=None, hidden=None,
                  attributes=None, summary=None, description=None, hint=None, favorites=None):
         self.wp = wp
+        self.geocaching = geocaching
         if name:
             self.name = name
-        if cacheType:
-            self.cacheType = cacheType
+        if cache_type:
+            self.cache_type = cache_type
         if location:
             self.location = location
         if state:
@@ -148,19 +165,33 @@ class Cache(object):
     @wp.setter
     def wp(self, wp):
         assert type(wp) is str
+        wp = wp.upper().strip()
         assert wp.startswith("GC")
         self._wp = wp
 
     @property
+    def geocaching(self):
+        return self._geocaching
+
+    @geocaching.setter
+    def geocaching(self, geocaching):
+        from .geocaching import Geocaching
+        assert isinstance(geocaching, Geocaching)
+        self._geocaching = geocaching
+
+    @property
+    @lazy_loaded
     def name(self):
         return self._name
 
     @name.setter
     def name(self, name):
         assert type(name) is str
+        name = name.strip()
         self._name = name
 
     @property
+    @lazy_loaded
     def location(self):
         return self._location
 
@@ -170,15 +201,17 @@ class Cache(object):
         self._location = location
 
     @property
-    def cacheType(self):
-        return self._cacheType
+    @lazy_loaded
+    def cache_type(self):
+        return self._cache_type
 
-    @cacheType.setter
-    def cacheType(self, cacheType):
-        assert cacheType in self._possible_types
-        self._cacheType = cacheType
+    @cache_type.setter
+    def cache_type(self, cache_type):
+        assert cache_type in self._possible_types
+        self._cache_type = cache_type
 
     @property
+    @lazy_loaded
     def state(self):
         return self._state
 
@@ -188,6 +221,7 @@ class Cache(object):
         self._state = state
 
     @property
+    @lazy_loaded
     def found(self):
         return self._found
 
@@ -197,6 +231,7 @@ class Cache(object):
         self._found = found
 
     @property
+    @lazy_loaded
     def size(self):
         return self._size
 
@@ -206,6 +241,7 @@ class Cache(object):
         self._size = size
 
     @property
+    @lazy_loaded
     def difficulty(self):
         return self._difficulty
 
@@ -217,6 +253,7 @@ class Cache(object):
         self._difficulty = difficulty
 
     @property
+    @lazy_loaded
     def terrain(self):
         return self._terrain
 
@@ -228,15 +265,18 @@ class Cache(object):
         self._terrain = terrain
 
     @property
+    @lazy_loaded
     def author(self):
         return self._author
 
     @author.setter
     def author(self, author):
         assert type(author) is str
+        author = author.strip()
         self._author = author
 
     @property
+    @lazy_loaded
     def hidden(self):
         return self._hidden
 
@@ -246,6 +286,7 @@ class Cache(object):
         self._hidden = hidden
 
     @property
+    @lazy_loaded
     def attributes(self):
         return self._attributes
 
@@ -261,33 +302,40 @@ class Cache(object):
                 logging.warning("Unknown attribute '%s', ignoring.", name)
 
     @property
+    @lazy_loaded
     def summary(self):
         return self._summary
 
     @summary.setter
     def summary(self, summary):
         assert type(summary) is str
+        summary = summary.strip()
         self._summary = summary
 
     @property
+    @lazy_loaded
     def description(self):
         return self._description
 
     @description.setter
     def description(self, description):
         assert type(description) is str
+        description = description.strip()
         self._description = description
 
     @property
+    @lazy_loaded
     def hint(self):
         return self._hint
 
     @hint.setter
     def hint(self, hint):
         assert type(hint) is str
+        hint = hint.strip()
         self._hint = hint
 
     @property
+    @lazy_loaded
     def favorites(self):
         return self._favorites
 

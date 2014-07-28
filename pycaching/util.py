@@ -5,9 +5,6 @@ import re
 
 class Util(object):
 
-    # Useragent: which browser/platform should this script masquerade as
-    useragent = "User-Agent=Mozilla/5.0 (X11; U; Linux i686; en-US; rv:666)"
-
     _rot13codeTable = str.maketrans(
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
         "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM")

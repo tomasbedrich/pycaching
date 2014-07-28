@@ -20,15 +20,6 @@ class TestUtil(unittest.TestCase):
         self.assertEqual(Util.parseRaw("N 49 45.000 E 13 0.0"), ((49, 45), (13, 0)))
         self.assertRaises(ValueError, Util.parseRaw, "123")
 
-    # @unittest.skip("tmp")
-    def test_urlopen(self):
-        from tempfile import NamedTemporaryFile
-        with NamedTemporaryFile("w") as tmp:
-            tmp.file.write("Hello World!")
-            tmp.file.flush()
-            data = Util.urlopen("file://" + tmp.name).read().decode().strip()
-            self.assertEqual(data, "Hello World!")
-
     def test_rot13(self):
         self.assertEqual(Util.rot13("Text"), "Grkg")
         self.assertEqual(Util.rot13("abc'ř"), "nop'ř")

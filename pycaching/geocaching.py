@@ -28,6 +28,7 @@ def login_needed(func):
         if not args[0]._logged_in:
             raise NotLoggedInException()
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -46,6 +47,7 @@ class Geocaching(object):
     # http://tiles01.geocaching.com/map.details?i=GCNJ2Z
     # http://tiles01.geocaching.com/map.info?x=8803&y=5576&z=14 (http://www.mapbox.com/developers/utfgrid/)
     # http://tiles01.geocaching.com/map.png?x=8803&y=5576&z=14
+    # https://www.geocaching.com/api/geocode?q=Praha  # TODO geocoding search
 
     def __init__(self):
         self._logged_in = False
@@ -196,27 +198,29 @@ class Geocaching(object):
 
         # parse raw data
         typeLink, nameLink = root("a", "lnk")
-        direction, info, DandT, placed, lastFound = root("span", "small")
+        direction, info, D_T, placed, last_found = root("span", "small")
         found = root.find("img", title="Found It!") is not None
         size = root.find("td", "AlignCenter").find("img")
         author, wp, area = [t.strip() for t in info.text.split("|")]
 
-        # prettify data
-        cache_type = typeLink.find("img").get("alt")
-        name = nameLink.span.text.strip()
-        state = "Strike" not in nameLink.get("class")
-        size = " ".join(size.get("alt").split()[1:]).lower()
-        dif, ter = list(map(float, DandT.text.split("/")))
-        hidden = datetime.strptime(placed.text, '%m/%d/%Y').date()
-        author = author[3:]  # delete "by "
+        # create cache object
+        c = Cache(wp, self)
 
-        # assemble cache object
-        c = Cache(wp, name, cache_type, None, state, found, size, dif, ter, author, hidden)
+        # prettify data
+        c.cache_type = typeLink.find("img").get("alt")
+        c.name = nameLink.span.text.strip()
+        c.found = found
+        c.state = "Strike" not in nameLink.get("class")
+        c.size = " ".join(size.get("alt").split()[1:]).lower()
+        c.difficulty, c.terrain = list(map(float, D_T.text.split("/")))
+        c.hidden = datetime.strptime(placed.text, '%m/%d/%Y').date()
+        c.author = author[3:]  # delete "by "
+
         logging.debug("Cache parsed: %s", c)
         return c
 
     @login_needed
-    def load_cache_quick(self, wp):
+    def load_cache_quick(self, wp, destination=None):
         """Loads details from map server.
 
         Loads just basic cache details, but very quickly."""
@@ -240,17 +244,25 @@ class Geocaching(object):
             raise IOError()
         data = res["data"][0]
 
-        # prettify some data
-        size = data["container"]["text"].lower()
-        hidden = datetime.strptime(data["hidden"], '%m/%d/%Y').date()
+        # create cache object
+        c = destination or Cache(wp, self)
+        assert isinstance(c, Cache)
 
-        # assemble cache object
-        return Cache(wp, data["name"], data["type"]["text"], None, data["available"], None,
-                     size, data["difficulty"]["text"], data["terrain"]["text"],
-                     data["owner"]["text"], hidden, None)
+        # prettify data
+        c.name = data["name"]
+        c.cache_type = data["type"]["text"]
+        c.state = data["available"]
+        c.size = data["container"]["text"].lower()
+        c.difficulty = data["difficulty"]["text"]
+        c.terrain = data["terrain"]["text"]
+        c.hidden = datetime.strptime(data["hidden"], '%m/%d/%Y').date()
+        c.author = data["owner"]["text"]
+
+        logging.debug("Cache loaded: %r", c)
+        return c
 
     @login_needed
-    def load_cache(self, wp):
+    def load_cache(self, wp, destination=None):
         """Loads details from cache page.
 
         Loads all cache details and return fully populated cache object."""
@@ -277,39 +289,40 @@ class Geocaching(object):
         location = root.find(id="uxLatLon")
         state = root.find("ul", "OldWarning")
         found = root.find("div", "FoundStatus")
-        DandT = root.find("div", "CacheStarLabels").find_all("img")
+        D_T = root.find("div", "CacheStarLabels").find_all("img")
         size = root.find("div", "CacheSize").find("img")
         attributes_raw = root.find_all("div", "CacheDetailNavigationWidget")[0].find_all("img")
         user_content = root.find_all("div", "UserSuppliedContent")
         hint = root.find(id="div_hint")
         favorites = root.find("span", "favorite-value")
 
+        # create cache object
+        c = destination or Cache(wp, self)
+        assert isinstance(c, Cache)
+
         # prettify data
-        name = name.text
-        author = author.text
-        hidden = datetime.strptime(hidden.text.split()[2], '%m/%d/%Y').date()
+        c.name = name.text
+        c.cache_type = cache_type
+        c.author = author.text
+        c.hidden = datetime.strptime(hidden.text.split()[2], '%m/%d/%Y').date()
         try:
             lat, lon = Util.parseRaw(location.text)
-            location = geo.Point(Util.toDecimal(*lat), Util.toDecimal(*lon))
+            c.location = geo.Point(Util.toDecimal(*lat), Util.toDecimal(*lon))
         except ValueError as e:
             logging.error("Could not parse coordinates")
             raise e
-        state = state is None
-        found = found and "Found It!" in found.text or False
-        dif, ter = [float(_.get("alt").split()[0]) for _ in DandT]
-        size = " ".join(size.get("alt").split()[1:]).lower()
+        c.state = state is None
+        c.found = found and "Found It!" in found.text or False
+        c.difficulty, c.terrain = [float(_.get("alt").split()[0]) for _ in D_T]
+        c.size = " ".join(size.get("alt").split()[1:]).lower()
         attributes_raw = [_.get("src").split('/')[-1].rsplit("-", 1) for _ in attributes_raw]
-        attributes = {attribute_name: appendix.startswith("yes")
-                      for attribute_name, appendix in attributes_raw if not appendix.startswith("blank")}
-        summary = user_content[0].text
-        description = user_content[1].html
-        hint = Util.rot13(hint.text.strip())
-        favorites = int(favorites.text)
+        c.attributes = {attribute_name: appendix.startswith("yes")
+                        for attribute_name, appendix in attributes_raw if not appendix.startswith("blank")}
+        c.summary = user_content[0].text
+        c.description = str(user_content[1])
+        c.hint = Util.rot13(hint.text.strip())
+        c.favorites = int(favorites.text)
 
-        # assemble cache object
-        c = Cache(wp, name, cache_type, location, state, found,
-                  size, dif, ter, author, hidden, attributes,
-                  summary, description, hint, favorites)
         logging.debug("Cache loaded: %r", c)
         return c
 
