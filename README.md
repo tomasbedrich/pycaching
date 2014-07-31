@@ -1,3 +1,5 @@
+**WARNING: Python 2 version is no longer supported. Please have a look at [Python 3 version](https://github.com/tomasbedrich/pycaching/tree/master).**
+
 # PyCaching - Geocaching for Python
 
 A Python interface for working with Geocaching.com website.
