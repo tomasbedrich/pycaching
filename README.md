@@ -86,3 +86,7 @@ Be sure to read Geocaching.com's terms of use (http://www.geocaching.com/about/t
 Tomas Bedrich  
 [tbedrich.cz](http://tbedrich.cz)  
 ja@tbedrich.cz
+
+____
+
+[![Build Status](https://travis-ci.org/tomasbedrich/pycaching.svg?branch=master)](https://travis-ci.org/tomasbedrich/pycaching)
