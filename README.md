@@ -18,15 +18,16 @@ Inspired by these packages (thanks to their authors):
 
 ### Roadmap
 - search results caching (without geo- :))
+- Sphinx documentation
 - submitting cache logs
-- asyncio
+- usage of asyncio
 - automatic generation of possible cache attributes
 
 ## Installation
 
 Using pip:
 
-    pip install pycaching
+    pip install pycaching --pre
 
 Manually, from GIT:
 

@@ -1,17 +1,23 @@
 #!/usr/bin/env python3
 
+__title__ = "pycaching"
+__version__ = "3.0.dev"  # PEP 386
+__author__ = "Tomas Bedrich"
+__license__ = "LGPL v3.0"
+__copyright__ = "Copyright 2014 Tomas Bedrich"
+
+
 __all__ = ["geocaching", "cache", "util", "point"]
-from .geocaching import Geocaching  # NOQA
-from .cache import Cache  # NOQA
-from .util import Util  # NOQA
-from .point import Point  # NOQA
 
+try:
+    from .geocaching import Geocaching  # NOQA
+    from .cache import Cache  # NOQA
+    from .util import Util  # NOQA
+    from .point import Point  # NOQA
 
-# version info should conform to PEP 386
-# (major, minor, micro, alpha/beta/rc/final, #)
-# (1, 1, 2, 'alpha', 0) => "1.1.2.dev"
-# (1, 2, 0, 'beta', 2) => "1.2b2"
-__version__ = "3.0.dev"
+except ImportError:
+    # ignore when someone is importing this file just to get __magic__
+    pass
 
 
 def login(username, password):

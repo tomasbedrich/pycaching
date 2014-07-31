@@ -14,19 +14,20 @@ try:
 except FileNotFoundError:
     long_description = "A Python interface for working with Geocaching.com website."
 
-setup(
-    name="PyCaching",
-    version=__version__,
-    author="Tomas Bedrich",
-    author_email="ja@tbedrich.cz",
-    url="https://github.com/tomasbedrich/pycaching",
-    packages=["pycaching"],
-    license="GNU Lesser General Public License (LGPL)",
-    description="Geocaching.com site crawler. Searches and loads caches.",
-    long_description=long_description,
-    keywords=["geocaching", "robot", "crawler", "geocache", "cache"],
-    install_requires=[
-        "MechanicalSoup >= 0.2.0",
-        "geopy >= 1.0.0",
-    ],
-)
+info = {
+    "name":                "PyCaching",
+    "version":             __version__,
+    "author":              "Tomas Bedrich",
+    "author_email":        "ja@tbedrich.cz",
+    "url":                 "https://github.com/tomasbedrich/pycaching",
+    "packages":            ["pycaching"],
+    "provides":            ["pycaching"],
+    "license":             "GNU Lesser General Public License (LGPL)",
+    "description":         "Geocaching.com site crawler. Searches and loads caches.",
+    "long_description":    long_description,
+    "keywords":            ["geocaching", "robot", "crawler", "geocache", "cache"],
+    "install_requires":    ["MechanicalSoup >= 0.2.0", "geopy >= 1.0.0"],
+    "test_suite":          "test"
+}
+
+setup(**info)
