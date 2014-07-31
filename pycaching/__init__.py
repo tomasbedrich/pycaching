@@ -8,6 +8,7 @@ from .__version__ import version, version_info
 from .geocaching import Geocaching
 from .cache import Cache
 from .util import Util
+from .point import Point
 
 
 # shortcut

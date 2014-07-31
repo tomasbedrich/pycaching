@@ -1,16 +1,39 @@
 #!/usr/bin/env python3
 
 import unittest
-import logging
-import geopy as geo
 
 from pycaching.geocaching import LoginFailedException
+from pycaching.geocaching import GeocodeError
 from pycaching import Geocaching
 from pycaching import Cache
+from pycaching import Point
 
 
 # please DO NOT CHANGE!
 _username, _password = "cache-map", "pGUgNw59"
+
+
+class TestGeocaching(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.g = Geocaching()
+        cls.g.login(_username, _password)
+
+    def test_geocode(self):
+        pilsen = Point(49.74774, 13.37752)
+        with self.subTest("existing location"):
+            self.assertEqual(self.g.geocode("Pilsen"), pilsen)
+            self.assertEqual(self.g.geocode("Plzeň"), pilsen)
+            self.assertEqual(self.g.geocode("plzen"), pilsen)
+
+        with self.subTest("non-existing location"):
+            with self.assertRaises(GeocodeError):
+                self.g.geocode("qwertzuiop")
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.g.logout()
 
 
 class TestLoading(unittest.TestCase):
@@ -23,12 +46,12 @@ class TestLoading(unittest.TestCase):
     def test_search(self):
         with self.subTest("normal"):
             expected = ["GC41FJC", "GC17E8Y", "GC1ZAQV"]
-            caches = self.g.search(geo.Point(49.733867, 13.397091), len(expected))
+            caches = self.g.search(Point(49.733867, 13.397091), len(expected))
             for wp, cache in zip(expected, caches):
                 self.assertEqual(wp, cache.wp)
 
         with self.subTest("pagging"):
-            caches = self.g.search(geo.Point(49.733867, 13.397091), 25)
+            caches = self.g.search(Point(49.733867, 13.397091), 25)
             res = [c for c in caches]
             self.assertNotEqual(res[0], res[20])
 
@@ -74,7 +97,6 @@ class TestLazyLoading(unittest.TestCase):
         cls.g.logout()
 
 
-@unittest.skip("too long")
 class TestLoginOperations(unittest.TestCase):
 
     def setUp(self):
@@ -105,9 +127,3 @@ class TestLoginOperations(unittest.TestCase):
 
     def tearDown(self):
         self.g.logout()
-
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    # logging.basicConfig(level=logging.DEBUG)
-    unittest.main()

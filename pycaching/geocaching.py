@@ -3,20 +3,32 @@
 import logging
 import requests
 import bs4
-import geopy as geo
 import mechanicalsoup as ms
 from urllib.parse import urlencode
 from datetime import datetime
 
 from .util import Util
+from .point import Point
 from .cache import Cache
 
 
-class NotLoggedInException(BaseException):
+class Error(Exception):
     pass
 
 
-class LoginFailedException(BaseException):
+class NotLoggedInException(Error):
+    pass
+
+
+class LoginFailedException(Error):
+    pass
+
+
+class GeocodeError(Error):
+    pass
+
+
+class LoadError(Error):
     pass
 
 
@@ -26,7 +38,7 @@ def login_needed(func):
     def wrapper(*args, **kwargs):
         assert isinstance(args[0], Geocaching)
         if not args[0]._logged_in:
-            raise NotLoggedInException()
+            raise NotLoggedInException("Login is needed.")
         return func(*args, **kwargs)
 
     return wrapper
@@ -40,14 +52,14 @@ class Geocaching(object):
         "login_page":       _baseurl + "login/default.aspx",
         "cache_details":    _baseurl + "seek/cache_details.aspx",
         "caches_nearest":   _baseurl + "seek/nearest.aspx",
-        "map":              "http://tiles01.geocaching.com/map.details"
+        "geocode":          _baseurl + "api/geocode",
+        "map":              "https://tiles01.geocaching.com/map.details",
     }
 
     # interesting URLs:
     # http://tiles01.geocaching.com/map.details?i=GCNJ2Z
     # http://tiles01.geocaching.com/map.info?x=8803&y=5576&z=14 (http://www.mapbox.com/developers/utfgrid/)
     # http://tiles01.geocaching.com/map.png?x=8803&y=5576&z=14
-    # https://www.geocaching.com/api/geocode?q=Praha  # TODO geocoding search
 
     def __init__(self):
         self._logged_in = False
@@ -63,8 +75,7 @@ class Geocaching(object):
         try:
             login_page = self._browser.get(self._urls["login_page"])
         except requests.exceptions.ConnectionError as e:
-            logging.error("Cannot load login page.")
-            raise e
+            raise Error("Cannot load login page.") from e
 
         logging.debug("Checking for previous login.")
         logged = self.get_logged_user(login_page)
@@ -95,8 +106,7 @@ class Geocaching(object):
         try:
             after_login_page = self._browser.post(self._urls["login_page"], post)
         except requests.exceptions.ConnectionError as e:
-            logging.error("Cannot load response after submiting login form.")
-            raise e
+            raise Error("Cannot load response after submiting login form.") from e
 
         logging.debug("Checking the result.")
         if self.get_logged_user(after_login_page):
@@ -104,9 +114,8 @@ class Geocaching(object):
             self._logged_in = True
             return
         else:
-            logging.error("Cannot login to the site (probably wrong username or password).")
             self.logout()
-            raise LoginFailedException()
+            raise LoginFailedException("Cannot login to the site (probably wrong username or password).")
 
     def logout(self):
         """Logs out the user.
@@ -117,11 +126,30 @@ class Geocaching(object):
         self._logged_in = False
         self._browser = ms.Browser()
 
+    def geocode(self, query):
+        """Tries to fetch coordinates for given query."""
+
+        assert type(query) is str
+
+        url = self._urls["geocode"] + "?q=" + query
+        try:
+            res = self._browser.get(url).json()
+        except requests.exceptions.ConnectionError as e:
+            raise Error("Cannot load geocode page.") from e
+
+        if res["status"] != "success":
+            if res["msg"] == "Unable to Geocode":
+                raise GeocodeError("Unable to geocode '{}'.".format(query))
+            else:
+                raise Error("Unknown geocoding error.")
+
+        return Point(float(res["data"]["lat"]), float(res["data"]["lng"]))
+
     @login_needed
     def search(self, point, limit=0):
         """Returns a generator object of caches around some point."""
 
-        assert isinstance(point, geo.Point)
+        assert isinstance(point, Point)
         assert type(limit) is int
 
         logging.info("Searching at %s...", point)
@@ -132,8 +160,7 @@ class Geocaching(object):
             try:  # try to load search page
                 page = self._search_get_page(point, page_num)
             except requests.exceptions.ConnectionError as e:
-                logging.error("Cannot load search page.")
-                raise StopIteration() from e
+                raise StopIteration("Cannot load search page.") from e
 
             for cache in page:
                 yield cache
@@ -150,7 +177,7 @@ class Geocaching(object):
 
         Searches for a caches around a point and returns N-th page (specifiend by page argument)."""
 
-        assert isinstance(point, geo.Point)
+        assert isinstance(point, Point)
         assert type(page_num) is int
 
         logging.info("Fetching page %d.", page_num)
@@ -168,8 +195,11 @@ class Geocaching(object):
             post["__EVENTTARGET"] = self._pagging_postbacks[page_num]
             post["__EVENTARGUMENT"] = ""
 
-        # make request (possible exception is raised)
-        root = self._browser.post(url, post).soup
+        # make request
+        try:
+            root = self._browser.post(url, post).soup
+        except requests.exceptions.ConnectionError as e:
+            raise Error("Cannot load search page #{}.".format(page_num)) from e
 
         # root of a few following elements
         widget_general = root.find_all("td", "PageBuilderWidget")
@@ -180,7 +210,7 @@ class Geocaching(object):
 
         # save search postbacks for future usage
         if page_num == 1:
-            pagging_links = [e for e in widget_general[1].find_all("a") if e.get("id")]
+            pagging_links = [_ for _ in widget_general[1].find_all("a") if _.get("id")]
             self._pagging_postbacks = {int(link.text): link.get("href").split("'")[1] for link in pagging_links}
 
             # other nescessary fields
@@ -219,7 +249,6 @@ class Geocaching(object):
         logging.debug("Cache parsed: %s", c)
         return c
 
-    @login_needed
     def load_cache_quick(self, wp, destination=None):
         """Loads details from map server.
 
@@ -235,13 +264,13 @@ class Geocaching(object):
         try:
             res = self._browser.get(url).json()
         except requests.exceptions.ConnectionError as e:
-            logging.error("Cannot load quick cache details page.")
-            raise e
+            raise Error("Cannot load quick cache details page.") from e
 
-        # check for success
-        if res["status"] != "success":
-            logging.error("Response 'status' is not 'success'.")
-            raise IOError()
+        if res["status"] == "failed":
+            raise LoadError(res["msg"])
+        if len(res["data"]) != 1:
+            raise LoadError("Waypoint '{}' cannot be loaded.".format(wp))
+
         data = res["data"][0]
 
         # create cache object
@@ -277,8 +306,7 @@ class Geocaching(object):
         try:
             root = self._browser.get(url).soup
         except requests.exceptions.ConnectionError as e:
-            logging.error("Cannot load cache details page.")
-            raise e
+            raise Error("Cannot load cache details page.") from e
 
         # parse raw data
         cache_details = root.find(id="cacheDetails")
@@ -306,11 +334,9 @@ class Geocaching(object):
         c.author = author.text
         c.hidden = datetime.strptime(hidden.text.split()[2], '%m/%d/%Y').date()
         try:
-            lat, lon = Util.parseRaw(location.text)
-            c.location = geo.Point(Util.toDecimal(*lat), Util.toDecimal(*lon))
+            c.location = Point.from_string(location.text)
         except ValueError as e:
-            logging.error("Could not parse coordinates")
-            raise e
+            raise LoadError("Could not parse coordinates") from e
         c.state = state is None
         c.found = found and "Found It!" in found.text or False
         c.difficulty, c.terrain = [float(_.get("alt").split()[0]) for _ in D_T]

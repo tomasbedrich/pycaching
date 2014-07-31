@@ -2,7 +2,8 @@
 
 import logging
 import datetime
-import geopy as geo
+
+from .point import Point
 
 
 def lazy_loaded(func):
@@ -197,7 +198,7 @@ class Cache(object):
 
     @location.setter
     def location(self, location):
-        assert type(location) is geo.Point
+        assert type(location) is Point
         self._location = location
 
     @property

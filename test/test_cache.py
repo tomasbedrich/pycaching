@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import unittest
-import logging
 
 from pycaching import Cache
 from pycaching import Geocaching
@@ -38,9 +37,3 @@ class TestProperties(unittest.TestCase):
         with self.subTest("filter unknown"):
             self.c.attributes = {attr: True for attr in ["onehour", "xxx"]}
             self.assertEqual(self.c.attributes, {"onehour": 1})
-
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    # logging.basicConfig(level=logging.DEBUG)
-    unittest.main()
