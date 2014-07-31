@@ -208,6 +208,8 @@ class Cache(object):
 
     @cache_type.setter
     def cache_type(self, cache_type):
+        cache_type = cache_type.strip()
+        cache_type = cache_type.replace("Geocache", "Cache")
         assert cache_type in self._possible_types
         self._cache_type = cache_type
 
@@ -238,6 +240,7 @@ class Cache(object):
 
     @size.setter
     def size(self, size):
+        size = size.strip()
         assert size in self._possible_sizes
         self._size = size
 
@@ -297,6 +300,7 @@ class Cache(object):
 
         self._attributes = {}
         for name, allowed in attributes.items():
+            name = name.strip()
             if name in self._possible_attributes:
                 self._attributes[name] = allowed
             else:
