@@ -118,6 +118,7 @@ class TestLoginOperations(unittest.TestCase):
                 self.g.login("", "")
 
     def test_get_logged_user(self):
+        self.g.login(_username, _password)
         self.assertEqual(self.g.get_logged_user(), _username)
 
     def test_logout(self):
