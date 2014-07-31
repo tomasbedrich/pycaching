@@ -3,28 +3,30 @@
 from setuptools import setup
 import os
 
+from pycaching import __version__
 
-here = os.path.dirname(os.path.abspath(__file__))
+
+root = os.path.dirname(__file__) or "."
 
 try:
-    f = open(os.path.join(here, 'README.txt'))
+    f = open(os.path.join(root, "README.txt"))
     long_description = f.read()
-except:
+except FileNotFoundError:
     long_description = "A Python interface for working with Geocaching.com website."
 
 setup(
-    name='PyCaching',
-    version="0.1.3",
-    author='Tomas Bedrich',
-    author_email='ja@tbedrich.cz',
-    url='https://github.com/tomasbedrich/pycaching',
-    packages=['pycaching'],
-    license='GNU Lesser General Public License (LGPL)',
-    description='Geocaching.com site crawler. Searches and loads caches.',
+    name="PyCaching",
+    version=__version__,
+    author="Tomas Bedrich",
+    author_email="ja@tbedrich.cz",
+    url="https://github.com/tomasbedrich/pycaching",
+    packages=["pycaching"],
+    license="GNU Lesser General Public License (LGPL)",
+    description="Geocaching.com site crawler. Searches and loads caches.",
     long_description=long_description,
-    keywords=['geocaching', 'robot', 'crawler', 'geocache', 'cache'],
+    keywords=["geocaching", "robot", "crawler", "geocache", "cache"],
     install_requires=[
-        "BeautifulSoup >= 3.2.1",
-        "geopy == 0.95.1",
+        "MechanicalSoup >= 0.2.0",
+        "geopy >= 1.0.0",
     ],
 )
