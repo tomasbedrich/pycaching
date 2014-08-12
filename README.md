@@ -89,4 +89,4 @@ ja@tbedrich.cz
 
 ____
 
-[![Build Status](https://travis-ci.org/tomasbedrich/pycaching.svg?branch=master)](https://travis-ci.org/tomasbedrich/pycaching)
+[![Build Status](http://img.shields.io/travis/tomasbedrich/pycaching/master.svg)](https://travis-ci.org/tomasbedrich/pycaching) [![Coverage Status](https://img.shields.io/coveralls/tomasbedrich/pycaching.svg)](https://coveralls.io/r/tomasbedrich/pycaching) [![PyPI monthly downloads](http://img.shields.io/pypi/dm/PyCaching.svg)](https://pypi.python.org/pypi/PyCaching)
