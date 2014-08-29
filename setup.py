@@ -1,18 +1,14 @@
 #!/usr/bin/env python3
 
-from setuptools import setup
 import os
+from setuptools import setup
 
 from pycaching import __version__
 
 
 root = os.path.dirname(__file__) or "."
-
-try:
-    f = open(os.path.join(root, "README.txt"))
-    long_description = f.read()
-except FileNotFoundError:
-    long_description = "A Python interface for working with Geocaching.com website."
+f = open(os.path.join(root, "README.rst"))
+long_description = f.read()
 
 info = {
     "name":                "PyCaching",
