@@ -1,4 +1,14 @@
 language: python
-python: 3.4
-install: pip install .
-script: nosetests
+
+python:
+  - 3.4
+
+install:
+  - pip install .
+  - pip install coverage python-coveralls
+
+script:
+  nosetests --with-coverage --cover-package=pycaching
+
+after_success:
+  coveralls

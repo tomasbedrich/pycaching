@@ -84,7 +84,6 @@ Load a cache details
     print(cache.name)
 
 Using lazy loading:
-^^^^^^^^^^^^^^^^^^^
 
 ::
 
