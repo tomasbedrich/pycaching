@@ -139,10 +139,7 @@ class Geocaching(object):
             raise Error("Cannot load geocode page.") from e
 
         if res["status"] != "success":
-            if res["msg"] == "Unable to Geocode":
-                raise GeocodeError("Unable to geocode '{}'.".format(query))
-            else:
-                raise Error("Unknown geocoding error.")
+            raise GeocodeError(res["msg"])
 
         return Point(float(res["data"]["lat"]), float(res["data"]["lng"]))
 
@@ -334,10 +331,7 @@ class Geocaching(object):
         c.cache_type = cache_type
         c.author = author.text
         c.hidden = datetime.strptime(hidden.text.split()[2], '%m/%d/%Y').date()
-        try:
-            c.location = Point.from_string(location.text)
-        except ValueError as e:
-            raise LoadError("Could not parse coordinates") from e
+        c.location = Point.from_string(location.text)
         c.state = state is None
         c.found = found and "Found It!" in found.text or False
         c.difficulty, c.terrain = [float(_.get("alt").split()[0]) for _ in D_T]

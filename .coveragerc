@@ -7,4 +7,5 @@ exclude_lines =
     pragma: no cover
     def __repr__
     raise NotImplementedError
+    except requests.exceptions.ConnectionError
     if __name__ == .__main__.:

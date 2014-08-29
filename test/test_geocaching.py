@@ -2,6 +2,7 @@
 
 import unittest
 
+import pycaching
 from pycaching.geocaching import LoginFailedException
 from pycaching.geocaching import GeocodeError
 from pycaching import Geocaching
@@ -30,6 +31,10 @@ class TestGeocaching(unittest.TestCase):
         with self.subTest("non-existing location"):
             with self.assertRaises(GeocodeError):
                 self.g.geocode("qwertzuiop")
+
+        with self.subTest("empty request"):
+            with self.assertRaises(GeocodeError):
+                self.g.geocode("")
 
     @classmethod
     def tearDownClass(cls):
@@ -128,3 +133,9 @@ class TestLoginOperations(unittest.TestCase):
 
     def tearDown(self):
         self.g.logout()
+
+
+class TestPackage(unittest.TestCase):
+
+    def test_login(self):
+        pycaching.login(_username, _password)

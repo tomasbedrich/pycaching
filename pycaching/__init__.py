@@ -15,7 +15,7 @@ try:
     from .util import Util  # NOQA
     from .point import Point  # NOQA
 
-except ImportError:
+except ImportError:  # pragma: no cover
     # ignore when someone is importing this file just to get __magic__
     pass
 
