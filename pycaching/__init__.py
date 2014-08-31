@@ -9,15 +9,11 @@ __copyright__ = "Copyright 2014 Tomas Bedrich"
 
 __all__ = ["geocaching", "cache", "util", "point"]
 
-try:
-    from .geocaching import Geocaching  # NOQA
-    from .cache import Cache  # NOQA
-    from .util import Util  # NOQA
-    from .point import Point  # NOQA
 
-except ImportError:  # pragma: no cover
-    # ignore when someone is importing this file just to get __magic__
-    pass
+from pycaching.geocaching import Geocaching  # NOQA
+from pycaching.cache import Cache  # NOQA
+from pycaching.util import Util  # NOQA
+from pycaching.point import Point  # NOQA
 
 
 def login(username, password):

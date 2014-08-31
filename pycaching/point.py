@@ -2,7 +2,7 @@
 
 import re
 import geopy
-from .util import Util
+from pycaching.util import Util
 
 
 class Point(geopy.Point):

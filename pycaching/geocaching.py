@@ -5,30 +5,10 @@ import requests
 import bs4
 import mechanicalsoup as ms
 from urllib.parse import urlencode
-
-from .util import Util
-from .point import Point
-from .cache import Cache
-
-
-class Error(Exception):
-    pass
-
-
-class NotLoggedInException(Error):
-    pass
-
-
-class LoginFailedException(Error):
-    pass
-
-
-class GeocodeError(Error):
-    pass
-
-
-class LoadError(Error):
-    pass
+from pycaching.cache import Cache
+from pycaching.util import Util
+from pycaching.point import Point
+from pycaching.errors import Error, NotLoggedInException, LoginFailedException, GeocodeError, LoadError, PMOnlyException
 
 
 def login_needed(func):
@@ -314,8 +294,8 @@ class Geocaching(object):
         # check for PM only caches if using free account
         if cache_details is None:
             if root.select(".PMOWarning") is not None:
-                raise LoadError("Premium Members only.")
-            
+                raise PMOnlyException("Premium Members only.")
+
         # parse raw data
         name = cache_details.find("h2")
         cache_type = cache_details.find("img").get("alt")

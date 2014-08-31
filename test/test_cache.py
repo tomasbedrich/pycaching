@@ -2,7 +2,6 @@
 
 import unittest
 from datetime import date
-
 from pycaching import Cache
 from pycaching import Geocaching
 from pycaching import Point
@@ -107,5 +106,5 @@ class TestProperties(unittest.TestCase):
     def test_favorites(self):
         self.assertEqual(self.c.favorites, 0)
 
-    def test_favorites(self):
+    def test_pm_only(self):
         self.assertEqual(self.c.pm_only, False)

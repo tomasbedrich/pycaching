@@ -2,9 +2,9 @@
 
 import logging
 import datetime
-
-from .point import Point
-from .util import Util
+import pycaching
+from pycaching.point import Point
+from pycaching.util import Util
 
 
 def lazy_loaded(func):
@@ -178,8 +178,7 @@ class Cache(object):
 
     @geocaching.setter
     def geocaching(self, geocaching):
-        from .geocaching import Geocaching
-        assert isinstance(geocaching, Geocaching)
+        assert isinstance(geocaching, pycaching.geocaching.Geocaching)
         self._geocaching = geocaching
 
     @property
