@@ -4,6 +4,7 @@ import logging
 import datetime
 
 from .point import Point
+from .util import Util
 
 
 def lazy_loaded(func):
@@ -167,8 +168,7 @@ class Cache(object):
 
     @wp.setter
     def wp(self, wp):
-        assert type(wp) is str
-        wp = wp.upper().strip()
+        wp = str(wp).upper().strip()
         assert wp.startswith("GC")
         self._wp = wp
 
@@ -189,8 +189,7 @@ class Cache(object):
 
     @name.setter
     def name(self, name):
-        assert type(name) is str
-        name = name.strip()
+        name = str(name).strip()
         self._name = name
 
     @property
@@ -200,6 +199,8 @@ class Cache(object):
 
     @location.setter
     def location(self, location):
+        if type(location) is str:
+            location = Point.from_string(location)
         assert type(location) is Point
         self._location = location
 
@@ -222,8 +223,7 @@ class Cache(object):
 
     @state.setter
     def state(self, state):
-        assert type(state) is bool
-        self._state = state
+        self._state = bool(state)
 
     @property
     @lazy_loaded
@@ -232,8 +232,7 @@ class Cache(object):
 
     @found.setter
     def found(self, found):
-        assert type(found) is bool
-        self._found = found
+        self._found = bool(found)
 
     @property
     @lazy_loaded
@@ -253,7 +252,7 @@ class Cache(object):
 
     @difficulty.setter
     def difficulty(self, difficulty):
-        assert type(difficulty) in (int, float)
+        difficulty = float(difficulty)
         assert difficulty >= 1 and difficulty <= 5
         assert difficulty * 10 % 5 == 0  # X.0 or X.5
         self._difficulty = difficulty
@@ -265,7 +264,7 @@ class Cache(object):
 
     @terrain.setter
     def terrain(self, terrain):
-        assert type(terrain) in (int, float)
+        terrain = float(terrain)
         assert terrain >= 1 and terrain <= 5
         assert terrain * 10 % 5 == 0  # X.0 or X.5
         self._terrain = terrain
@@ -277,8 +276,7 @@ class Cache(object):
 
     @author.setter
     def author(self, author):
-        assert type(author) is str
-        author = author.strip()
+        author = str(author).strip()
         self._author = author
 
     @property
@@ -288,6 +286,8 @@ class Cache(object):
 
     @hidden.setter
     def hidden(self, hidden):
+        if type(hidden) is str:
+            hidden = Util.parse_date(hidden)
         assert type(hidden) is datetime.date
         self._hidden = hidden
 
@@ -315,8 +315,7 @@ class Cache(object):
 
     @summary.setter
     def summary(self, summary):
-        assert type(summary) is str
-        summary = summary.strip()
+        summary = str(summary).strip()
         self._summary = summary
 
     @property
@@ -326,8 +325,7 @@ class Cache(object):
 
     @description.setter
     def description(self, description):
-        assert type(description) is str
-        description = description.strip()
+        description = str(description).strip()
         self._description = description
 
     @property
@@ -337,8 +335,7 @@ class Cache(object):
 
     @hint.setter
     def hint(self, hint):
-        assert type(hint) is str
-        hint = hint.strip()
+        hint = str(hint).strip()
         self._hint = hint
 
     @property
@@ -348,8 +345,7 @@ class Cache(object):
 
     @favorites.setter
     def favorites(self, favorites):
-        assert type(favorites) is int
-        self._favorites = favorites
+        self._favorites = int(favorites)
 
     @property
     def pm_only(self):
@@ -357,5 +353,4 @@ class Cache(object):
 
     @pm_only.setter
     def pm_only(self, pm_only):
-        assert type(pm_only) is bool
-        self._pm_only = pm_only
+        self._pm_only = bool(pm_only)

@@ -39,8 +39,12 @@ class TestProperties(unittest.TestCase):
     def test_location(self):
         self.assertEqual(self.c.location, Point())
 
+        with self.subTest("automatic str conversion"):
+            self.c.location = "S 36 51.918 E 174 46.725"
+            self.assertEqual(self.c.location, Point.from_string("S 36 51.918 E 174 46.725"))
+
         with self.subTest("filter invalid"):
-            with self.assertRaises(AssertionError):
+            with self.assertRaises(ValueError):
                 self.c.location = "somewhere"
 
     def test_state(self):
@@ -76,8 +80,12 @@ class TestProperties(unittest.TestCase):
     def test_hidden(self):
         self.assertEqual(self.c.hidden, date(2000, 1, 1))
 
+        with self.subTest("automatic str conversion"):
+            self.c.hidden = "1/30/2000"
+            self.assertEqual(self.c.hidden, date(2000, 1, 30))
+
         with self.subTest("filter invalid"):
-            with self.assertRaises(AssertionError):
+            with self.assertRaises(ValueError):
                 self.c.hidden = "now"
 
     def test_attributes(self):
