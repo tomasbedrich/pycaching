@@ -13,9 +13,9 @@ class TestProperties(unittest.TestCase):
     def setUp(self):
         self.gc = Geocaching()
         self.c = Cache("GC12345", self.gc, name="Testing", cache_type="Traditional Cache", location=Point(), state=True,
-                       found=True, size="micro", difficulty=1.5, terrain=5, author="human", hidden=date(2000, 1, 1),
+                       found=False, size="micro", difficulty=1.5, terrain=5, author="human", hidden=date(2000, 1, 1),
                        attributes={"onehour": True, "kids": False, "available": True}, summary="text",
-                       description="long text", hint="rot13", favorites=1)
+                       description="long text", hint="rot13", favorites=0, pm_only=False)
 
     def test___str__(self):
         self.assertEqual(str(self.c), "GC12345")
@@ -47,7 +47,7 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.state, True)
 
     def test_found(self):
-        self.assertEqual(self.c.found, True)
+        self.assertEqual(self.c.found, False)
 
     def test_size(self):
         self.assertEqual(self.c.size, "micro")
@@ -97,4 +97,7 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.hint, "rot13")
 
     def test_favorites(self):
-        self.assertEqual(self.c.favorites, 1)
+        self.assertEqual(self.c.favorites, 0)
+
+    def test_favorites(self):
+        self.assertEqual(self.c.pm_only, False)

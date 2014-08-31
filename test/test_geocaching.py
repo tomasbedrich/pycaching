@@ -5,6 +5,7 @@ import unittest
 import pycaching
 from pycaching.geocaching import LoginFailedException
 from pycaching.geocaching import GeocodeError
+from pycaching.geocaching import LoadError
 from pycaching import Geocaching
 from pycaching import Cache
 from pycaching import Point
@@ -70,6 +71,10 @@ class TestLoading(unittest.TestCase):
             cache = self.g.load_cache("GC4FRG5")
             self.assertTrue(isinstance(cache, Cache))
             self.assertEqual("GC4FRG5", cache.wp)
+
+        with self.subTest("PM only"):
+            with self.assertRaises(LoadError):
+                self.g.load_cache("GC3AHDM")
 
     def test_load_cache_quick(self):
         cache = self.g.load_cache_quick("GC4808G")

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from datetime import datetime
+
 
 class Util(object):
 
@@ -21,3 +23,15 @@ class Util(object):
     def to_mindec(decimal):
         """Returns a DecMin interpretation of coordinate in decimal format."""
         return int(decimal), round(60 * (decimal - int(decimal)), 3)
+
+    @staticmethod
+    def parse_date(raw):
+        """Returns parsed date."""
+
+        for pattern in "%Y-%m-%d", "%Y/%m/%d", "%m/%d/%Y", "%d/%m/%Y", "%d-%m-%Y":
+            try:
+                return datetime.strptime(raw, pattern).date()
+            except ValueError:
+                pass
+
+        raise ValueError("Unknown date format.")

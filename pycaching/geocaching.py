@@ -5,7 +5,6 @@ import requests
 import bs4
 import mechanicalsoup as ms
 from urllib.parse import urlencode
-from datetime import datetime
 
 from .util import Util
 from .point import Point
@@ -225,8 +224,10 @@ class Geocaching(object):
         assert isinstance(root, bs4.Tag)
 
         # parse raw data
-        typeLink, nameLink = root("a", "lnk")
-        direction, info, D_T, placed, last_found = root("span", "small")
+        favorites = root.find("span", "favorite-rank")
+        typeLink, nameLink = root.find_all("a", "lnk")
+        pm_only = root.find("img", title="Premium Member Only Cache") is not None
+        direction, info, D_T, placed, last_found = root.find_all("span", "small")
         found = root.find("img", title="Found It!") is not None
         size = root.find("td", "AlignCenter").find("img")
         author, wp, area = [t.strip() for t in info.text.split("|")]
@@ -239,10 +240,12 @@ class Geocaching(object):
         c.name = nameLink.span.text.strip()
         c.found = found
         c.state = "Strike" not in nameLink.get("class")
-        c.size = " ".join(size.get("alt").split()[1:]).lower()
+        c.size = " ".join(size.get("alt").split()[1:])
         c.difficulty, c.terrain = list(map(float, D_T.text.split("/")))
-        c.hidden = datetime.strptime(placed.text, '%m/%d/%Y').date()
+        c.hidden = Util.parse_date(placed.text)
         c.author = author[3:]  # delete "by "
+        c.favorites = int(favorites.text)
+        c.pm_only = pm_only
 
         logging.debug("Cache parsed: %s", c)
         return c
@@ -264,10 +267,8 @@ class Geocaching(object):
         except requests.exceptions.ConnectionError as e:
             raise Error("Cannot load quick cache details page.") from e
 
-        if res["status"] == "failed":
-            raise LoadError(res["msg"])
-        if len(res["data"]) != 1:
-            raise LoadError("Waypoint '{}' cannot be loaded.".format(wp))
+        if res["status"] == "failed" or len(res["data"]) != 1:
+            raise LoadError("Waypoint '{}' cannot be loaded: {}".format(wp, res["msg"]))
 
         data = res["data"][0]
 
@@ -279,11 +280,13 @@ class Geocaching(object):
         c.name = data["name"]
         c.cache_type = data["type"]["text"]
         c.state = data["available"]
-        c.size = data["container"]["text"].lower()
+        c.size = data["container"]["text"]
         c.difficulty = data["difficulty"]["text"]
         c.terrain = data["terrain"]["text"]
-        c.hidden = datetime.strptime(data["hidden"], '%m/%d/%Y').date()
+        c.hidden = Util.parse_date(data["hidden"])
         c.author = data["owner"]["text"]
+        c.favorites = int(data["fp"])
+        c.pm_only = data["subrOnly"]
 
         logging.debug("Cache loaded: %r", c)
         return c
@@ -306,8 +309,14 @@ class Geocaching(object):
         except requests.exceptions.ConnectionError as e:
             raise Error("Cannot load cache details page.") from e
 
-        # parse raw data
         cache_details = root.find(id="cacheDetails")
+
+        # check for PM only caches if using free account
+        if cache_details is None:
+            if root.select(".PMOWarning") is not None:
+                raise LoadError("Premium Members only.")
+            
+        # parse raw data
         name = cache_details.find("h2")
         cache_type = cache_details.find("img").get("alt")
         author = cache_details("a")[1]
@@ -330,12 +339,12 @@ class Geocaching(object):
         c.name = name.text
         c.cache_type = cache_type
         c.author = author.text
-        c.hidden = datetime.strptime(hidden.text.split()[2], '%m/%d/%Y').date()
+        c.hidden = Util.parse_date(hidden.text.split()[2])
         c.location = Point.from_string(location.text)
         c.state = state is None
         c.found = found and "Found It!" in found.text or False
         c.difficulty, c.terrain = [float(_.get("alt").split()[0]) for _ in D_T]
-        c.size = " ".join(size.get("alt").split()[1:]).lower()
+        c.size = " ".join(size.get("alt").split()[1:])
         attributes_raw = [_.get("src").split('/')[-1].rsplit("-", 1) for _ in attributes_raw]
         c.attributes = {attribute_name: appendix.startswith("yes")
                         for attribute_name, appendix in attributes_raw if not appendix.startswith("blank")}

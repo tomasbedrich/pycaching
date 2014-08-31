@@ -85,22 +85,22 @@ class Cache(object):
 
     _possible_types = {
         "Traditional Cache",
-        "Multi-cache",
+        "Multi-Cache",
         "Unknown Cache",
         "Mystery Cache",
-        "Letterbox hybrid",
+        "Letterbox Hybrid",
         "Event Cache",
         "Mega-Event Cache",
         "Giga-Event Cache",
         "Earthcache",
-        "Cache in Trash out Event",
+        "Cache In Trash Out Event",
         "Webcam Cache",
         "Virtual Cache",
         "Wherigo Cache",
-        "Lost and Found Event Cache",
+        "Lost And Found Event Cache",
         "Project Ape Cache",
-        "Groundspeak HQ",
-        "GPS Adventures Exhibit",
+        "Groundspeak Hq",
+        "Gps Adventures Exhibit",
         "Groundspeak Block Party",
         "Locationless (Reverse) Cache",
     }
@@ -119,39 +119,41 @@ class Cache(object):
 
     def __init__(self, wp, geocaching, *, name=None, cache_type=None, location=None, state=None,
                  found=None, size=None, difficulty=None, terrain=None, author=None, hidden=None,
-                 attributes=None, summary=None, description=None, hint=None, favorites=None):
+                 attributes=None, summary=None, description=None, hint=None, favorites=None, pm_only=None):
         self.wp = wp
         self.geocaching = geocaching
-        if name:
+        if name is not None:
             self.name = name
-        if cache_type:
+        if cache_type is not None:
             self.cache_type = cache_type
-        if location:
+        if location is not None:
             self.location = location
-        if state:
+        if state is not None:
             self.state = state
-        if found:
+        if found is not None:
             self.found = found
-        if size:
+        if size is not None:
             self.size = size
-        if difficulty:
+        if difficulty is not None:
             self.difficulty = difficulty
-        if terrain:
+        if terrain is not None:
             self.terrain = terrain
-        if author:
+        if author is not None:
             self.author = author
-        if hidden:
+        if hidden is not None:
             self.hidden = hidden
-        if attributes:
+        if attributes is not None:
             self.attributes = attributes
-        if summary:
+        if summary is not None:
             self.summary = summary
-        if description:
+        if description is not None:
             self.description = description
-        if hint:
+        if hint is not None:
             self.hint = hint
-        if favorites:
+        if favorites is not None:
             self.favorites = favorites
+        if pm_only is not None:
+            self.pm_only = pm_only
 
     def __str__(self):
         return self.wp
@@ -208,7 +210,7 @@ class Cache(object):
 
     @cache_type.setter
     def cache_type(self, cache_type):
-        cache_type = cache_type.strip()
+        cache_type = cache_type.strip().title()
         cache_type = cache_type.replace("Geocache", "Cache")
         assert cache_type in self._possible_types
         self._cache_type = cache_type
@@ -240,7 +242,7 @@ class Cache(object):
 
     @size.setter
     def size(self, size):
-        size = size.strip()
+        size = size.strip().lower()
         assert size in self._possible_sizes
         self._size = size
 
@@ -348,3 +350,12 @@ class Cache(object):
     def favorites(self, favorites):
         assert type(favorites) is int
         self._favorites = favorites
+
+    @property
+    def pm_only(self):
+        return self._pm_only
+
+    @pm_only.setter
+    def pm_only(self, pm_only):
+        assert type(pm_only) is bool
+        self._pm_only = pm_only
