@@ -2,6 +2,7 @@
 
 import re
 import geopy
+from pycaching import errors
 from pycaching.util import Util
 
 
@@ -38,4 +39,8 @@ class Point(geopy.Point):
             pass
 
         # fallback
-        return super(Point, cls).from_string(string)
+        try:
+            return super(Point, cls).from_string(string)
+        except ValueError as e:
+            # wrap possible error to pycaching.errors.ValueError
+            raise errors.ValueError() from e

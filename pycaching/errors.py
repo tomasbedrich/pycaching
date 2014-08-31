@@ -25,5 +25,5 @@ class PMOnlyException(Error):
     pass
 
 
-class TypeError(Error, TypeError):
+class ValueError(Error, ValueError):
     pass

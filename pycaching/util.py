@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from datetime import datetime
+from pycaching import errors
 
 
 class Util(object):
@@ -34,4 +35,4 @@ class Util(object):
             except ValueError:
                 pass
 
-        raise ValueError("Unknown date format.")
+        raise errors.ValueError("Unknown date format.")

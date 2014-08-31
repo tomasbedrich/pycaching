@@ -2,6 +2,7 @@
 
 import unittest
 from datetime import date
+from pycaching.errors import ValueError
 from pycaching import Cache
 from pycaching import Geocaching
 from pycaching import Point
@@ -25,6 +26,10 @@ class TestProperties(unittest.TestCase):
     def test_wp(self):
         self.assertEqual(self.c.wp, "GC12345")
 
+        with self.subTest("filter invalid"):
+            with self.assertRaises(ValueError):
+                self.c.wp = "xxx"
+
     def test_name(self):
         self.assertEqual(self.c.name, "Testing")
 
@@ -32,7 +37,7 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.cache_type, "Traditional Cache")
 
         with self.subTest("filter invalid"):
-            with self.assertRaises(AssertionError):
+            with self.assertRaises(ValueError):
                 self.c.cache_type = "xxx"
 
     def test_location(self):
@@ -56,21 +61,21 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.size, "micro")
 
         with self.subTest("filter invalid"):
-            with self.assertRaises(AssertionError):
+            with self.assertRaises(ValueError):
                 self.c.size = "xxx"
 
     def test_difficulty(self):
         self.assertEqual(self.c.difficulty, 1.5)
 
         with self.subTest("filter invalid"):
-            with self.assertRaises(AssertionError):
+            with self.assertRaises(ValueError):
                 self.c.difficulty = 10
 
     def test_terrain(self):
         self.assertEqual(self.c.terrain, 5)
 
         with self.subTest("filter invalid"):
-            with self.assertRaises(AssertionError):
+            with self.assertRaises(ValueError):
                 self.c.terrain = -1
 
     def test_author(self):

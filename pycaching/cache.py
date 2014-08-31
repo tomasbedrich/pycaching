@@ -2,7 +2,7 @@
 
 import logging
 import datetime
-import pycaching
+from pycaching.errors import ValueError
 from pycaching.point import Point
 from pycaching.util import Util
 
@@ -169,7 +169,8 @@ class Cache(object):
     @wp.setter
     def wp(self, wp):
         wp = str(wp).upper().strip()
-        assert wp.startswith("GC")
+        if not wp.startswith("GC"):
+            raise ValueError("Waypoint '{}' doesn't start with 'GC'.".format(wp))
         self._wp = wp
 
     @property
@@ -178,7 +179,8 @@ class Cache(object):
 
     @geocaching.setter
     def geocaching(self, geocaching):
-        assert isinstance(geocaching, pycaching.geocaching.Geocaching)
+        if not hasattr(geocaching, "load_cache"):
+            raise ValueError("Passed object (type: '{}') doesn't contain 'load_cache' method.".format(type(geocaching)))
         self._geocaching = geocaching
 
     @property
@@ -200,7 +202,8 @@ class Cache(object):
     def location(self, location):
         if type(location) is str:
             location = Point.from_string(location)
-        assert type(location) is Point
+        elif type(location) is not Point:
+            raise ValueError("Passed object is not Point instance nor string containing coordinates.")
         self._location = location
 
     @property
@@ -212,7 +215,8 @@ class Cache(object):
     def cache_type(self, cache_type):
         cache_type = cache_type.strip().title()
         cache_type = cache_type.replace("Geocache", "Cache")
-        assert cache_type in self._possible_types
+        if cache_type not in self._possible_types:
+            raise ValueError("Cache type '{}' is not possible.".format(cache_type))
         self._cache_type = cache_type
 
     @property
@@ -241,7 +245,8 @@ class Cache(object):
     @size.setter
     def size(self, size):
         size = size.strip().lower()
-        assert size in self._possible_sizes
+        if size not in self._possible_sizes:
+            raise ValueError("Size '{}' is not possible.".format(size))
         self._size = size
 
     @property
@@ -252,8 +257,8 @@ class Cache(object):
     @difficulty.setter
     def difficulty(self, difficulty):
         difficulty = float(difficulty)
-        assert difficulty >= 1 and difficulty <= 5
-        assert difficulty * 10 % 5 == 0  # X.0 or X.5
+        if difficulty < 1 or difficulty > 5 or difficulty * 10 % 5 != 0:  # X.0 or X.5
+            raise ValueError("Difficulty must be from 1 to 5 and divisible by 0.5.")
         self._difficulty = difficulty
 
     @property
@@ -264,8 +269,8 @@ class Cache(object):
     @terrain.setter
     def terrain(self, terrain):
         terrain = float(terrain)
-        assert terrain >= 1 and terrain <= 5
-        assert terrain * 10 % 5 == 0  # X.0 or X.5
+        if terrain < 1 or terrain > 5 or terrain * 10 % 5 != 0:  # X.0 or X.5
+            raise ValueError("Terrain must be from 1 to 5 and divisible by 0.5.")
         self._terrain = terrain
 
     @property
@@ -287,7 +292,8 @@ class Cache(object):
     def hidden(self, hidden):
         if type(hidden) is str:
             hidden = Util.parse_date(hidden)
-        assert type(hidden) is datetime.date
+        elif type(hidden) is not datetime.date:
+            raise ValueError("Passed object is not datetime.date instance nor string containing date.")
         self._hidden = hidden
 
     @property
@@ -297,7 +303,8 @@ class Cache(object):
 
     @attributes.setter
     def attributes(self, attributes):
-        assert type(attributes) is dict
+        if type(attributes) is not dict:
+            raise ValueError("Attribues is not dict.")
 
         self._attributes = {}
         for name, allowed in attributes.items():
