@@ -143,7 +143,7 @@ Find approximate location of caches in area
     for c in geocaching.search_quick(p1, p2, strict=True):
         print('{:8} ({:.5f}, {:.5f}) (+- {:.1f} m); {}'.format(
             c.wp, c.location.latitude, c.location.longitude,
-	    c.location.precision, c.name))
+            c.location.precision, c.name))
 
 
 --------
