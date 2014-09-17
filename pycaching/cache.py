@@ -360,3 +360,12 @@ class Cache(object):
     @pm_only.setter
     def pm_only(self, pm_only):
         self._pm_only = bool(pm_only)
+
+    def inside_area(self, point_a, point_b):
+        """Check if geocache is inside area defined by point_a and point_b"""
+        lat_min, lat_max = sorted([p.latitude for p in [point_a, point_b]])
+        lon_min, lon_max = sorted([p.longitude for p in [point_a, point_b]])
+        if lat_min <= self.location.latitude <= lat_max:
+            if lon_min <= self.location.longitude <= lon_max:
+                return True
+        return False
