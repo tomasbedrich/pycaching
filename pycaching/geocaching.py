@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+import math
 import requests
 import bs4
 import mechanicalsoup as ms
@@ -9,6 +10,7 @@ from pycaching.cache import Cache
 from pycaching.util import Util
 from pycaching.point import Point
 from pycaching.errors import Error, NotLoggedInException, LoginFailedException, GeocodeError, LoadError, PMOnlyException
+import geopy.distance
 
 
 def login_needed(func):
@@ -26,13 +28,16 @@ def login_needed(func):
 class Geocaching(object):
 
     _baseurl = "https://www.geocaching.com/"
+    _tile_url = "http://tiles01.geocaching.com/"
 
     _urls = {
         "login_page":       _baseurl + "login/default.aspx",
         "cache_details":    _baseurl + "seek/cache_details.aspx",
         "caches_nearest":   _baseurl + "seek/nearest.aspx",
         "geocode":          _baseurl + "api/geocode",
-        "map":              "https://tiles01.geocaching.com/map.details",
+        "map":              _tile_url + "map.details",
+        "tile":             _tile_url + "map.png",
+        "grid":             _tile_url + "map.info",
     }
 
     # interesting URLs:
@@ -229,6 +234,285 @@ class Geocaching(object):
 
         logging.debug("Cache parsed: %s", c)
         return c
+
+    def search_quick(self, point_a, point_b, precision=None, strict=False):
+        """Get geocaches inside area, with approximate coordinates
+
+        Download geocache map tiles from geocaching.com and calculate
+        approximate location of based on tiles.  Parameters point_a and
+        point_b are Point instances, optional parameter precision is
+        desired location precision for the cache in meters.  More
+        precise results require increasingly more pages to be loaded.
+
+        If not strict, return all found geocaches from overlapping
+        tiles; else make sure that only caches within given area are
+        returned.
+
+        Return generator object of Cache instances.
+
+        """
+        logging.info("Performing quick search for cache locations")
+        max_zoom = 18                     # geocaching.com restriction
+        utfgrid_width = 64                # geocaching.com UTFGrid
+        assert isinstance(point_a, Point)
+        assert isinstance(point_b, Point)
+        if point_a == point_b:
+            logging.debug("Points a and b were the same")
+            return []
+        # Get initial tiles
+        dist = geopy.distance.distance(point_a, point_b).meters
+        lat = (point_a.latitude + point_b.latitude) / 2
+        # Get zoom where distance between points is less or equal to tile width
+        starting_zoom = self._get_zoom_by_distance(dist, lat, 1, "le")
+        starting_tile_width = point_a.precision_from_tile_zoom(
+            starting_zoom, 1)
+        starting_precision = starting_tile_width / utfgrid_width
+        assert dist <= starting_tile_width
+        zoom = min(starting_zoom, max_zoom)
+        logging.info("Starting at zoom level {} (precision {:.1f} m, "
+                      "tile width {:.0f} m)".format(
+            zoom, starting_precision, starting_tile_width))
+        x1, y1, _ = point_a.to_map_tile(zoom)
+        x2, y2, _ = point_b.to_map_tile(zoom)
+        tiles = []                        # [(x, y, z), ...]
+        for x_i in range(min(x1, x2), max(x1, x2)+1):
+            for y_i in range(min(y1, y2), max(y1, y2)+1):
+                tiles.append((x_i, y_i, zoom))
+        geocaches = self._get_utfgrid_caches(*tiles)
+        if precision is not None:
+            # On which zoom level grid details exceed required precision
+            new_zoom = self._get_zoom_by_distance(
+                precision, lat, utfgrid_width, "ge")
+            new_precision = point_a.precision_from_tile_zoom(
+                new_zoom, utfgrid_width)
+            assert precision >= new_precision
+            new_zoom = min(new_zoom, max_zoom)
+        if precision is None or precision >= starting_precision \
+                or new_zoom == zoom:
+            # No need to continue: start yielding caches
+            for c in geocaches:
+                if strict and not c.inside_area(point_a, point_b):
+                    continue
+                yield c
+            return
+        logging.info("Downloading again at zoom level {} "
+                     "(precision {:.1f} m)".format(new_zoom, new_precision))
+        # Define new tiles for downloading
+        round_1_caches = {}
+        dl_tiles = set()
+        for c in geocaches:
+            round_1_caches[c.wp] = c
+            dl_tiles.add(c.location.to_map_tile(new_zoom))
+        # Return found caches
+        for c in self._get_utfgrid_caches(*dl_tiles):
+            round_1_caches.pop(c.wp, None)   # Mark as found
+            if strict and not c.inside_area(point_a, point_b):
+                continue
+            yield c
+        if not round_1_caches:
+            return
+        else:
+            # Search again for those geocaches that were not found
+            logging.debug("Oh no, these geocaches were not found: {}.".format(
+                round_1_caches.keys()))
+            # Extend search to neighbouring tile
+            new_tiles = set()
+            for wp in round_1_caches:
+                tile = round_1_caches[wp].location.to_map_tile(
+                    new_zoom, fractions=True)
+                neighbours = self._bordering_tiles(*tile)
+                new_tiles.update(neighbours.difference(dl_tiles))
+            logging.debug("Extending search to tiles {}".format(
+                    new_tiles))
+            for c in self._get_utfgrid_caches(*new_tiles):
+                round_1_caches.pop(c.wp, None)   # Mark as found
+                if strict and not c.inside_area(point_a, point_b):
+                    continue
+                yield c
+            if round_1_caches:
+                logging.debug("Could not just find these caches anymore: "\
+                              .format(round_1_caches))
+                for wp in round_1_caches:
+                    yield round_1_caches[wp]
+
+    def _bordering_tiles(self, x_float, y_float, z, fraction=0.1):
+        """Get possible map tiles near the edge where geocache was found
+
+        Return set of (x, y, z) tile coordinates.
+
+        """
+        orig_tile = (int(x_float), int(y_float), z)
+        tiles = set()
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                new_tile = (int(x_float + i * fraction),
+                            int(y_float + j * fraction), z)
+                if new_tile != orig_tile and new_tile not in tiles:
+                    tiles.add(new_tile)
+        return tiles
+
+    def _get_utfgrid_caches(self, *tiles, **kwargs):
+        """Get geocache location from geocaching.com, using UTFGrid service
+
+        Parameter tiles contains one or more tuples dictionaries that
+        are of form (x, y, z).  Return generator object of Cache
+        instances.
+
+        It appears to be mandatory to first download map tile (.png
+        file) and only then UTFGrid.  However, this is not enforced all
+        the time.  There is probably some time limit from previous
+        loading of the same tile and also a general traffic regulator
+        involved.  Try first to download grid and if it does not work,
+        get .png first and then try again.
+
+        TODO
+        It might be useful to store time when tile is last downloaded
+        and act based on that.  Logging some statistics (time when tile
+        is loaded + received status code + content length + time spent
+        on request) might help in algorithm design and evaluating if
+        additional traffic from .png loading is tolerable and if this
+        should be done all the time.  Requesting for UTFgrid and waiting
+        for 204 response takes also its time.
+
+        """
+        get_png_first = kwargs.get("png_first", False)
+        found_caches = set()
+        for tile in tiles:
+            url_params = urlencode(dict(zip(("x", "y", "z"), tile)))
+            tile_url = self._urls["tile"] + "?" + url_params
+            grid_url = self._urls["grid"] + "?" + url_params
+            logging.debug("Downloading page " + grid_url)
+            try:
+                if get_png_first:
+                    r_png = self._browser.get(tile_url)
+                res = self._browser.get(grid_url)
+                if res.status_code == 204:
+                    if get_png_first:
+                        logging.debug("There is really no content! "
+                                      "Returning 0 caches.")
+                        return
+                    logging.debug("Cannot load UTFgrid: no content. "
+                                  "Trying to load .png tile first")
+                    new_caches = self._get_utfgrid_caches(tile, png_first=True)
+            except requests.exceptions.ConnectionError as e:
+                raise Error("Cannot load UTFgrid.") from e
+            if res.status_code == 200:
+                try:
+                    utf_grid = res.json()
+                except ValueError:
+                    # This happened during testing, don't know why.
+                    logging.debug("JSON parsing failed, trying .png first")
+                    return self._get_utfgrid_caches(tile, png_first=True)
+                new_caches = self._parse_utfgrid(utf_grid, *tile)
+            # _parse_utfgrid detects geocaches on the border -> some may be
+            # returned multiple times.  Throw additional ones away.
+            for c in new_caches:
+                if c.wp in found_caches:
+                    logging.debug("Found cache {} again".format(c.wp))
+                    continue
+                found_caches.add(c.wp)
+                yield c
+        logging.info("{} tiles downloaded".format(len(tiles)))
+
+    def _get_zoom_by_distance(self, dist, lat, tile_resolution=256,
+                              comparison="le"):
+        """Calculate tile zoom level
+
+        Return zoom level on which distance dist (in meters) >= tile
+        width / tile_resolution (comparison="ge") or dist <= tile width
+        / tile_resolution (comparison="le").  Calculations are performed
+        for point where latitude is lat, assuming spherical earth.
+
+        Return zoom level as integer.
+
+        """
+        diam = geopy.distance.ELLIPSOIDS["WGS-84"][0] * 1e3 * 2
+        if comparison == "le":
+            convert = math.floor
+        elif comparison == "ge":
+            convert = math.ceil
+        return convert(
+            -math.log(dist * tile_resolution /
+                      (math.pi * diam * math.cos(math.radians(lat))))
+             / math.log(2))
+
+    def _parse_utfgrid(self, json, x, y, z):
+        """Parse geocache coordinates from UTFGrid
+
+        Consume json-decoded UTFGrid data from MechanicalSoup browser.
+        Parameters x, y and z are map tile coordinates as specified in
+        Google Maps JavaScript API [1].  Calculate waypoint coordinates
+        and return generator object of Cache instances.
+
+        Geocaching.com UTFGrids do not follow UTFGrid specification [2]
+        in grid contents and key values.  List 'grid' contains valid
+        code pixels that are individual, but list 'keys' contain a list
+        of coordinates as '(x, y)' for points where there are geocaches
+        on the grid.  Code pixels can however be decoded to produce
+        index of coordinate point in list 'keys'.  Grid resolution is
+        64x64 and coordinates run from northwest corner.  Dictionary
+        'data' has key-value pairs, where keys are same coordinates as
+        previously described and values are lists of dictionaries each
+        containing geocache waypoint code and name in form {"n": name,
+        "i": waypoint}.  Waypoints seem to appear nine times each, if
+        the cache is not cut out from edges.
+
+        [1] https://developers.google.com/maps/documentation/javascript/maptypes#MapCoordinates
+        [2] https://github.com/mapbox/utfgrid-spec
+
+        """
+        logging.info("Parsing UTFGrid")
+        caches = {}   # {waypoint: [<Cache instance>, [(x0, y0), ...]]}
+        # j = b.get(url).json()#object_hook=_detect_utfgrid_cache
+        tile_resolution = len(json["grid"])
+        assert len(json["grid"][1]) == tile_resolution == 64
+        caches = {}
+        for coordinate_key in json["data"]:
+            cache_list = json["data"][coordinate_key]
+            x_i, y_i = (int(i) for i in coordinate_key.strip(" ()").split(","))
+            # Store all caches to dictionary
+            for cache_dic in cache_list:
+                waypoint = cache_dic["i"]
+                # Store all found coordinate points
+                if waypoint not in caches:
+                    c = Cache(waypoint, self, name=cache_dic["n"])
+                    caches[waypoint] = [c, [(x_i, y_i)]]
+                else:
+                    caches[waypoint][1].append((x_i, y_i))
+        # Calculate coordinates and clean up dictionary
+        for waypoint in caches:
+            c = caches[waypoint][0]
+            x_i, y_i = self._get_middle_point(tile_resolution, 9,
+                                              *caches[waypoint][1])
+            c.location = Point.from_tile(x, y, z, x_i, y_i, tile_resolution)
+            yield c
+        logging.info("Found {} caches".format(len(caches)))
+
+    def _get_middle_point(self, grid_size, assume_points, *points):
+        """Get middle point from list of x, y coordinates
+
+        The points are located on square grid of size grid_size, where
+        indices run from [0, grid_size-1].  Assume that there are nine
+        points and that they are all placed in a 3x3 grid.  If less
+        points are received, investigate case (is this point on the
+        borderline) and correct coordinates.
+
+        Return new x, y pair.
+
+        """
+        if len(points) == assume_points:
+            return [sum(i) / len(i) for i in zip(*points)]
+        square_width = int(math.sqrt(assume_points))
+        assert square_width == math.sqrt(assume_points)   # integer width
+        x_lim, y_lim = [(min(i), max(i)) for i in zip(*points)]
+        def _find_limits(lim_min, lim_max):
+            if lim_min == 0:
+                lim_min = lim_max - square_width + 1
+            elif lim_max == grid_size - 1:
+                lim_max = lim_min + square_width - 1
+            return lim_min, lim_max
+        center = [sum(_find_limits(*i))/2 for i in [x_lim, y_lim]]
+        return center
 
     def load_cache_quick(self, wp, destination=None):
         """Loads details from map server.
