@@ -134,13 +134,12 @@ Find approximate location of caches in area
 
 ::
 
-    from pycaching import Geocaching, Point
+    from pycaching import Geocaching, Point, Rectangle
 
     geocaching = pycaching.Geocaching()
     geocaching.login("user", "pass")
-    p1 = Point(60.15, 24.95)
-    p2 = Point(60.17, 25.00)
-    for c in geocaching.search_quick(p1, p2, strict=True):
+    rect = Rectangle(Point(60.15, 24.95), Point(60.17, 25.00))
+    for c in geocaching.search_quick(rect, strict=True):
         print('{:8} ({:.5f}, {:.5f}) (+- {:.1f} m); {}'.format(
             c.wp, c.location.latitude, c.location.longitude,
             c.location.precision, c.name))
