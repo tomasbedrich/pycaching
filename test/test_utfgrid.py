@@ -8,6 +8,7 @@ import unittest
 import pycaching
 from pycaching import Geocaching
 from pycaching.utfgrid import UTFGrid, GridCoordinateBlock
+from pycaching.errors import Error
 
 from test.test_geocaching import _username, _password
 
@@ -110,6 +111,15 @@ class TestGridCoordinateBlock(unittest.TestCase):
         with self.subTest("Initial value of instance"):
             self.assertEqual(GridCoordinateBlock(self.grid).size, 3)
 
+        with self.subTest("No changes: same value"):
+            sizes = [100] * 9 + [4] * 3 + [1]
+            GridCoordinateBlock.determine_block_size(*sizes)
+            self.assertEqual(GridCoordinateBlock.size, 3)
+
+        with self.subTest("No changes: no input"):
+            GridCoordinateBlock.determine_block_size()
+            self.assertEqual(GridCoordinateBlock.size, 3)
+
         with self.subTest("Should change to 16"):
             sizes = [16] * 21 + [4]
             with self.assertLogs(level=logging.WARNING):
@@ -127,23 +137,41 @@ class TestGridCoordinateBlock(unittest.TestCase):
         with self.subTest("Zero points"):
             self.assertEqual(self.cb.points,
                              GridCoordinateBlock(self.grid).points)
+
         with self.subTest("One point"):
-            self.cb.points = [(3, 4)]
+            self.cb.points = []
+            self.cb.add((3, 4))
             self.assertEqual(self.cb.points,
                              GridCoordinateBlock(self.grid, (3,4)).points)
-        with self.subTest("Multiple points"):
+
+        with self.subTest("Multiple points: pass directly"):
             points = [(0, 0), (1, 2), (3, 4), (1, 2), (5, 6)]
             self.cb.points = points
             self.assertEqual(self.cb.points,
                              GridCoordinateBlock(self.grid, *points).points)
 
+        with self.subTest("Multiple points: update"):
+            self.cb.points = []
+            points = [(0, 0), (1, 2), (3, 4), (1, 2), (5, 6)]
+            self.cb.update(points)
+            self.assertEqual(self.cb.points,
+                             GridCoordinateBlock(self.grid, *points).points)
+
     def test_get_middle_point(self):
         """Check that correct middle points are returned"""
-        for i in self.good_cases:
-            points, mid_point, xlim, ylim = self.good_cases[i]
-            with self.subTest('{} points'.format(i)):
-                self.cb.points = points
-                self.assertEqual(self.cb._get_middle_point(), mid_point)
+        for case in [self.good_cases, self.bad_cases]:
+            for i in case:
+                if case is self.good_cases:
+                    points, mid_point, xlim, ylim = self.good_cases[i]
+                    with self.subTest('{} points'.format(i)):
+                        self.cb.points = points
+                        self.assertEqual(self.cb._get_middle_point(),
+                                         mid_point)
+                else:
+                    with self.subTest('Malformed input: {}'.format(i)):
+                        with self.assertRaises(Error):
+                            self.cb.points = self.bad_cases[i]
+                            self.cb._get_middle_point()
 
     def test_check_block(self):
         """Test block form with various passes and fails"""

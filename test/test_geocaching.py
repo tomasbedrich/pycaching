@@ -98,6 +98,18 @@ class TestLoading(unittest.TestCase):
         with self.subTest("Precision grows when asking for it"):
             self.assertLess(precise_caches[0].location.precision, 45.)
 
+    def test_calculate_initial_tiles(self):
+        expect_tiles = [(2331, 1185, 12), (2331, 1186, 12),
+                        (2332, 1185, 12), (2332, 1186, 12)]
+        expect_precision = 76.06702024121832
+        r = Rectangle(Point(60.15,24.95), Point(60.17,25.00))
+        tiles, starting_precision = self.g._calculate_initial_tiles(r)
+        for t in tiles:
+            with self.subTest("Tile {} expected as initial tile".format(t)):
+                self.assertIn(t, expect_tiles)
+        with self.subTest("Expected precision"):
+            self.assertAlmostEqual(starting_precision, expect_precision)
+
     def test_get_utfgrid_caches(self):
         """Load tiles and check if expected caches are found"""
         file_path = os.path.join(os.path.dirname(__file__), "sample_caches")
