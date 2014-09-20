@@ -9,6 +9,7 @@ from urllib.parse import urlencode
 from pycaching.cache import Cache
 from pycaching.util import Util
 from pycaching.point import Point
+from pycaching.utfgrid import UTFGrid
 from pycaching.errors import Error, NotLoggedInException, LoginFailedException, GeocodeError, LoadError, PMOnlyException
 import geopy.distance
 
@@ -351,62 +352,20 @@ class Geocaching(object):
                     tiles.add(new_tile)
         return tiles
 
-    def _get_utfgrid_caches(self, *tiles, **kwargs):
-        """Get geocache location from geocaching.com, using UTFGrid service
+    def _get_utfgrid_caches(self, *tiles):
+        """Get location of geocaches within tiles, using UTFGrid service
 
         Parameter tiles contains one or more tuples dictionaries that
         are of form (x, y, z).  Return generator object of Cache
         instances.
 
-        It appears to be mandatory to first download map tile (.png
-        file) and only then UTFGrid.  However, this is not enforced all
-        the time.  There is probably some time limit from previous
-        loading of the same tile and also a general traffic regulator
-        involved.  Try first to download grid and if it does not work,
-        get .png first and then try again.
-
-        TODO
-        It might be useful to store time when tile is last downloaded
-        and act based on that.  Logging some statistics (time when tile
-        is loaded + received status code + content length + time spent
-        on request) might help in algorithm design and evaluating if
-        additional traffic from .png loading is tolerable and if this
-        should be done all the time.  Requesting for UTFgrid and waiting
-        for 204 response takes also its time.
-
         """
-        get_png_first = kwargs.get("png_first", False)
         found_caches = set()
         for tile in tiles:
-            url_params = urlencode(dict(zip(("x", "y", "z"), tile)))
-            tile_url = self._urls["tile"] + "?" + url_params
-            grid_url = self._urls["grid"] + "?" + url_params
-            logging.debug("Downloading page " + grid_url)
-            try:
-                if get_png_first:
-                    r_png = self._browser.get(tile_url)
-                res = self._browser.get(grid_url)
-                if res.status_code == 204:
-                    if get_png_first:
-                        logging.debug("There is really no content! "
-                                      "Returning 0 caches.")
-                        return
-                    logging.debug("Cannot load UTFgrid: no content. "
-                                  "Trying to load .png tile first")
-                    new_caches = self._get_utfgrid_caches(tile, png_first=True)
-            except requests.exceptions.ConnectionError as e:
-                raise Error("Cannot load UTFgrid.") from e
-            if res.status_code == 200:
-                try:
-                    utf_grid = res.json()
-                except ValueError:
-                    # This happened during testing, don't know why.
-                    logging.debug("JSON parsing failed, trying .png first")
-                    return self._get_utfgrid_caches(tile, png_first=True)
-                new_caches = self._parse_utfgrid(utf_grid, *tile)
-            # _parse_utfgrid detects geocaches on the border -> some may be
-            # returned multiple times.  Throw additional ones away.
-            for c in new_caches:
+            ug = UTFGrid(self, *tile)
+            for c in ug.download():
+                # Some geocaches may be found multiple times if they are on the
+                # border of the UTFGrid. Throw additional ones away.
                 if c.wp in found_caches:
                     logging.debug("Found cache {} again".format(c.wp))
                     continue
@@ -435,84 +394,6 @@ class Geocaching(object):
             -math.log(dist * tile_resolution /
                       (math.pi * diam * math.cos(math.radians(lat))))
              / math.log(2))
-
-    def _parse_utfgrid(self, json, x, y, z):
-        """Parse geocache coordinates from UTFGrid
-
-        Consume json-decoded UTFGrid data from MechanicalSoup browser.
-        Parameters x, y and z are map tile coordinates as specified in
-        Google Maps JavaScript API [1].  Calculate waypoint coordinates
-        and return generator object of Cache instances.
-
-        Geocaching.com UTFGrids do not follow UTFGrid specification [2]
-        in grid contents and key values.  List 'grid' contains valid
-        code pixels that are individual, but list 'keys' contain a list
-        of coordinates as '(x, y)' for points where there are geocaches
-        on the grid.  Code pixels can however be decoded to produce
-        index of coordinate point in list 'keys'.  Grid resolution is
-        64x64 and coordinates run from northwest corner.  Dictionary
-        'data' has key-value pairs, where keys are same coordinates as
-        previously described and values are lists of dictionaries each
-        containing geocache waypoint code and name in form {"n": name,
-        "i": waypoint}.  Waypoints seem to appear nine times each, if
-        the cache is not cut out from edges.
-
-        [1] https://developers.google.com/maps/documentation/javascript/maptypes#MapCoordinates
-        [2] https://github.com/mapbox/utfgrid-spec
-
-        """
-        logging.info("Parsing UTFGrid")
-        caches = {}   # {waypoint: [<Cache instance>, [(x0, y0), ...]]}
-        # j = b.get(url).json()#object_hook=_detect_utfgrid_cache
-        tile_resolution = len(json["grid"])
-        assert len(json["grid"][1]) == tile_resolution == 64
-        caches = {}
-        for coordinate_key in json["data"]:
-            cache_list = json["data"][coordinate_key]
-            x_i, y_i = (int(i) for i in coordinate_key.strip(" ()").split(","))
-            # Store all caches to dictionary
-            for cache_dic in cache_list:
-                waypoint = cache_dic["i"]
-                # Store all found coordinate points
-                if waypoint not in caches:
-                    c = Cache(waypoint, self, name=cache_dic["n"])
-                    caches[waypoint] = [c, [(x_i, y_i)]]
-                else:
-                    caches[waypoint][1].append((x_i, y_i))
-        # Calculate coordinates and clean up dictionary
-        for waypoint in caches:
-            c = caches[waypoint][0]
-            x_i, y_i = self._get_middle_point(tile_resolution, 9,
-                                              *caches[waypoint][1])
-            c.location = Point.from_tile(x, y, z, x_i, y_i, tile_resolution)
-            yield c
-        logging.info("Found {} caches".format(len(caches)))
-
-    def _get_middle_point(self, grid_size, assume_points, *points):
-        """Get middle point from list of x, y coordinates
-
-        The points are located on square grid of size grid_size, where
-        indices run from [0, grid_size-1].  Assume that there are nine
-        points and that they are all placed in a 3x3 grid.  If less
-        points are received, investigate case (is this point on the
-        borderline) and correct coordinates.
-
-        Return new x, y pair.
-
-        """
-        if len(points) == assume_points:
-            return [sum(i) / len(i) for i in zip(*points)]
-        square_width = int(math.sqrt(assume_points))
-        assert square_width == math.sqrt(assume_points)   # integer width
-        x_lim, y_lim = [(min(i), max(i)) for i in zip(*points)]
-        def _find_limits(lim_min, lim_max):
-            if lim_min == 0:
-                lim_min = lim_max - square_width + 1
-            elif lim_max == grid_size - 1:
-                lim_max = lim_min + square_width - 1
-            return lim_min, lim_max
-        center = [sum(_find_limits(*i))/2 for i in [x_lim, y_lim]]
-        return center
 
     def load_cache_quick(self, wp, destination=None):
         """Loads details from map server.

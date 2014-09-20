@@ -153,50 +153,6 @@ class TestLoading(unittest.TestCase):
             self.assertGreater(p.precision_from_tile_zoom(13), 10)
             self.assertLess(p.precision_from_tile_zoom(14), 10)
 
-    def test_parse_utfgrid(self):
-        """Parse locally stored grid and compare to expected results"""
-        folder = os.path.dirname(__file__)
-        cache_file = "sample_caches"
-        json_file = "sample.json"
-        cache_file_path = os.path.abspath(os.path.join(folder, cache_file))
-        json_file_path = os.path.abspath(os.path.join(folder, json_file))
-        expected_caches = {}
-        with open(cache_file_path) as f:
-            for row in f:
-                wp, lat, lon = row.split(',')
-                expected_caches[wp] = (float(lat), float(lon))
-        with open(json_file_path) as f:
-            j = json.loads(f.read())
-        caches = self.g._parse_utfgrid(j, 8800, 5574, 14)
-        for c in caches:
-            self.assertIn(c.wp, expected_caches)
-            self.assertEqual(c.location.latitude, expected_caches[c.wp][0])
-            self.assertEqual(c.location.longitude, expected_caches[c.wp][1])
-            expected_caches.pop(c.wp)
-        self.assertEqual(len(expected_caches), 0)
-
-    def test_get_middle_point(self):
-        with self.subTest("All nine points given: in the middle"):
-            self.assertEqual(self.g._get_middle_point(64, 9,
-                    (1,1), (1,2), (1,3),
-                    (2,1), (2,2), (2,3),
-                    (3,1), (3,2), (3,3)), [2., 2.])
-        with self.subTest("Six points: edge"):
-            self.assertEqual(self.g._get_middle_point(64, 9,
-                    (1,0), (1,1),
-                    (2,0), (2,1),
-                    (3,0), (3,1)), [2.0, 0.0])
-        with self.subTest("Four points: corner"):
-            self.assertEqual(self.g._get_middle_point(64, 9,
-                    (62,62), (62,63),
-                    (63,62), (63,63)), [63.0, 63.0])
-        with self.subTest("Three points: beyond edge"):
-            self.assertEqual(self.g._get_middle_point(64, 9,
-                    (30,63), (31,63), (32,63)), [31.0, 64.0])
-        with self.subTest("One point: beyond corner"):
-            self.assertEqual(self.g._get_middle_point(64, 9,
-                    (0,63)), [-1.0, 64.0])
-
     def test_load_cache(self):
         with self.subTest("normal"):
             cache = self.g.load_cache("GC4808G")
