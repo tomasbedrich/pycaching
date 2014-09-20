@@ -87,30 +87,6 @@ class TestLoading(unittest.TestCase):
         newest_caches = list(self.g.search_quick(p0, p1, precision=45.))
         self.assertLess(newest_caches[0].location.precision, 45.)
 
-    def test_bordering_tiles(self):
-        with self.subTest("Not on border"):
-            self.assertEqual(
-                len(self.g._bordering_tiles(8800.3, 5575.4, 14)), 0)
-        with self.subTest("Not on border"):
-            self.assertEqual(
-                len(self.g._bordering_tiles(8800.3, 5575.4, 14, 0.2)), 0)
-        with self.subTest("Now inside border"):
-            self.assertEqual(
-                self.g._bordering_tiles(8800.3, 5575.4, 14, 0.31),
-                {(8799, 5575, 14)})
-        with self.subTest("Also inside border"):
-            self.assertEqual(
-                self.g._bordering_tiles(8800.05, 5575.4, 14),
-                {(8799, 5575, 14)})
-        with self.subTest("Inside another border"):
-            self.assertEqual(
-                self.g._bordering_tiles(8800.3, 5575.95, 14),
-                {(8800, 5576, 14)})
-        with self.subTest("A corner"):
-            self.assertEqual(
-                self.g._bordering_tiles(8800.05, 5575.95, 14),
-                {(8799, 5576, 14), (8800, 5576, 14), (8799, 5575, 14)})
-
     def test_get_utfgrid_caches(self):
         """Load tiles and check if expected caches are found"""
         folder = os.path.dirname(__file__)
@@ -135,19 +111,42 @@ class TestLoading(unittest.TestCase):
                         "Over 20 % unexpected caches found.  This could be " \
                         + "natural, but failing anyway.")
 
+    def test_bordering_tiles(self):
+        """Check if geocache is near tile border"""
+        # description, function parameters, set of bordering tiles
+        checks = [
+            ["Not on border", (8800.3, 5575.4, 14),      set()],
+            ["Not on border", (8800.3, 5575.4, 14, 0.2), set()],
+            ["Now inside border", (8800.3, 5575.4, 14, 0.31),
+             {(8799, 5575, 14)}],
+            ["Also inside border", (8800.05, 5575.4, 14), {(8799, 5575, 14)}],
+            ["Inside another border", (8800.3, 5575.95, 14),
+             {(8800, 5576, 14)}],
+            ["A corner", (8800.05, 5575.95, 14),
+             {(8799, 5576, 14), (8800, 5576, 14), (8799, 5575, 14)}]
+        ]
+        for description, params, output in checks:
+            with self.subTest(description):
+                self.assertEqual(self.g._bordering_tiles(*params), output)
+
     def test_get_zoom_by_distance(self):
+        """Check that calculated zoom levels are correct"""
         with self.subTest("World map zoom level"):
             self.assertEqual(
                 self.g._get_zoom_by_distance(40e6, 0., 1., 'le'), 0)
+
         with self.subTest("Next level"):
             self.assertEqual(
                 self.g._get_zoom_by_distance(40e6, 0., 1., 'ge'), 1)
+
         with self.subTest("Tile width greater or equal to 1 km"):
             self.assertEqual(
                 self.g._get_zoom_by_distance(1e3, 49., 1., 'le'), 14)
+
         with self.subTest("More accurate than 10 m"):
             self.assertEqual(
                 self.g._get_zoom_by_distance(10., 49., 256, 'ge'), 14)
+
         with self.subTest("Previous test was correct"):
             p = Point(49., 13.)
             self.assertGreater(p.precision_from_tile_zoom(13), 10)

@@ -336,22 +336,6 @@ class Geocaching(object):
                 for wp in round_1_caches:
                     yield round_1_caches[wp]
 
-    def _bordering_tiles(self, x_float, y_float, z, fraction=0.1):
-        """Get possible map tiles near the edge where geocache was found
-
-        Return set of (x, y, z) tile coordinates.
-
-        """
-        orig_tile = (int(x_float), int(y_float), z)
-        tiles = set()
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                new_tile = (int(x_float + i * fraction),
-                            int(y_float + j * fraction), z)
-                if new_tile != orig_tile and new_tile not in tiles:
-                    tiles.add(new_tile)
-        return tiles
-
     def _get_utfgrid_caches(self, *tiles):
         """Get location of geocaches within tiles, using UTFGrid service
 
@@ -373,7 +357,25 @@ class Geocaching(object):
                 yield c
         logging.info("{} tiles downloaded".format(len(tiles)))
 
-    def _get_zoom_by_distance(self, dist, lat, tile_resolution=256,
+    @staticmethod
+    def _bordering_tiles(x_float, y_float, z, fraction=0.1):
+        """Get possible map tiles near the edge where geocache was found
+
+        Return set of (x, y, z) tile coordinates.
+
+        """
+        orig_tile = (int(x_float), int(y_float), z)
+        tiles = set()
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                new_tile = (int(x_float + i * fraction),
+                            int(y_float + j * fraction), z)
+                if new_tile != orig_tile and new_tile not in tiles:
+                    tiles.add(new_tile)
+        return tiles
+
+    @staticmethod
+    def _get_zoom_by_distance(dist, lat, tile_resolution=256,
                               comparison="le"):
         """Calculate tile zoom level
 
