@@ -24,6 +24,9 @@ class UTFGrid:
 
     """
 
+    max_zoom = 18                    # geocaching.com restriction
+    size = 64                        # UTFGrid implementation (will be checked)
+
     def __init__(self, geocaching, x, y, z):
         """Initialize UTFGrid
 
@@ -42,7 +45,6 @@ class UTFGrid:
         self._urls = {i: self._gc._urls[i] + "?x={}&y={}&z={}".format(x, y, z)
                       for i in ["tile", "grid"]}
         self.geocaches = []               # List of Cache instances
-        self.size = None                  # Grid size = width = height
 
     def download(self, get_png_first=False):
         """Download UTFGrid from geocaching.com
@@ -124,11 +126,12 @@ class UTFGrid:
         """
         logging.debug("Parsing UTFGrid")
         caches = {}   # {waypoint: [<Cache>, <GridCoordinateBlock>]}
-        self.size = len(json_grid["grid"])
-        assert len(json_grid["grid"][1]) == self.size   # square grid
-        if self.size != 64:
+        size = len(json_grid["grid"])
+        assert len(json_grid["grid"][1]) == size   # square grid
+        if size != self.size:
             logging.warning("GC.com UTFGrid specs seem to have changed: "
                             "grid resolution is not 64!")
+            self.size = size
         caches = {}
         for coordinate_key in json_grid["data"]:
             cache_list = json_grid["data"][coordinate_key]

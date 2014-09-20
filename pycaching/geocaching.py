@@ -254,20 +254,71 @@ class Geocaching(object):
 
         """
         logging.info("Performing quick search for cache locations")
-        max_zoom = 18                     # geocaching.com restriction
-        utfgrid_width = 64                # geocaching.com UTFGrid
         assert isinstance(area, Area)
-        # Get initial tiles
+        # Calculate initial tiles
+        tiles, starting_precision = self._calculate_initial_tiles(area)
+
+        # Check for continuation requirement and download tiles
+        geocaches = self._get_utfgrid_caches(*tiles)
+        if precision is not None:
+            # On which zoom level grid details exceed required precision
+            new_zoom = self._get_zoom_by_distance(
+                precision, area.mean_point.latitude, UTFGrid.size, "ge")
+            new_precision = area.mean_point.precision_from_tile_zoom(
+                new_zoom, UTFGrid.size)
+            assert precision >= new_precision
+            new_zoom = min(new_zoom, UTFGrid.max_zoom)
+        if precision is None or precision >= starting_precision \
+                or new_zoom == tiles[0][-1]:   # Previous zoom
+            # No need to continue: start yielding caches
+            for c in geocaches:
+                if strict and not c.inside_area(area):
+                    continue
+                yield c
+            return
+
+        # Define new tiles for downloading
+        logging.info("Downloading again at zoom level {} "
+                     "(precision {:.1f} m)".format(new_zoom, new_precision))
+        round_1_caches = {}
+        tiles = set()
+        for c in geocaches:
+            round_1_caches[c.wp] = c
+            tiles.add(c.location.to_map_tile(new_zoom))
+        # Perform query, yield found caches
+        for c in self._get_utfgrid_caches(*tiles):
+            round_1_caches.pop(c.wp, None)   # Mark as found
+            if strict and not c.inside_area(area):
+                continue
+            yield c
+
+        # Check if previously found caches are missing
+        if not round_1_caches:
+            return
+        else:
+            logging.debug("Oh no, these geocaches were not found: {}.".format(
+                round_1_caches.keys()))
+            for c in self._search_from_bordering_tiles(tiles,
+                                                       **round_1_caches):
+                if strict and not c.inside_area(area):
+                    continue
+                yield c
+
+    def _calculate_initial_tiles(self, area):
+        """Calculate which tiles are downloaded initially
+
+        Return list of tiles and starting precision.
+
+        """
         dist = area.diagonal
-        midpoint = area.mean_point
-        lat = midpoint.latitude
         # Get zoom where distance between points is less or equal to tile width
-        starting_zoom = self._get_zoom_by_distance(dist, lat, 1, "le")
-        starting_tile_width = midpoint.precision_from_tile_zoom(
+        starting_zoom = self._get_zoom_by_distance(
+            dist, area.mean_point.latitude, 1, "le")
+        starting_tile_width = area.mean_point.precision_from_tile_zoom(
             starting_zoom, 1)
-        starting_precision = starting_tile_width / utfgrid_width
+        starting_precision = starting_tile_width / UTFGrid.size
         assert dist <= starting_tile_width
-        zoom = min(starting_zoom, max_zoom)
+        zoom = min(starting_zoom, UTFGrid.max_zoom)
         logging.info("Starting at zoom level {} (precision {:.1f} m, "
                       "tile width {:.0f} m)".format(
             zoom, starting_precision, starting_tile_width))
@@ -277,62 +328,8 @@ class Geocaching(object):
         for x_i in range(min(x1, x2), max(x1, x2)+1):
             for y_i in range(min(y1, y2), max(y1, y2)+1):
                 tiles.append((x_i, y_i, zoom))
-        geocaches = self._get_utfgrid_caches(*tiles)
-        if precision is not None:
-            # On which zoom level grid details exceed required precision
-            new_zoom = self._get_zoom_by_distance(
-                precision, lat, utfgrid_width, "ge")
-            new_precision = midpoint.precision_from_tile_zoom(
-                new_zoom, utfgrid_width)
-            assert precision >= new_precision
-            new_zoom = min(new_zoom, max_zoom)
-        if precision is None or precision >= starting_precision \
-                or new_zoom == zoom:
-            # No need to continue: start yielding caches
-            for c in geocaches:
-                if strict and not c.inside_area(area):
-                    continue
-                yield c
-            return
-        logging.info("Downloading again at zoom level {} "
-                     "(precision {:.1f} m)".format(new_zoom, new_precision))
-        # Define new tiles for downloading
-        round_1_caches = {}
-        dl_tiles = set()
-        for c in geocaches:
-            round_1_caches[c.wp] = c
-            dl_tiles.add(c.location.to_map_tile(new_zoom))
-        # Return found caches
-        for c in self._get_utfgrid_caches(*dl_tiles):
-            round_1_caches.pop(c.wp, None)   # Mark as found
-            if strict and not c.inside_area(area):
-                continue
-            yield c
-        if not round_1_caches:
-            return
-        else:
-            # Search again for those geocaches that were not found
-            logging.debug("Oh no, these geocaches were not found: {}.".format(
-                round_1_caches.keys()))
-            # Extend search to neighbouring tile
-            new_tiles = set()
-            for wp in round_1_caches:
-                tile = round_1_caches[wp].location.to_map_tile(
-                    new_zoom, fractions=True)
-                neighbours = self._bordering_tiles(*tile)
-                new_tiles.update(neighbours.difference(dl_tiles))
-            logging.debug("Extending search to tiles {}".format(
-                    new_tiles))
-            for c in self._get_utfgrid_caches(*new_tiles):
-                round_1_caches.pop(c.wp, None)   # Mark as found
-                if strict and not c.inside_area(area):
-                    continue
-                yield c
-            if round_1_caches:
-                logging.debug("Could not just find these caches anymore: "\
-                              .format(round_1_caches))
-                for wp in round_1_caches:
-                    yield round_1_caches[wp]
+        return tiles, starting_precision
+
 
     def _get_utfgrid_caches(self, *tiles):
         """Get location of geocaches within tiles, using UTFGrid service
@@ -354,6 +351,32 @@ class Geocaching(object):
                 found_caches.add(c.wp)
                 yield c
         logging.info("{} tiles downloaded".format(len(tiles)))
+
+    def _search_from_bordering_tiles(self, previous_tiles, **missing_caches):
+        '''Extend geocache search to neighbouring tiles
+
+        Parameter previous_tiles is a set of tiles that were already
+        downloaded.  Parameter missing_caches is a dictionary
+        {waypoint:<Cache>} and contains those caches that were found in
+        previous zoom level but not anymore.  Search around their
+        expected coordinates and yield some more caches.
+        '''
+        new_tiles = set()
+        for wp in missing_caches:
+            tile = missing_caches[wp].location.to_map_tile(new_zoom,
+                                                           fractions=True)
+            neighbours = self._bordering_tiles(*tile)
+            new_tiles.update(neighbours.difference(previous_tiles))
+        logging.debug("Extending search to tiles {}".format(
+                new_tiles))
+        for c in self._get_utfgrid_caches(*new_tiles):
+            missing_caches.pop(c.wp, None)   # Mark as found
+            yield c
+        if missing_caches:
+            logging.debug("Could not just find these caches anymore: "\
+                          .format(missing_caches))
+            for wp in missing_caches:
+                yield missing_caches[wp]
 
     @staticmethod
     def _bordering_tiles(x_float, y_float, z, fraction=0.1):
