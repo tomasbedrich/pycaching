@@ -8,6 +8,7 @@ from pycaching.errors import LoginFailedException, GeocodeError, PMOnlyException
 from pycaching import Geocaching
 from pycaching import Cache
 from pycaching import Point
+from pycaching import Rectangle
 
 
 # please DO NOT CHANGE!
@@ -62,9 +63,8 @@ class TestLoading(unittest.TestCase):
 
     def test_search_quick(self):
         """Perform search and check from logs that things go well"""
-        p0 = Point(49.73, 13.38)
-        p1 = Point(49.74, 13.40)
-        caches = list(self.g.search_quick(p0, p1))
+        rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.40))
+        caches = list(self.g.search_quick(rect))
         expected = ["GC41FJC", "GC17E8Y", "GC1ZAQV"]
         for i in expected:
             found = False
@@ -79,12 +79,12 @@ class TestLoading(unittest.TestCase):
         self.assertLess(len(caches), 130)
         self.assertGreater(len(caches), 90)
         # But only 12 inside this stricter area
-        new_caches = list(self.g.search_quick(p0, p1, strict=True))
+        new_caches = list(self.g.search_quick(rect, strict=True))
         self.assertLess(len(new_caches), 16)
         self.assertGreater(len(new_caches), 7)
-        newer_caches = list(self.g.search_quick(p0, p1, strict=True))
+        newer_caches = list(self.g.search_quick(rect, strict=True))
         self.assertEqual(len(new_caches), len(newer_caches))
-        newest_caches = list(self.g.search_quick(p0, p1, precision=45.))
+        newest_caches = list(self.g.search_quick(rect, precision=45.))
         self.assertLess(newest_caches[0].location.precision, 45.)
 
     def test_get_utfgrid_caches(self):

@@ -110,3 +110,11 @@ class Point(geopy.Point):
         diam = geopy.distance.ELLIPSOIDS['WGS-84'][0] * 1e3 * 2
         tile_length = math.pi * diam * math.cos(math.radians(lat)) * 2 ** (-z)
         return tile_length / divisor
+
+    def distance(self, point):
+        """Return distance from this point to another point in meters"""
+        return geopy.distance.distance(self, point).meters
+
+    def inside_area(self, area):
+        """Check if point is inside given area"""
+        return area.inside_area(self)

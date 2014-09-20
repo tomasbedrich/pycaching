@@ -6,6 +6,7 @@ import requests
 import bs4
 import mechanicalsoup as ms
 from urllib.parse import urlencode
+from pycaching.area import Area
 from pycaching.cache import Cache
 from pycaching.util import Util
 from pycaching.point import Point
@@ -236,14 +237,14 @@ class Geocaching(object):
         logging.debug("Cache parsed: %s", c)
         return c
 
-    def search_quick(self, point_a, point_b, precision=None, strict=False):
+    def search_quick(self, area, precision=None, strict=False):
         """Get geocaches inside area, with approximate coordinates
 
         Download geocache map tiles from geocaching.com and calculate
-        approximate location of based on tiles.  Parameters point_a and
-        point_b are Point instances, optional parameter precision is
-        desired location precision for the cache in meters.  More
-        precise results require increasingly more pages to be loaded.
+        approximate location of based on tiles.  Parameter area is Area
+        instance, optional parameter precision is desired location
+        precision for the cache in meters.  More precise results require
+        increasingly more pages to be loaded.
 
         If not strict, return all found geocaches from overlapping
         tiles; else make sure that only caches within given area are
@@ -255,17 +256,14 @@ class Geocaching(object):
         logging.info("Performing quick search for cache locations")
         max_zoom = 18                     # geocaching.com restriction
         utfgrid_width = 64                # geocaching.com UTFGrid
-        assert isinstance(point_a, Point)
-        assert isinstance(point_b, Point)
-        if point_a == point_b:
-            logging.debug("Points a and b were the same")
-            return []
+        assert isinstance(area, Area)
         # Get initial tiles
-        dist = geopy.distance.distance(point_a, point_b).meters
-        lat = (point_a.latitude + point_b.latitude) / 2
+        dist = area.diagonal
+        midpoint = area.mean_point
+        lat = midpoint.latitude
         # Get zoom where distance between points is less or equal to tile width
         starting_zoom = self._get_zoom_by_distance(dist, lat, 1, "le")
-        starting_tile_width = point_a.precision_from_tile_zoom(
+        starting_tile_width = midpoint.precision_from_tile_zoom(
             starting_zoom, 1)
         starting_precision = starting_tile_width / utfgrid_width
         assert dist <= starting_tile_width
@@ -273,8 +271,8 @@ class Geocaching(object):
         logging.info("Starting at zoom level {} (precision {:.1f} m, "
                       "tile width {:.0f} m)".format(
             zoom, starting_precision, starting_tile_width))
-        x1, y1, _ = point_a.to_map_tile(zoom)
-        x2, y2, _ = point_b.to_map_tile(zoom)
+        x1, y1, _ = area.bounding_box.corners[0].to_map_tile(zoom)
+        x2, y2, _ = area.bounding_box.corners[1].to_map_tile(zoom)
         tiles = []                        # [(x, y, z), ...]
         for x_i in range(min(x1, x2), max(x1, x2)+1):
             for y_i in range(min(y1, y2), max(y1, y2)+1):
@@ -284,7 +282,7 @@ class Geocaching(object):
             # On which zoom level grid details exceed required precision
             new_zoom = self._get_zoom_by_distance(
                 precision, lat, utfgrid_width, "ge")
-            new_precision = point_a.precision_from_tile_zoom(
+            new_precision = midpoint.precision_from_tile_zoom(
                 new_zoom, utfgrid_width)
             assert precision >= new_precision
             new_zoom = min(new_zoom, max_zoom)
@@ -292,7 +290,7 @@ class Geocaching(object):
                 or new_zoom == zoom:
             # No need to continue: start yielding caches
             for c in geocaches:
-                if strict and not c.inside_area(point_a, point_b):
+                if strict and not c.inside_area(area):
                     continue
                 yield c
             return
@@ -307,7 +305,7 @@ class Geocaching(object):
         # Return found caches
         for c in self._get_utfgrid_caches(*dl_tiles):
             round_1_caches.pop(c.wp, None)   # Mark as found
-            if strict and not c.inside_area(point_a, point_b):
+            if strict and not c.inside_area(area):
                 continue
             yield c
         if not round_1_caches:
@@ -327,7 +325,7 @@ class Geocaching(object):
                     new_tiles))
             for c in self._get_utfgrid_caches(*new_tiles):
                 round_1_caches.pop(c.wp, None)   # Mark as found
-                if strict and not c.inside_area(point_a, point_b):
+                if strict and not c.inside_area(area):
                     continue
                 yield c
             if round_1_caches:
