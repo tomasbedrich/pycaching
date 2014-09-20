@@ -28,8 +28,10 @@ class Util(object):
     @staticmethod
     def parse_date(raw):
         """Returns parsed date."""
+        patterns = ("%Y-%m-%d", "%Y/%m/%d", "%m/%d/%Y", "%d/%m/%Y",
+                    "%d.%m.%Y", "%d/%b/%Y", "%d.%b.%Y", "%b/%d/%Y", "%d %b %y")
 
-        for pattern in "%Y-%m-%d", "%Y/%m/%d", "%m/%d/%Y", "%d/%m/%Y", "%d-%m-%Y":
+        for pattern in patterns:
             try:
                 return datetime.strptime(raw, pattern).date()
             except ValueError:

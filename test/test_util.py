@@ -2,7 +2,8 @@
 
 import unittest
 from pycaching import Util
-from datetime import date
+import datetime
+import itertools
 
 
 class TestUtil(unittest.TestCase):
@@ -18,9 +19,11 @@ class TestUtil(unittest.TestCase):
         self.assertEqual(Util.to_mindec(49.73083), (49, 43.850))
 
     def test_date_parsing(self):
-        self.assertEqual(date(2000, 1, 1), Util.parse_date("2000/1/1"))
-        self.assertEqual(date(2000, 1, 30), Util.parse_date("2000-1-30"))
-        self.assertEqual(date(2000, 1, 30), Util.parse_date("2000/1/30"))
-        self.assertEqual(date(2000, 1, 30), Util.parse_date("30/1/2000"))
-        self.assertEqual(date(2000, 1, 30), Util.parse_date("1/30/2000"))
-        self.assertEqual(date(2000, 1, 30), Util.parse_date("30-1-2000"))
+        dates = (datetime.date(2014, 1, 30), datetime.date(2000, 1, 1), datetime.date(2020, 12, 13))
+        patterns = ("%Y-%m-%d", "%Y/%m/%d", "%m/%d/%Y", "%d/%m/%Y",
+                    "%d.%m.%Y", "%d/%b/%Y", "%d.%b.%Y", "%b/%d/%Y", "%d %b %y")
+
+        # generate all possible formats for all dates and test equality
+        for date, pattern in itertools.product(dates, patterns):
+            formatted_date = datetime.datetime.strftime(date, pattern)
+            self.assertEqual(date, Util.parse_date(formatted_date))
