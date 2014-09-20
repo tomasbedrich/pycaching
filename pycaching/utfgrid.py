@@ -172,14 +172,18 @@ class GridCoordinateBlock:
         is surely visible.
 
         """
+        if not block_points:
+            return
         groups = set(block_points)
         frequency = {i: block_points.count(i) for i in groups}
         group_order = sorted(frequency, key=lambda k: frequency[k],
                              reverse=True)
         if frequency[group_order[0]] > 0.95 * len(block_points):
+            new_n = int(math.sqrt(group_order[0]))
+            if new_n == cls.size:
+                return
             logging.warning("Coordinate block in UTFGrid is not what we "
                             "expected.  Has something else changed?")
-            new_n = int(math.sqrt(group_order[0]))
             # Check that this is a square
             assert new_n == math.sqrt(group_order[0])
             cls.size = new_n
