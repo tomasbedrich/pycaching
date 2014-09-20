@@ -62,9 +62,15 @@ class TestLoading(unittest.TestCase):
             self.assertNotEqual(res[0], res[20])
 
     def test_search_quick(self):
-        """Perform search and check from logs that things go well"""
+        """Perform search and check found caches"""
         rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.40))
         caches = list(self.g.search_quick(rect))
+        strict_caches = list(self.g.search_quick(rect, strict=True))
+        precise_caches = list(self.g.search_quick(rect, precision=45.))
+        strict_precise_caches = list(self.g.search_quick(
+            rect, precision=45., strict=True))
+
+        # Check for known geocaches
         expected = ["GC41FJC", "GC17E8Y", "GC1ZAQV"]
         for i in expected:
             found = False
@@ -72,26 +78,29 @@ class TestLoading(unittest.TestCase):
                 if c.wp == i:
                     found = True
                     break
-            self.assertTrue(found)
-        self.assertLess(caches[0].location.precision, 49.5)
-        self.assertGreater(caches[0].location.precision, 49.3)
-        # At time of writing, there were 108 caches inside inspected tile
-        self.assertLess(len(caches), 130)
-        self.assertGreater(len(caches), 90)
-        # But only 12 inside this stricter area
-        new_caches = list(self.g.search_quick(rect, strict=True))
-        self.assertLess(len(new_caches), 16)
-        self.assertGreater(len(new_caches), 7)
-        newer_caches = list(self.g.search_quick(rect, strict=True))
-        self.assertEqual(len(new_caches), len(newer_caches))
-        newest_caches = list(self.g.search_quick(rect, precision=45.))
-        self.assertLess(newest_caches[0].location.precision, 45.)
+            with self.subTest("Check if {} is in results".format(c.wp)):
+                self.assertTrue(found)
+
+        with self.subTest("Precision is in assumed range"):
+            self.assertLess(caches[0].location.precision, 49.5)
+            self.assertGreater(caches[0].location.precision, 49.3)
+
+        with self.subTest("Found roughly correct amount of caches"):
+            # At time of writing, there were 108 caches inside inspected tile
+            self.assertLess(len(caches), 130)
+            self.assertGreater(len(caches), 90)
+
+        with self.subTest("Strict handling of cache coordinates"):
+            # ...but only 12 inside this stricter area
+            self.assertLess(len(strict_caches), 16)
+            self.assertGreater(len(strict_caches), 7)
+
+        with self.subTest("Precision grows when asking for it"):
+            self.assertLess(precise_caches[0].location.precision, 45.)
 
     def test_get_utfgrid_caches(self):
         """Load tiles and check if expected caches are found"""
-        folder = os.path.dirname(__file__)
-        file_name = "sample_caches"
-        file_path = os.path.abspath(os.path.join(folder, file_name))
+        file_path = os.path.join(os.path.dirname(__file__), "sample_caches")
         expected_caches = set()
         with open(file_path) as f:
             for row in f:
@@ -104,12 +113,12 @@ class TestLoading(unittest.TestCase):
                 expected_caches.discard(c.wp)
             else:
                 additional_caches.add(c.wp)
-        self.assertLess(len(expected_caches) / n_orig, 0.2,
-                        "Over 20 % of caches are lost.  This could be " \
-                        + "natural, but failing anyway.")
-        self.assertLess(len(additional_caches) / n_orig, 0.2,
-                        "Over 20 % unexpected caches found.  This could be " \
-                        + "natural, but failing anyway.")
+        with self.subTest("Expected caches found"):
+            self.assertLess(len(expected_caches) / n_orig, 0.2,
+                            "Over 20 % of expected caches are lost.")
+        with self.subTest("Unexpected caches not found"):
+            self.assertLess(len(additional_caches) / n_orig, 0.2,
+                            "Over 20 % of found caches are unexpected.")
 
     def test_bordering_tiles(self):
         """Check if geocache is near tile border"""
