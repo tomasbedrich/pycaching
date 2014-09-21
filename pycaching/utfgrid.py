@@ -175,7 +175,7 @@ class GridCoordinateBlock:
         is surely visible.
 
         """
-        if not block_points:
+        if not block_points or len(block_points) <= 20:
             return
         groups = set(block_points)
         frequency = {i: block_points.count(i) for i in groups}
@@ -187,8 +187,8 @@ class GridCoordinateBlock:
                 return
             logging.warning("Coordinate block in UTFGrid is not what we "
                             "expected.  Has something else changed?")
-            # Check that this is a square
-            assert new_n == math.sqrt(group_order[0])
+            # If new block is not a square, this class needs revising
+            assert new_n == math.sqrt(group_order[0]), "Block should be square"
             cls.size = new_n
         
     def __init__(self, utf_grid, *points):
