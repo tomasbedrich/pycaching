@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+import requests
+from bs4 import BeautifulSoup
+from itertools import chain
 from datetime import datetime
 from pycaching import errors
 
@@ -9,6 +12,8 @@ class Util(object):
     _rot13codeTable = str.maketrans(
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
         "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM")
+
+    _attributes_url = "http://www.geocaching.com/about/icons.aspx"
 
     @classmethod
     def rot13(cls, text):
@@ -38,3 +43,18 @@ class Util(object):
                 pass
 
         raise errors.ValueError("Unknown date format.")
+
+    @classmethod
+    def get_possible_attributes(cls):
+        """Returns dict of all possible attributes parsed from Groundspeak's website."""
+        try:
+            page = BeautifulSoup(requests.get(cls._attributes_url).text)
+        except requests.exceptions.ConnectionError as e:
+            raise errors.Error("Cannot load attributes page.") from e
+
+        # get all <img>s containing attributes from all <dl>s with specific class
+        images = chain(*map(lambda i: i.find_all("img"), page.find_all("dl", "AttributesList")))
+        # create dict as {"machine name": "human description"}
+        attributes = {i.get("src").split("/")[-1].rsplit("-", 1)[0]: i.get("alt") for i in images}
+        
+        return attributes

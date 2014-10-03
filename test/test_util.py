@@ -27,3 +27,13 @@ class TestUtil(unittest.TestCase):
         for date, pattern in itertools.product(dates, patterns):
             formatted_date = datetime.datetime.strftime(date, pattern)
             self.assertEqual(date, Util.parse_date(formatted_date))
+
+    def test_get_possible_attributes(self):
+        attributes = Util.get_possible_attributes()
+
+        with self.subTest("existing attributes"):
+            for attr in "dogs", "public", "kids":
+                self.assertIn(attr, attributes)
+
+        with self.subTest("non-existing attributes"):
+                self.assertNotIn("xxx", attributes)
