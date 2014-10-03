@@ -10,10 +10,10 @@ class Util(object):
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
         "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM")
 
-    @staticmethod
-    def rot13(text):
+    @classmethod
+    def rot13(cls, text):
         """Returns a text encoded by rot13 cipher."""
-        return str.translate(text, Util._rot13codeTable)
+        return str.translate(text, cls._rot13codeTable)
 
     @staticmethod
     def to_decimal(deg, min):
