@@ -372,3 +372,7 @@ class Cache(object):
     @pm_only.setter
     def pm_only(self, pm_only):
         self._pm_only = bool(pm_only)
+
+    def inside_area(self, area):
+        """Calculate if geocache is inside given area"""
+        return area.inside_area(self.location)

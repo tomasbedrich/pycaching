@@ -6,6 +6,7 @@ from pycaching.geocaching import Geocaching  # NOQA
 from pycaching.cache import Cache  # NOQA
 from pycaching.util import Util  # NOQA
 from pycaching.point import Point  # NOQA
+from pycaching.area import Rectangle
 from pycaching.errors import *  # NOQA
 
 
