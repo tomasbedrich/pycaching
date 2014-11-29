@@ -250,9 +250,8 @@ class Geocaching(object):
         tiles; else make sure that only caches within given area are
         returned.
 
-        Return generator object of Cache instances.
+        Return generator object of Cache instances."""
 
-        """
         logging.info("Performing quick search for cache locations")
         assert isinstance(area, Area)
         # Calculate initial tiles
@@ -296,10 +295,8 @@ class Geocaching(object):
         if not round_1_caches:
             return
         else:
-            logging.debug("Oh no, these geocaches were not found: {}.".format(
-                round_1_caches.keys()))
-            for c in self._search_from_bordering_tiles(tiles,
-                                                       **round_1_caches):
+            logging.debug("Oh no, these geocaches were not found: {}.".format(round_1_caches.keys()))
+            for c in self._search_from_bordering_tiles(tiles, **round_1_caches):
                 if strict and not c.inside_area(area):
                     continue
                 yield c
@@ -307,9 +304,8 @@ class Geocaching(object):
     def _calculate_initial_tiles(self, area):
         """Calculate which tiles are downloaded initially
 
-        Return list of tiles and starting precision.
+        Return list of tiles and starting precision."""
 
-        """
         dist = area.diagonal
         # Get zoom where distance between points is less or equal to tile width
         starting_zoom = self._get_zoom_by_distance(
@@ -320,25 +316,23 @@ class Geocaching(object):
         assert dist <= starting_tile_width
         zoom = min(starting_zoom, UTFGrid.max_zoom)
         logging.info("Starting at zoom level {} (precision {:.1f} m, "
-                      "tile width {:.0f} m)".format(
-            zoom, starting_precision, starting_tile_width))
+                     "tile width {:.0f} m)".format(
+                         zoom, starting_precision, starting_tile_width))
         x1, y1, _ = area.bounding_box.corners[0].to_map_tile(zoom)
         x2, y2, _ = area.bounding_box.corners[1].to_map_tile(zoom)
         tiles = []                        # [(x, y, z), ...]
-        for x_i in range(min(x1, x2), max(x1, x2)+1):
-            for y_i in range(min(y1, y2), max(y1, y2)+1):
+        for x_i in range(min(x1, x2), max(x1, x2) + 1):
+            for y_i in range(min(y1, y2), max(y1, y2) + 1):
                 tiles.append((x_i, y_i, zoom))
         return tiles, starting_precision
-
 
     def _get_utfgrid_caches(self, *tiles):
         """Get location of geocaches within tiles, using UTFGrid service
 
         Parameter tiles contains one or more tuples dictionaries that
         are of form (x, y, z).  Return generator object of Cache
-        instances.
+        instances."""
 
-        """
         found_caches = set()
         for tile in tiles:
             ug = UTFGrid(self, *tile)
@@ -353,27 +347,26 @@ class Geocaching(object):
         logging.info("{} tiles downloaded".format(len(tiles)))
 
     def _search_from_bordering_tiles(self, previous_tiles, **missing_caches):
-        '''Extend geocache search to neighbouring tiles
+        """Extend geocache search to neighbouring tiles
 
         Parameter previous_tiles is a set of tiles that were already
         downloaded.  Parameter missing_caches is a dictionary
         {waypoint:<Cache>} and contains those caches that were found in
-        previous zoom level but not anymore.  Search around their
-        expected coordinates and yield some more caches.
-        '''
+        previous zoom level but not anymore. Search around their
+        expected coordinates and yield some more caches."""
+
         new_tiles = set()
         for wp in missing_caches:
-            tile = missing_caches[wp].location.to_map_tile(new_zoom,
-                                                           fractions=True)
+            tile = missing_caches[wp].location.to_map_tile(new_zoom, fractions=True)
             neighbours = self._bordering_tiles(*tile)
             new_tiles.update(neighbours.difference(previous_tiles))
         logging.debug("Extending search to tiles {}".format(
-                new_tiles))
+            new_tiles))
         for c in self._get_utfgrid_caches(*new_tiles):
             missing_caches.pop(c.wp, None)   # Mark as found
             yield c
         if missing_caches:
-            logging.debug("Could not just find these caches anymore: "\
+            logging.debug("Could not just find these caches anymore: "
                           .format(missing_caches))
             for wp in missing_caches:
                 yield missing_caches[wp]
@@ -382,22 +375,19 @@ class Geocaching(object):
     def _bordering_tiles(x_float, y_float, z, fraction=0.1):
         """Get possible map tiles near the edge where geocache was found
 
-        Return set of (x, y, z) tile coordinates.
+        Return set of (x, y, z) tile coordinates."""
 
-        """
         orig_tile = (int(x_float), int(y_float), z)
         tiles = set()
         for i in range(-1, 2):
             for j in range(-1, 2):
-                new_tile = (int(x_float + i * fraction),
-                            int(y_float + j * fraction), z)
+                new_tile = (int(x_float + i * fraction), int(y_float + j * fraction), z)
                 if new_tile != orig_tile and new_tile not in tiles:
                     tiles.add(new_tile)
         return tiles
 
     @staticmethod
-    def _get_zoom_by_distance(dist, lat, tile_resolution=256,
-                              comparison="le"):
+    def _get_zoom_by_distance(dist, lat, tile_resolution=256, comparison="le"):
         """Calculate tile zoom level
 
         Return zoom level on which distance dist (in meters) >= tile
@@ -405,18 +395,14 @@ class Geocaching(object):
         / tile_resolution (comparison="le").  Calculations are performed
         for point where latitude is lat, assuming spherical earth.
 
-        Return zoom level as integer.
+        Return zoom level as integer."""
 
-        """
         diam = geopy.distance.ELLIPSOIDS["WGS-84"][0] * 1e3 * 2
         if comparison == "le":
             convert = math.floor
         elif comparison == "ge":
             convert = math.ceil
-        return convert(
-            -math.log(dist * tile_resolution /
-                      (math.pi * diam * math.cos(math.radians(lat))))
-             / math.log(2))
+        return convert(-math.log(dist * tile_resolution / (math.pi * diam * math.cos(math.radians(lat)))) / math.log(2))
 
     def load_cache_quick(self, wp, destination=None):
         """Loads details from map server.

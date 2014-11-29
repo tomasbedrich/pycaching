@@ -56,5 +56,5 @@ class Util(object):
         images = chain(*map(lambda i: i.find_all("img"), page.find_all("dl", "AttributesList")))
         # create dict as {"machine name": "human description"}
         attributes = {i.get("src").split("/")[-1].rsplit("-", 1)[0]: i.get("alt") for i in images}
-        
+
         return attributes

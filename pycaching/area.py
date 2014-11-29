@@ -1,23 +1,18 @@
 #!/usr/bin/env python3
 
-import math
-import geopy
 from pycaching.point import Point
 
 
 class Area:
-
     """Geometrical area"""
-
     pass
 
 
 class Polygon(Area):
-
-    '''Area defined by bordering Point instances'''
+    """Area defined by bordering Point instances"""
 
     def __init__(self, *points):
-        '''Define polygon by list of consecutive Points'''
+        """Define polygon by list of consecutive Points"""
         assert len(points) >= 3
         self.points = points
 
@@ -25,9 +20,8 @@ class Polygon(Area):
     def bounding_box(self):
         """Get extreme latitude and longitude values.
 
-        Return Rectangle that contains all points
+        Return Rectangle that contains all points"""
 
-        """
         lats = sorted([p.latitude for p in self.points])
         lons = sorted([p.longitude for p in self.points])
         return Rectangle(Point(min(lats), min(lons)),
@@ -47,21 +41,17 @@ class Polygon(Area):
 
 
 class Rectangle(Polygon):
-
     """Upright rectangle"""
 
     def __init__(self, point_a, point_b):
         """Create rectangle defined by opposite corners
 
-        Parameters point_a and point_b are Point instances.
+        Parameters point_a and point_b are Point instances."""
 
-        """
-        assert point_a != point_b, "Cornering points cannot be the same"
+        assert point_a != point_b, "Corner points cannot be the same"
         self.corners = [point_a, point_b]
-        self.points = [point_a,
-                       Point(point_a.latitude, point_b.longitude),
-                       point_b,
-                       Point(point_b.latitude, point_a.longitude)]
+        self.points = [point_a, Point(point_a.latitude, point_b.longitude),
+                       point_b, Point(point_b.latitude, point_a.longitude)]
 
     def inside_area(self, point):
         """Is point inside area?"""

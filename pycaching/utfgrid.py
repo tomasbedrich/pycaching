@@ -4,12 +4,10 @@ import logging
 import math
 
 import requests
-import geopy.distance
 
 from pycaching.cache import Cache
 from pycaching.point import Point
-from pycaching.errors import (Error, NotLoggedInException,
-    LoginFailedException, GeocodeError, LoadError, PMOnlyException)
+from pycaching.errors import Error
 
 
 class UTFGrid:
@@ -20,9 +18,7 @@ class UTFGrid:
     server.  These can be used as information sources to get approximate
     locations of geocaches in a given area.
 
-    [1] https://github.com/mapbox/utfgrid-spec
-
-    """
+    [1] https://github.com/mapbox/utfgrid-spec"""
 
     max_zoom = 18                    # geocaching.com restriction
     size = 64                        # UTFGrid implementation (will be checked)
@@ -35,9 +31,8 @@ class UTFGrid:
         Maps JavaScript API [1].  Geocaching instance is accessed to use
         its browser and stored URLs.
 
-        [1] https://developers.google.com/maps/documentation/javascript/maptypes#MapCoordinates
+        [1] https://developers.google.com/maps/documentation/javascript/maptypes#MapCoordinates"""
 
-        """
         self._gc = geocaching
         self.x = x
         self.y = y
@@ -65,21 +60,19 @@ class UTFGrid:
         time spent on request) might help in algorithm design and
         evaluating if additional traffic from .png loading is tolerable
         and if this should be done all the time.  Requesting for UTFgrid
-        and waiting for 204 response takes also its time.
+        and waiting for 204 response takes also its time."""
 
-        """
         logging.info("Downloading UTFGrid for tile ({}, {}, {})".format(
             self.x, self.y, self.z))
         try:
             if get_png_first:
                 logging.debug(".. getting .png file first")
-                r_png = self._gc._browser.get(self._urls["tile"])
+                self._gc._browser.get(self._urls["tile"])
             logging.debug(".. getting UTFGrid")
             res = self._gc._browser.get(self._urls["grid"])
             if res.status_code == 204:
                 if get_png_first:
-                    logging.debug(
-                        "There is really no content! Returning 0 caches.")
+                    logging.debug("There is really no content! Returning 0 caches.")
                     return
                 logging.debug("Cannot load UTFgrid: no content. "
                               "Trying to load .png tile first")
@@ -109,21 +102,20 @@ class UTFGrid:
         Cache instances.
 
         Geocaching.com UTFGrids do not follow UTFGrid specification [2]
-        in grid contents and key values.  List 'grid' contains valid
-        code pixels that are individual, but list 'keys' contain a list
-        of coordinates as '(x, y)' for points where there are geocaches
+        in grid contents and key values.  List "grid" contains valid
+        code pixels that are individual, but list "keys" contain a list
+        of coordinates as "(x, y)" for points where there are geocaches
         on the grid.  Code pixels can however be decoded to produce
-        index of coordinate point in list 'keys'.  Grid resolution is
+        index of coordinate point in list "keys".  Grid resolution is
         64x64 and coordinates run from northwest corner.  Dictionary
-        'data' has key-value pairs, where keys are same coordinates as
+        "data" has key-value pairs, where keys are same coordinates as
         previously described and values are lists of dictionaries each
         containing geocache waypoint code and name in form {"n": name,
         "i": waypoint}.  Waypoints seem to appear nine times each, if
         the cache is not cut out from edges.
 
-        [2] https://github.com/mapbox/utfgrid-spec
+        [2] https://github.com/mapbox/utfgrid-spec"""
 
-        """
         logging.debug("Parsing UTFGrid")
         caches = {}   # {waypoint: [<Cache>, <GridCoordinateBlock>]}
         size = len(json_grid["grid"])
@@ -143,7 +135,7 @@ class UTFGrid:
                 if waypoint not in caches:
                     c = Cache(waypoint, self._gc, name=cache_dic["n"])
                     caches[waypoint] \
-                      = [c, GridCoordinateBlock(self, (x_i, y_i),)]
+                        = [c, GridCoordinateBlock(self, (x_i, y_i),)]
                 else:
                     caches[waypoint][1].add((x_i, y_i))
         # Try to determine grid coordinate block size
@@ -169,18 +161,16 @@ class GridCoordinateBlock:
     def determine_block_size(cls, *block_points):
         """Estimate how large coordinate blocks are
 
-        If more than 95 % of all caches are of one size, change size
+        If more than 95% of all caches are of one size, change size
         from default.  This is quite a high value, but the grid size is
         not really supposed to change from the 3x3 size.  If it does, it
-        is surely visible.
+        is surely visible."""
 
-        """
         if not block_points or len(block_points) <= 20:
             return
         groups = set(block_points)
         frequency = {i: block_points.count(i) for i in groups}
-        group_order = sorted(frequency, key=lambda k: frequency[k],
-                             reverse=True)
+        group_order = sorted(frequency, key=lambda k: frequency[k], reverse=True)
         if frequency[group_order[0]] > 0.95 * len(block_points):
             new_n = int(math.sqrt(group_order[0]))
             if new_n == cls.size:
@@ -190,14 +180,13 @@ class GridCoordinateBlock:
             # If new block is not a square, this class needs revising
             assert new_n == math.sqrt(group_order[0]), "Block should be square"
             cls.size = new_n
-        
+
     def __init__(self, utf_grid, *points):
         """Initialize coordinate block
 
         Parameters: UTFGrid instance and optional list of (x, y)
-        coordinates.
+        coordinates."""
 
-        """
         self.utf_grid = utf_grid
         self.points = points
 
@@ -243,26 +232,24 @@ class GridCoordinateBlock:
         The points form a rectangular matrix, whose maximum size is
         self.size ** 2, but it can be smaller if the matrix is at the
         edge of UTFGrid.  Investigate block and return x, y coordinates
-        of uncut square block middle point.
+        of uncut square block middle point."""
 
-        """
         check_status = self._check_block()
         if check_status == 0:
             raise Error("Something went wrong with geocache coordinate "
                         "parsing from UTFGrid.  Either the JSON parsing "
                         "failed or Groundspeak has changed something.")
         elif check_status == 1:
-            return [sum(i)/2 for i in [self._xlim, self._ylim]]
+            return [sum(i) / 2 for i in [self._xlim, self._ylim]]
         else:
-            return [sum(self._find_limits(axis)) / 2 for axis in ['x', 'y']]
+            return [sum(self._find_limits(axis)) / 2 for axis in ["x", "y"]]
 
     def _check_block(self):
         """Check that all points are properly aligned
 
         Return 0 if there are some problems, 1 if this is a rectangular
-        grid of size self.size ** 2, 2 if some points fall out of the edge.
+        grid of size self.size ** 2, 2 if some points fall out of the edge."""
 
-        """
         rv = None
         for lim in [self._xlim, self._ylim]:
             block_size = lim[1] - lim[0] + 1
@@ -284,13 +271,12 @@ class GridCoordinateBlock:
 
         If the block is at the edge of UTFgrid, minimum or maximum x, y
         values for these points fall outside current grid size.  This is
-        intentional.
+        intentional."""
 
-        """
         square_width = self.size
-        if axis == 'x':
+        if axis == "x":
             lim_min, lim_max = self._xlim
-        elif axis == 'y':
+        elif axis == "y":
             lim_min, lim_max = self._ylim
         if lim_min == 0:
             lim_min = lim_max - square_width + 1
