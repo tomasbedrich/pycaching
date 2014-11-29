@@ -2,6 +2,7 @@
 
 import unittest
 import pycaching
+from geopy.distance import great_circle
 from pycaching.errors import LoginFailedException, GeocodeError, PMOnlyException
 from pycaching import Geocaching
 from pycaching import Cache
@@ -22,9 +23,9 @@ class TestGeocaching(unittest.TestCase):
     def test_geocode(self):
         pilsen = Point(49.74774, 13.37752)
         with self.subTest("existing location"):
-            self.assertEqual(self.g.geocode("Pilsen"), pilsen)
-            self.assertEqual(self.g.geocode("Plzeň"), pilsen)
-            self.assertEqual(self.g.geocode("plzen"), pilsen)
+            self.assertLess(great_circle(self.g.geocode("Pilsen"), pilsen).miles, 10)
+            self.assertLess(great_circle(self.g.geocode("Plzeň"), pilsen).miles, 10)
+            self.assertLess(great_circle(self.g.geocode("plzen"), pilsen).miles, 10)
 
         with self.subTest("non-existing location"):
             with self.assertRaises(GeocodeError):
