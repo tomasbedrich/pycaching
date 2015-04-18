@@ -296,7 +296,7 @@ class Geocaching(object):
             return
         else:
             logging.debug("Oh no, these geocaches were not found: {}.".format(round_1_caches.keys()))
-            for c in self._search_from_bordering_tiles(tiles, **round_1_caches):
+            for c in self._search_from_bordering_tiles(tiles, new_zoom, **round_1_caches):
                 if strict and not c.inside_area(area):
                     continue
                 yield c
@@ -346,7 +346,7 @@ class Geocaching(object):
                 yield c
         logging.info("{} tiles downloaded".format(len(tiles)))
 
-    def _search_from_bordering_tiles(self, previous_tiles, **missing_caches):
+    def _search_from_bordering_tiles(self, previous_tiles, new_zoom, **missing_caches):
         """Extend geocache search to neighbouring tiles
 
         Parameter previous_tiles is a set of tiles that were already
