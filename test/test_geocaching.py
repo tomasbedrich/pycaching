@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-import json
 import unittest
 import pycaching
 from pycaching.errors import LoginFailedException, GeocodeError, PMOnlyException
@@ -51,15 +50,14 @@ class TestLoading(unittest.TestCase):
 
     def test_search(self):
         with self.subTest("normal"):
-            expected = ["GC41FJC", "GC17E8Y", "GC1ZAQV"]
-            caches = self.g.search(Point(49.733867, 13.397091), len(expected))
-            for wp, cache in zip(expected, caches):
-                self.assertEqual(wp, cache.wp)
+            expected = ["GC41FJC", "GC17E8Y", "GC5ND9F"]
+            caches = self.g.search(Point(49.733867, 13.397091), 3)
+            for cache in caches:
+                self.assertIn(cache.wp, expected)
 
         with self.subTest("pagging"):
-            caches = self.g.search(Point(49.733867, 13.397091), 25)
-            res = [c for c in caches]
-            self.assertNotEqual(res[0], res[20])
+            caches = list(self.g.search(Point(49.733867, 13.397091), 25))
+            self.assertNotEqual(caches[0], caches[20])
 
     def test_search_quick(self):
         """Perform search and check found caches"""
@@ -67,11 +65,9 @@ class TestLoading(unittest.TestCase):
         caches = list(self.g.search_quick(rect))
         strict_caches = list(self.g.search_quick(rect, strict=True))
         precise_caches = list(self.g.search_quick(rect, precision=45.))
-        strict_precise_caches = list(self.g.search_quick(
-            rect, precision=45., strict=True))
 
         # Check for known geocaches
-        expected = ["GC41FJC", "GC17E8Y", "GC1ZAQV"]
+        expected = ["GC41FJC", "GC17E8Y", "GC5ND9F"]
         for i in expected:
             found = False
             for c in caches:
@@ -102,7 +98,7 @@ class TestLoading(unittest.TestCase):
         expect_tiles = [(2331, 1185, 12), (2331, 1186, 12),
                         (2332, 1185, 12), (2332, 1186, 12)]
         expect_precision = 76.06702024121832
-        r = Rectangle(Point(60.15,24.95), Point(60.17,25.00))
+        r = Rectangle(Point(60.15, 24.95), Point(60.17, 25.00))
         tiles, starting_precision = self.g._calculate_initial_tiles(r)
         for t in tiles:
             with self.subTest("Tile {} expected as initial tile".format(t)):
