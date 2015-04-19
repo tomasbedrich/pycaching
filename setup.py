@@ -9,7 +9,7 @@ long_description = f.read()
 
 info = {
     "name":                "pycaching",
-    "version":             "3.0.2",  # PEP 386
+    "version":             "3.1",  # PEP 386
     "author":              "Tomas Bedrich",
     "author_email":        "ja@tbedrich.cz",
     "url":                 "https://github.com/tomasbedrich/pycaching",
