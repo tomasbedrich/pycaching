@@ -34,7 +34,7 @@ class Geocaching(object):
 
     _urls = {
         "login_page":       _baseurl + "login/default.aspx",
-        "cache_details":    _baseurl + "seek/cache_details.aspx",
+        "cache_details":    _baseurl + "geocache/{wp}",
         "caches_nearest":   _baseurl + "seek/nearest.aspx",
         "geocode":          _baseurl + "api/geocode",
         "map":              _tile_url + "map.details",
@@ -223,11 +223,12 @@ class Geocaching(object):
         c = Cache(wp, self)
 
         # prettify data
-        c.cache_type = typeLink.find("img").get("alt")
+        c.cache_type = typeLink.find("img").get(
+            "src").split("/")[-1].rsplit(".", 1)[0]  # filename of img[src]
         c.name = nameLink.span.text.strip()
         c.found = found
         c.state = "Strike" not in nameLink.get("class")
-        c.size = " ".join(size.get("alt").split()[1:])
+        c.size = size.get("src").split("/")[-1].rsplit(".", 1)[0]  # filename of img[src]
         c.difficulty, c.terrain = list(map(float, D_T.text.split("/")))
         c.hidden = Util.parse_date(placed.text)
         c.author = author[3:]  # delete "by "
@@ -454,10 +455,7 @@ class Geocaching(object):
         assert type(wp) is str and wp.startswith("GC")
         logging.info("Loading details about %s...", wp)
 
-        # assemble request
-        params = urlencode({"wp": wp})
-        url = self._urls["cache_details"] + "?" + params
-
+        url = self._urls["cache_details"].format(wp=wp)
         try:
             root = self._browser.get(url).soup
         except requests.exceptions.ConnectionError as e:
@@ -472,7 +470,7 @@ class Geocaching(object):
 
         # parse raw data
         name = cache_details.find("h2")
-        cache_type = cache_details.find("img").get("alt")
+        cache_type = cache_details.find("img").get("src")
         author = cache_details("a")[1]
         hidden = cache_details.find("div", "minorCacheDetails").find_all("div")[1]
         location = root.find(id="uxLatLon")
@@ -491,14 +489,14 @@ class Geocaching(object):
 
         # prettify data
         c.name = name.text
-        c.cache_type = cache_type
+        c.cache_type = cache_type.split("/")[-1].rsplit(".", 1)[0]
         c.author = author.text
-        c.hidden = Util.parse_date(hidden.text.split()[2])
+        c.hidden = Util.parse_date(hidden.text.split(":")[-1])
         c.location = Point.from_string(location.text)
         c.state = state is None
         c.found = found and "Found It!" in found.text or False
         c.difficulty, c.terrain = [float(_.get("alt").split()[0]) for _ in D_T]
-        c.size = " ".join(size.get("alt").split()[1:])
+        c.size = size.get("src").split("/")[-1].rsplit(".", 1)[0]  # filename of img[src]
         attributes_raw = [_.get("src").split('/')[-1].rsplit("-", 1) for _ in attributes_raw]
         c.attributes = {attribute_name: appendix.startswith("yes")
                         for attribute_name, appendix in attributes_raw if not appendix.startswith("blank")}
