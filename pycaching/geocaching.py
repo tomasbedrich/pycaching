@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 
 import logging
+import math
 import requests
 import bs4
 import mechanicalsoup as ms
 from urllib.parse import urlencode
+from pycaching.area import Area
 from pycaching.cache import Cache
 from pycaching.util import Util
 from pycaching.point import Point
+from pycaching.utfgrid import UTFGrid
 from pycaching.errors import Error, NotLoggedInException, LoginFailedException, GeocodeError, LoadError, PMOnlyException
+import geopy.distance
 
 
 def login_needed(func):
@@ -26,13 +30,16 @@ def login_needed(func):
 class Geocaching(object):
 
     _baseurl = "https://www.geocaching.com/"
+    _tile_url = "http://tiles01.geocaching.com/"
 
     _urls = {
         "login_page":       _baseurl + "login/default.aspx",
-        "cache_details":    _baseurl + "seek/cache_details.aspx",
+        "cache_details":    _baseurl + "geocache/{wp}",
         "caches_nearest":   _baseurl + "seek/nearest.aspx",
         "geocode":          _baseurl + "api/geocode",
-        "map":              "https://tiles01.geocaching.com/map.details",
+        "map":              _tile_url + "map.details",
+        "tile":             _tile_url + "map.png",
+        "grid":             _tile_url + "map.info",
     }
 
     # interesting URLs:
@@ -216,11 +223,12 @@ class Geocaching(object):
         c = Cache(wp, self)
 
         # prettify data
-        c.cache_type = typeLink.find("img").get("alt")
+        c.cache_type = typeLink.find("img").get(
+            "src").split("/")[-1].rsplit(".", 1)[0]  # filename of img[src]
         c.name = nameLink.span.text.strip()
         c.found = found
         c.state = "Strike" not in nameLink.get("class")
-        c.size = " ".join(size.get("alt").split()[1:])
+        c.size = size.get("src").split("/")[-1].rsplit(".", 1)[0]  # filename of img[src]
         c.difficulty, c.terrain = list(map(float, D_T.text.split("/")))
         c.hidden = Util.parse_date(placed.text)
         c.author = author[3:]  # delete "by "
@@ -229,6 +237,173 @@ class Geocaching(object):
 
         logging.debug("Cache parsed: %s", c)
         return c
+
+    def search_quick(self, area, precision=None, strict=False):
+        """Get geocaches inside area, with approximate coordinates
+
+        Download geocache map tiles from geocaching.com and calculate
+        approximate location of based on tiles.  Parameter area is Area
+        instance, optional parameter precision is desired location
+        precision for the cache in meters.  More precise results require
+        increasingly more pages to be loaded.
+
+        If not strict, return all found geocaches from overlapping
+        tiles; else make sure that only caches within given area are
+        returned.
+
+        Return generator object of Cache instances."""
+
+        logging.info("Performing quick search for cache locations")
+        assert isinstance(area, Area)
+        # Calculate initial tiles
+        tiles, starting_precision = self._calculate_initial_tiles(area)
+
+        # Check for continuation requirement and download tiles
+        geocaches = self._get_utfgrid_caches(*tiles)
+        if precision is not None:
+            # On which zoom level grid details exceed required precision
+            new_zoom = self._get_zoom_by_distance(
+                precision, area.mean_point.latitude, UTFGrid.size, "ge")
+            new_precision = area.mean_point.precision_from_tile_zoom(
+                new_zoom, UTFGrid.size)
+            assert precision >= new_precision
+            new_zoom = min(new_zoom, UTFGrid.max_zoom)
+        if precision is None or precision >= starting_precision \
+                or new_zoom == tiles[0][-1]:   # Previous zoom
+            # No need to continue: start yielding caches
+            for c in geocaches:
+                if strict and not c.inside_area(area):
+                    continue
+                yield c
+            return
+
+        # Define new tiles for downloading
+        logging.info("Downloading again at zoom level {} "
+                     "(precision {:.1f} m)".format(new_zoom, new_precision))
+        round_1_caches = {}
+        tiles = set()
+        for c in geocaches:
+            round_1_caches[c.wp] = c
+            tiles.add(c.location.to_map_tile(new_zoom))
+        # Perform query, yield found caches
+        for c in self._get_utfgrid_caches(*tiles):
+            round_1_caches.pop(c.wp, None)   # Mark as found
+            if strict and not c.inside_area(area):
+                continue
+            yield c
+
+        # Check if previously found caches are missing
+        if not round_1_caches:
+            return
+        else:
+            logging.debug("Oh no, these geocaches were not found: {}.".format(round_1_caches.keys()))
+            for c in self._search_from_bordering_tiles(tiles, new_zoom, **round_1_caches):
+                if strict and not c.inside_area(area):
+                    continue
+                yield c
+
+    def _calculate_initial_tiles(self, area):
+        """Calculate which tiles are downloaded initially
+
+        Return list of tiles and starting precision."""
+
+        dist = area.diagonal
+        # Get zoom where distance between points is less or equal to tile width
+        starting_zoom = self._get_zoom_by_distance(
+            dist, area.mean_point.latitude, 1, "le")
+        starting_tile_width = area.mean_point.precision_from_tile_zoom(
+            starting_zoom, 1)
+        starting_precision = starting_tile_width / UTFGrid.size
+        assert dist <= starting_tile_width
+        zoom = min(starting_zoom, UTFGrid.max_zoom)
+        logging.info("Starting at zoom level {} (precision {:.1f} m, "
+                     "tile width {:.0f} m)".format(
+                         zoom, starting_precision, starting_tile_width))
+        x1, y1, _ = area.bounding_box.corners[0].to_map_tile(zoom)
+        x2, y2, _ = area.bounding_box.corners[1].to_map_tile(zoom)
+        tiles = []                        # [(x, y, z), ...]
+        for x_i in range(min(x1, x2), max(x1, x2) + 1):
+            for y_i in range(min(y1, y2), max(y1, y2) + 1):
+                tiles.append((x_i, y_i, zoom))
+        return tiles, starting_precision
+
+    def _get_utfgrid_caches(self, *tiles):
+        """Get location of geocaches within tiles, using UTFGrid service
+
+        Parameter tiles contains one or more tuples dictionaries that
+        are of form (x, y, z).  Return generator object of Cache
+        instances."""
+
+        found_caches = set()
+        for tile in tiles:
+            ug = UTFGrid(self, *tile)
+            for c in ug.download():
+                # Some geocaches may be found multiple times if they are on the
+                # border of the UTFGrid. Throw additional ones away.
+                if c.wp in found_caches:
+                    logging.debug("Found cache {} again".format(c.wp))
+                    continue
+                found_caches.add(c.wp)
+                yield c
+        logging.info("{} tiles downloaded".format(len(tiles)))
+
+    def _search_from_bordering_tiles(self, previous_tiles, new_zoom, **missing_caches):
+        """Extend geocache search to neighbouring tiles
+
+        Parameter previous_tiles is a set of tiles that were already
+        downloaded.  Parameter missing_caches is a dictionary
+        {waypoint:<Cache>} and contains those caches that were found in
+        previous zoom level but not anymore. Search around their
+        expected coordinates and yield some more caches."""
+
+        new_tiles = set()
+        for wp in missing_caches:
+            tile = missing_caches[wp].location.to_map_tile(new_zoom, fractions=True)
+            neighbours = self._bordering_tiles(*tile)
+            new_tiles.update(neighbours.difference(previous_tiles))
+        logging.debug("Extending search to tiles {}".format(
+            new_tiles))
+        for c in self._get_utfgrid_caches(*new_tiles):
+            missing_caches.pop(c.wp, None)   # Mark as found
+            yield c
+        if missing_caches:
+            logging.debug("Could not just find these caches anymore: "
+                          .format(missing_caches))
+            for wp in missing_caches:
+                yield missing_caches[wp]
+
+    @staticmethod
+    def _bordering_tiles(x_float, y_float, z, fraction=0.1):
+        """Get possible map tiles near the edge where geocache was found
+
+        Return set of (x, y, z) tile coordinates."""
+
+        orig_tile = (int(x_float), int(y_float), z)
+        tiles = set()
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                new_tile = (int(x_float + i * fraction), int(y_float + j * fraction), z)
+                if new_tile != orig_tile and new_tile not in tiles:
+                    tiles.add(new_tile)
+        return tiles
+
+    @staticmethod
+    def _get_zoom_by_distance(dist, lat, tile_resolution=256, comparison="le"):
+        """Calculate tile zoom level
+
+        Return zoom level on which distance dist (in meters) >= tile
+        width / tile_resolution (comparison="ge") or dist <= tile width
+        / tile_resolution (comparison="le").  Calculations are performed
+        for point where latitude is lat, assuming spherical earth.
+
+        Return zoom level as integer."""
+
+        diam = geopy.distance.ELLIPSOIDS["WGS-84"][0] * 1e3 * 2
+        if comparison == "le":
+            convert = math.floor
+        elif comparison == "ge":
+            convert = math.ceil
+        return convert(-math.log(dist * tile_resolution / (math.pi * diam * math.cos(math.radians(lat)))) / math.log(2))
 
     def load_cache_quick(self, wp, destination=None):
         """Loads details from map server.
@@ -280,10 +455,7 @@ class Geocaching(object):
         assert type(wp) is str and wp.startswith("GC")
         logging.info("Loading details about %s...", wp)
 
-        # assemble request
-        params = urlencode({"wp": wp})
-        url = self._urls["cache_details"] + "?" + params
-
+        url = self._urls["cache_details"].format(wp=wp)
         try:
             root = self._browser.get(url).soup
         except requests.exceptions.ConnectionError as e:
@@ -298,7 +470,7 @@ class Geocaching(object):
 
         # parse raw data
         name = cache_details.find("h2")
-        cache_type = cache_details.find("img").get("alt")
+        cache_type = cache_details.find("img").get("src")
         author = cache_details("a")[1]
         hidden = cache_details.find("div", "minorCacheDetails").find_all("div")[1]
         location = root.find(id="uxLatLon")
@@ -317,14 +489,14 @@ class Geocaching(object):
 
         # prettify data
         c.name = name.text
-        c.cache_type = cache_type
+        c.cache_type = cache_type.split("/")[-1].rsplit(".", 1)[0]
         c.author = author.text
-        c.hidden = Util.parse_date(hidden.text.split()[2])
+        c.hidden = Util.parse_date(hidden.text.split(":")[-1])
         c.location = Point.from_string(location.text)
         c.state = state is None
         c.found = found and "Found It!" in found.text or False
         c.difficulty, c.terrain = [float(_.get("alt").split()[0]) for _ in D_T]
-        c.size = " ".join(size.get("alt").split()[1:])
+        c.size = size.get("src").split("/")[-1].rsplit(".", 1)[0]  # filename of img[src]
         attributes_raw = [_.get("src").split('/')[-1].rsplit("-", 1) for _ in attributes_raw]
         c.attributes = {attribute_name: appendix.startswith("yes")
                         for attribute_name, appendix in attributes_raw if not appendix.startswith("blank")}

@@ -97,37 +97,36 @@ class Cache(object):
     }
 
     _possible_types = {
-        "Traditional Cache",
-        "Multi-Cache",
-        "Unknown Cache",
-        "Mystery Cache",
-        "Letterbox Hybrid",
-        "Event Cache",
-        "Mega-Event Cache",
-        "Giga-Event Cache",
-        "Earthcache",
-        "Cache In Trash Out Event",
-        "Webcam Cache",
-        "Virtual Cache",
-        "Wherigo Cache",
-        "Lost And Found Event Cache",
-        "Project Ape Cache",
-        "Groundspeak Hq",
-        "Gps Adventures Exhibit",
-        "Groundspeak Block Party",
-        "Locationless (Reverse) Cache",
+        # key is cache image url, used for parsing: http://www.geocaching.com/images/WptTypes/[KEY].gif
+        "2": "Traditional Cache",
+        "3": "Multi-cache",
+        "8": "Mystery Cache",
+        "__8": "Unknown Cache",  # same as Mystery, key not used
+        "5": "Letterbox hybrid",
+        "6": "Event Cache",
+        "mega": "Mega-Event Cache",
+        "giga": "Giga-Event Cache",
+        "earthcache": "Earthcache",
+        "13": "Cache in Trash out Event",
+        "11": "Webcam Cache",
+        "4": "Virtual Cache",
+        "1858": "Wherigo Cache",
+        "10Years_32": "Lost and Found Event Cache",
+        "ape_32": "Project Ape Cache",
+        "HQ_32": "Groundspeak HQ",
+        "1304": "GPS Adventures Exhibit",
+        "4738": "Groundspeak Block Party",
+        "12": "Locationless (Reverse) Cache",
     }
 
     _possible_sizes = {
-        "nano",
-        "micro",
-        "small",
-        "regular",
-        "large",
-        "very large",
-        "not chosen",
-        "virtual",
-        "other"
+        "micro": "micro",
+        "small": "small",
+        "regular": "regular",
+        "large": "large",
+        "not_chosen": "not chosen",
+        "virtual": "virtual",
+        "other": "other",
     }
 
     def __init__(self, wp, geocaching, *, name=None, cache_type=None, location=None, state=None,
@@ -225,11 +224,14 @@ class Cache(object):
 
     @cache_type.setter
     def cache_type(self, cache_type):
-        cache_type = cache_type.strip().title()
+        cache_type = cache_type.strip()
         cache_type = cache_type.replace("Geocache", "Cache")
-        if cache_type not in self._possible_types:
+        if cache_type in self._possible_types.values():  # try to search in values
+            self._cache_type = cache_type
+        elif cache_type in self._possible_types.keys():  # not in values => it must be a key
+            self._cache_type = self._possible_types[cache_type]
+        else:
             raise ValueError("Cache type '{}' is not possible.".format(cache_type))
-        self._cache_type = cache_type
 
     @property
     @lazy_loaded
@@ -257,9 +259,12 @@ class Cache(object):
     @size.setter
     def size(self, size):
         size = size.strip().lower()
-        if size not in self._possible_sizes:
+        if size in self._possible_sizes.values():  # try to search in values
+            self._size = size
+        elif size in self._possible_sizes.keys():  # not in values => it must be a key
+            self._size = self._possible_sizes[size]
+        else:
             raise ValueError("Size '{}' is not possible.".format(size))
-        self._size = size
 
     @property
     @lazy_loaded
@@ -372,3 +377,7 @@ class Cache(object):
     @pm_only.setter
     def pm_only(self, pm_only):
         self._pm_only = bool(pm_only)
+
+    def inside_area(self, area):
+        """Calculate if geocache is inside given area"""
+        return area.inside_area(self.location)
