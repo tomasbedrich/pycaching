@@ -9,23 +9,27 @@ Features
 --------
 
 -  **login** to Geocaching.com
--  **search** for up to 200 caches around any point
+-  **search** caches
+   
+   - normal search (up to 200 caches around any point)
+   - **NEW:** quick search (all caches inside some area)
+   
 -  **load cache** details by WP
 
    -  normal loading (loads all details)
    -  quick loading (loads just basic info very quickly)
-   -  **NEW:** lazy loading (create cache object and load info on demand)
+   -  lazy loading (create cache object and load info on demand)
 
 -  **geocode** given location
 
 Roadmap
 ~~~~~~~
 
--  search results caching (without geo- :))
+-  search results caching (not geo- :)
 -  Sphinx documentation
 -  submitting cache logs
 -  usage of asyncio
--  automatic generation of possible cache attributes
+-  automatic generation of possible cache attributes - partially done
 
 
 ------------
@@ -34,13 +38,13 @@ Installation
 
 Using pip:
 
-::
+.. code:: bash
 
     pip install pycaching
 
 Manually, from GIT:
 
-::
+.. code:: bash
 
     git clone https://github.com/tomasbedrich/pycaching.git
 
@@ -59,14 +63,14 @@ Example usage
 Login
 ~~~~~
 
-::
+.. code:: python
 
     import pycaching
     geocaching = pycaching.login("user", "pass")
 
 The above is just shortcut for:
 
-::
+.. code:: python
 
     from pycaching import Geocaching
     geocaching = Geocaching()
@@ -75,7 +79,7 @@ The above is just shortcut for:
 Load a cache details
 ~~~~~~~~~~~~~~~~~~~~
 
-::
+.. code:: python
 
     import pycaching
 
@@ -85,7 +89,7 @@ Load a cache details
 
 Using lazy loading:
 
-::
+.. code:: python
 
     from pycaching import Geocaching, Cache
 
@@ -104,7 +108,7 @@ Notice the ``limit`` in search function. It is because ``search()``
 returns a generator object, which would fetch the caches forever in case
 of simple loop.
 
-::
+.. code:: python
 
     from pycaching import Geocaching, Point
 
@@ -119,7 +123,7 @@ of simple loop.
 Find all caches on some adress
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-::
+.. code:: python
 
     import pycaching
 
@@ -132,13 +136,14 @@ Find all caches on some adress
 Find approximate location of caches in area
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-::
+.. code:: python
 
     from pycaching import Geocaching, Point, Rectangle
 
     geocaching = pycaching.Geocaching()
     geocaching.login("user", "pass")
     rect = Rectangle(Point(60.15, 24.95), Point(60.17, 25.00))
+
     for c in geocaching.search_quick(rect, strict=True):
         print('{:8} ({:.5f}, {:.5f}) (+- {:.1f} m); {}'.format(
             c.wp, c.location.latitude, c.location.longitude,
