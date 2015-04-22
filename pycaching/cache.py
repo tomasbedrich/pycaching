@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import logging
 import datetime
 from pycaching.errors import ValueError
@@ -169,6 +170,11 @@ class Cache(object):
 
     def __str__(self):
         return self.wp
+
+    def __repr__(self):
+        lst = ["%s: %s" % (self.wp, self.name),
+             ]
+        return os.linesep.join(lst)
 
     def __eq__(self, other):
         return self.wp == other.wp
@@ -381,3 +387,32 @@ class Cache(object):
     def inside_area(self, area):
         """Calculate if geocache is inside given area"""
         return area.inside_area(self.location)
+
+    def to_gpx(self):
+        """
+        Return the cache description as XML string
+        """
+        xml = """<wpt lon="{1}" lat="{0}">
+    <time>{2}</time>
+    <name>{3}</name>
+    <desc>{4}</desc>
+    <url>http://coord.info/{3}</url>
+    <urlname>{4}</urlname>
+    <sym>Geocache</sym>
+    <type>Geocache|{5}</type>
+    <groundspeak:cache archived="False" available="True">
+        <groundspeak:name>{3}</groundspeak:name>
+        <groundspeak:placed_by>{6}</groundspeak:placed_by>
+        <groundspeak:type>{6}</groundspeak:type>
+        <groundspeak:container>{7}</groundspeak:container>
+        <groundspeak:difficulty>{8}</groundspeak:difficulty>
+        <groundspeak:terrain>{9}</groundspeak:terrain>
+        <groundspeak:long_description html="True"> {10} </groundspeak:long_description>
+        <groundspeak:encoded_hints>{11}</groundspeak:encoded_hints>
+    </groundspeak:cache>
+</wpt>
+""".format(self.location.latitude, self.location.longitude, self.hidden.isoformat(),
+           self.wp, self.name, self.cache_type, self.author, self.size, self.difficulty,
+           self.difficulty, self.description, self.hint,
+               )
+        return xml
