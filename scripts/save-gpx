@@ -24,11 +24,10 @@ def process(opts):
             f.write('    creator="pycaching"\n')
             f.write('    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n')
             f.write('    xmlns="http://www.topografix.com/GPX/1/0"\n')
-            f.write('    xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd">\n')
+            f.write('    xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd http://www.groundspeak.com/cache/1/0/2 http://www.groundspeak.com/cache/1/0/2/cache.xsd">\n')
             f.write('<name>GeoCaching GPX</name>\n')
             f.write(cache.to_gpx())
             f.write('</gpx>')
-
 
 if __name__=="__main__":
     opts = parse()
