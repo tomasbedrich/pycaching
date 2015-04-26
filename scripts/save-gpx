@@ -15,7 +15,7 @@ def process(opts):
     geocaching = pycaching.login(opts.user, opts.password)
     for cache_name in opts.geocache:
         cache = geocaching.load_cache(cache_name)
-        with open(cache_name + ".gpx") as f:
+        with open(cache_name + ".gpx", "w") as f:
             f.write('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n')
             f.write('<name>GeoCaching GPX</name>')
             f.write(cache.to_xml())
