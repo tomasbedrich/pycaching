@@ -11,14 +11,17 @@ def parse():
     parser.add_argument("geocache", type=str, nargs='+')
     return parser.parse_args()
 
+
 def process(opts):
     geocaching = pycaching.login(opts.user, opts.password)
     for cache_name in opts.geocache:
         cache = geocaching.load_cache(cache_name)
         with open(cache_name + ".gpx", "w") as f:
             f.write('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n')
+            f.write('<gpx xmlns="http://www.topografix.com/GPX/1/0" xmlns:groundspeak="http://www.groundspeak.com/cache/1/0" xmlns:ns3="http://www.groundspeak.com/cache/1/0/1" xmlns:ns4="http://www.gsak.net/xmlv1/5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd  http://www.groundspeak.com/cache/1/0 http://www.groundspeak.com/cache/1/0/cache.xsd">\n')
             f.write('<name>GeoCaching GPX</name>')
             f.write(cache.to_gpx())
+            f.write('</gpx>')
 
 
 if __name__=="__main__":
