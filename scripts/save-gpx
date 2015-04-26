@@ -16,6 +16,8 @@ def parse():
 def process(opts):
     geocaching = pycaching.login(opts.user, opts.password)
     for cache_name in opts.geocache:
+        if cache_name.endswith(".gpx"):
+            cache_name = cache_name[:-4]
         print("Retrieve %s" % cache_name)
         cache = geocaching.load_cache(cache_name)
         with open(cache_name + ".gpx", "w") as f:
