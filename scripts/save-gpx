@@ -3,6 +3,7 @@
 
 import argparse
 import pycaching
+import time
 
 def parse():
     parser = argparse.ArgumentParser(usage="save-gpx -u user -p pass GC12345", description="Retrieve and save information about a cache in GPX format.", add_help=True)
@@ -25,7 +26,9 @@ def process(opts):
             f.write('    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n')
             f.write('    xmlns="http://www.topografix.com/GPX/1/0"\n')
             f.write('    xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd http://www.groundspeak.com/cache/1/0/2 http://www.groundspeak.com/cache/1/0/2/cache.xsd">\n')
-            f.write('<name>GeoCaching GPX</name>\n')
+            f.write('    <name>GeoCaching GPX</name>\n')
+            f.write('    <time>%s</time>\n'%time.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
+            f.write('    <keywords>geocache, cache, opencaching, waypoint</keywords>\n')
             f.write(cache.to_gpx())
             f.write('</gpx>')
 
