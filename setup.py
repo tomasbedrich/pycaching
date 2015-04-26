@@ -20,7 +20,8 @@ info = {
     "long_description":    long_description,
     "keywords":            ["geocaching", "crawler", "geocache", "cache", "searching", "geocoding"],
     "install_requires":    ["MechanicalSoup >= 0.2.0", "geopy >= 1.0.0"],
-    "test_suite":          "test"
-}
+    "test_suite":          "test",
+    "scripts":             ["scripts/save-gpx"]
+    }
 
 setup(**info)

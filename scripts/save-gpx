@@ -1,0 +1,26 @@
+#!/usr/bin/env python
+# coding: utf8
+
+import argparse
+import pycaching
+
+def parse():
+    parser = argparse.ArgumentParser(usage="save-gpx -u user -p pass GC12345", description="Retrieve and save information about a cache in GPX format.", add_help=True)
+    parser.add_argument("-u", "--user", type=str, dest='user')
+    parser.add_argument("-p", "--password", type=str, dest="password")
+    parser.add_argument("geocache", type=str, nargs='+')
+    return parser.parse_args()
+
+def process(opts):
+    geocaching = pycaching.login(opts.user, opts.password)
+    for cache_name in opts.geocache:
+        cache = geocaching.load_cache(cache_name)
+        with open(cache_name + ".gpx") as f:
+            f.write('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n')
+            f.write('<name>GeoCaching GPX</name>')
+            f.write(cache.to_xml())
+
+
+if __name__=="__main__":
+    opts = parse()
+    process(opts)
