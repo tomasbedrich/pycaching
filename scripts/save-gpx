@@ -19,8 +19,13 @@ def process(opts):
         cache = geocaching.load_cache(cache_name)
         with open(cache_name + ".gpx", "w") as f:
             f.write('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n')
-            f.write('<gpx xmlns="http://www.topografix.com/GPX/1/0" xmlns:groundspeak="http://www.groundspeak.com/cache/1/0" xmlns:ns3="http://www.groundspeak.com/cache/1/0/1" xmlns:ns4="http://www.gsak.net/xmlv1/5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd  http://www.groundspeak.com/cache/1/0 http://www.groundspeak.com/cache/1/0/cache.xsd">\n')
-            f.write('<name>GeoCaching GPX</name>')
+            f.write('<gpx \n')
+            f.write('    version="1.0"\n')
+            f.write('    creator="pycaching"\n')
+            f.write('    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n')
+            f.write('    xmlns="http://www.topografix.com/GPX/1/0"\n')
+            f.write('    xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd">\n')
+            f.write('<name>GeoCaching GPX</name>\n')
             f.write(cache.to_gpx())
             f.write('</gpx>')
 
