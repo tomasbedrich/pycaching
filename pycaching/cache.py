@@ -396,7 +396,7 @@ class Cache(object):
     <wpt lon="{1}" lat="{0}">
         <time>{2}</time>
         <name>{3}</name>
-        <desc>{4} by {3}, {5} ({8}/{9})</desc>
+        <desc>{4} by {6}, {5} ({8}/{9})</desc>
         <url>http://coord.info/{3}</url>
         <urlname>{4}</urlname>
         <sym>Geocache</sym>

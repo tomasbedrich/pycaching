@@ -9,7 +9,7 @@ def parse():
     parser = argparse.ArgumentParser(usage="save-gpx -u user -p pass GC12345", description="Retrieve and save information about a cache in GPX format.", add_help=True)
     parser.add_argument("-u", "--user", type=str, dest='user')
     parser.add_argument("-p", "--password", type=str, dest="password")
-    parser.add_argument("geocache", type=str, nargs='+')
+    parser.add_argument("geocache", nargs='+')
     return parser.parse_args()
 
 
