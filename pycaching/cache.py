@@ -396,13 +396,13 @@ class Cache(object):
     <wpt lon="{1}" lat="{0}">
         <time>{2}</time>
         <name>{3}</name>
-        <desc>{4}</desc>
+        <desc>{4} by {3}, {5} ({8}/{9})</desc>
         <url>http://coord.info/{3}</url>
         <urlname>{4}</urlname>
         <sym>Geocache</sym>
         <type>Geocache|{5}</type>
-        <groundspeak:cache archived="False" available="True">
-            <groundspeak:name>{3}</groundspeak:name>
+        <groundspeak:cache xmlns:groundspeak="http://www.groundspeak.com/cache/1/0/2" id="{3}"archived="false" available="true">
+            <groundspeak:name>{4}</groundspeak:name>
             <groundspeak:placed_by>{6}</groundspeak:placed_by>
             <groundspeak:type>{6}</groundspeak:type>
             <groundspeak:container>{7}</groundspeak:container>
@@ -414,6 +414,6 @@ class Cache(object):
     </wpt>
 """.format(self.location.latitude, self.location.longitude, self.hidden.isoformat(),
            self.wp, self.name, self.cache_type, self.author, self.size, self.difficulty,
-           self.difficulty, self.description, self.hint,
+           self.terrain, self.description, self.hint,
                )
         return xml
