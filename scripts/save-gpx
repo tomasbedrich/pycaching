@@ -15,6 +15,7 @@ def parse():
 def process(opts):
     geocaching = pycaching.login(opts.user, opts.password)
     for cache_name in opts.geocache:
+        print("Retrieve %s" % cache_name)
         cache = geocaching.load_cache(cache_name)
         with open(cache_name + ".gpx", "w") as f:
             f.write('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n')
