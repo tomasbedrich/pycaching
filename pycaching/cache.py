@@ -86,9 +86,9 @@ class Cache(object):
         "teamwork": "Teamwork Required",
         "thorn": "Thorns",
         "ticks": "Ticks",
-        "touristOK": "Tourist Friendly",
+        "touristok": "Tourist Friendly",
         "treeclimbing": "Tree Climbing",
-        "UV": "UV Light Required",
+        "uv": "UV Light Required",
         "wading": "May Require Wading",
         "water": "Drinking Water Nearby",
         "wheelchair": "Wheelchair Accessible",
@@ -326,7 +326,7 @@ class Cache(object):
 
         self._attributes = {}
         for name, allowed in attributes.items():
-            name = name.strip()
+            name = name.strip().lower()
             if name in self._possible_attributes:
                 self._attributes[name] = allowed
             else:
