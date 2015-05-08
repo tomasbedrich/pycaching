@@ -107,6 +107,7 @@ class Cache(object):
         "mega": "Mega-Event Cache",
         "giga": "Giga-Event Cache",
         "earthcache": "Earthcache",
+        "137": "Earthcache",
         "13": "Cache in Trash out Event",
         "11": "Webcam Cache",
         "4": "Virtual Cache",
