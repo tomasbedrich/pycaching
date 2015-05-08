@@ -42,12 +42,6 @@ class Geocaching(object):
         "grid":             _tile_url + "map.info",
     }
 
-    # interesting URLs:
-    # https://staging.api.groundspeak.com/Live/V6Beta/geocaching.svc/help
-    # http://tiles01.geocaching.com/map.details?i=GCNJ2Z
-    # http://tiles01.geocaching.com/map.info?x=8803&y=5576&z=14 (http://www.mapbox.com/developers/utfgrid/)
-    # http://tiles01.geocaching.com/map.png?x=8803&y=5576&z=14
-
     def __init__(self):
         self._logged_in = False
         self._browser = ms.Browser()
