@@ -5,7 +5,6 @@ import json
 import logging
 import unittest
 
-import pycaching
 from pycaching import Geocaching
 from pycaching.utfgrid import UTFGrid, GridCoordinateBlock
 from pycaching.errors import Error
@@ -14,8 +13,8 @@ from test.test_geocaching import _username, _password
 
 
 _this_folder = os.path.dirname(__file__)
-sample_files = {i: os.path.join(_this_folder, i)
-                for i in ["sample_caches", "sample.json"]}
+sample_files = {i: os.path.join(_this_folder, i) for i in ["sample_caches.csv", "sample_utfgrid.json"]}
+
 
 class TestUTFGrid(unittest.TestCase):
 
@@ -26,27 +25,25 @@ class TestUTFGrid(unittest.TestCase):
         """Test if downloading a tile goes nice without errors"""
         self.grid._gc.login(_username, _password)
         with self.subTest("Not getting .png tile first"):
-            caches = list(self.grid.download())
+            list(self.grid.download())
         with self.subTest("Getting .png tile first"):
-            caches = list(self.grid.download(get_png_first=True))
+            list(self.grid.download(get_png_first=True))
 
     def test_parse(self):
         """Parse locally stored grid and compare to expected results"""
         expected_caches = {}
-        with open(sample_files["sample_caches"]) as f:
+        with open(sample_files["sample_caches.csv"]) as f:
             for row in f:
                 wp, lat, lon = row.split(',')
                 expected_caches[wp] = (float(lat), float(lon))
-        with open(sample_files["sample.json"]) as f:
+        with open(sample_files["sample_utfgrid.json"]) as f:
             j = json.loads(f.read())
         caches = self.grid._parse_utfgrid(j)
         for c in caches:
             with self.subTest("Cache " + wp):
                 self.assertIn(c.wp, expected_caches)
-                self.assertAlmostEqual(c.location.latitude,
-                                       expected_caches[c.wp][0])
-                self.assertAlmostEqual(c.location.longitude,
-                                       expected_caches[c.wp][1])
+                self.assertAlmostEqual(c.location.latitude, expected_caches[c.wp][0])
+                self.assertAlmostEqual(c.location.longitude, expected_caches[c.wp][1])
                 expected_caches.pop(c.wp)
         self.assertEqual(len(expected_caches), 0)
 
@@ -80,9 +77,9 @@ class TestGridCoordinateBlock(unittest.TestCase):
                       (-2, 0), (63, 65)],
                   }
     bad_cases = {'too much points':
-                     [(1, 1), (1, 2), (1, 3),
-                      (2, 1), (2, 2), (2, 3),
-                      (3, 1), (3, 2), (3, 3), (3, 4)],
+                 [(1, 1), (1, 2), (1, 3),
+                  (2, 1), (2, 2), (2, 3),
+                  (3, 1), (3, 2), (3, 3), (3, 4)],
                  'still too much points':
                      [(63, 30), (63, 31), (63, 32), (63, 33)],
                  'point missing: 9':
@@ -93,11 +90,11 @@ class TestGridCoordinateBlock(unittest.TestCase):
                      [(1, 0), (1, 1),
                       (2, 0),
                       (3, 0), (3, 1)],
-                  'points not aligned':
+                 'points not aligned':
                      [(1, 1), (1, 2), (1, 3),
-                      (2, 1),         (2, 3), (2, 4), 
+                      (2, 1),         (2, 3), (2, 4),
                       (3, 1), (3, 2), (3, 3)],
-                }
+                 }
 
     def setUp(self):
         self.grid = UTFGrid(Geocaching(), 8800, 5574, 14)
@@ -142,7 +139,7 @@ class TestGridCoordinateBlock(unittest.TestCase):
             self.cb.points = []
             self.cb.add((3, 4))
             self.assertEqual(self.cb.points,
-                             GridCoordinateBlock(self.grid, (3,4)).points)
+                             GridCoordinateBlock(self.grid, (3, 4)).points)
 
         with self.subTest("Multiple points: pass directly"):
             points = [(0, 0), (1, 2), (3, 4), (1, 2), (5, 6)]

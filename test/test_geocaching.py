@@ -109,22 +109,28 @@ class TestLoading(unittest.TestCase):
 
     def test_get_utfgrid_caches(self):
         """Load tiles and check if expected caches are found"""
-        file_path = os.path.join(os.path.dirname(__file__), "sample_caches")
+
+        # load expected result
+        file_path = os.path.join(os.path.dirname(__file__), "sample_caches.csv")
         expected_caches = set()
         with open(file_path) as f:
             for row in f:
                 wp = row.split(',')[0]
                 expected_caches.add(wp)
         n_orig = len(expected_caches)
+
+        # load search result
         additional_caches = set()
         for c in self.g._get_utfgrid_caches((8800, 5574, 14),):
             if c.wp in expected_caches:
                 expected_caches.discard(c.wp)
             else:
                 additional_caches.add(c.wp)
+
         with self.subTest("Expected caches found"):
             self.assertLess(len(expected_caches) / n_orig, 0.2,
                             "Over 20 % of expected caches are lost.")
+
         with self.subTest("Unexpected caches not found"):
             self.assertLess(len(additional_caches) / n_orig, 0.2,
                             "Over 20 % of found caches are unexpected.")
