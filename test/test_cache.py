@@ -23,6 +23,10 @@ class TestProperties(unittest.TestCase):
     def test___eq__(self):
         self.assertEqual(self.c, Cache("GC12345", self.gc))
 
+    def test_geocaching(self):
+        with self.assertRaises(ValueError):
+            Cache("GC12345", None)
+
     def test_wp(self):
         self.assertEqual(self.c.wp, "GC12345")
 
@@ -47,9 +51,13 @@ class TestProperties(unittest.TestCase):
             self.c.location = "S 36 51.918 E 174 46.725"
             self.assertEqual(self.c.location, Point.from_string("S 36 51.918 E 174 46.725"))
 
-        with self.subTest("filter invalid"):
+        with self.subTest("filter invalid string"):
             with self.assertRaises(ValueError):
                 self.c.location = "somewhere"
+
+        with self.subTest("filter invalid types"):
+            with self.assertRaises(ValueError):
+                self.c.location = None
 
     def test_state(self):
         self.assertEqual(self.c.state, True)
@@ -88,9 +96,13 @@ class TestProperties(unittest.TestCase):
             self.c.hidden = "1/30/2000"
             self.assertEqual(self.c.hidden, date(2000, 1, 30))
 
-        with self.subTest("filter invalid"):
+        with self.subTest("filter invalid string"):
             with self.assertRaises(ValueError):
                 self.c.hidden = "now"
+
+        with self.subTest("filter invalid types"):
+            with self.assertRaises(ValueError):
+                self.c.hidden = None
 
     def test_attributes(self):
         self.assertEqual(self.c.attributes, {"onehour": True, "kids": False, "available": True})
@@ -98,6 +110,10 @@ class TestProperties(unittest.TestCase):
         with self.subTest("filter unknown"):
             self.c.attributes = {attr: True for attr in ["onehour", "xxx"]}
             self.assertEqual(self.c.attributes, {"onehour": True})
+
+        with self.subTest("filter invalid"):
+            with self.assertRaises(ValueError):
+                self.c.attributes = None
 
     def test_summary(self):
         self.assertEqual(self.c.summary, "text")
