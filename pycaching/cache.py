@@ -96,28 +96,27 @@ class Cache(object):
         "wirelessbeacon": "Wireless Beacon"
     }
 
+    # either key and value is tuple of synonyms
     _possible_types = {
         # key is cache image url, used for parsing: http://www.geocaching.com/images/WptTypes/[KEY].gif
-        "2": "Traditional Cache",
-        "3": "Multi-cache",
-        "8": "Mystery Cache",
-        "__8": "Unknown Cache",  # same as Mystery, key not used
-        "5": "Letterbox hybrid",
-        "6": "Event Cache",
-        "mega": "Mega-Event Cache",
-        "giga": "Giga-Event Cache",
-        "earthcache": "Earthcache",
-        "137": "Earthcache",
-        "13": "Cache in Trash out Event",
-        "11": "Webcam Cache",
-        "4": "Virtual Cache",
-        "1858": "Wherigo Cache",
-        "10Years_32": "Lost and Found Event Cache",
-        "ape_32": "Project Ape Cache",
-        "HQ_32": "Groundspeak HQ",
-        "1304": "GPS Adventures Exhibit",
-        "4738": "Groundspeak Block Party",
-        "12": "Locationless (Reverse) Cache",
+        ("2", ): ("Traditional", ),
+        ("3", ): ("Multi-cache", ),
+        ("8", ): ("Mystery", "Unknown", ),
+        ("5", ): ("Letterbox hybrid", ),
+        ("6", ): ("Event", ),
+        ("mega", ): ("Mega-Event", ),
+        ("giga", ): ("Giga-Event", ),
+        ("137", "earthcache", ): ("Earthcache", ),
+        ("13", ): ("Cache in Trash out Event", "CITO", ),
+        ("11", ): ("Webcam", ),
+        ("4", ): ("Virtual", ),
+        ("1858", ): ("Wherigo", ),
+        ("10Years_32", ): ("Lost and Found Event", ),
+        ("ape_32", ): ("Project Ape", ),
+        ("HQ_32", ): ("Groundspeak HQ", ),
+        ("1304", ): ("GPS Adventures Exhibit", ),
+        ("4738", ): ("Groundspeak Block Party", ),
+        ("12", ): ("Locationless (Reverse)", ),
     }
 
     _possible_sizes = {
@@ -225,14 +224,30 @@ class Cache(object):
 
     @cache_type.setter
     def cache_type(self, cache_type):
+        cache_type = cache_type.replace(" Geocache", "")  # with space!
+        cache_type = cache_type.replace(" Cache", "")  # with space!
         cache_type = cache_type.strip()
-        cache_type = cache_type.replace("Geocache", "Cache")
-        if cache_type in self._possible_types.values():  # try to search in values
-            self._cache_type = cache_type
-        elif cache_type in self._possible_types.keys():  # not in values => it must be a key
-            self._cache_type = self._possible_types[cache_type]
-        else:
-            raise ValueError("Cache type '{}' is not possible.".format(cache_type))
+
+        # walk trough each type and its synonyms
+        for key, value in self._possible_types.items():
+            for synonym in value:
+                if cache_type.lower() == synonym.lower():
+                    self._cache_type = self._possible_types[key][0]
+                    return
+
+        raise ValueError("Cache type '{}' is not possible.".format(cache_type))
+
+    @classmethod
+    def get_cache_type_by_img(cls, src):
+        """Returns cache type by its image src"""
+        # parse src (http://www.geocaching.com/images/WptTypes/[KEY].gif)
+        img_name = src.split("/")[-1].rsplit(".", 1)[0]
+
+        # walk trough each key and its synonyms
+        for key in cls._possible_types.keys():
+            for synonym in key:
+                if img_name == synonym:
+                    return cls._possible_types[key][0]
 
     @property
     @lazy_loaded
@@ -311,7 +326,7 @@ class Cache(object):
         if type(hidden) is str:
             hidden = Util.parse_date(hidden)
         elif type(hidden) is not datetime.date:
-            raise ValueError("Passed object is not datetime.date instance nor string containing date.")
+            raise ValueError("Passed object is not datetime.date instance nor string containing a date.")
         self._hidden = hidden
 
     @property

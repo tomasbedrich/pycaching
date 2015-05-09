@@ -4,7 +4,7 @@ import os
 import unittest
 import pycaching
 from geopy.distance import great_circle
-from pycaching.errors import LoginFailedException, GeocodeError, PMOnlyException
+from pycaching.errors import NotLoggedInException, LoginFailedException, GeocodeError, PMOnlyException
 from pycaching import Geocaching
 from pycaching import Cache
 from pycaching import Point
@@ -57,8 +57,8 @@ class TestLoading(unittest.TestCase):
                 self.assertIn(cache.wp, expected)
 
         with self.subTest("pagging"):
-            caches = list(self.g.search(Point(49.733867, 13.397091), 25))
-            self.assertNotEqual(caches[0], caches[20])
+            caches = list(self.g.search(Point(49.733867, 13.397091), 100))
+            self.assertNotEqual(caches[0], caches[50])
 
     def test_search_quick(self):
         """Perform search and check found caches"""
@@ -241,6 +241,10 @@ class TestLoginOperations(unittest.TestCase):
         with self.subTest("bad username automatic logout"):
             with self.assertRaises(LoginFailedException):
                 self.g.login("", "")
+
+    def test_login_needed(self):
+        with self.assertRaises(NotLoggedInException):
+            self.g.load_cache("GC41FJC")
 
     def test_get_logged_user(self):
         self.g.login(_username, _password)

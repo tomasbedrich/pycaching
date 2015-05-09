@@ -3,9 +3,9 @@
 import logging
 import math
 import requests
-import bs4
 import mechanicalsoup as ms
 from urllib.parse import urlencode
+from bs4 import BeautifulSoup
 from pycaching.area import Area
 from pycaching.cache import Cache
 from pycaching.util import Util
@@ -35,7 +35,8 @@ class Geocaching(object):
     _urls = {
         "login_page":       _baseurl + "login/default.aspx",
         "cache_details":    _baseurl + "geocache/{wp}",
-        "caches_nearest":   _baseurl + "seek/nearest.aspx",
+        "search":           _baseurl + "play/search",
+        "search_more":      _baseurl + "play/search/more-results",
         "geocode":          _baseurl + "api/geocode",
         "map":              _tile_url + "map.details",
         "tile":             _tile_url + "map.png",
@@ -132,105 +133,84 @@ class Geocaching(object):
 
         logging.info("Searching at %s...", point)
 
-        page_num = 1
-        cache_num = 0
+        start_index = 0
         while True:
-            try:  # try to load search page
-                page = self._search_get_page(point, page_num)
-            except requests.exceptions.ConnectionError as e:
-                raise StopIteration("Cannot load search page.") from e
+            # get one page
+            page = self._search_get_page(point, start_index)
 
-            for cache in page:
-                yield cache
+            if not page:
+                # result is empty - no more caches
+                raise StopIteration()
 
-                cache_num += 1
-                if limit > 0 and cache_num >= limit:
+            # parse caches in result
+            for start_index, row in enumerate(BeautifulSoup(page).find_all("tr"), start_index):
+
+                if limit > 0 and start_index == limit:
                     raise StopIteration()
 
-            page_num += 1
+                # parse raw data
+                cache_details = row.find("span", "cache-details").text.split("|")
+                wp = cache_details[1].strip()
+
+                # create and fill cache object
+                c = Cache(wp, self)
+                c.cache_type = cache_details[0].strip()
+                c.name = row.find("span", "cache-name").text
+                c.found = row.find("img", title="Found It!") is not None
+                c.favorites = int(row.find(attrs={"data-column": "FavoritePoint"}).text)
+                c.state = not (row.get("class") and "disabled" in row.get("class"))
+                c.pm_only = row.find("td", "pm-upsell") is not None
+
+                if c.pm_only:
+                    # PM only caches doesn't have other attributes filled in
+                    yield c
+                    continue
+
+                c.size = row.find(attrs={"data-column": "ContainerSize"}).text
+                c.difficulty = float(row.find(attrs={"data-column": "Difficulty"}).text)
+                c.terrain = float(row.find(attrs={"data-column": "Terrain"}).text)
+                c.hidden = Util.parse_date(row.find(attrs={"data-column": "PlaceDate"}).text)
+                c.author = row.find("span", "owner").text[3:]  # delete "by "
+
+                logging.debug("Cache parsed: %s", c)
+                yield c
+
+            start_index += 1
 
     @login_needed
-    def _search_get_page(self, point, page_num):
-        """Returns one page of caches as a list.
+    def _search_get_page(self, point, start_index):
 
-        Searches for a caches around a point and returns N-th page (specifiend by page argument)."""
+        logging.debug("Loading page from start_index: %d", start_index)
 
-        assert isinstance(point, Point)
-        assert type(page_num) is int
+        if start_index == 0:
+            # first request has to load normal search page
+            logging.debug("Using normal search endpoint")
 
-        logging.info("Fetching page %d.", page_num)
+            params = urlencode({"origin": point.format(None, "", "", "")})
+            url = self._urls["search"] + "?" + params
 
-        # assemble request
-        params = urlencode({"lat": point.latitude, "lng": point.longitude})
-        url = self._urls["caches_nearest"] + "?" + params
+            # make request
+            try:
+                return str(self._browser.get(url).soup.find(id="geocaches"))
+            except requests.exceptions.ConnectionError as e:
+                raise Error("Cannot load search results.") from e
 
-        # we have to add POST for other pages than 1st
-        if page_num == 1:
-            post = None
         else:
-            # TODO handle searching on second page without first
-            post = self._pagging_helpers
-            post["__EVENTTARGET"] = self._pagging_postbacks[page_num]
-            post["__EVENTARGUMENT"] = ""
+            # other requests can use AJAX endpoint
+            logging.debug("Using AJAX search endpoint")
 
-        # make request
-        try:
-            root = self._browser.post(url, post).soup
-        except requests.exceptions.ConnectionError as e:
-            raise Error("Cannot load search page #{}.".format(page_num)) from e
+            params = urlencode({
+                "inputOrigin": point.format(None, "", "", ""),
+                "startIndex": start_index,
+                "originTreatment": 0
+            })
+            url = self._urls["search_more"] + "?" + params
 
-        # root of a few following elements
-        widget_general = root.find_all("td", "PageBuilderWidget")
-
-        # parse pagging widget
-        caches_total, page_num, page_count = [int(elm.text) for elm in widget_general[0].find_all("b")]
-        logging.debug("Found %d results. Showing page %d of %d.", caches_total, page_num, page_count)
-
-        # save search postbacks for future usage
-        if page_num == 1:
-            pagging_links = [_ for _ in widget_general[1].find_all("a") if _.get("id")]
-            self._pagging_postbacks = {int(link.text): link.get("href").split("'")[1] for link in pagging_links}
-
-            # other nescessary fields
-            self._pagging_helpers = {field["name"]: field["value"] for field in root.find_all("input", type="hidden")}
-
-        # parse results table
-        data = root.find("table", "SearchResultsTable").find_all("tr", "Data")
-        return [self._search_parse_cache(c) for c in data]
-
-    @login_needed
-    def _search_parse_cache(self, root):
-        """Returns a Cache object parsed from BeautifulSoup Tag."""
-
-        assert isinstance(root, bs4.Tag)
-
-        # parse raw data
-        favorites = root.find("span", "favorite-rank")
-        typeLink, nameLink = root.find_all("a", "lnk")
-        pm_only = root.find("img", title="Premium Member Only Cache") is not None
-        direction, info, D_T, placed, last_found = root.find_all("span", "small")
-        found = root.find("img", title="Found It!") is not None
-        size = root.find("td", "AlignCenter").find("img")
-        author, wp, area = [t.strip() for t in info.text.split("|")]
-
-        # create cache object
-        c = Cache(wp, self)
-
-        # prettify data
-        c.cache_type = typeLink.find("img").get(
-            "src").split("/")[-1].rsplit(".", 1)[0]  # filename of img[src]
-        c.name = nameLink.span.text.strip()
-        c.found = found
-        c.state = "Strike" not in nameLink.get("class")
-        c.size = size.get("src").split("/")[-1].rsplit(".", 1)[0]  # filename of img[src]
-        c.difficulty, c.terrain = list(map(float, D_T.text.split("/")))
-        c.hidden = Util.parse_date(placed.text)
-        c.author = author[3:]  # delete "by "
-        c.favorites = int(favorites.text)
-        c.pm_only = pm_only
-
-        logging.debug("Cache parsed: %s", c)
-        return c
+            # make request
+            try:
+                return self._browser.get(url).json()["HtmlString"].strip()
+            except requests.exceptions.ConnectionError as e:
+                raise Error("Cannot load search results.") from e
 
     def search_quick(self, area, precision=None, strict=False):
         """Get geocaches inside area, with approximate coordinates
@@ -483,7 +463,7 @@ class Geocaching(object):
 
         # prettify data
         c.name = name.text
-        c.cache_type = cache_type.split("/")[-1].rsplit(".", 1)[0]
+        c.cache_type = Cache.get_cache_type_by_img(cache_type)
         c.author = author.text
         c.hidden = Util.parse_date(hidden.text.split(":")[-1])
         c.location = Point.from_string(location.text)
