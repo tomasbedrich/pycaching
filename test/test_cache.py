@@ -34,7 +34,7 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.name, "Testing")
 
     def test_type(self):
-        self.assertEqual(self.c.cache_type, "Traditional Cache")
+        self.assertEqual(self.c.cache_type, "Traditional")
 
         with self.subTest("filter invalid"):
             with self.assertRaises(ValueError):

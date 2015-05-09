@@ -11,8 +11,8 @@ Features
 -  **login** to Geocaching.com
 -  **search** caches
    
-   - normal search (up to 200 caches around any point)
-   - **NEW:** quick search (all caches inside some area)
+   - normal search (unlimited number of caches from any point)
+   - quick search (all caches inside some area)
    
 -  **load cache** details by WP
 
@@ -52,7 +52,7 @@ Requirements
 ~~~~~~~~~~~~
 
 -  Python >= 3.0 (3.4 required for running tests)
--  MechanicalSoup >= 0.2.0
+-  MechanicalSoup >= 0.3.1
 -  geopy >= 1.0.0
 
 
