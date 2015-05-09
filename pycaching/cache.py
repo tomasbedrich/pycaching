@@ -399,23 +399,30 @@ class Cache(object):
             container_type_id = [None, "micro","small","regular","large","not chosen","virtual","other"].index(self.size)
         except ValueError:
             container_type_id = 0
+        author = self.author.replace("&", "&amp;")
+        name = self.name.replace("&", "&amp;")
+        summary = self.summary.replace("&", "&amp;")
         lxml = ['<wpt lat="%.6f" lon="%.6f">'%(self.location.latitude,self.location.longitude),
                 '  <time>%sT08:00:00Z</time>'%self.hidden.isoformat(),
                 '  <name>%s</name>'%self.wp,
-                '  <desc>%s by %s, %s (%.1f/%.1f)</desc>'%(self.name, self.author, self.cache_type, self.difficulty, self.terrain),
+                '  <desc>%s by %s, %s (%.1f/%.1f)</desc>'%(name, author, self.cache_type, self.difficulty, self.terrain),
                 '  <url>http://coord.info/%s</url>'%self.wp,
-                '  <urlname>%s</urlname>'%self.name,
+                '  <urlname>%s</urlname>'%name,
                 '  <sym>Geocache</sym>',
                 '  <type>Geocache|%s</type>'%self.cache_type,
                 '  <groundspeak:cache id="%s" available="true" archived="false" memberonly="true" customcoords="true" xmlns:groundspeak="http://www.groundspeak.com/cache/1/0/2">'%self.wp,
-                '    <groundspeak:name>%s</groundspeak:name>'%self.name,
-                '    <groundspeak:placed_by>%s</groundspeak:placed_by>'%self.author,
-                '    <groundspeak:owner">%s</groundspeak:owner>'%self.author,
+                '    <groundspeak:name>%s</groundspeak:name>'%name,
+                '    <groundspeak:placed_by>%s</groundspeak:placed_by>'%author,
+                '    <groundspeak:owner>%s</groundspeak:owner>'%author,
                 '    <groundspeak:type id="%s">%s</groundspeak:type>'%(cache_type_id, self.cache_type),
                 '    <groundspeak:container id="%s">%s</groundspeak:container>'%(container_type_id, self.size.capitalize()),
+                '    <groundspeak:attributes>']
+        for attr in self.attributes:
+                lxml.append('        <groundspeak:attribute>%s</groundspeak:attribute>'%attr)
+        lxml +=['    </groundspeak:attributes>',
                 '    <groundspeak:difficulty>%s</groundspeak:difficulty>'%self.difficulty,
                 '    <groundspeak:terrain>%s</groundspeak:terrain>'%self.terrain,
-                '    <groundspeak:short_description html="true">%s</groundspeak:short_description>'%(self.summary or self.name),
+                '    <groundspeak:short_description html="true">%s</groundspeak:short_description>'%(summary or name),
                 '    <groundspeak:long_description html="true"> %s </groundspeak:long_description>'%self.description,
                 '    <groundspeak:encoded_hints>%s</groundspeak:encoded_hints>'%self.hint,
                 '  </groundspeak:cache>',

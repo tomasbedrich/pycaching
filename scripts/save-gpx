@@ -15,6 +15,7 @@ def parse():
 
 
 def process(opts):
+    linesep = "\r\n"
     geocaching = pycaching.login(opts.user, opts.password)
     caches = []
     for cache_name in opts.geocache:
@@ -39,12 +40,12 @@ def process(opts):
     footer = ['</gpx>']
     with open(cache_name + ".gpx", "w") as f:
         for line in header:
-            f.write(line+os.linesep)
+            f.write(line+linesep)
         for cache in caches:
             for line in cache.to_gpx():
-                f.write("  "+line+os.linesep)
+                f.write("  "+line+linesep)
         for line in footer:
-            f.write(line+os.linesep)
+            f.write(line+linesep)
     print("Done, saved to %s.gpx"%cache_name)
 
 
