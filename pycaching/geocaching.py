@@ -477,7 +477,10 @@ class Geocaching(object):
         c.summary = user_content[0].text
         c.description = str(user_content[1])
         c.hint = Util.rot13(hint.text.strip())
-        c.favorites = int(favorites.text)
+        if favorites is None:
+            c.favorites = 0
+        else:
+            c.favorites = int(favorites.text)
 
         logging.debug("Cache loaded: %r", c)
         return c
