@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from itertools import chain
 from datetime import datetime
-from pycaching import errors
+from . import errors
 
 
 class Util(object):
@@ -21,9 +21,9 @@ class Util(object):
         return str.translate(text, cls._rot13codeTable)
 
     @staticmethod
-    def to_decimal(deg, min):
+    def to_decimal(deg, mini):
         """Returns a decimal interpretation of coordinate in MinDec format."""
-        return round(deg + min / 60, 5)
+        return round(deg + mini / 60, 5)
 
     @staticmethod
     def to_mindec(decimal):

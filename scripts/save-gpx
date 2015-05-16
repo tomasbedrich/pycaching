@@ -26,7 +26,7 @@ def process(opts):
     lat = [i.location.latitude for i in caches]
     lon = [i.location.longitude for i in caches]
     header = ['<?xml version="1.0" encoding="utf-8"?>',
-              '<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0" creator="Groundspeak, Inc. All Rights Reserved. http://www.groundspeak.com" xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd http://www.groundspeak.com/cache/1/0/2 http://www.groundspeak.com/cache/1/0/2/cache.xsd" xmlns="http://www.topografix.com/GPX/1/0">',
+              '<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0" creator="Groundspeak, Inc. All Rights Reserved. http://www.groundspeak.com" xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd http://www.groundspeak.com/cache/1/0/1 http://www.groundspeak.com/cache/1/0/1/cache.xsd" xmlns="http://www.topografix.com/GPX/1/0">',
               '  <name>Cache Listing Generated from Geocaching.com</name>',
               '  <desc>This is an individual cache generated from Geocaching.com</desc>',
               '  <author>Account "%s" From Geocaching.com</author>'%opts.user,
@@ -35,17 +35,15 @@ def process(opts):
               '  <urlname>Geocaching - High Tech Treasure Hunting</urlname>',
               '  <time>%s</time>'%time.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
               '  <keywords>cache, geocache</keywords>',
-              '  <bounds minlat="%.6f" minlon="%.6f" maxlat="%.6f" maxlon="%.6f" />'%(min(lat), min(lon), max(lat), max(lon))
-             ]
-    footer = ['</gpx>']
+              '  <bounds minlat="%.6f" minlon="%.6f" maxlat="%.6f" maxlon="%.6f" />'%(min(lat), min(lon), max(lat), max(lon)),
+             '</gpx>']
     with open(cache_name + ".gpx", "w") as f:
-        for line in header:
+        for line in header[:-1]:
             f.write(line+linesep)
         for cache in caches:
             for line in cache.to_gpx():
                 f.write("  "+line+linesep)
-        for line in footer:
-            f.write(line+linesep)
+        f.write(header[-1])
     print("Done, saved to %s.gpx"%cache_name)
 
 

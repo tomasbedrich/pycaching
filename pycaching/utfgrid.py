@@ -5,9 +5,9 @@ import math
 
 import requests
 
-from pycaching.cache import Cache
-from pycaching.point import Point
-from pycaching.errors import Error
+from .cache import Cache
+from .point import Point
+from .errors import Error
 
 
 class UTFGrid:

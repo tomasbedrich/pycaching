@@ -6,12 +6,12 @@ import requests
 import bs4
 import mechanicalsoup as ms
 from urllib.parse import urlencode
-from pycaching.area import Area
-from pycaching.cache import Cache
-from pycaching.util import Util
-from pycaching.point import Point
-from pycaching.utfgrid import UTFGrid
-from pycaching.errors import Error, NotLoggedInException, LoginFailedException, GeocodeError, LoadError, PMOnlyException
+from .area import Area
+from .cache import Cache
+from .util import Util
+from .point import Point
+from .utfgrid import UTFGrid
+from .errors import Error, NotLoggedInException, LoginFailedException, GeocodeError, LoadError, PMOnlyException
 import geopy.distance
 
 

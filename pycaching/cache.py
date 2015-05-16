@@ -3,9 +3,17 @@
 import os
 import logging
 import datetime
-from pycaching.errors import ValueError
-from pycaching.point import Point
-from pycaching.util import Util
+import string
+import random
+from .errors import ValueError
+from .point import Point
+from .util import Util
+try:
+    import html2text
+    h2t = html2text.HTML2Text()
+    h2t.ignore_links = True
+except ImportError:
+    h2t = None
 
 
 def lazy_loaded(func):
@@ -130,6 +138,184 @@ class Cache(object):
         "other": "other",
     }
 
+    CACHE_TYPES_FROM_ID = {
+                  2:"Traditional Caches",
+                  3:"Multi-caches",
+                  4:"Virtual Caches",
+                  5:"Letterbox Hybrids",
+                  6:"Event Caches",
+                  8:"Unknown (Mystery) Caches",
+                  9:"Project APE Caches",
+                  11:"Webcam Caches",
+                  12:"Locationless (Reverse) Caches",
+                  13:"Cache In Trash Out Events",
+                  137:"Earthcaches",
+                  453:"Mega-Event Caches",
+                  605:"Geocache Courses",
+                  1304:"GPS Adventures Exhibit",
+                  1858:"Wherigo Caches",
+                  3653:"Lost and Found Event Caches",
+                  3773:"Groundspeak HQ",
+                  3774:"Groundspeak Lost and Found Celebration",
+                  4738:"Groundspeak Block Party",
+                  }
+    CACHE_TYPES_TO_ID = dict((j.lower().strip("s"),i) for i,j in CACHE_TYPES_FROM_ID.items())
+
+    ATTRIBUTES_FROM_ID = {
+                    1: "Dogs",
+                    2: "Access or parking fee",
+                    3: "Climbing gear",
+                    4: "Boat",
+                    5: "Scuba gear",
+                    6: "Recommended for kids",
+                    7: "Takes less than an hour",
+                    8: "Scenic view",
+                    9: "Significant Hike",
+                    10: "Difficult climbing",
+                    11: "May require wading",
+                    12: "May require swimming",
+                    13: "Available at all times",
+                    14: "Recommended at night",
+                    15: "Available during winter",
+                    16: "Cactus",
+                    17: "Poison plants",
+                    18: "Dangerous Animals",
+                    19: "Ticks",
+                    20: "Abandoned mines",
+                    21: "Cliff / falling rocks",
+                    22: "Hunting",
+                    23: "Dangerous area",
+                    24: "Wheelchair accessible",
+                    25: "Parking available",
+                    26: "Public transportation",
+                    27: "Drinking water nearby",
+                    28: "Public restrooms nearby",
+                    29: "Telephone nearby",
+                    30: "Picnic tables nearby",
+                    31: "Camping available",
+                    32: "Bicycles",
+                    33: "Motorcycles",
+                    34: "Quads",
+                    35: "Off-road vehicles",
+                    36: "Snowmobiles",
+                    37: "Horses",
+                    38: "Campfires",
+                    39: "Thorns",
+                    40: "Stealth required",
+                    41: "Stroller accessible",
+                    42: "Needs maintenance",
+                    43: "Watch for livestock",
+                    44: "Flashlight required",
+                    45: "Lost And Found Tour",
+                    46: "Truck Driver/RV",
+                    47: "Field Puzzle",
+                    48: "UV Light Required",
+                    49: "Snowshoes",
+                    50: "Cross Country Skis",
+                    51: "Special Tool Required",
+                    52: "Night Cache",
+                    53: "Park and Grab",
+                    54: "Abandoned Structure",
+                    55: "Short hike (less than 1km)",
+                    56: "Medium hike (1km-10km)",
+                    57: "Long Hike (+10km)",
+                    58: "Fuel Nearby",
+                    59: "Food Nearby",
+                    60: "Wireless Beacon",
+                    61: "Partnership Cache",
+                    62: "Seasonal Access",
+                    63: "Tourist Friendly",
+                    64: "Tree Climbing",
+                    65: "Front Yard (Private Residence)",
+                    66: "Teamwork Required",
+                    }
+
+    ATTRIBUTES_TO_ID = dict((j.lower(),i) for i,j in ATTRIBUTES_FROM_ID.items())
+
+    CONTAINERS_FROM_ID = {
+                            1: "Not chosen",
+                            2: "Micro",
+                            3: "Regular",
+                            4: "Large",
+                            5: "Virtual",
+                            6: "Other",
+                            8: "Small",
+                    }
+    CONTAINERS_TO_ID = dict((j.lower(),i) for i,j in CONTAINERS_FROM_ID.items())
+
+    LOGTYPES_FROM_ID = {  1: "Unarchive",
+                  2: "Found it",
+                  3: "Didn't find it",
+                  4: "Write note",
+                  5: "Archive",
+                  6: "Archive",
+                  7: "Needs Archived",
+                  8: "Mark Destroyed",
+                  9: "Will Attend",
+                  10: "Attended",
+                  11: "Webcam Photo Taken",
+                  12: "Unarchive",
+                  13: "Retrieve It from a Cache",
+                  14: "Dropped Off",
+                  15: "Transfer",
+                  16: "Mark Missing",
+                  17: "Recovered",
+                  18: "Post Reviewer Note",
+                  19: "Grab It (Not from a Cache)",
+                  20: "Write Jeep 4x4 Contest Essay",
+                  21: "Upload Jeep 4x4 Contest Photo",
+                  22: "Temporarily Disable Listing",
+                  23: "Enable Listing",
+                  24: "Publish Listing",
+                  25: "Retract Listing",
+                  30: 'Uploaded Goal Photo for "A True Original"',
+                  31: 'Uploaded Goal Photo for "Yellow Jeep Wrangler"',
+                  32: 'Uploaded Goal Photo for "Construction Site"',
+                  33: 'Uploaded Goal Photo for "State Symbol"',
+                  34: 'Uploaded Goal Photo for "American Flag"',
+                  35: 'Uploaded Goal Photo for "Landmark/Memorial"',
+                  36: 'Uploaded Goal Photo for "Camping"',
+                  37: 'Uploaded Goal Photo for "Peaks and Valleys"',
+                  38: 'Uploaded Goal Photo for "Hiking"',
+                  39: 'Uploaded Goal Photo for "Ground Clearance"',
+                  40: 'Uploaded Goal Photo for "Water Fording"',
+                  41: 'Uploaded Goal Photo for "Traction"',
+                  42: 'Uploaded Goal Photo for "Tow Package"',
+                  43: 'Uploaded Goal Photo for "Ultimate Makeover"',
+                  44: 'Uploaded Goal Photo for "Paint Job"',
+                  45: "Needs Maintenance",
+                  46: "Owner Maintenance",
+                  47: "Update Coordinates",
+                  48: "Discovered It",
+                  49: 'Uploaded Goal Photo for "Discovery"',
+                  50: 'Uploaded Goal Photo for "Freedom"',
+                  51: 'Uploaded Goal Photo for "Adventure"',
+                  52: 'Uploaded Goal Photo for "Camaraderie"',
+                  53: 'Uploaded Goal Photo for "Heritage"',
+                  54: "Reviewer Note",
+                  55: "Lock User (Ban)",
+                  56: "Unlock User (Unban)",
+                  57: "Groundspeak Note",
+                  58: 'Uploaded Goal Photo for "Fun"',
+                  59: 'Uploaded Goal Photo for "Fitness"',
+                  60: 'Uploaded Goal Photo for "Fighting Diabetes"',
+                  61: 'Uploaded Goal Photo for "American Heritage"',
+                  62: 'Uploaded Goal Photo for "No Boundaries"',
+                  63: 'Uploaded Goal Photo for "Only in a Jeep"',
+                  64: 'Uploaded Goal Photo for "Discover New Places"',
+                  65: 'Uploaded Goal Photo for "Definition of Freedom"',
+                  66: 'Uploaded Goal Photo for "Adventure Starts Here"',
+                  67: "Needs Attention",
+                  68: "Post Reviewer Note",
+                  69: "Move To Collection",
+                  70: "Move To Inventory",
+                  71: "Throttle User",
+                  72: "Enter CAPTCHA",
+                  73: "Change Username",
+                  74: "Announcement",
+                  75: "Visited",
+                }
+    LOGTYPES_TO_ID = dict((j.lower(),i) for i,j in LOGTYPES_FROM_ID.items())
 
     def __init__(self, wp, geocaching, *, name=None, cache_type=None, location=None, state=None,
                  found=None, size=None, difficulty=None, terrain=None, author=None, hidden=None,
@@ -393,15 +579,18 @@ class Cache(object):
         """
         Return the cache description as list of strings representing the XML
         """
-        cache_type_id = [k for k,v in self._possible_types.items() if v==self.cache_type]
-        cache_type_id = cache_type_id[0] if cache_type_id else 0
-        try:
-            container_type_id = [None, "micro","small","regular","large","not chosen","virtual","other"].index(self.size)
-        except ValueError:
-            container_type_id = 0
-        author = self.author.replace("&", "&amp;")
-        name = self.name.replace("&", "&amp;")
-        summary = self.summary.replace("&", "&amp;")
+        cache_type_id = self.CACHE_TYPES_TO_ID.get(self.cache_type.lower(), 0)
+        container_type_id = self.CONTAINERS_TO_ID.get(self.size.lower(), 0)
+        author = self.author.replace("&", "&amp;").replace(">","&gt;").replace("<","&lt;")
+        name = self.name.replace("&", "&amp;").replace(">","&gt;").replace("<","&lt;")
+        randomPR = list(string.ascii_letters+string.digits)
+        random.shuffle(randomPR)
+        if h2t:
+            summary = h2t.handle(self.summary).strip()
+            description = h2t.handle(self.description).strip()
+        else:
+            summary = self.summary.replace("&", "&amp;").replace(">","&gt;").replace("<","&lt;")
+            description = self.description.replace("&", "&amp;").replace(">","&gt;").replace("<","&lt;")
         lxml = ['<wpt lat="%.6f" lon="%.6f">'%(self.location.latitude,self.location.longitude),
                 '  <time>%sT08:00:00Z</time>'%self.hidden.isoformat(),
                 '  <name>%s</name>'%self.wp,
@@ -410,20 +599,27 @@ class Cache(object):
                 '  <urlname>%s</urlname>'%name,
                 '  <sym>Geocache</sym>',
                 '  <type>Geocache|%s</type>'%self.cache_type,
-                '  <groundspeak:cache id="%s" available="true" archived="false" memberonly="true" customcoords="true" xmlns:groundspeak="http://www.groundspeak.com/cache/1/0/2">'%self.wp,
+                '  <groundspeak:cache id="%s" available="true" archived="false" memberonly="true" customcoords="true" xmlns:groundspeak="http://www.groundspeak.com/cache/1/0/1">'%(self.wp),
                 '    <groundspeak:name>%s</groundspeak:name>'%name,
                 '    <groundspeak:placed_by>%s</groundspeak:placed_by>'%author,
-                '    <groundspeak:owner>%s</groundspeak:owner>'%author,
+                '    <groundspeak:owner id="PR%s">%s</groundspeak:owner>'%("".join(randomPR)[:5],author),
                 '    <groundspeak:type id="%s">%s</groundspeak:type>'%(cache_type_id, self.cache_type),
                 '    <groundspeak:container id="%s">%s</groundspeak:container>'%(container_type_id, self.size.capitalize()),
-                '    <groundspeak:attributes>']
-        for attr in self.attributes:
-                lxml.append('        <groundspeak:attribute>%s</groundspeak:attribute>'%attr)
-        lxml +=['    </groundspeak:attributes>',
+                ]
+        if self.attributes:
+            lxml.append('    <groundspeak:attributes>')
+            for attr, val in self.attributes.items():
+                interp_attr = self._possible_attributes.get(attr, "")
+                ids = self.ATTRIBUTES_TO_ID.get(interp_attr.lower())
+                if not ids:
+                    ids = self.ATTRIBUTES_TO_ID.get(attr.lower(), 0)
+                lxml.append('        <groundspeak:attribute id="%s" inc="%i">%s</groundspeak:attribute>'%(ids, val, interp_attr))
+            lxml.append('    </groundspeak:attributes>')
+        lxml +=[
                 '    <groundspeak:difficulty>%s</groundspeak:difficulty>'%self.difficulty,
                 '    <groundspeak:terrain>%s</groundspeak:terrain>'%self.terrain,
-                '    <groundspeak:short_description html="true">%s</groundspeak:short_description>'%(summary or name),
-                '    <groundspeak:long_description html="true"> %s </groundspeak:long_description>'%self.description,
+                '    <groundspeak:short_description html="%s">%s</groundspeak:short_description>'%("false" if h2t else "true", summary or name),
+                '    <groundspeak:long_description html="%s"> %s </groundspeak:long_description>'%("false" if h2t else "true", description),
                 '    <groundspeak:encoded_hints>%s</groundspeak:encoded_hints>'%self.hint,
                 '  </groundspeak:cache>',
                 '</wpt>']

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from pycaching.point import Point
+from .point import Point
 
 
 class Area:

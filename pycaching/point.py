@@ -3,8 +3,8 @@
 import math
 import re
 import geopy
-from pycaching import errors
-from pycaching.util import Util
+from . import errors
+from .util import Util
 
 
 class Point(geopy.Point):
