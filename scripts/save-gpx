@@ -22,7 +22,9 @@ def process(opts):
         if cache_name.endswith(".gpx"):
             cache_name = cache_name[:-4]
         print("Retrieve %s" % cache_name)
-        caches.append(geocaching.load_cache(cache_name))
+        cache = geocaching.load_cache(cache_name)
+        caches.append(cache)
+        print(cache)
     lat = [i.location.latitude for i in caches]
     lon = [i.location.longitude for i in caches]
     header = ['<?xml version="1.0" encoding="utf-8"?>',
@@ -44,6 +46,7 @@ def process(opts):
             for line in cache.to_gpx():
                 f.write("  "+line+linesep)
         f.write(header[-1])
+    
     print("Done, saved to %s.gpx"%cache_name)
 
 

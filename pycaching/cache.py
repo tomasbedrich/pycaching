@@ -5,6 +5,7 @@ import logging
 import datetime
 import string
 import random
+import json
 from .errors import ValueError
 from .point import Point
 from .util import Util
@@ -12,8 +13,10 @@ try:
     import html2text
     h2t = html2text.HTML2Text()
     h2t.ignore_links = True
+    h2t.ignore_images = True
+    h2t.ignore_emphasis = True
 except ImportError:
-    h2t = None
+    h2t = lambda x:x
 
 
 def lazy_loaded(func):
@@ -359,8 +362,11 @@ class Cache(object):
         return self.wp
 
     def __repr__(self):
-        lst = ["%s: %s" % (self.wp, self.name),
-             ]
+        lst = ["%s: %s by %s (%s, %.1f/%.1f)" % (self.wp, self.name, self.author, self.size, self.difficulty, self.terrain),
+              self.location.to_string(),
+              h2t(self.summary),
+              h2t(self.description),
+              "Hint: %s" % self.hint]
         return os.linesep.join(lst)
 
     def __eq__(self, other):
@@ -583,7 +589,7 @@ class Cache(object):
         container_type_id = self.CONTAINERS_TO_ID.get(self.size.lower(), 0)
         author = self.author.replace("&", "&amp;").replace(">","&gt;").replace("<","&lt;")
         name = self.name.replace("&", "&amp;").replace(">","&gt;").replace("<","&lt;")
-        randomPR = list(string.ascii_letters+string.digits)
+        randomPR = list(string.ascii_letters+string.digits).upper()
         random.shuffle(randomPR)
         if h2t:
             summary = h2t.handle(self.summary).strip()
@@ -624,3 +630,27 @@ class Cache(object):
                 '  </groundspeak:cache>',
                 '</wpt>']
         return lxml
+
+    def to_json(self):
+        """Serialize to json string
+        """
+        skip = ["_location", "_geocaching", "_hidden"]
+        dico = {k[1:]:v for k,v in self.__dict__.items() if k not in skip}
+        dico["latitude"] = self.location.latitude
+        dico["longitude"] = self.location.latitude
+        dico["hidden"] = self.hidden.strftime("%Y/%m/%d")
+        return json.dumps(dico)
+    
+    @classmethod
+    def from_json(cls, data):
+        """constructor from a JSON string
+        """
+        dico = json.loads(data)
+        if "hidden" in dico:
+            hidden = datetime.date(*(int(i) for i in dico["hidden"].split("/")))
+            dico["hidden"] = hidden
+        if ("latitude" in dico) and ("longitude" in dico):
+            location = Point(dico.pop("latitude"), dico.pop("longitude"))
+            dico["location"] = location
+        return cls(**dico)
+    

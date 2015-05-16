@@ -117,3 +117,13 @@ class Point(geopy.Point):
     def inside_area(self, area):
         """Check if point is inside given area"""
         return area.inside_area(self)
+
+    def to_sting(self):
+        """
+        Return the point coordinate as deg min.dec
+        """
+        lat_deg = abs(self.latitude)
+        lon_deg = abs(self.longitude)
+        hem = "N" if self.latitude>0 else "S"
+        mer = "E" if self.longitude>0 else "W"
+        return "%s%s %6.3f, %s%s %6.3f"%((hem,)+ Util.to_mindec(lat_deg)+(mer,)+ Util.to_mindec(lon_deg))
