@@ -3,11 +3,13 @@
 import logging
 import math
 import requests
+import re
 import mechanicalsoup as ms
 from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 from pycaching.area import Area
 from pycaching.cache import Cache
+from pycaching.trackable import Trackable
 from pycaching.util import Util
 from pycaching.point import Point
 from pycaching.utfgrid import UTFGrid
@@ -35,6 +37,7 @@ class Geocaching(object):
     _urls = {
         "login_page":       _baseurl + "login/default.aspx",
         "cache_details":    _baseurl + "geocache/{wp}",
+        "trackable_details":_baseurl + "track/details.aspx?tracker={tid}",
         "search":           _baseurl + "play/search",
         "search_more":      _baseurl + "play/search/more-results",
         "geocode":          _baseurl + "api/geocode",
@@ -484,6 +487,52 @@ class Geocaching(object):
 
         logging.debug("Cache loaded: %r", c)
         return c
+
+    @login_needed
+    def load_trackable(self, tid):
+        """Loads details from trackable page.
+
+        Loads all trackable details and return fully populated trackable object."""
+
+        assert type(tid) is str and tid.startswith("TB")
+        logging.info("Loading details about %s...", tid)
+
+        url = self._urls["trackable_details"].format(tid=tid)
+        try:
+            root = self._browser.get(url).soup
+        except requests.exceptions.ConnectionError as e:
+            raise Error("Cannot load cache details page.") from e
+
+        (_, tid, trackable_type, name) = re.split("[\(\)-]", root.title.string)
+        trackable_type = trackable_type.strip()
+
+        owner_raw = root.findAll("a",
+            {"id" : "ctl00_ContentBody_BugDetails_BugOwner"})
+        #return owner_raw
+        owner = re.split("[\<\>]", str(owner_raw))[2]
+
+        location_raw = root.findAll("a",
+            {"id" : "ctl00_ContentBody_BugDetails_BugLocation"})
+        #return owner_raw
+        location = re.split("[\<\>]", str(location_raw))[2]
+
+        description_raw = root.findAll("div", {"id" : "TrackableDetails"})
+        description = description_raw[0].text
+
+        goal_raw = root.findAll("div", {"id" : "TrackableGoal"})
+        goal = goal_raw[0].text
+
+        # create trackable object
+        t = Trackable(tid, self)
+        assert isinstance(t, Trackable)
+        t = Trackable(tid, self)
+        t.name = name
+        t.owner = owner
+        t.location = location
+        t.type = trackable_type
+        t.description = description
+        t.goal = goal
+        return t
 
     def get_logged_user(self, login_page=None):
         """Returns the name of curently logged user or None, if no user is logged in."""
