@@ -508,9 +508,14 @@ class Geocaching(object):
             root = self._browser.get(url).soup
         except requests.exceptions.ConnectionError as e:
             raise Error("Cannot load cache details page.") from e
+        title_tuple = re.split("[\(\)-]", root.title.string)
+        tid = title_tuple[1]
+        trackable_type = title_tuple[2]
 
-        (_, tid, trackable_type, name) = re.split("[\(\)-]", root.title.string)
-        trackable_type = trackable_type.strip()
+        name = ''
+        for n in title_tuple[3:]:
+            name += n + '-'
+        name = name.rstrip('-')
 
         owner_raw = root.findAll("a",
             {"id" : "ctl00_ContentBody_BugDetails_BugOwner"})
