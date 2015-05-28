@@ -424,15 +424,7 @@ class Geocaching(object):
         return c
 
     @login_needed
-    def load_cache(self, wp, destination=None):
-        """Loads details from cache page.
-
-        Loads all cache details and return fully populated cache object."""
-
-        assert type(wp) is str and wp.startswith("GC")
-        logging.info("Loading details about %s...", wp)
-
-        url = self._urls["cache_details"].format(wp=wp)
+    def load_cache_by_url(self, url, destination=None):
         try:
             root = self._browser.get(url).soup
         except requests.exceptions.ConnectionError as e:
@@ -446,6 +438,8 @@ class Geocaching(object):
                 raise PMOnlyException("Premium Members only.")
 
         # parse raw data
+        wp = root.title.string.split(' ')[0]
+
         name = cache_details.find("h2")
         cache_type = cache_details.find("img").get("src")
         author = cache_details("a")[1]
@@ -487,6 +481,18 @@ class Geocaching(object):
 
         logging.debug("Cache loaded: %r", c)
         return c
+
+    @login_needed
+    def load_cache(self, wp, destination=None):
+        """Loads details from cache page.
+
+        Loads all cache details and return fully populated cache object."""
+
+        assert type(wp) is str and wp.startswith("GC")
+        logging.info("Loading details about %s...", wp)
+
+        url = self._urls["cache_details"].format(wp=wp)
+        return self.load_cache_by_url(url, destination)
 
     @login_needed
     def load_trackable(self, tid):
