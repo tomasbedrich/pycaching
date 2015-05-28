@@ -525,7 +525,11 @@ class Geocaching(object):
         location_raw = root.findAll("a",
             {"id" : "ctl00_ContentBody_BugDetails_BugLocation"})
         #return owner_raw
-        location = re.split("[\<\>]", str(location_raw))[2]
+        location_url = location_raw[0].get('href')
+        if 'cache_details' in location_url:
+            location = self.load_cache_by_url(location_url).location
+        else:
+            location = re.split("[\<\>]", str(location_raw))[2]
 
         description_raw = root.findAll("div", {"id" : "TrackableDetails"})
         description = description_raw[0].text
