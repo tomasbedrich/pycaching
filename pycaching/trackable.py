@@ -28,7 +28,9 @@ class Trackable(object):
     def __init__(self, tid, geocaching, *, name=None, location=None, owner=None,
                  type=None, description=None, goal=None):
         if geocaching is not None:
-           self._geocaching = geocaching
+           self.geocaching = geocaching
+        else:
+            raise ValueError
         if tid is not None:
            self.tid = tid # Tracking ID
         if name is not None:
@@ -41,6 +43,10 @@ class Trackable(object):
             self.desctiption = description
         if goal is not None:
             self.goal = goal
+        if type is not None:
+            self.type = type
+        if description is not None:
+            self.description = description
 
     def __str__(self):
         return self.tid
@@ -114,3 +120,12 @@ class Trackable(object):
     @owner.setter
     def owner(self, owner):
         self._owner = owner.strip()
+
+    @property
+    @lazy_loaded
+    def type(self):
+        return self._type
+
+    @type.setter
+    def type(self, trackable_type):
+        self._type = trackable_type.strip()
