@@ -20,6 +20,7 @@ Features
    -  quick loading (loads just basic info very quickly)
    -  lazy loading (create cache object and load info on demand)
 
+-  **load trackable** details by tracking-code
 -  **geocode** given location
 
 Roadmap
@@ -149,6 +150,18 @@ Find approximate location of caches in area
             c.wp, c.location.latitude, c.location.longitude,
             c.location.precision, c.name))
 
+
+Load trackable details
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+    import pycaching
+    geocaching = pycaching.login("user", "pass")
+    travelbug = geocaching.load_trackable("TB3ZGT2")
+    print("Goal:\n", travelbug.goal,
+        "\n\nDescription:\n", travelbug.description,
+        "\n\nCurrent Location:\n", travelbug.loaction)
 
 --------
 Appendix

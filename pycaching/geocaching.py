@@ -3,11 +3,13 @@
 import logging
 import math
 import requests
+import re
 import mechanicalsoup as ms
 from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 from pycaching.area import Area
 from pycaching.cache import Cache
+from pycaching.trackable import Trackable
 from pycaching.util import Util
 from pycaching.point import Point
 from pycaching.utfgrid import UTFGrid
@@ -35,6 +37,7 @@ class Geocaching(object):
     _urls = {
         "login_page":       _baseurl + "login/default.aspx",
         "cache_details":    _baseurl + "geocache/{wp}",
+        "trackable_details":_baseurl + "track/details.aspx?tracker={tid}",
         "search":           _baseurl + "play/search",
         "search_more":      _baseurl + "play/search/more-results",
         "geocode":          _baseurl + "api/geocode",
@@ -421,15 +424,7 @@ class Geocaching(object):
         return c
 
     @login_needed
-    def load_cache(self, wp, destination=None):
-        """Loads details from cache page.
-
-        Loads all cache details and return fully populated cache object."""
-
-        assert type(wp) is str and wp.startswith("GC")
-        logging.info("Loading details about %s...", wp)
-
-        url = self._urls["cache_details"].format(wp=wp)
+    def load_cache_by_url(self, url, destination=None):
         try:
             root = self._browser.get(url).soup
         except requests.exceptions.ConnectionError as e:
@@ -443,6 +438,8 @@ class Geocaching(object):
                 raise PMOnlyException("Premium Members only.")
 
         # parse raw data
+        wp = root.title.string.split(' ')[0]
+
         name = cache_details.find("h2")
         cache_type = cache_details.find("img").get("src")
         author = cache_details("a")[1]
@@ -484,6 +481,73 @@ class Geocaching(object):
 
         logging.debug("Cache loaded: %r", c)
         return c
+
+    @login_needed
+    def load_cache(self, wp, destination=None):
+        """Loads details from cache page.
+
+        Loads all cache details and return fully populated cache object."""
+
+        assert type(wp) is str and wp.startswith("GC")
+        logging.info("Loading details about %s...", wp)
+
+        url = self._urls["cache_details"].format(wp=wp)
+        return self.load_cache_by_url(url, destination)
+
+    @login_needed
+    def load_trackable(self, tid):
+        """Loads details from trackable page.
+
+        Loads all trackable details and return fully populated trackable object."""
+
+        assert type(tid) is str and tid.startswith("TB")
+        logging.info("Loading details about %s...", tid)
+
+        url = self._urls["trackable_details"].format(tid=tid)
+        try:
+            root = self._browser.get(url).soup
+        except requests.exceptions.ConnectionError as e:
+            raise Error("Cannot load cache details page.") from e
+        title_tuple = re.split("[\(\)-]", root.title.string)
+        tid = title_tuple[1]
+        trackable_type = title_tuple[2]
+
+        name = ''
+        for n in title_tuple[3:]:
+            name += n + '-'
+        name = name.rstrip('-')
+
+        owner_raw = root.findAll("a",
+            {"id" : "ctl00_ContentBody_BugDetails_BugOwner"})
+        #return owner_raw
+        owner = re.split("[\<\>]", str(owner_raw))[2]
+
+        location_raw = root.findAll("a",
+            {"id" : "ctl00_ContentBody_BugDetails_BugLocation"})
+        #return owner_raw
+        location_url = location_raw[0].get('href')
+        if 'cache_details' in location_url:
+            location = self.load_cache_by_url(location_url).location
+        else:
+            location = re.split("[\<\>]", str(location_raw))[2]
+
+        description_raw = root.findAll("div", {"id" : "TrackableDetails"})
+        description = description_raw[0].text
+
+        goal_raw = root.findAll("div", {"id" : "TrackableGoal"})
+        goal = goal_raw[0].text
+
+        # create trackable object
+        t = Trackable(tid, self)
+        assert isinstance(t, Trackable)
+        t = Trackable(tid, self)
+        t.name = name
+        t.owner = owner
+        t.location = location
+        t.type = trackable_type
+        t.description = description
+        t.goal = goal
+        return t
 
     def get_logged_user(self, login_page=None):
         """Returns the name of curently logged user or None, if no user is logged in."""
