@@ -495,15 +495,7 @@ class Geocaching(object):
         return self.load_cache_by_url(url, destination)
 
     @login_needed
-    def load_trackable(self, tid):
-        """Loads details from trackable page.
-
-        Loads all trackable details and return fully populated trackable object."""
-
-        assert type(tid) is str and tid.startswith("TB")
-        logging.info("Loading details about %s...", tid)
-
-        url = self._urls["trackable_details"].format(tid=tid)
+    def load_trackable_by_url(self, url):
         try:
             root = self._browser.get(url).soup
         except requests.exceptions.ConnectionError as e:
@@ -548,6 +540,18 @@ class Geocaching(object):
         t.description = description
         t.goal = goal
         return t
+
+    @login_needed
+    def load_trackable(self, tid):
+        """Loads details from trackable page.
+
+        Loads all trackable details and return fully populated trackable object."""
+
+        assert type(tid) is str and tid.startswith("TB")
+        logging.info("Loading details about %s...", tid)
+
+        url = self._urls["trackable_details"].format(tid=tid)
+        return self.load_trackable_by_url(self, url)
 
     def get_logged_user(self, login_page=None):
         """Returns the name of curently logged user or None, if no user is logged in."""
