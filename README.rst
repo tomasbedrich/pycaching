@@ -163,6 +163,27 @@ Load trackable details
         "\n\nDescription:\n", travelbug.description,
         "\n\nCurrent Location:\n", travelbug.loaction)
 
+
+Find all nearby caches with trackables in them
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Notice the ``limit`` in search function. It is because ``search()``
+returns a generator object, which would fetch the caches forever in case
+of simple loop.
+
+.. code:: python
+
+    from pycaching import Geocaching, Point
+
+    point = Point(56.25263, 15.26738)
+    geocaching = Geocaching()
+    geocaching.login("user", "pass")
+
+    for cache in geocaching.search(point, limit=50):
+        if len(cache.trackables) > 0:
+            print(cache.name)
+
+
 --------
 Appendix
 --------
