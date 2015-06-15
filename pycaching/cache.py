@@ -5,6 +5,7 @@ import datetime
 from pycaching.errors import ValueError
 from pycaching.point import Point
 from pycaching.util import Util
+from pycaching.trackable import Trackable
 
 
 def lazy_loaded(func):
@@ -131,7 +132,7 @@ class Cache(object):
 
     def __init__(self, wp, geocaching, *, name=None, cache_type=None, location=None, state=None,
                  found=None, size=None, difficulty=None, terrain=None, author=None, hidden=None,
-                 attributes=None, summary=None, description=None, hint=None, favorites=None, pm_only=None, trackables=None):
+                 attributes=None, summary=None, description=None, hint=None, favorites=None, pm_only=None, trackables=None, trackable_page=None):
         self.wp = wp
         self.geocaching = geocaching
         if name is not None:
@@ -168,6 +169,8 @@ class Cache(object):
             self.pm_only = pm_only
         if trackables is not None:
             self.trackables = trackables
+        if trackable_page is not None:
+            self.trackable_page = trackable_page
 
     def __str__(self):
         return self.wp
@@ -401,21 +404,26 @@ class Cache(object):
         return area.inside_area(self.location)
 
     @property
-    @lazy_loaded
     def trackables(self):
-        if self.trackable_page is not None:
-            self._trackables = self._geocaching.load_trackable_list(self.trackable_page)
-            self.trackable_page = None
-        else:
-            self._trackables = []
-        return self._trackables
+        try:
+            return self._trackables
+        except:
+            if self.trackable_page is not None:
+                logging.debug("Loading trackables from %s", self.trackable_page)
+                self._trackables = self._geocaching.load_trackable_list(self.trackable_page)
+                self.trackable_page = None
+            else:
+                self._trackables = []
+            return self._trackables
 
     @trackables.setter
     def trackables(self, trackables):
-        if type(trackables) is trackables.Trackable:
+        if type(trackables) is Trackable:
             self._trackables = [trackables]
         elif type(trackables) is not list:
             raise ValueError("Passed object is not list")
+        else:
+            self._trackables = trackables
 
     @property
     @lazy_loaded
