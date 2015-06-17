@@ -6,16 +6,19 @@ from pycaching.errors import ValueError
 from pycaching import Cache
 from pycaching import Geocaching
 from pycaching import Point
+from pycaching import Trackable
 
 
 class TestProperties(unittest.TestCase):
 
     def setUp(self):
         self.gc = Geocaching()
+        self.t = Trackable("TB1234", self.gc, name="TrackMe")
         self.c = Cache("GC12345", self.gc, name="Testing", cache_type="Traditional Cache", location=Point(), state=True,
                        found=False, size="micro", difficulty=1.5, terrain=5, author="human", hidden=date(2000, 1, 1),
                        attributes={"onehour": True, "kids": False, "available": True}, summary="text",
-                       description="long text", hint="rot13", favorites=0, pm_only=False)
+                       description="long text", hint="rot13", favorites=0, pm_only=False,
+                       trackables=self.t)
 
     def test___str__(self):
         self.assertEqual(str(self.c), "GC12345")
@@ -129,3 +132,15 @@ class TestProperties(unittest.TestCase):
 
     def test_pm_only(self):
         self.assertEqual(self.c.pm_only, False)
+
+    def test_trackable_page(self):
+        with self.subTest("invalid url"):
+            with self.assertRaises(ValueError):
+                self.c.trackable_page = 7
+        with self.subTest("valid url"):
+            self.c.trackable_page = "https://www.geocaching.com"
+            self.assertEqual(self.c.trackable_page, "https://www.geocaching.com")
+
+    def test_trackables(self):
+        self.assertEqual(list, type(self.c.trackables))
+        self.assertEqual(Trackable, type(self.c.trackables[0]))

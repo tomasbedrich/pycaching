@@ -38,6 +38,7 @@ class Geocaching(object):
         "login_page":       _baseurl + "login/default.aspx",
         "cache_details":    _baseurl + "geocache/{wp}",
         "trackable_details":_baseurl + "track/details.aspx?tracker={tid}",
+        "trackable_base":   _baseurl + "track/",
         "search":           _baseurl + "play/search",
         "search_more":      _baseurl + "play/search/more-results",
         "geocode":          _baseurl + "api/geocode",
@@ -454,6 +455,14 @@ class Geocaching(object):
         hint = root.find(id="div_hint")
         favorites = root.find("span", "favorite-value")
 
+        # check for trackables
+        inventory_raw = root.find_all("div", "CacheDetailNavigationWidget")
+        inventory_links = inventory_raw[1].find_all("a")
+        if len(inventory_links) >= 3:
+            trackable_page = self._urls['trackable_base'] + inventory_links[-3].get("href")
+        else:
+            trackable_page = None
+
         # create cache object
         c = destination or Cache(wp, self)
         assert isinstance(c, Cache)
@@ -478,7 +487,7 @@ class Geocaching(object):
             c.favorites = 0
         else:
             c.favorites = int(favorites.text)
-
+        c.trackable_page = trackable_page
         logging.debug("Cache loaded: %r", c)
         return c
 
@@ -495,15 +504,7 @@ class Geocaching(object):
         return self.load_cache_by_url(url, destination)
 
     @login_needed
-    def load_trackable(self, tid):
-        """Loads details from trackable page.
-
-        Loads all trackable details and return fully populated trackable object."""
-
-        assert type(tid) is str and tid.startswith("TB")
-        logging.info("Loading details about %s...", tid)
-
-        url = self._urls["trackable_details"].format(tid=tid)
+    def load_trackable_by_url(self, url):
         try:
             root = self._browser.get(url).soup
         except requests.exceptions.ConnectionError as e:
@@ -549,6 +550,18 @@ class Geocaching(object):
         t.goal = goal
         return t
 
+    @login_needed
+    def load_trackable(self, tid):
+        """Loads details from trackable page.
+
+        Loads all trackable details and return fully populated trackable object."""
+
+        assert type(tid) is str and tid.startswith("TB")
+        logging.info("Loading details about %s...", tid)
+
+        url = self._urls["trackable_details"].format(tid=tid)
+        return self.load_trackable_by_url(self, url)
+
     def get_logged_user(self, login_page=None):
         """Returns the name of curently logged user or None, if no user is logged in."""
 
@@ -560,3 +573,15 @@ class Geocaching(object):
             return login_page.soup.find("div", "LoggedIn").find("strong").text
         except AttributeError:
             return None
+
+    @login_needed
+    def load_trackable_list(self, url):
+        try:
+            root = self._browser.get(url).soup
+        except requests.exceptions.ConnectionError as e:
+            raise Error("Cannot load cache details page.") from e
+
+        trackable_table = root.find_all("table")[1]
+        links_raw = trackable_table.find_all("a")
+        urls = [l.get("href") for l in links_raw if "track" in l.get("href")]
+        return [self.load_trackable_by_url(t) for t in urls]
