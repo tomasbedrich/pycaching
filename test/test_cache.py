@@ -133,14 +133,6 @@ class TestProperties(unittest.TestCase):
     def test_pm_only(self):
         self.assertEqual(self.c.pm_only, False)
 
-    def test_trackable_page(self):
-        with self.subTest("invalid url"):
-            with self.assertRaises(ValueError):
-                self.c.trackable_page = 7
-        with self.subTest("valid url"):
-            self.c.trackable_page = "https://www.geocaching.com"
-            self.assertEqual(self.c.trackable_page, "https://www.geocaching.com")
-
     def test_trackables(self):
         self.assertEqual(list, type(self.c.trackables))
         self.assertEqual(Trackable, type(self.c.trackables[0]))

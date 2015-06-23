@@ -487,7 +487,10 @@ class Geocaching(object):
             c.favorites = 0
         else:
             c.favorites = int(favorites.text)
-        c.trackable_page = trackable_page
+        if trackable_page is not None:
+            c.trackables = self.load_trackable_list(trackable_page)
+        else:
+            c.trackables = []
         logging.debug("Cache loaded: %r", c)
         return c
 
@@ -584,4 +587,8 @@ class Geocaching(object):
         trackable_table = root.find_all("table")[1]
         links_raw = trackable_table.find_all("a")
         urls = [l.get("href") for l in links_raw if "track" in l.get("href")]
-        return [self.load_trackable_by_url(t) for t in urls]
+        names = [re.split("[\<\>]", str(l))[2] for l in links_raw if "track" in l.get("href")]
+        trackables = []
+        for n, u in zip(names, urls):
+            trackables.append(Trackable(None, self, name=n, trackable_page=u))
+        return trackables
