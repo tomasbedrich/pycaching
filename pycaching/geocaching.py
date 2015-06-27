@@ -563,7 +563,7 @@ class Geocaching(object):
         logging.info("Loading details about %s...", tid)
 
         url = self._urls["trackable_details"].format(tid=tid)
-        return self.load_trackable_by_url(self, url, destination)
+        return self.load_trackable_by_url(url, destination)
 
     def get_logged_user(self, login_page=None):
         """Returns the name of curently logged user or None, if no user is logged in."""
