@@ -585,9 +585,12 @@ class Geocaching(object):
             raise Error("Cannot load cache details page.") from e
 
         trackable_table = root.find_all("table")[1]
-        links_raw = trackable_table.find_all("a")
-        urls = [l.get("href") for l in links_raw if "track" in l.get("href")]
-        names = [re.split("[\<\>]", str(l))[2] for l in links_raw if "track" in l.get("href")]
+        urls_raw = trackable_table.find_all("a")
+        # filter out all urls for trackables
+        urls = [url.get("href") for url in urls_raw if "track" in url.get("href")]
+        # find the names matching the trackble urls
+        names = [re.split("[\<\>]", str(url))[2] for url in urls_raw if "track" in url.get("href")]
+        # create trackables and build list to return
         trackables = []
         for n, u in zip(names, urls):
             trackables.append(Trackable(None, self, name=n, trackable_page=u))
