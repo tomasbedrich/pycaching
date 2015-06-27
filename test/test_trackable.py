@@ -12,7 +12,7 @@ class TestProperties(unittest.TestCase):
 
     def setUp(self):
         self.gc = Geocaching()
-        self.t = Trackable("TB123AB", self.gc, name="Testing", type="Travel Bug", location=Point(), owner="human", description="long text")
+        self.t = Trackable("TB123AB", self.gc, name="Testing", type="Travel Bug", location=Point(), owner="human", description="long text", goal="short text")
 
     def test___str__(self):
         self.assertEqual(str(self.t), "TB123AB")
@@ -42,3 +42,6 @@ class TestProperties(unittest.TestCase):
 
     def test_description(self):
         self.assertEqual(self.t.description, "long text")
+
+    def test_goal(self):
+        self.assertEqual(self.t.goal, "short text")

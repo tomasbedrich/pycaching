@@ -9,6 +9,7 @@ from pycaching import Geocaching
 from pycaching import Cache
 from pycaching import Point
 from pycaching import Rectangle
+from pycaching import Trackable
 
 
 # please DO NOT CHANGE!
@@ -196,6 +197,16 @@ class TestLoading(unittest.TestCase):
         self.assertTrue(isinstance(cache, Cache))
         self.assertEqual("GC4808G", cache.wp)
 
+    def test_load_trackable(self):
+        trackable = self.g.load_trackable("TB1KEZ9")
+        self.assertTrue(isinstance(trackable, Trackable))
+        self.assertEqual("TB1KEZ9", trackable.tid)
+
+    def test_load_trackable_list(self):
+        test_url = "http://www.geocaching.com/track/search.aspx?wid=24fac98c-5332-4caa-a4c8-369fae530211&ccid=866132"
+        trackable_list = self.g.load_trackable_list(test_url)
+        self.assertTrue(isinstance(trackable_list, list))
+
     @classmethod
     def tearDownClass(cls):
         cls.g.logout()
@@ -216,6 +227,21 @@ class TestLazyLoading(unittest.TestCase):
         with self.subTest("non-ascii chars"):
             cache = Cache("GC4FRG5", self.g)
             self.assertEqual("Entre l'arbre et la grille.", cache.hint)
+
+    def test_load_trackable(self):
+        with self.subTest("tid"):
+            trackable = Trackable("TB1KEZ9", self.g)
+            self.assertEqual("Lilagul #2: SwedenHawk Geocoin", trackable.name)
+
+        with self.subTest("trackable url"):
+            url = "http://www.geocaching.com/track/details.aspx?guid=cff00ac4-f562-486e-b303-32b2d01ed386"
+            trackable = Trackable(None, self.g, trackable_page=url)
+            self.assertEqual("Lilagul #2: SwedenHawk Geocoin", trackable.name)
+
+        with self.subTest("fail lazyload"):
+            trackable = Trackable(None, self.g)
+            with(self.assertRaises(pycaching.errors.LoadError)):
+                trackable.name 
 
     @classmethod
     def tearDownClass(cls):
