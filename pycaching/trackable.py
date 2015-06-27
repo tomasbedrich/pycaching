@@ -3,6 +3,7 @@
 import logging
 import datetime
 from pycaching.errors import ValueError
+from pycaching.errors import LoadError
 from pycaching.point import Point
 from pycaching.util import Util
 
@@ -17,10 +18,13 @@ def lazy_loaded(func):
             return func(*args, **kwargs)
         except AttributeError:
             logging.debug("Lazy loading: %s", func.__name__)
-            try:
+            if hasattr(self, 'trackable_page'):
                 self.geocaching.load_trackable_by_url(self.trackable_page, self)
-            except AttributeError:
+            elif hasattr(self, '_tid'):
                 self.geocaching.load_trackable(self.tid, self)
+            else:
+                raise LoadError("Trackable lacks info for lazy loading")
+
             return func(*args, **kwargs)
 
     return wrapper
