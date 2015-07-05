@@ -487,7 +487,10 @@ class Geocaching(object):
             c.favorites = 0
         else:
             c.favorites = int(favorites.text)
-        c.trackable_page = trackable_page
+        if trackable_page is not None:
+            c.trackables = self.load_trackable_list(trackable_page)
+        else:
+            c.trackables = []
         logging.debug("Cache loaded: %r", c)
         return c
 
@@ -504,7 +507,7 @@ class Geocaching(object):
         return self.load_cache_by_url(url, destination)
 
     @login_needed
-    def load_trackable_by_url(self, url):
+    def load_trackable_by_url(self, url, destination=None):
         try:
             root = self._browser.get(url).soup
         except requests.exceptions.ConnectionError as e:
@@ -539,9 +542,9 @@ class Geocaching(object):
         goal = goal_raw[0].text
 
         # create trackable object
-        t = Trackable(tid, self)
+        t = destination or Trackable(tid, self)
         assert isinstance(t, Trackable)
-        t = Trackable(tid, self)
+        t.tid = tid
         t.name = name
         t.owner = owner
         t.location = location
@@ -551,7 +554,7 @@ class Geocaching(object):
         return t
 
     @login_needed
-    def load_trackable(self, tid):
+    def load_trackable(self, tid, destination=None):
         """Loads details from trackable page.
 
         Loads all trackable details and return fully populated trackable object."""
@@ -560,7 +563,7 @@ class Geocaching(object):
         logging.info("Loading details about %s...", tid)
 
         url = self._urls["trackable_details"].format(tid=tid)
-        return self.load_trackable_by_url(self, url)
+        return self.load_trackable_by_url(url, destination)
 
     def get_logged_user(self, login_page=None):
         """Returns the name of curently logged user or None, if no user is logged in."""
@@ -582,6 +585,13 @@ class Geocaching(object):
             raise Error("Cannot load cache details page.") from e
 
         trackable_table = root.find_all("table")[1]
-        links_raw = trackable_table.find_all("a")
-        urls = [l.get("href") for l in links_raw if "track" in l.get("href")]
-        return [self.load_trackable_by_url(t) for t in urls]
+        urls_raw = trackable_table.find_all("a")
+        # filter out all urls for trackables
+        urls = [url.get("href") for url in urls_raw if "track" in url.get("href")]
+        # find the names matching the trackble urls
+        names = [re.split("[\<\>]", str(url))[2] for url in urls_raw if "track" in url.get("href")]
+        # create trackables and build list to return
+        trackables = []
+        for n, u in zip(names, urls):
+            trackables.append(Trackable(None, self, name=n, trackable_page=u))
+        return trackables

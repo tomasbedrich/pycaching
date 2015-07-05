@@ -3,6 +3,7 @@
 import logging
 import datetime
 from pycaching.errors import ValueError
+from pycaching.errors import LoadError
 from pycaching.point import Point
 from pycaching.util import Util
 
@@ -17,7 +18,13 @@ def lazy_loaded(func):
             return func(*args, **kwargs)
         except AttributeError:
             logging.debug("Lazy loading: %s", func.__name__)
-            self.geocaching.load_trackable(self.tid, self)
+            if hasattr(self, 'trackable_page'):
+                self.geocaching.load_trackable_by_url(self.trackable_page, self)
+            elif hasattr(self, '_tid'):
+                self.geocaching.load_trackable(self.tid, self)
+            else:
+                raise LoadError("Trackable lacks info for lazy loading")
+
             return func(*args, **kwargs)
 
     return wrapper
@@ -26,7 +33,7 @@ def lazy_loaded(func):
 class Trackable(object):
 
     def __init__(self, tid, geocaching, *, name=None, location=None, owner=None,
-                 type=None, description=None, goal=None):
+                 type=None, description=None, goal=None, trackable_page=None):
         if geocaching is not None:
            self.geocaching = geocaching
         else:
@@ -47,6 +54,8 @@ class Trackable(object):
             self.type = type
         if description is not None:
             self.description = description
+        if trackable_page is not None:
+            self.trackable_page = trackable_page
 
     def __str__(self):
         return self.tid
@@ -55,6 +64,7 @@ class Trackable(object):
         return self.tid == other.tid
 
     @property
+    @lazy_loaded
     def tid(self):
         return self._tid
 
