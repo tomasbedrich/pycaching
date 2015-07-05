@@ -9,7 +9,7 @@ long_description = f.read()
 
 info = {
     "name":                "pycaching",
-    "version":             "3.1.1",  # PEP 386
+    "version":             "3.2",  # PEP 386
     "author":              "Tomas Bedrich",
     "author_email":        "ja@tbedrich.cz",
     "url":                 "https://github.com/tomasbedrich/pycaching",
@@ -18,7 +18,7 @@ info = {
     "license":             "GNU Lesser General Public License (LGPL) v3.0",
     "description":         "Geocaching.com site crawler. Provides tools for searching, fetching caches and geocoding.",
     "long_description":    long_description,
-    "keywords":            ["geocaching", "crawler", "geocache", "cache", "searching", "geocoding"],
+    "keywords":            ["geocaching", "crawler", "geocache", "cache", "search", "geocode", "travelbug"],
     "install_requires":    ["MechanicalSoup >= 0.3.0", "geopy >= 1.0.0"],
     "test_suite":          "test"
 }

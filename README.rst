@@ -52,8 +52,8 @@ Manually, from GIT:
 Requirements
 ~~~~~~~~~~~~
 
--  Python >= 3.0 (3.4 required for running tests)
--  MechanicalSoup >= 0.3.1
+-  Python >= 3.0 (>= 3.4 required for running tests)
+-  MechanicalSoup >= 0.3.0
 -  geopy >= 1.0.0
 
 
