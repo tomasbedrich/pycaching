@@ -161,7 +161,7 @@ Load trackable details
     travelbug = geocaching.load_trackable("TB3ZGT2")
     print("Goal:\n", travelbug.goal,
         "\n\nDescription:\n", travelbug.description,
-        "\n\nCurrent Location:\n", travelbug.loaction)
+        "\n\nCurrent Location:\n", travelbug.location)
 
 
 Find all nearby caches with trackables in them
