@@ -8,7 +8,8 @@ from pycaching.util import Util  # NOQA
 from pycaching.point import Point  # NOQA
 from pycaching.area import Rectangle  # NOQA
 from pycaching.errors import *  # NOQA
-from pycaching.trackable import *
+from pycaching.trackable import *  # NOQA
+
 
 def login(username, password):
     """Logs the user in. A shortcut for Geocaching().login()."""
