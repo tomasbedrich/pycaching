@@ -132,7 +132,8 @@ class Cache(object):
 
     def __init__(self, wp, geocaching, *, name=None, cache_type=None, location=None, state=None,
                  found=None, size=None, difficulty=None, terrain=None, author=None, hidden=None,
-                 attributes=None, summary=None, description=None, hint=None, favorites=None, pm_only=None, trackables=None):
+                 attributes=None, summary=None, description=None, hint=None, favorites=None,
+                 pm_only=None, trackables=None):
         self.wp = wp
         self.geocaching = geocaching
         if name is not None:

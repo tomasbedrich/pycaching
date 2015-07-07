@@ -240,8 +240,8 @@ class TestLazyLoading(unittest.TestCase):
 
         with self.subTest("fail lazyload"):
             trackable = Trackable(None, self.g)
-            with(self.assertRaises(pycaching.errors.LoadError)):
-                trackable.name 
+            with self.assertRaises(pycaching.errors.LoadError):
+                trackable.name
 
     @classmethod
     def tearDownClass(cls):

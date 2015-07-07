@@ -35,16 +35,16 @@ class Geocaching(object):
     _tile_url = "http://tiles01.geocaching.com/"
 
     _urls = {
-        "login_page":       _baseurl + "login/default.aspx",
-        "cache_details":    _baseurl + "geocache/{wp}",
-        "trackable_details":_baseurl + "track/details.aspx?tracker={tid}",
-        "trackable_base":   _baseurl + "track/",
-        "search":           _baseurl + "play/search",
-        "search_more":      _baseurl + "play/search/more-results",
-        "geocode":          _baseurl + "api/geocode",
-        "map":              _tile_url + "map.details",
-        "tile":             _tile_url + "map.png",
-        "grid":             _tile_url + "map.info",
+        "login_page":        _baseurl + "login/default.aspx",
+        "cache_details":     _baseurl + "geocache/{wp}",
+        "trackable_details": _baseurl + "track/details.aspx?tracker={tid}",
+        "trackable_base":    _baseurl + "track/",
+        "search":            _baseurl + "play/search",
+        "search_more":       _baseurl + "play/search/more-results",
+        "geocode":           _baseurl + "api/geocode",
+        "map":               _tile_url + "map.details",
+        "tile":              _tile_url + "map.png",
+        "grid":              _tile_url + "map.info",
     }
 
     def __init__(self):
@@ -521,24 +521,22 @@ class Geocaching(object):
             name += n + '-'
         name = name.rstrip('-')
 
-        owner_raw = root.findAll("a",
-            {"id" : "ctl00_ContentBody_BugDetails_BugOwner"})
-        #return owner_raw
+        owner_raw = root.findAll("a", {"id": "ctl00_ContentBody_BugDetails_BugOwner"})
+        # return owner_raw
         owner = re.split("[\<\>]", str(owner_raw))[2]
 
-        location_raw = root.findAll("a",
-            {"id" : "ctl00_ContentBody_BugDetails_BugLocation"})
-        #return owner_raw
+        location_raw = root.findAll("a", {"id": "ctl00_ContentBody_BugDetails_BugLocation"})
+        # return owner_raw
         location_url = location_raw[0].get('href')
         if 'cache_details' in location_url:
             location = self.load_cache_by_url(location_url).location
         else:
             location = re.split("[\<\>]", str(location_raw))[2]
 
-        description_raw = root.findAll("div", {"id" : "TrackableDetails"})
+        description_raw = root.findAll("div", {"id": "TrackableDetails"})
         description = description_raw[0].text
 
-        goal_raw = root.findAll("div", {"id" : "TrackableGoal"})
+        goal_raw = root.findAll("div", {"id": "TrackableGoal"})
         goal = goal_raw[0].text
 
         # create trackable object
@@ -585,11 +583,11 @@ class Geocaching(object):
             raise Error("Cannot load cache details page.") from e
 
         trackable_table = root.find_all("table")[1]
-        urls_raw = trackable_table.find_all("a")
+        links = trackable_table.find_all("a")
         # filter out all urls for trackables
-        urls = [url.get("href") for url in urls_raw if "track" in url.get("href")]
+        urls = [link.get("href") for link in links if "track" in link.get("href")]
         # find the names matching the trackble urls
-        names = [re.split("[\<\>]", str(url))[2] for url in urls_raw if "track" in url.get("href")]
+        names = [re.split("[\<\>]", str(link))[2] for link in links if "track" in link.get("href")]
         # create trackables and build list to return
         trackables = []
         for n, u in zip(names, urls):

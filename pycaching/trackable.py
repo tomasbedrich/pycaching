@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
 
 import logging
-import datetime
 from pycaching.errors import ValueError
 from pycaching.errors import LoadError
-from pycaching.point import Point
-from pycaching.util import Util
 
 
 def lazy_loaded(func):
@@ -35,17 +32,17 @@ class Trackable(object):
     def __init__(self, tid, geocaching, *, name=None, location=None, owner=None,
                  type=None, description=None, goal=None, trackable_page=None):
         if geocaching is not None:
-           self.geocaching = geocaching
+            self.geocaching = geocaching
         else:
             raise ValueError
         if tid is not None:
-           self.tid = tid # Tracking ID
+            self.tid = tid  # Tracking ID
         if name is not None:
-           self.name = name
+            self.name = name
         if location is not None:
-           self.location = location
+            self.location = location
         if owner is not None:
-           self.owner = owner
+            self.owner = owner
         if description is not None:
             self.desctiption = description
         if goal is not None:
@@ -82,7 +79,8 @@ class Trackable(object):
     @geocaching.setter
     def geocaching(self, geocaching):
         if not hasattr(geocaching, "load_trackable"):
-            raise ValueError("Passed object (type: '{}') doesn't contain 'load_trackable' method.".format(type(geocaching)))
+            raise ValueError("Passed object (type: '{}') doesn't contain 'load_trackable' method."
+                             .format(type(geocaching)))
         self._geocaching = geocaching
 
     @property
