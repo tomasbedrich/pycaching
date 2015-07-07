@@ -203,7 +203,7 @@ class TestLoading(unittest.TestCase):
         self.assertEqual("TB1KEZ9", trackable.tid)
 
     def test_load_trackable_list(self):
-        test_url = "http://www.geocaching.com/track/search.aspx?wid=24fac98c-5332-4caa-a4c8-369fae530211&ccid=866132"
+        test_url = "http://www.geocaching.com/track/search.aspx?wid=24fac98c-5332-4caa-a4c8-369fae530211"
         trackable_list = self.g.load_trackable_list(test_url)
         self.assertTrue(isinstance(trackable_list, list))
 
