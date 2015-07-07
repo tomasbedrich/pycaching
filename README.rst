@@ -23,15 +23,6 @@ Features
 -  **load trackable** details by tracking-code
 -  **geocode** given location
 
-Roadmap
-~~~~~~~
-
--  search results caching (not geo- :)
--  Sphinx documentation
--  submitting cache logs
--  usage of asyncio
--  automatic generation of possible cache attributes - partially done
-
 
 ------------
 Installation
@@ -85,7 +76,7 @@ Load a cache details
     import pycaching
 
     geocaching = pycaching.login("user", "pass")
-    cache = geocaching.load_cache("GC12345")
+    cache = geocaching.load_cache("GC1PAR2")
     print(cache.name)
 
 Using lazy loading:
@@ -96,7 +87,7 @@ Using lazy loading:
 
     geocaching = Geocaching()
     geocaching.login("user", "pass")
-    cache = Cache("GC12345", geocaching)
+    cache = Cache("GC1PAR2", geocaching)
     print(cache.name)
 
 The difference is, that ``Cache`` object is created immediately and the
@@ -113,12 +104,12 @@ of simple loop.
 
     from pycaching import Geocaching, Point
 
-    point = Point(10.123456, 10.123456)
+    point = Point(56.25263, 15.26738)
     geocaching = Geocaching()
     geocaching.login("user", "pass")
 
     for cache in geocaching.search(point, limit=50):
-        if cache.cache_type == "Traditional Cache":
+        if cache.cache_type == "Traditional":
             print(cache.name)
 
 Find all caches on some adress
@@ -145,10 +136,8 @@ Find approximate location of caches in area
     geocaching.login("user", "pass")
     rect = Rectangle(Point(60.15, 24.95), Point(60.17, 25.00))
 
-    for c in geocaching.search_quick(rect, strict=True):
-        print('{:8} ({:.5f}, {:.5f}) (+- {:.1f} m); {}'.format(
-            c.wp, c.location.latitude, c.location.longitude,
-            c.location.precision, c.name))
+    for cache in geocaching.search_quick(rect, strict=True):
+        print(cache.name, cache.location.precision)
 
 
 Load trackable details
@@ -158,18 +147,12 @@ Load trackable details
 
     import pycaching
     geocaching = pycaching.login("user", "pass")
-    travelbug = geocaching.load_trackable("TB3ZGT2")
-    print("Goal:\n", travelbug.goal,
-        "\n\nDescription:\n", travelbug.description,
-        "\n\nCurrent Location:\n", travelbug.location)
+    trackable = geocaching.load_trackable("TB3ZGT2")
+    print(trackable.goal, trackable.description, trackable.location)
 
 
 Find all nearby caches with trackables in them
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Notice the ``limit`` in search function. It is because ``search()``
-returns a generator object, which would fetch the caches forever in case
-of simple loop.
 
 .. code:: python
 
