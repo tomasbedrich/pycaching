@@ -28,13 +28,13 @@ Features
 Installation
 ------------
 
-Using pip:
+Stable version - using pip:
 
 .. code:: bash
 
     pip install pycaching
 
-Manually, from GIT:
+Dev version - manually from GIT:
 
 .. code:: bash
 
