@@ -7,6 +7,7 @@ from pycaching.cache import Cache  # NOQA
 from pycaching.util import Util  # NOQA
 from pycaching.point import Point  # NOQA
 from pycaching.area import Rectangle  # NOQA
+from pycaching.enums import *  # NOQA
 from pycaching.errors import *  # NOQA
 from pycaching.trackable import *  # NOQA
 

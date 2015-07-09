@@ -19,7 +19,7 @@ info = {
     "description":         "Geocaching.com site crawler. Provides tools for searching, fetching caches and geocoding.",
     "long_description":    long_description,
     "keywords":            ["geocaching", "crawler", "geocache", "cache", "search", "geocode", "travelbug"],
-    "install_requires":    ["MechanicalSoup >= 0.3.0", "geopy >= 1.0.0"],
+    "install_requires":    ["python >= 3.4", "MechanicalSoup >= 0.3.0", "geopy >= 1.0.0"],
     "test_suite":          "test"
 }
 

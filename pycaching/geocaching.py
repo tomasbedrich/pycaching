@@ -13,6 +13,7 @@ from pycaching.trackable import Trackable
 from pycaching.util import Util
 from pycaching.point import Point
 from pycaching.utfgrid import UTFGrid
+from pycaching.enums import Type, Size
 from pycaching.errors import Error, NotLoggedInException, LoginFailedException, GeocodeError, LoadError, PMOnlyException
 import geopy.distance
 
@@ -158,7 +159,7 @@ class Geocaching(object):
 
                 # create and fill cache object
                 c = Cache(wp, self)
-                c.cache_type = cache_details[0].strip()
+                c.type = Type.from_string(cache_details[0].strip())
                 c.name = row.find("span", "cache-name").text
                 c.found = row.find("img", title="Found It!") is not None
                 c.favorites = int(row.find(attrs={"data-column": "FavoritePoint"}).text)
@@ -170,7 +171,7 @@ class Geocaching(object):
                     yield c
                     continue
 
-                c.size = row.find(attrs={"data-column": "ContainerSize"}).text
+                c.size = Size.from_string(row.find(attrs={"data-column": "ContainerSize"}).text)
                 c.difficulty = float(row.find(attrs={"data-column": "Difficulty"}).text)
                 c.terrain = float(row.find(attrs={"data-column": "Terrain"}).text)
                 c.hidden = Util.parse_date(row.find(attrs={"data-column": "PlaceDate"}).text)
@@ -411,9 +412,9 @@ class Geocaching(object):
 
         # prettify data
         c.name = data["name"]
-        c.cache_type = data["type"]["text"]
+        c.type = Type.from_string(data["type"]["text"])
         c.state = data["available"]
-        c.size = data["container"]["text"]
+        c.size = Size.from_string(data["container"]["text"])
         c.difficulty = data["difficulty"]["text"]
         c.terrain = data["terrain"]["text"]
         c.hidden = Util.parse_date(data["hidden"])
@@ -442,7 +443,7 @@ class Geocaching(object):
         wp = root.title.string.split(' ')[0]
 
         name = cache_details.find("h2")
-        cache_type = cache_details.find("img").get("src")
+        type = cache_details.find("img").get("src").split("/")[-1].rsplit(".", 1)[0] # filename w/o extension
         author = cache_details("a")[1]
         hidden = cache_details.find("div", "minorCacheDetails").find_all("div")[1]
         location = root.find(id="uxLatLon")
@@ -469,14 +470,14 @@ class Geocaching(object):
 
         # prettify data
         c.name = name.text
-        c.cache_type = Cache.get_cache_type_by_img(cache_type)
+        c.type = Type.from_filename(type)
         c.author = author.text
         c.hidden = Util.parse_date(hidden.text.split(":")[-1])
         c.location = Point.from_string(location.text)
         c.state = state is None
         c.found = found and "Found It!" in found.text or False
         c.difficulty, c.terrain = [float(_.get("alt").split()[0]) for _ in D_T]
-        c.size = size.get("src").split("/")[-1].rsplit(".", 1)[0]  # filename of img[src]
+        c.size = Size.from_filename(size.get("src").split("/")[-1].rsplit(".", 1)[0])  # filename w/o extension
         attributes_raw = [_.get("src").split('/')[-1].rsplit("-", 1) for _ in attributes_raw]
         c.attributes = {attribute_name: appendix.startswith("yes")
                         for attribute_name, appendix in attributes_raw if not appendix.startswith("blank")}

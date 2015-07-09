@@ -3,9 +3,13 @@
 import logging
 import datetime
 from pycaching.errors import ValueError
+from pycaching.enums import Type, Size
 from pycaching.point import Point
 from pycaching.util import Util
 from pycaching.trackable import Trackable
+
+# prefix _type() function to avoid colisions with cache type
+_type = type
 
 
 def lazy_loaded(func):
@@ -97,40 +101,7 @@ class Cache(object):
         "wirelessbeacon": "Wireless Beacon"
     }
 
-    # either key and value is tuple of synonyms
-    _possible_types = {
-        # key is cache image url, used for parsing: http://www.geocaching.com/images/WptTypes/[KEY].gif
-        ("2", ): ("Traditional", ),
-        ("3", ): ("Multi-cache", ),
-        ("8", ): ("Mystery", "Unknown", ),
-        ("5", ): ("Letterbox hybrid", ),
-        ("6", ): ("Event", ),
-        ("mega", ): ("Mega-Event", ),
-        ("giga", ): ("Giga-Event", ),
-        ("137", "earthcache", ): ("Earthcache", ),
-        ("13", ): ("Cache in Trash out Event", "CITO", ),
-        ("11", ): ("Webcam", ),
-        ("4", ): ("Virtual", ),
-        ("1858", ): ("Wherigo", ),
-        ("10Years_32", ): ("Lost and Found Event", ),
-        ("ape_32", ): ("Project Ape", ),
-        ("HQ_32", ): ("Groundspeak HQ", ),
-        ("1304", ): ("GPS Adventures Exhibit", ),
-        ("4738", ): ("Groundspeak Block Party", ),
-        ("12", ): ("Locationless (Reverse)", ),
-    }
-
-    _possible_sizes = {
-        "micro": "micro",
-        "small": "small",
-        "regular": "regular",
-        "large": "large",
-        "not_chosen": "not chosen",
-        "virtual": "virtual",
-        "other": "other",
-    }
-
-    def __init__(self, wp, geocaching, *, name=None, cache_type=None, location=None, state=None,
+    def __init__(self, wp, geocaching, *, name=None, type=None, location=None, state=None,
                  found=None, size=None, difficulty=None, terrain=None, author=None, hidden=None,
                  attributes=None, summary=None, description=None, hint=None, favorites=None,
                  pm_only=None, trackables=None):
@@ -138,8 +109,8 @@ class Cache(object):
         self.geocaching = geocaching
         if name is not None:
             self.name = name
-        if cache_type is not None:
-            self.cache_type = cache_type
+        if type is not None:
+            self.type = type
         if location is not None:
             self.location = location
         if state is not None:
@@ -195,7 +166,7 @@ class Cache(object):
     @geocaching.setter
     def geocaching(self, geocaching):
         if not hasattr(geocaching, "load_cache"):
-            raise ValueError("Passed object (type: '{}') doesn't contain 'load_cache' method.".format(type(geocaching)))
+            raise ValueError("Passed object (type: '{}') doesn't contain 'load_cache' method.".format(_type(geocaching)))
         self._geocaching = geocaching
 
     @property
@@ -215,43 +186,24 @@ class Cache(object):
 
     @location.setter
     def location(self, location):
-        if type(location) is str:
+        if _type(location) is str:
             location = Point.from_string(location)
-        elif type(location) is not Point:
+        elif _type(location) is not Point:
             raise ValueError("Passed object is not Point instance nor string containing coordinates.")
         self._location = location
 
     @property
     @lazy_loaded
-    def cache_type(self):
-        return self._cache_type
+    def type(self):
+        return self._type
 
-    @cache_type.setter
-    def cache_type(self, cache_type):
-        cache_type = cache_type.replace(" Geocache", "")  # with space!
-        cache_type = cache_type.replace(" Cache", "")  # with space!
-        cache_type = cache_type.strip()
-
-        # walk trough each type and its synonyms
-        for key, value in self._possible_types.items():
-            for synonym in value:
-                if cache_type.lower() == synonym.lower():
-                    self._cache_type = self._possible_types[key][0]
-                    return
-
-        raise ValueError("Cache type '{}' is not possible.".format(cache_type))
-
-    @classmethod
-    def get_cache_type_by_img(cls, src):
-        """Returns cache type by its image src"""
-        # parse src (http://www.geocaching.com/images/WptTypes/[KEY].gif)
-        img_name = src.split("/")[-1].rsplit(".", 1)[0]
-
-        # walk trough each key and its synonyms
-        for key in cls._possible_types.keys():
-            for synonym in key:
-                if img_name == synonym:
-                    return cls._possible_types[key][0]
+    @type.setter
+    def type(self, type):
+        if _type(type) is str:
+            type = Type.from_string(type)
+        elif _type(type) is not Type:
+            raise ValueError("Passed object is not Type nor string containing human readable type.")
+        self._type = type
 
     @property
     @lazy_loaded
@@ -278,13 +230,11 @@ class Cache(object):
 
     @size.setter
     def size(self, size):
-        size = size.strip().lower()
-        if size in self._possible_sizes.values():  # try to search in values
-            self._size = size
-        elif size in self._possible_sizes.keys():  # not in values => it must be a key
-            self._size = self._possible_sizes[size]
-        else:
-            raise ValueError("Size '{}' is not possible.".format(size))
+        if _type(size) is str:
+            size = Size.from_string(size)
+        elif _type(size) is not Size:
+            raise ValueError("Passed object is not Size nor string containing human readable size.")
+        self._size = size
 
     @property
     @lazy_loaded
@@ -327,9 +277,9 @@ class Cache(object):
 
     @hidden.setter
     def hidden(self, hidden):
-        if type(hidden) is str:
+        if _type(hidden) is str:
             hidden = Util.parse_date(hidden)
-        elif type(hidden) is not datetime.date:
+        elif _type(hidden) is not datetime.date:
             raise ValueError("Passed object is not datetime.date instance nor string containing a date.")
         self._hidden = hidden
 
@@ -340,7 +290,7 @@ class Cache(object):
 
     @attributes.setter
     def attributes(self, attributes):
-        if type(attributes) is not dict:
+        if _type(attributes) is not dict:
             raise ValueError("Attribues is not dict.")
 
         self._attributes = {}
@@ -409,9 +359,8 @@ class Cache(object):
 
     @trackables.setter
     def trackables(self, trackables):
-        if type(trackables) is Trackable:
-            self._trackables = [trackables]
-        elif type(trackables) is not list:
+        if _type(trackables) is Trackable:
+            trackables = [trackables]
+        elif _type(trackables) is not list:
             raise ValueError("Passed object is not list")
-        else:
-            self._trackables = trackables
+        self._trackables = trackables

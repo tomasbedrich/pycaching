@@ -3,6 +3,7 @@
 import unittest
 from datetime import date
 from pycaching.errors import ValueError
+from pycaching.enums import Type, Size
 from pycaching import Cache
 from pycaching import Geocaching
 from pycaching import Point
@@ -14,8 +15,8 @@ class TestProperties(unittest.TestCase):
     def setUp(self):
         self.gc = Geocaching()
         self.t = Trackable("TB1234", self.gc, name="TrackMe")
-        self.c = Cache("GC12345", self.gc, name="Testing", cache_type="Traditional Cache", location=Point(), state=True,
-                       found=False, size="micro", difficulty=1.5, terrain=5, author="human", hidden=date(2000, 1, 1),
+        self.c = Cache("GC12345", self.gc, name="Testing", type=Type.traditional, location=Point(), state=True,
+                       found=False, size=Size.micro, difficulty=1.5, terrain=5, author="human", hidden=date(2000, 1, 1),
                        attributes={"onehour": True, "kids": False, "available": True}, summary="text",
                        description="long text", hint="rot13", favorites=0, pm_only=False,
                        trackables=self.t)
@@ -41,11 +42,11 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.name, "Testing")
 
     def test_type(self):
-        self.assertEqual(self.c.cache_type, "Traditional")
+        self.assertEqual(self.c.type, Type.traditional)
 
         with self.subTest("filter invalid"):
             with self.assertRaises(ValueError):
-                self.c.cache_type = "xxx"
+                self.c.type = "xxx"
 
     def test_location(self):
         self.assertEqual(self.c.location, Point())
@@ -69,7 +70,7 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.found, False)
 
     def test_size(self):
-        self.assertEqual(self.c.size, "micro")
+        self.assertEqual(self.c.size, Size.micro)
 
         with self.subTest("filter invalid"):
             with self.assertRaises(ValueError):

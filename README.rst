@@ -43,7 +43,7 @@ Manually, from GIT:
 Requirements
 ~~~~~~~~~~~~
 
--  Python >= 3.0 (>= 3.4 required for running tests)
+-  Python >= 3.4
 -  MechanicalSoup >= 0.3.0
 -  geopy >= 1.0.0
 
@@ -102,14 +102,14 @@ of simple loop.
 
 .. code:: python
 
-    from pycaching import Geocaching, Point
+    from pycaching import Geocaching, Point, Type
 
     point = Point(56.25263, 15.26738)
     geocaching = Geocaching()
     geocaching.login("user", "pass")
 
     for cache in geocaching.search(point, limit=50):
-        if cache.cache_type == "Traditional":
+        if cache.type == Type.traditional:
             print(cache.name)
 
 Find all caches on some adress
