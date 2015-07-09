@@ -443,7 +443,7 @@ class Geocaching(object):
         wp = root.title.string.split(' ')[0]
 
         name = cache_details.find("h2")
-        type = cache_details.find("img").get("src").split("/")[-1].rsplit(".", 1)[0] # filename w/o extension
+        type = cache_details.find("img").get("src").split("/")[-1].rsplit(".", 1)[0]  # filename w/o extension
         author = cache_details("a")[1]
         hidden = cache_details.find("div", "minorCacheDetails").find_all("div")[1]
         location = root.find(id="uxLatLon")
@@ -469,6 +469,7 @@ class Geocaching(object):
         assert isinstance(c, Cache)
 
         # prettify data
+        c.wp = wp
         c.name = name.text
         c.type = Type.from_filename(type)
         c.author = author.text
@@ -512,42 +513,30 @@ class Geocaching(object):
         try:
             root = self._browser.get(url).soup
         except requests.exceptions.ConnectionError as e:
-            raise Error("Cannot load cache details page.") from e
-        title_tuple = re.split("[\(\)-]", root.title.string)
-        tid = title_tuple[1]
-        trackable_type = title_tuple[2]
+            raise Error("Cannot load trackable details page.") from e
 
-        name = ''
-        for n in title_tuple[3:]:
-            name += n + '-'
-        name = name.rstrip('-')
+        tid = root.find("span", "CoordInfoCode").text
+        name = root.find(id="ctl00_ContentBody_lbHeading").text
+        type = root.find(id="ctl00_ContentBody_BugTypeImage").get("alt")
+        owner = root.find(id="ctl00_ContentBody_BugDetails_BugOwner").text
+        goal = root.find(id="TrackableGoal").text
+        description = root.find(id="TrackableDetails").text
 
-        owner_raw = root.findAll("a", {"id": "ctl00_ContentBody_BugDetails_BugOwner"})
-        # return owner_raw
-        owner = re.split("[\<\>]", str(owner_raw))[2]
-
-        location_raw = root.findAll("a", {"id": "ctl00_ContentBody_BugDetails_BugLocation"})
-        # return owner_raw
-        location_url = location_raw[0].get('href')
-        if 'cache_details' in location_url:
-            location = self.load_cache_by_url(location_url).location
+        location_raw = root.find(id="ctl00_ContentBody_BugDetails_BugLocation")
+        location_url = location_raw.get("href")
+        if "cache_details" in location_url:
+            location = Cache(None, self, url=location_url)
         else:
-            location = re.split("[\<\>]", str(location_raw))[2]
-
-        description_raw = root.findAll("div", {"id": "TrackableDetails"})
-        description = description_raw[0].text
-
-        goal_raw = root.findAll("div", {"id": "TrackableGoal"})
-        goal = goal_raw[0].text
+            location = location_raw.text
 
         # create trackable object
         t = destination or Trackable(tid, self)
         assert isinstance(t, Trackable)
         t.tid = tid
         t.name = name
+        t.type = type
         t.owner = owner
         t.location = location
-        t.type = trackable_type
         t.description = description
         t.goal = goal
         return t

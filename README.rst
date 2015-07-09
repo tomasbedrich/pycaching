@@ -20,7 +20,7 @@ Features
    -  quick loading (loads just basic info very quickly)
    -  lazy loading (create cache object and load info on demand)
 
--  **load trackable** details by tracking-code
+-  **load trackable** details by tracking code
 -  **geocode** given location
 
 
@@ -148,7 +148,7 @@ Load trackable details
     import pycaching
     geocaching = pycaching.login("user", "pass")
     trackable = geocaching.load_trackable("TB3ZGT2")
-    print(trackable.goal, trackable.description, trackable.location)
+    print(trackable.name, trackable.goal, trackable.description, trackable.location)
 
 
 Find all nearby caches with trackables in them

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import unittest
-from datetime import date
 from pycaching.errors import ValueError
 from pycaching import Trackable
 from pycaching import Geocaching
@@ -12,17 +11,14 @@ class TestProperties(unittest.TestCase):
 
     def setUp(self):
         self.gc = Geocaching()
-        self.t = Trackable("TB123AB", self.gc, name="Testing", type="Travel Bug", location=Point(), owner="human", description="long text", goal="short text")
+        self.t = Trackable("TB123AB", self.gc, name="Testing", type="Travel Bug", location=Point(), owner="human",
+                           description="long text", goal="short text")
 
     def test___str__(self):
         self.assertEqual(str(self.t), "TB123AB")
 
     def test___eq__(self):
         self.assertEqual(self.t, Trackable("TB123AB", self.gc))
-
-    def test_geocaching(self):
-        with self.assertRaises(ValueError):
-            Trackable("TB123AB", None)
 
     def test_tid(self):
         self.assertEqual(self.t.tid, "TB123AB")

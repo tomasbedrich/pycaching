@@ -2,7 +2,7 @@
 
 import logging
 import datetime
-from pycaching.errors import ValueError
+from pycaching.errors import ValueError, LoadError
 from pycaching.enums import Type, Size
 from pycaching.point import Point
 from pycaching.util import Util
@@ -22,7 +22,13 @@ def lazy_loaded(func):
             return func(*args, **kwargs)
         except AttributeError:
             logging.debug("Lazy loading: %s", func.__name__)
-            self.geocaching.load_cache(self.wp, self)
+            if hasattr(self, 'url'):
+                self.geocaching.load_cache_by_url(self.url, self)
+            elif hasattr(self, '_wp'):
+                self.geocaching.load_cache(self.wp, self)
+            else:
+                raise LoadError("Cache lacks info for lazy loading")
+
             return func(*args, **kwargs)
 
     return wrapper
@@ -104,9 +110,10 @@ class Cache(object):
     def __init__(self, wp, geocaching, *, name=None, type=None, location=None, state=None,
                  found=None, size=None, difficulty=None, terrain=None, author=None, hidden=None,
                  attributes=None, summary=None, description=None, hint=None, favorites=None,
-                 pm_only=None, trackables=None):
-        self.wp = wp
+                 pm_only=None, trackables=None, url=None):
         self.geocaching = geocaching
+        if wp is not None:
+            self.wp = wp
         if name is not None:
             self.name = name
         if type is not None:
@@ -141,6 +148,8 @@ class Cache(object):
             self.pm_only = pm_only
         if trackables is not None:
             self.trackables = trackables
+        if url is not None:
+            self.url = url
 
     def __str__(self):
         return self.wp
@@ -199,10 +208,8 @@ class Cache(object):
 
     @type.setter
     def type(self, type):
-        if _type(type) is str:
+        if _type(type) is not Type:
             type = Type.from_string(type)
-        elif _type(type) is not Type:
-            raise ValueError("Passed object is not Type nor string containing human readable type.")
         self._type = type
 
     @property
@@ -230,10 +237,8 @@ class Cache(object):
 
     @size.setter
     def size(self, size):
-        if _type(size) is str:
+        if _type(size) is not Size:
             size = Size.from_string(size)
-        elif _type(size) is not Size:
-            raise ValueError("Passed object is not Size nor string containing human readable size.")
         self._size = size
 
     @property

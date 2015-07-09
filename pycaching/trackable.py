@@ -31,12 +31,9 @@ class Trackable(object):
 
     def __init__(self, tid, geocaching, *, name=None, location=None, owner=None,
                  type=None, description=None, goal=None, trackable_page=None):
-        if geocaching is not None:
-            self.geocaching = geocaching
-        else:
-            raise ValueError
+        self.geocaching = geocaching
         if tid is not None:
-            self.tid = tid  # Tracking ID
+            self.tid = tid
         if name is not None:
             self.name = name
         if location is not None:
