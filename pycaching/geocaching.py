@@ -523,7 +523,7 @@ class Geocaching(object):
         description = root.find(id="TrackableDetails").text
 
         location_raw = root.find(id="ctl00_ContentBody_BugDetails_BugLocation")
-        location_url = location_raw.get("href")
+        location_url = location_raw.get("href") or ''
         if "cache_details" in location_url:
             location = Cache(None, self, url=location_url)
         else:
