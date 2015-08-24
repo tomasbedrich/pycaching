@@ -19,7 +19,7 @@ class TestProperties(unittest.TestCase):
                        found=False, size=Size.micro, difficulty=1.5, terrain=5, author="human", hidden=date(2000, 1, 1),
                        attributes={"onehour": True, "kids": False, "available": True}, summary="text",
                        description="long text", hint="rot13", favorites=0, pm_only=False,
-                       trackables=self.t)
+                       trackables=self.t, logbook=[])
 
     def test___str__(self):
         self.assertEqual(str(self.c), "GC12345")
@@ -137,3 +137,6 @@ class TestProperties(unittest.TestCase):
     def test_trackables(self):
         self.assertEqual(list, type(self.c.trackables))
         self.assertEqual(Trackable, type(self.c.trackables[0]))
+
+    def test_logbook(self):
+        self.assertEqual(list, type(self.c.logbook))

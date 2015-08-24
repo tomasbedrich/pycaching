@@ -110,7 +110,7 @@ class Cache(object):
     def __init__(self, wp, geocaching, *, name=None, type=None, location=None, state=None,
                  found=None, size=None, difficulty=None, terrain=None, author=None, hidden=None,
                  attributes=None, summary=None, description=None, hint=None, favorites=None,
-                 pm_only=None, trackables=None, url=None):
+                 pm_only=None, trackables=None, url=None, logbook=None):
         self.geocaching = geocaching
         if wp is not None:
             self.wp = wp
@@ -150,6 +150,8 @@ class Cache(object):
             self.trackables = trackables
         if url is not None:
             self.url = url
+        if logbook is not None:
+            self.logbook = logbook
 
     def __str__(self):
         return self.wp
@@ -369,3 +371,12 @@ class Cache(object):
         elif _type(trackables) is not list:
             raise ValueError("Passed object is not list")
         self._trackables = trackables
+
+    @property
+    @lazy_loaded
+    def logbook(self):
+        return self._logbook
+
+    @logbook.setter
+    def logbook(self, logbook):
+        self._logbook = logbook

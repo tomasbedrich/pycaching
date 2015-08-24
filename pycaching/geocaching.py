@@ -46,6 +46,7 @@ class Geocaching(object):
         "map":               _tile_url + "map.details",
         "tile":              _tile_url + "map.png",
         "grid":              _tile_url + "map.info",
+        "logs":              _baseurl + "seek/geocache.logbook"
     }
 
     def __init__(self):
@@ -427,12 +428,26 @@ class Geocaching(object):
         return c
 
     @login_needed
+    def load_logbook(self, userToken, num=10):
+        url = self._urls['logs']
+        payload = {
+                "tkn" : userToken,
+                "idx" : "1",
+                "num" : num,
+                "decrypt" : "true"
+                }
+        try:
+            log_json = self._browser.get(url, params=payload).json()
+        except requests.exceptions.ConnectionError as e:
+            raise Error("Cannot load log page.") from e
+        return log_json['data']
+
+    @login_needed
     def load_cache_by_url(self, url, destination=None):
         try:
             root = self._browser.get(url).soup
         except requests.exceptions.ConnectionError as e:
             raise Error("Cannot load cache details page.") from e
-
         cache_details = root.find(id="cacheDetails")
 
         # check for PM only caches if using free account
@@ -457,6 +472,12 @@ class Geocaching(object):
         hint = root.find(id="div_hint")
         favorites = root.find("span", "favorite-value")
 
+        # load log
+        num_logs = root.find_all('div', 'InformationWidget Clear')[0]
+        num_logs = num_logs.find_all('h3')[0].get_text().strip()
+        num_logs = num_logs.split(' ')[0]
+        userToken =  re.findall("userToken\\s*=\\s*'([^']+)'", str(root))[0]
+        logs = self.load_logbook(userToken, num_logs)
         # check for trackables
         inventory_raw = root.find_all("div", "CacheDetailNavigationWidget")
         inventory_links = inventory_raw[1].find_all("a")
@@ -494,6 +515,8 @@ class Geocaching(object):
             c.trackables = self.load_trackable_list(trackable_page)
         else:
             c.trackables = []
+        c.logbook = logs
+
         logging.debug("Cache loaded: %r", c)
         return c
 
