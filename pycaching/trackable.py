@@ -41,7 +41,7 @@ class Trackable(object):
         if owner is not None:
             self.owner = owner
         if description is not None:
-            self.desctiption = description
+            self.description = description
         if goal is not None:
             self.goal = goal
         if type is not None:
