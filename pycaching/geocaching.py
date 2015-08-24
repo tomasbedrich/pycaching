@@ -402,7 +402,8 @@ class Geocaching(object):
             raise Error("Cannot load quick cache details page.") from e
 
         if res["status"] == "failed" or len(res["data"]) != 1:
-            raise LoadError("Waypoint '{}' cannot be loaded: {}".format(wp, res["msg"]))
+            error_msg = res["msg"] if "msg" in res else "Unknown error (probably not existing cache)"
+            raise LoadError("Waypoint '{}' cannot be loaded: {}".format(wp, error_msg))
 
         data = res["data"][0]
 

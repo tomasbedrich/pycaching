@@ -193,9 +193,15 @@ class TestLoading(unittest.TestCase):
                 self.g.load_cache("GC3AHDM")
 
     def test_load_cache_quick(self):
-        cache = self.g.load_cache_quick("GC4808G")
-        self.assertTrue(isinstance(cache, Cache))
-        self.assertEqual("GC4808G", cache.wp)
+        with self.subTest("normal"):
+            cache = self.g.load_cache_quick("GC4808G")
+            self.assertTrue(isinstance(cache, Cache))
+            self.assertEqual("GC4808G", cache.wp)
+
+        with self.subTest("fail"):
+            with self.assertRaises(pycaching.errors.LoadError):
+                cache = self.g.load_cache_quick("GC123456")
+
 
     def test_load_trackable(self):
         trackable = self.g.load_trackable("TB1KEZ9")
