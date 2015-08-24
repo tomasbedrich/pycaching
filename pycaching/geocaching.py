@@ -46,6 +46,7 @@ class Geocaching(object):
         "map":               _tile_url + "map.details",
         "tile":              _tile_url + "map.png",
         "grid":              _tile_url + "map.info",
+        "logs":              _baseurl + "seek/geocache.logbook"
     }
 
     def __init__(self):
@@ -427,12 +428,33 @@ class Geocaching(object):
         return c
 
     @login_needed
+    def _logbook_get_page(self, user_token, page=0, per_page=25):
+        """Loads one page from logbook."""
+
+        url = self._urls["logs"]
+        params = {
+            "tkn": user_token,
+            "idx": int(page) + 1,  # Groundspeak indexes this from 1 (OMG..)
+            "num": int(per_page),
+            "decrypt": "true"
+        }
+        try:
+            res = self._browser.get(url, params=params).json()
+        except requests.exceptions.ConnectionError as e:
+            raise Error("Cannot load logbook page.") from e
+
+        if res["status"] != "success":
+            error_msg = res["msg"] if "msg" in res else "Unknown error"
+            raise LoadError("Logbook cannot be loaded: {}".format(error_msg))
+
+        return res["data"]
+
+    @login_needed
     def load_cache_by_url(self, url, destination=None):
         try:
             root = self._browser.get(url).soup
         except requests.exceptions.ConnectionError as e:
             raise Error("Cannot load cache details page.") from e
-
         cache_details = root.find(id="cacheDetails")
 
         # check for PM only caches if using free account
@@ -441,7 +463,7 @@ class Geocaching(object):
                 raise PMOnlyException("Premium Members only.")
 
         # parse raw data
-        wp = root.title.string.split(' ')[0]
+        wp = root.title.string.split(" ")[0]
 
         name = cache_details.find("h2")
         type = cache_details.find("img").get("src").split("/")[-1].rsplit(".", 1)[0]  # filename w/o extension
@@ -457,11 +479,15 @@ class Geocaching(object):
         hint = root.find(id="div_hint")
         favorites = root.find("span", "favorite-value")
 
+        # load logbook_token
+        js_content = "\n".join(map(lambda i: i.text, root.find_all("script")))
+        logbook_token = re.findall("userToken\\s*=\\s*'([^']+)'", js_content)[0]
+
         # check for trackables
         inventory_raw = root.find_all("div", "CacheDetailNavigationWidget")
         inventory_links = inventory_raw[1].find_all("a")
         if len(inventory_links) >= 3:
-            trackable_page = self._urls['trackable_base'] + inventory_links[-3].get("href")
+            trackable_page = self._urls["trackable_base"] + inventory_links[-3].get("href")
         else:
             trackable_page = None
 
@@ -480,7 +506,7 @@ class Geocaching(object):
         c.found = found and "Found It!" in found.text or False
         c.difficulty, c.terrain = [float(_.get("alt").split()[0]) for _ in D_T]
         c.size = Size.from_filename(size.get("src").split("/")[-1].rsplit(".", 1)[0])  # filename w/o extension
-        attributes_raw = [_.get("src").split('/')[-1].rsplit("-", 1) for _ in attributes_raw]
+        attributes_raw = [_.get("src").split("/")[-1].rsplit("-", 1) for _ in attributes_raw]
         c.attributes = {attribute_name: appendix.startswith("yes")
                         for attribute_name, appendix in attributes_raw if not appendix.startswith("blank")}
         c.summary = user_content[0].text
@@ -494,6 +520,8 @@ class Geocaching(object):
             c.trackables = self.load_trackable_list(trackable_page)
         else:
             c.trackables = []
+        c.logbook_token = logbook_token
+
         logging.debug("Cache loaded: %r", c)
         return c
 

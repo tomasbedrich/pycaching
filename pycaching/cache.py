@@ -7,6 +7,7 @@ from pycaching.enums import Type, Size
 from pycaching.point import Point
 from pycaching.util import Util
 from pycaching.trackable import Trackable
+from pycaching.log import Log
 
 # prefix _type() function to avoid colisions with cache type
 _type = type
@@ -110,7 +111,7 @@ class Cache(object):
     def __init__(self, wp, geocaching, *, name=None, type=None, location=None, state=None,
                  found=None, size=None, difficulty=None, terrain=None, author=None, hidden=None,
                  attributes=None, summary=None, description=None, hint=None, favorites=None,
-                 pm_only=None, trackables=None, url=None):
+                 pm_only=None, trackables=None, url=None, logbook_token=None):
         self.geocaching = geocaching
         if wp is not None:
             self.wp = wp
@@ -150,6 +151,8 @@ class Cache(object):
             self.trackables = trackables
         if url is not None:
             self.url = url
+        if logbook_token is not None:
+            self.logbook_token = logbook_token
 
     def __str__(self):
         return self.wp
@@ -175,7 +178,8 @@ class Cache(object):
     @geocaching.setter
     def geocaching(self, geocaching):
         if not hasattr(geocaching, "load_cache"):
-            raise ValueError("Passed object (type: '{}') doesn't contain 'load_cache' method.".format(_type(geocaching)))
+            raise ValueError(
+                "Passed object (type: '{}') doesn't contain 'load_cache' method.".format(_type(geocaching)))
         self._geocaching = geocaching
 
     @property
@@ -369,3 +373,46 @@ class Cache(object):
         elif _type(trackables) is not list:
             raise ValueError("Passed object is not list")
         self._trackables = trackables
+
+    @property
+    @lazy_loaded
+    def logbook_token(self):
+        return self._logbook_token
+
+    @logbook_token.setter
+    def logbook_token(self, logbook_token):
+        self._logbook_token = logbook_token
+
+    def load_logbook(self, limit=float("inf")):
+        """Returns a generator of logs for this cache."""
+
+        logging.info("Loading logbook for %s...", self.wp)
+
+        token = self.logbook_token  # will trigger lazy_loading if needed
+        page = 0
+        per_page = min(limit, 100)  # max number to fetch in one request is 100 items
+
+        while True:
+            # get one page
+            logbook_page = self.geocaching._logbook_get_page(token, page, per_page)
+            page += 1
+
+            if not logbook_page:
+                # result is empty - no more logs
+                raise StopIteration()
+
+            for log_data in logbook_page:
+
+                # create and fill log object
+                l = Log()
+                l.type = log_data["LogType"]
+                l.text = log_data["LogText"]
+                l.visited = log_data["Visited"]
+                l.author = log_data["UserName"]
+
+                yield l
+
+                # handle limit
+                limit -= 1
+                if limit <= 0:
+                    raise StopIteration()

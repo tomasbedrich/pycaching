@@ -9,6 +9,8 @@ from pycaching import Geocaching
 from pycaching import Point
 from pycaching import Trackable
 
+from test.test_geocaching import _username, _password
+
 
 class TestProperties(unittest.TestCase):
 
@@ -137,3 +139,16 @@ class TestProperties(unittest.TestCase):
     def test_trackables(self):
         self.assertEqual(list, type(self.c.trackables))
         self.assertEqual(Trackable, type(self.c.trackables[0]))
+
+
+class TestMethods(unittest.TestCase):
+
+    def setUp(self):
+        gc = Geocaching()
+        gc.login(_username, _password)
+        self.c = Cache("GC1PAR2", gc)
+
+    def test_load_logbook(self):
+        log_authors = list(map(lambda log: log.author, self.c.load_logbook(200)))  # limit over 100 tests paging
+        for expected_author in ["Dudny-1995", "Sopdet Reviewer", "donovanstangiano83"]:
+            self.assertIn(expected_author, log_authors)

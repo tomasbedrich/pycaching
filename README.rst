@@ -14,11 +14,12 @@ Features
    - normal search (unlimited number of caches from any point)
    - quick search (all caches inside some area)
    
--  **load cache** details by WP
+-  **load cache** and its details by WP or URL
 
    -  normal loading (loads all details)
    -  quick loading (loads just basic info very quickly)
    -  lazy loading (create cache object and load info on demand)
+   -  load logbook for given cache
 
 -  **load trackable** details by tracking code
 -  **geocode** given location
@@ -165,6 +166,19 @@ Find all nearby caches with trackables in them
     for cache in geocaching.search(point, limit=50):
         if len(cache.trackables) > 0:
             print(cache.name)
+
+
+Load logbook for a cache
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+    import pycaching
+
+    geocaching = pycaching.login("user", "pass")
+    cache = geocaching.load_cache("GC1PAR2")
+    for log in cache.load_logbook(limit=200):
+        print(log.visited, log.type, log.author, log.text)
 
 
 --------

@@ -95,3 +95,42 @@ class Size(Enum):
             return cls(name)
         except ValueError as e:
             raise PycachingValueError("Unknown cache type '{}'.".format(name)) from e
+
+
+class LogType(Enum):
+    found_it = "found it"
+    didnt_find_it = "didn't find it"
+    note = "write note"
+    publish_listing = "publish listing"
+    enable_listing = "enable listing"
+    archive = "archive"
+    unarchive = "unarchive"
+    temp_disable_listing = "temporarily disable listing"
+    needs_archive = "needs archived"
+    will_attend = "will attend"
+    attended = "attended"
+    retrieved_it = "retrieved it"
+    placed_it = "placed it"
+    grabbed_it = "grabbed it"
+    needs_maintenance = "needs maintenance"
+    owner_maintenance = "owner maintenance"
+    update_coordinates = "update coordinates"
+    discovered_it = "discovered it"
+    post_reviewer_note = "post reviewer note"
+    submit_for_review = "submit for review"
+    visit = "visit"
+    webcam_photo_taken = "webcam photo taken"
+    announcement = "announcement"
+    retract = "retract listing"
+    marked_missing = "marked missing"
+    oc_team_comment = "X1"
+
+    @classmethod
+    def from_string(cls, name):
+        """Returns log type from its human readable name"""
+        name = name.strip().lower()
+
+        try:
+            return cls(name)
+        except ValueError as e:
+            raise PycachingValueError("Unknown log type '{}'.".format(name)) from e

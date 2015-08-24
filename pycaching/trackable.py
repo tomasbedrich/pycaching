@@ -46,8 +46,6 @@ class Trackable(object):
             self.goal = goal
         if type is not None:
             self.type = type
-        if description is not None:
-            self.description = description
         if trackable_page is not None:
             self.trackable_page = trackable_page
 
