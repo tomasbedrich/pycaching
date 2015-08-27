@@ -4,16 +4,25 @@ import math
 import re
 import geopy
 from pycaching import errors
-from pycaching.util import Util
+from pycaching.util import to_decimal
 
 
 class Point(geopy.Point):
 
     def __new__(cls, *args, **kwargs):
-        precision = kwargs.pop('precision', None)
+        precision = kwargs.pop("precision", None)
         self = super(Point, cls).__new__(cls, *args, **kwargs)
         self.precision = precision
         return self
+
+    @classmethod
+    def from_location(cls, geocaching, location):
+        res = geocaching._request("api/geocode", params={"q": location}, expect="json")
+
+        if res["status"] != "success":
+            raise errors.GeocodeError(res["msg"])
+
+        return cls(float(res["data"]["lat"]), float(res["data"]["lng"]))
 
     @classmethod
     def from_string(cls, string):
@@ -40,14 +49,14 @@ class Point(geopy.Point):
             if "W" in string:
                 lonDeg *= -1
 
-            return Point(Util.to_decimal(latDeg, latMin), Util.to_decimal(lonDeg, lonMin))
+            return cls(to_decimal(latDeg, latMin), to_decimal(lonDeg, lonMin))
 
         except AttributeError:
             pass
 
         # fallback
         try:
-            return super(Point, cls).from_string(string)
+            return super(cls, cls).from_string(string)
         except ValueError as e:
             # wrap possible error to pycaching.errors.ValueError
             raise errors.ValueError() from e
@@ -72,7 +81,7 @@ class Point(geopy.Point):
         lon_deg = (x + dx) / n * 360.0 - 180.0
         lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * (y + dy) / n)))
         lat_deg = math.degrees(lat_rad)
-        p = Point(lat_deg, lon_deg)
+        p = cls(lat_deg, lon_deg)
         p.precision = p.precision_from_tile_zoom(z, tile_resolution)
         return p
 
@@ -97,16 +106,16 @@ class Point(geopy.Point):
         return xtile, ytile, zoom
 
     def precision_from_tile_zoom(self, z, divisor=256):
-        '''Calculate (x-axis) coordinate precision from web map tile
+        """Calculate (x-axis) coordinate precision from web map tile
 
         Parameters z is map zoom value.  Divisor denotes how many pixels
         there are in a tile.  Assume spherical earth.
 
         Return precision in meters.
 
-        '''
+        """
         lat = self.latitude
-        diam = geopy.distance.ELLIPSOIDS['WGS-84'][0] * 1e3 * 2
+        diam = geopy.distance.ELLIPSOIDS["WGS-84"][0] * 1e3 * 2
         tile_length = math.pi * diam * math.cos(math.radians(lat)) * 2 ** (-z)
         return tile_length / divisor
 

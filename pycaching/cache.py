@@ -2,37 +2,16 @@
 
 import logging
 import datetime
-from pycaching.errors import ValueError, LoadError
-from pycaching.enums import Type, Size
+import re
+from pycaching import errors
 from pycaching.point import Point
-from pycaching.util import Util
+from pycaching.enums import Type, Size
 from pycaching.trackable import Trackable
 from pycaching.log import Log
+from pycaching.util import parse_date, rot13, lazy_loaded
 
 # prefix _type() function to avoid colisions with cache type
 _type = type
-
-
-def lazy_loaded(func):
-    """Decorator providing lazy loading."""
-
-    def wrapper(*args, **kwargs):
-        self = args[0]
-        assert isinstance(self, Cache)
-        try:
-            return func(*args, **kwargs)
-        except AttributeError:
-            logging.debug("Lazy loading: %s", func.__name__)
-            if hasattr(self, 'url'):
-                self.geocaching.load_cache_by_url(self.url, self)
-            elif hasattr(self, '_wp'):
-                self.geocaching.load_cache(self.wp, self)
-            else:
-                raise LoadError("Cache lacks info for lazy loading")
-
-            return func(*args, **kwargs)
-
-    return wrapper
 
 
 class Cache(object):
@@ -108,11 +87,12 @@ class Cache(object):
         "wirelessbeacon": "Wireless Beacon"
     }
 
-    def __init__(self, wp, geocaching, *, name=None, type=None, location=None, state=None,
+    def __init__(self, geocaching, wp, *, name=None, type=None, location=None, state=None,
                  found=None, size=None, difficulty=None, terrain=None, author=None, hidden=None,
                  attributes=None, summary=None, description=None, hint=None, favorites=None,
-                 pm_only=None, trackables=None, url=None, logbook_token=None):
+                 pm_only=None, url=None, trackable_page_url=None, logbook_token=None):
         self.geocaching = geocaching
+        # properties
         if wp is not None:
             self.wp = wp
         if name is not None:
@@ -147,12 +127,15 @@ class Cache(object):
             self.favorites = favorites
         if pm_only is not None:
             self.pm_only = pm_only
-        if trackables is not None:
-            self.trackables = trackables
         if url is not None:
             self.url = url
+        # related
+        self.logbook = []
+        self.trackables = []
         if logbook_token is not None:
             self.logbook_token = logbook_token
+        if trackable_page_url is not None:
+            self.trackable_page_url = trackable_page_url
 
     def __str__(self):
         return self.wp
@@ -168,7 +151,7 @@ class Cache(object):
     def wp(self, wp):
         wp = str(wp).upper().strip()
         if not wp.startswith("GC"):
-            raise ValueError("Waypoint '{}' doesn't start with 'GC'.".format(wp))
+            raise errors.ValueError("Waypoint '{}' doesn't start with 'GC'.".format(wp))
         self._wp = wp
 
     @property
@@ -177,9 +160,8 @@ class Cache(object):
 
     @geocaching.setter
     def geocaching(self, geocaching):
-        if not hasattr(geocaching, "load_cache"):
-            raise ValueError(
-                "Passed object (type: '{}') doesn't contain 'load_cache' method.".format(_type(geocaching)))
+        if not hasattr(geocaching, "_request"):
+            raise errors.ValueError("Passed object (type: '{}') doesn't contain '_request' method.".format(_type(geocaching)))
         self._geocaching = geocaching
 
     @property
@@ -202,7 +184,7 @@ class Cache(object):
         if _type(location) is str:
             location = Point.from_string(location)
         elif _type(location) is not Point:
-            raise ValueError("Passed object is not Point instance nor string containing coordinates.")
+            raise errors.ValueError("Passed object is not Point instance nor string containing coordinates.")
         self._location = location
 
     @property
@@ -254,7 +236,7 @@ class Cache(object):
     def difficulty(self, difficulty):
         difficulty = float(difficulty)
         if difficulty < 1 or difficulty > 5 or difficulty * 10 % 5 != 0:  # X.0 or X.5
-            raise ValueError("Difficulty must be from 1 to 5 and divisible by 0.5.")
+            raise errors.ValueError("Difficulty must be from 1 to 5 and divisible by 0.5.")
         self._difficulty = difficulty
 
     @property
@@ -266,7 +248,7 @@ class Cache(object):
     def terrain(self, terrain):
         terrain = float(terrain)
         if terrain < 1 or terrain > 5 or terrain * 10 % 5 != 0:  # X.0 or X.5
-            raise ValueError("Terrain must be from 1 to 5 and divisible by 0.5.")
+            raise errors.ValueError("Terrain must be from 1 to 5 and divisible by 0.5.")
         self._terrain = terrain
 
     @property
@@ -287,9 +269,9 @@ class Cache(object):
     @hidden.setter
     def hidden(self, hidden):
         if _type(hidden) is str:
-            hidden = Util.parse_date(hidden)
+            hidden = parse_date(hidden)
         elif _type(hidden) is not datetime.date:
-            raise ValueError("Passed object is not datetime.date instance nor string containing a date.")
+            raise errors.ValueError("Passed object is not datetime.date instance nor string containing a date.")
         self._hidden = hidden
 
     @property
@@ -300,7 +282,7 @@ class Cache(object):
     @attributes.setter
     def attributes(self, attributes):
         if _type(attributes) is not dict:
-            raise ValueError("Attribues is not dict.")
+            raise errors.ValueError("Attribues is not dict.")
 
         self._attributes = {}
         for name, allowed in attributes.items():
@@ -363,16 +345,21 @@ class Cache(object):
 
     @property
     @lazy_loaded
-    def trackables(self):
-        return self._trackables
+    def logbook_token(self):
+        return self._logbook_token
 
-    @trackables.setter
-    def trackables(self, trackables):
-        if _type(trackables) is Trackable:
-            trackables = [trackables]
-        elif _type(trackables) is not list:
-            raise ValueError("Passed object is not list")
-        self._trackables = trackables
+    @logbook_token.setter
+    def logbook_token(self, logbook_token):
+        self._logbook_token = logbook_token
+
+    @property
+    @lazy_loaded
+    def trackable_page_url(self):
+        return self._trackable_page_url
+
+    @trackable_page_url.setter
+    def trackable_page_url(self, trackable_page_url):
+        self._trackable_page_url = trackable_page_url
 
     @property
     @lazy_loaded
@@ -383,18 +370,126 @@ class Cache(object):
     def logbook_token(self, logbook_token):
         self._logbook_token = logbook_token
 
+    def load(self):
+        # pick url based on what info we have right now
+        if hasattr(self, "url"):
+            root = self.geocaching._request(url)
+        elif hasattr(self, "_wp"):
+            root = self.geocaching._request("seek/cache_details.aspx", params={"wp": self._wp})
+        else:
+            raise errors.LoadError("Cache lacks info for loading")
+
+        # check for PM only caches if using free account
+        if root.find("p", "PMOWarning") is not None:
+            raise errors.PMOnlyException("Premium Members only.")
+
+        cache_details = root.find(id="cacheDetails")
+        attributes_widget, inventory_widget, *bookmarks_widget = root.find_all("div", "CacheDetailNavigationWidget")
+
+        # parse raw data
+        wp = root.title.string.split(" ")[0]
+        name = cache_details.find("h2")
+        type = cache_details.find("img").get("src").split("/")[-1].rsplit(".", 1)[0]  # filename w/o extension
+        author = cache_details("a")[1]
+        hidden = cache_details.find("div", "minorCacheDetails").find_all("div")[1]
+        location = root.find(id="uxLatLon")
+        state = root.find("ul", "OldWarning")
+        found = root.find("div", "FoundStatus")
+        D_T = root.find("div", "CacheStarLabels").find_all("img")
+        size = root.find("div", "CacheSize").find("img")
+        attributes_raw = attributes_widget.find_all("img")
+        user_content = root.find_all("div", "UserSuppliedContent")
+        hint = root.find(id="div_hint")
+        favorites = root.find("span", "favorite-value")
+
+        # load logbook_token
+        js_content = "\n".join(map(lambda i: i.text, root.find_all("script")))
+        logbook_token = re.findall("userToken\\s*=\\s*'([^']+)'", js_content)[0]
+
+        # if there are some trackables
+        if len(inventory_widget.find_all("a")) >= 3:
+            trackable_page_url = inventory_widget.find(id="ctl00_ContentBody_uxTravelBugList_uxViewAllTrackableItems").get("href")
+        else:
+            trackable_page_url = None
+
+        # prettify data
+        self.wp = wp
+        self.name = name.text
+        self.type = Type.from_filename(type)
+        self.author = author.text
+        self.hidden = parse_date(hidden.text.split(":")[-1])
+        self.location = Point.from_string(location.text)
+        self.state = state is None
+        self.found = found and "Found It!" in found.text or False
+        self.difficulty, self.terrain = [float(_.get("alt").split()[0]) for _ in D_T]
+        self.size = Size.from_filename(size.get("src").split("/")[-1].rsplit(".", 1)[0])  # filename w/o extension
+        attributes_raw = [_.get("src").split("/")[-1].rsplit("-", 1) for _ in attributes_raw]
+        self.attributes = {attribute_name: appendix.startswith("yes")
+                           for attribute_name, appendix in attributes_raw if not appendix.startswith("blank")}
+        self.summary = user_content[0].text
+        self.description = str(user_content[1])
+        self.hint = rot13(hint.text.strip())
+        self.favorites = 0 if favorites is None else int(favorites.text)
+        self.logbook_token = logbook_token
+        self.trackable_page_url = trackable_page_url
+
+        logging.debug("Cache loaded: %r", self)
+
+    def load_quick(self):
+        """Loads details from map server.
+
+        Loads just basic cache details, but very quickly."""
+
+        res = self.geocaching._request("http://tiles01.geocaching.com/map.details", params={"i": wp}, expect="json")
+
+        if res["status"] == "failed" or len(res["data"]) != 1:
+            error_msg = res["msg"] if "msg" in res else "Unknown error (probably not existing cache)"
+            raise errors.LoadError("Waypoint '{}' cannot be loaded: {}".format(wp, error_msg))
+
+        data = res["data"][0]
+
+        # prettify data
+        self.name = data["name"]
+        self.type = Type.from_string(data["type"]["text"])
+        self.state = data["available"]
+        self.size = Size.from_string(data["container"]["text"])
+        self.difficulty = data["difficulty"]["text"]
+        self.terrain = data["terrain"]["text"]
+        self.hidden = parse_date(data["hidden"])
+        self.author = data["owner"]["text"]
+        self.favorites = int(data["fp"])
+        self.pm_only = data["subrOnly"]
+
+        logging.debug("Cache loaded: %r", self)
+
+    def _logbook_get_page(self, page=0, per_page=25):
+        """Loads one page from logbook."""
+
+        res = self.geocaching._request("seek/geocache.logbook", params={
+            "tkn": self.logbook_token ,  # will trigger lazy_loading if needed
+            "idx": int(page) + 1,  # Groundspeak indexes this from 1 (OMG..)
+            "num": int(per_page),
+            "decrypt": "true"
+        }, expect="json")
+
+        if res["status"] != "success":
+            error_msg = res["msg"] if "msg" in res else "Unknown error"
+            raise errors.LoadError("Logbook cannot be loaded: {}".format(error_msg))
+
+        return res["data"]
+
     def load_logbook(self, limit=float("inf")):
         """Returns a generator of logs for this cache."""
 
         logging.info("Loading logbook for %s...", self.wp)
+        self.logbook = []
 
-        token = self.logbook_token  # will trigger lazy_loading if needed
         page = 0
         per_page = min(limit, 100)  # max number to fetch in one request is 100 items
 
         while True:
             # get one page
-            logbook_page = self.geocaching._logbook_get_page(token, page, per_page)
+            logbook_page = self._logbook_get_page(page, per_page)
             page += 1
 
             if not logbook_page:
@@ -403,16 +498,45 @@ class Cache(object):
 
             for log_data in logbook_page:
 
+                limit -= 1  # handle limit
+                if limit < 0:
+                    raise StopIteration()
+
                 # create and fill log object
                 l = Log()
                 l.type = log_data["LogType"]
                 l.text = log_data["LogText"]
                 l.visited = log_data["Visited"]
                 l.author = log_data["UserName"]
-
+                self.logbook.append(l)
                 yield l
 
-                # handle limit
-                limit -= 1
-                if limit <= 0:
-                    raise StopIteration()
+
+    # TODO: trackable list can have multiple pages - handle it in similar way as _logbook_get_page
+    # for example see: http://www.geocaching.com/geocache/GC26737_geocaching-jinak-tb-gc-hrbitov
+    def load_trackables(self, limit=float("inf")):
+        logging.info("Loading trackables for %s...", self.wp)
+        self.trackables = []
+
+        url = self.trackable_page_url  # will trigger lazy_loading if needed
+        res = self.geocaching._request(url)
+
+        trackable_table = res.find_all("table")[1]
+        links = trackable_table.find_all("a")
+        # filter out all urls for trackables
+        urls = [link.get("href") for link in links if "track" in link.get("href")]
+        # find the names matching the trackble urls
+        names = [re.split("[\<\>]", str(link))[2] for link in links if "track" in link.get("href")]
+
+        for name, url in zip(names, urls):
+
+            limit -= 1  # handle limit
+            if limit < 0:
+                raise StopIteration()
+
+            # create and fill trackable object
+            t = Trackable(self.geocaching, None)
+            t.name = name
+            t.url = url
+            self.trackables.append(t)
+            yield t

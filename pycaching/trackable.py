@@ -1,36 +1,16 @@
 #!/usr/bin/env python3
 
 import logging
-from pycaching.errors import ValueError
-from pycaching.errors import LoadError
+from pycaching import errors
+from pycaching.util import lazy_loaded
 
-
-def lazy_loaded(func):
-    """Decorator providing lazy loading."""
-
-    def wrapper(*args, **kwargs):
-        self = args[0]
-        assert isinstance(self, Trackable)
-        try:
-            return func(*args, **kwargs)
-        except AttributeError:
-            logging.debug("Lazy loading: %s", func.__name__)
-            if hasattr(self, 'trackable_page'):
-                self.geocaching.load_trackable_by_url(self.trackable_page, self)
-            elif hasattr(self, '_tid'):
-                self.geocaching.load_trackable(self.tid, self)
-            else:
-                raise LoadError("Trackable lacks info for lazy loading")
-
-            return func(*args, **kwargs)
-
-    return wrapper
-
+# prefix _type() function to avoid colisions with trackable type
+_type = type
 
 class Trackable(object):
 
-    def __init__(self, tid, geocaching, *, name=None, location=None, owner=None,
-                 type=None, description=None, goal=None, trackable_page=None):
+    def __init__(self, geocaching, tid, *, name=None, location=None, owner=None,
+                 type=None, description=None, goal=None, url=None):
         self.geocaching = geocaching
         if tid is not None:
             self.tid = tid
@@ -46,8 +26,8 @@ class Trackable(object):
             self.goal = goal
         if type is not None:
             self.type = type
-        if trackable_page is not None:
-            self.trackable_page = trackable_page
+        if url is not None:
+            self.url = url
 
     def __str__(self):
         return self.tid
@@ -64,7 +44,7 @@ class Trackable(object):
     def tid(self, tid):
         tid = str(tid).upper().strip()
         if not tid.startswith("TB"):
-            raise ValueError("Trackable ID '{}' doesn't start with 'TB'.".format(tid))
+            raise errors.ValueError("Trackable ID '{}' doesn't start with 'TB'.".format(tid))
         self._tid = tid
 
     @property
@@ -73,9 +53,8 @@ class Trackable(object):
 
     @geocaching.setter
     def geocaching(self, geocaching):
-        if not hasattr(geocaching, "load_trackable"):
-            raise ValueError("Passed object (type: '{}') doesn't contain 'load_trackable' method."
-                             .format(type(geocaching)))
+        if not hasattr(geocaching, "_request"):
+            raise errors.ValueError("Passed object (type: '{}') doesn't contain '_request' method.".format(_type(geocaching)))
         self._geocaching = geocaching
 
     @property
@@ -130,5 +109,34 @@ class Trackable(object):
         return self._type
 
     @type.setter
-    def type(self, trackable_type):
-        self._type = trackable_type.strip()
+    def type(self, type):
+        self._type = type.strip()
+
+    def load(self):
+        """Loads details from trackable page."""
+
+        # pick url based on what info we have right now
+        if hasattr(self, "url"):
+            url = self.url
+        elif hasattr(self, "_tid"):
+            url = "track/details.aspx?tracker={}".format(self._tid)
+        else:
+            raise errors.LoadError("Trackable lacks info for loading")
+
+        # make request
+        root = self.geocaching._request(url)
+
+        # parse data
+        self.tid = root.find("span", "CoordInfoCode").text
+        self.name = root.find(id="ctl00_ContentBody_lbHeading").text
+        self.type = root.find(id="ctl00_ContentBody_BugTypeImage").get("alt")
+        self.owner = root.find(id="ctl00_ContentBody_BugDetails_BugOwner").text
+        self.goal = root.find(id="TrackableGoal").text
+        self.description = root.find(id="TrackableDetails").text
+
+        location_raw = root.find(id="ctl00_ContentBody_BugDetails_BugLocation")
+        location_url = location_raw.get("href")
+        if "cache_details" in location_url:
+            self.location = Cache(self, None, url=location_url)
+        else:
+            self.location = location_raw.text

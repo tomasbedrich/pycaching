@@ -4,7 +4,7 @@ import os
 import unittest
 import pycaching
 from geopy.distance import great_circle
-from pycaching.errors import NotLoggedInException, LoginFailedException, GeocodeError, PMOnlyException
+from pycaching.errors import NotLoggedInException, LoginFailedException, GeocodeError
 from pycaching import Geocaching
 from pycaching import Cache
 from pycaching import Point
@@ -37,10 +37,6 @@ class TestGeocaching(unittest.TestCase):
         with self.subTest("empty request"):
             with self.assertRaises(GeocodeError):
                 self.g.geocode("")
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.g.logout()
 
 
 class TestLoading(unittest.TestCase):
@@ -202,7 +198,6 @@ class TestLoading(unittest.TestCase):
             with self.assertRaises(pycaching.errors.LoadError):
                 cache = self.g.load_cache_quick("GC123456")
 
-
     def test_load_trackable(self):
         trackable = self.g.load_trackable("TB1KEZ9")
         self.assertTrue(isinstance(trackable, Trackable))
@@ -227,25 +222,25 @@ class TestLazyLoading(unittest.TestCase):
 
     def test_load_cache(self):
         with self.subTest("normal"):
-            cache = Cache("GC4808G", self.g)
+            cache = Cache(self.g, "GC4808G")
             self.assertEqual("Nekonecne ticho", cache.name)
 
         with self.subTest("non-ascii chars"):
-            cache = Cache("GC4FRG5", self.g)
+            cache = Cache(self.g, "GC4FRG5")
             self.assertEqual("Entre l'arbre et la grille.", cache.hint)
 
     def test_load_trackable(self):
         with self.subTest("tid"):
-            trackable = Trackable("TB1KEZ9", self.g)
+            trackable = Trackable(self.g, "TB1KEZ9")
             self.assertEqual("Lilagul #2: SwedenHawk Geocoin", trackable.name)
 
         with self.subTest("trackable url"):
             url = "http://www.geocaching.com/track/details.aspx?guid=cff00ac4-f562-486e-b303-32b2d01ed386"
-            trackable = Trackable(None, self.g, trackable_page=url)
+            trackable = Trackable(self.g, None, url=url)
             self.assertEqual("Lilagul #2: SwedenHawk Geocoin", trackable.name)
 
         with self.subTest("fail lazyload"):
-            trackable = Trackable(None, self.g)
+            trackable = Trackable(self.g, None)
             with self.assertRaises(pycaching.errors.LoadError):
                 trackable.name
 

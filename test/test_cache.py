@@ -16,22 +16,20 @@ class TestProperties(unittest.TestCase):
 
     def setUp(self):
         self.gc = Geocaching()
-        self.t = Trackable("TB1234", self.gc, name="TrackMe")
-        self.c = Cache("GC12345", self.gc, name="Testing", type=Type.traditional, location=Point(), state=True,
+        self.c = Cache(self.gc, "GC12345", name="Testing", type=Type.traditional, location=Point(), state=True,
                        found=False, size=Size.micro, difficulty=1.5, terrain=5, author="human", hidden=date(2000, 1, 1),
                        attributes={"onehour": True, "kids": False, "available": True}, summary="text",
-                       description="long text", hint="rot13", favorites=0, pm_only=False,
-                       trackables=self.t)
+                       description="long text", hint="rot13", favorites=0, pm_only=False)
 
     def test___str__(self):
         self.assertEqual(str(self.c), "GC12345")
 
     def test___eq__(self):
-        self.assertEqual(self.c, Cache("GC12345", self.gc))
+        self.assertEqual(self.c, Cache(self.gc, "GC12345"))
 
     def test_geocaching(self):
         with self.assertRaises(ValueError):
-            Cache("GC12345", None)
+            Cache(None, "GC12345")
 
     def test_wp(self):
         self.assertEqual(self.c.wp, "GC12345")
@@ -136,19 +134,16 @@ class TestProperties(unittest.TestCase):
     def test_pm_only(self):
         self.assertEqual(self.c.pm_only, False)
 
-    def test_trackables(self):
-        self.assertEqual(list, type(self.c.trackables))
-        self.assertEqual(Trackable, type(self.c.trackables[0]))
-
 
 class TestMethods(unittest.TestCase):
 
-    def setUp(self):
-        gc = Geocaching()
-        gc.login(_username, _password)
-        self.c = Cache("GC1PAR2", gc)
+    @classmethod
+    def setUpClass(cls):
+        cls.gc = Geocaching()
+        cls.gc.login(_username, _password)
+        cls.c = Cache(cls.gc, "GC1PAR2")
 
     def test_load_logbook(self):
-        log_authors = list(map(lambda log: log.author, self.c.load_logbook(200)))  # limit over 100 tests paging
+        log_authors = list(map(lambda log: log.author, self.c.load_logbook(limit=200)))  # limit over 100 tests pagging
         for expected_author in ["Dudny-1995", "Sopdet Reviewer", "donovanstangiano83"]:
             self.assertIn(expected_author, log_authors)
