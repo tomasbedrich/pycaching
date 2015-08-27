@@ -4,7 +4,7 @@ import logging
 import datetime
 from pycaching.errors import ValueError
 from pycaching.enums import LogType as Type
-from pycaching.util import Util
+from pycaching.util import parse_date
 
 # prefix _type() function to avoid colisions with log type
 _type = type
@@ -51,7 +51,7 @@ class Log(object):
     @visited.setter
     def visited(self, visited):
         if _type(visited) is str:
-            visited = Util.parse_date(visited)
+            visited = parse_date(visited)
         elif _type(visited) is not datetime.date:
             raise ValueError("Passed object is not datetime.date instance nor string containing a date.")
         self._visited = visited

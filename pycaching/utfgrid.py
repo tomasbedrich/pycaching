@@ -133,7 +133,7 @@ class UTFGrid:
                 waypoint = cache_dic["i"]
                 # Store all found coordinate points
                 if waypoint not in caches:
-                    c = Cache(waypoint, self._gc, name=cache_dic["n"])
+                    c = Cache(self.gc, waypoint, name=cache_dic["n"])
                     caches[waypoint] \
                         = [c, GridCoordinateBlock(self, (x_i, y_i),)]
                 else:
