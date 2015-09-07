@@ -420,7 +420,7 @@ class Cache(object):
         self.hidden = parse_date(hidden.text.split(":")[-1])
         self.location = Point.from_string(location.text)
         self.state = state is None
-        self.found = found and "Found It!" in found.text or False
+        self.found = found and ("Found It!" or "Attended" in found.text) or False
         self.difficulty, self.terrain = [float(_.get("alt").split()[0]) for _ in D_T]
         self.size = Size.from_filename(size.get("src").split("/")[-1].rsplit(".", 1)[0])  # filename w/o extension
         attributes_raw = [_.get("src").split("/")[-1].rsplit("-", 1) for _ in attributes_raw]
