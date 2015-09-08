@@ -373,7 +373,7 @@ class Cache(object):
     def load(self):
         # pick url based on what info we have right now
         if hasattr(self, "url"):
-            root = self.geocaching._request(url)
+            root = self.geocaching._request(self.url)
         elif hasattr(self, "_wp"):
             root = self.geocaching._request("seek/cache_details.aspx", params={"wp": self._wp})
         else:
