@@ -21,6 +21,8 @@ Features
    -  lazy loading (create cache object and load info on demand)
    -  load logbook for given cache
 
+-  **post log** to cache logbook
+
 -  **load trackable** details by tracking code
 -  **geocode** given location
 
@@ -93,6 +95,24 @@ Using lazy loading:
 
 The difference is, that ``Cache`` object is created immediately and the
 page is loaded when needed (accessing the name).
+
+Post a new log to a cache:
+
+:: code:: python
+
+    from pycaching import Geocaching, Cache, Log, enums
+    from datetime import date
+
+    geocaching = Geocaching()
+    geocaching.login("user", "pass")
+    cache = Cache("GC1PAR2", geocaching)
+
+    log = Log()
+    log.text = "Found cache in the rain. Nice Place, TFTC!"
+    log.type = enums.LogType.found_it
+    log.visited = date.today
+
+    cache.post_log(log)
 
 Find all traditional caches around
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
