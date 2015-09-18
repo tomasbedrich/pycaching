@@ -424,7 +424,7 @@ class Cache(object):
         else:
             trackable_page_url = None
 
-        log_page_url = root.findAll("div", "CacheDetailNavigation NoPrint")[0].find("a", {'id' : 'ctl00_ContentBody_GeoNav_logButton'})["href"]
+        log_page_url = root.find(id="ctl00_ContentBody_GeoNav_logButton")["href"]
         # prettify data
         self.wp = wp
         self.name = name.text
