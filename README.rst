@@ -96,7 +96,8 @@ Using lazy loading:
 The difference is, that ``Cache`` object is created immediately and the
 page is loaded when needed (accessing the name).
 
-Post a new log to a cache:
+Post a new log to a cache
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :: code:: python
 
