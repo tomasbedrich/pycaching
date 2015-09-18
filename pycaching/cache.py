@@ -560,6 +560,8 @@ class Cache(object):
         # Find all valid log types for the cache
         type_options = log_page.find_all("option")
         valid_types = {o.get_text().lower(): o["value"] for o in type_options}
+        if l.type.value not in valid_types:
+            raise ValueError("The Cache does not accept this type of log")
 
         # Find all static data fields needed for log
         hidden_elements = log_page.find_all("input", type=["hidden", "submit"])
