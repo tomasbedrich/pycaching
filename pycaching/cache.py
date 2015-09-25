@@ -90,7 +90,8 @@ class Cache(object):
     def __init__(self, geocaching, wp, *, name=None, type=None, location=None, state=None,
                  found=None, size=None, difficulty=None, terrain=None, author=None, hidden=None,
                  attributes=None, summary=None, description=None, hint=None, favorites=None,
-                 pm_only=None, url=None, trackable_page_url=None, logbook_token=None):
+                 pm_only=None, url=None, trackable_page_url=None, logbook_token=None,
+                 log_page_url=None):
         self.geocaching = geocaching
         # properties
         if wp is not None:
@@ -136,6 +137,8 @@ class Cache(object):
             self.logbook_token = logbook_token
         if trackable_page_url is not None:
             self.trackable_page_url = trackable_page_url
+        if log_page_url is not None:
+            self.log_page_url = log_page_url
 
     def __str__(self):
         return self.wp
@@ -370,6 +373,15 @@ class Cache(object):
     def logbook_token(self, logbook_token):
         self._logbook_token = logbook_token
 
+    @property
+    @lazy_loaded
+    def log_page_url(self):
+        return self._log_page_url
+
+    @log_page_url.setter
+    def log_page_url(self, log_page_url):
+        self._log_page_url = log_page_url
+
     def load(self):
         # pick url based on what info we have right now
         if hasattr(self, "url"):
@@ -412,6 +424,7 @@ class Cache(object):
         else:
             trackable_page_url = None
 
+        log_page_url = root.find(id="ctl00_ContentBody_GeoNav_logButton")["href"]
         # prettify data
         self.wp = wp
         self.name = name.text
@@ -432,6 +445,7 @@ class Cache(object):
         self.favorites = 0 if favorites is None else int(favorites.text)
         self.logbook_token = logbook_token
         self.trackable_page_url = trackable_page_url
+        self.log_page_url = log_page_url
 
         logging.debug("Cache loaded: %r", self)
 
@@ -540,3 +554,23 @@ class Cache(object):
             t.url = url
             self.trackables.append(t)
             yield t
+
+    def post_log(self, l):
+        log_page = self.geocaching._request(self.log_page_url)
+        # Find all valid log types for the cache
+        type_options = log_page.find_all("option")
+        valid_types = {o.get_text().lower(): o["value"] for o in type_options}
+        if l.type.value not in valid_types:
+            raise errors.ValueError("The Cache does not accept this type of log")
+
+        # Find all static data fields needed for log
+        hidden_elements = log_page.find_all("input", type=["hidden", "submit"])
+        post = {field["name"]: field["value"] for field in hidden_elements}
+        post["ctl00$ContentBody$LogBookPanel1$btnSubmitLog"] = "Submit Log Entry"
+
+        #fill form from Log object
+        post["ctl00$ContentBody$LogBookPanel1$ddLogType"] = valid_types[l.type.value]
+        post["ctl00$ContentBody$LogBookPanel1$uxDateVisited"] = l.visited.strftime("%m/%d/%Y")
+        post["ctl00$ContentBody$LogBookPanel1$uxLogInfo"] = l.text
+
+        log_result = self.geocaching._request(self.log_page_url, method="POST", data=post)
