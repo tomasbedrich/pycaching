@@ -565,7 +565,7 @@ class Cache(object):
 
         # Find all static data fields needed for log
         hidden_elements = log_page.find_all("input", type=["hidden", "submit"])
-        post = {field["name"]: field["value"] for field in hidden_elements}
+        post = {field["name"]: (field["value"] if field.has_attr("value") else "") for field in hidden_elements}
         post["ctl00$ContentBody$LogBookPanel1$btnSubmitLog"] = "Submit Log Entry"
 
         #fill form from Log object
