@@ -146,8 +146,22 @@ class TestProperties(unittest.TestCase):
                     return {}
             return mocked_soup()
 
+        def mock_load_log_page(self):
+            return ({'temporarily disable listing': '22', 'archive': '5', 'write note': '4', "didn't find it": '3', '- select type of log -': '-1', 'update coordinates': '47', 'needs maintenance': '45', 'owner maintenance': '46'}, {})
+
         real_request = Geocaching._request
         Geocaching._request = mock_request
+
+        real_load_log_page = Cache._load_log_page
+        Cache._load_log_page = mock_load_log_page
+
+        with self.subTest("log type"):
+            l = Log(text="Test log.", visited=date.today(), type = LogType.found_it)
+            with self.assertRaises(ValueError):
+                self.c.post_log(l)
+
+            l = Log(text="Test log.", visited=date.today(), type = LogType.didnt_find_it)
+            self.c.post_log(l)
 
         with self.subTest("empty log text"):
             l = Log(text="", visited=date.today(), type = LogType.note)
@@ -155,6 +169,7 @@ class TestProperties(unittest.TestCase):
                 self.c.post_log(l)
 
         Geocaching._request = real_request
+        Cache._load_log_page = real_load_log_page
 
 class TestMethods(unittest.TestCase):
 
