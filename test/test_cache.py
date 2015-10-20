@@ -19,7 +19,8 @@ class TestProperties(unittest.TestCase):
         self.c = Cache(self.gc, "GC12345", name="Testing", type=Type.traditional, location=Point(), state=True,
                        found=False, size=Size.micro, difficulty=1.5, terrain=5, author="human", hidden=date(2000, 1, 1),
                        attributes={"onehour": True, "kids": False, "available": True}, summary="text",
-                       description="long text", hint="rot13", favorites=0, pm_only=False)
+                       description="long text", hint="rot13", favorites=0, pm_only=False,
+                       log_page_url="/seek/log.aspx?ID=1234567&lcn=1")
 
     def test___str__(self):
         self.assertEqual(str(self.c), "GC12345")
@@ -134,6 +135,8 @@ class TestProperties(unittest.TestCase):
     def test_pm_only(self):
         self.assertEqual(self.c.pm_only, False)
 
+    def test_log_page_url(self):
+        self.assertEqual(self.c.log_page_url, "/seek/log.aspx?ID=1234567&lcn=1")
 
 class TestMethods(unittest.TestCase):
 
