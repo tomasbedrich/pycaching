@@ -556,6 +556,9 @@ class Cache(object):
             yield t
 
     def post_log(self, l):
+        if len(l.text) == 0:
+            raise errors.ValueError("Log text is empty")
+
         log_page = self.geocaching._request(self.log_page_url)
         # Find all valid log types for the cache
         type_options = log_page.find_all("option")
