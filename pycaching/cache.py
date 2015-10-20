@@ -555,20 +555,24 @@ class Cache(object):
             self.trackables.append(t)
             yield t
 
-    def post_log(self, l):
-        if len(l.text) == 0:
-            raise errors.ValueError("Log text is empty")
-
+    def _load_log_page(self):
         log_page = self.geocaching._request(self.log_page_url)
         # Find all valid log types for the cache
         type_options = log_page.find_all("option")
         valid_types = {o.get_text().lower(): o["value"] for o in type_options}
-        if l.type.value not in valid_types:
-            raise errors.ValueError("The Cache does not accept this type of log")
 
         # Find all static data fields needed for log
         hidden_elements = log_page.find_all("input", type=["hidden", "submit"])
-        post = {field["name"]: (field["value"] if field.has_attr("value") else "") for field in hidden_elements}
+        return (valid_types, hidden_elements)
+
+    def post_log(self, l):
+        if len(l.text) == 0:
+            raise errors.ValueError("Log text is empty")
+
+        valid_types, hidden = self._load_log_page()
+        if l.type.value not in valid_types:
+            raise errors.ValueError("The Cache does not accept this type of log")
+        post = {field["name"]: (field["value"] if field.has_attr("value") else "") for field in hidden}
         post["ctl00$ContentBody$LogBookPanel1$btnSubmitLog"] = "Submit Log Entry"
 
         #fill form from Log object
