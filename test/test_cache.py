@@ -3,11 +3,12 @@
 import unittest
 from datetime import date
 from pycaching.errors import ValueError
-from pycaching.enums import Type, Size
+from pycaching.enums import Type, Size, LogType
 from pycaching import Cache
 from pycaching import Geocaching
 from pycaching import Point
 from pycaching import Trackable
+from pycaching import Log
 
 from test.test_geocaching import _username, _password
 
@@ -137,6 +138,23 @@ class TestProperties(unittest.TestCase):
 
     def test_log_page_url(self):
         self.assertEqual(self.c.log_page_url, "/seek/log.aspx?ID=1234567&lcn=1")
+
+    def test_post_log(self):
+        def mock_request(self, url, *, expect="soup", method="GET", login_check=True, **kwargs):
+            class mocked_soup():
+                def find_all(*args):
+                    return {}
+            return mocked_soup()
+
+        real_request = Geocaching._request
+        Geocaching._request = mock_request
+
+        with self.subTest("empty log text"):
+            l = Log(text="", visited=date.today(), type = LogType.note)
+            with self.assertRaises(ValueError):
+                self.c.post_log(l)
+
+        Geocaching._request = real_request
 
 class TestMethods(unittest.TestCase):
 
