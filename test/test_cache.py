@@ -155,11 +155,12 @@ class TestProperties(unittest.TestCase):
         real_load_log_page = Cache._load_log_page
         Cache._load_log_page = mock_load_log_page
 
-        with self.subTest("log type"):
+        with self.subTest("invalid log type"):
             l = Log(text="Test log.", visited=date.today(), type = LogType.found_it)
             with self.assertRaises(ValueError):
                 self.c.post_log(l)
 
+        with self.subTest("valid log type"):
             l = Log(text="Test log.", visited=date.today(), type = LogType.didnt_find_it)
             self.c.post_log(l)
 
