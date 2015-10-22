@@ -566,7 +566,7 @@ class Cache(object):
         return (valid_types, hidden_elements)
 
     def post_log(self, l):
-        if len(l.text) == 0:
+        if not l.text:
             raise errors.ValueError("Log text is empty")
 
         valid_types, hidden = self._load_log_page()
