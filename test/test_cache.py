@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import unittest
+import unittest.mock as mock
 from datetime import date
 from pycaching.errors import ValueError
 from pycaching.enums import Type, Size, LogType
@@ -139,38 +140,6 @@ class TestProperties(unittest.TestCase):
     def test_log_page_url(self):
         self.assertEqual(self.c.log_page_url, "/seek/log.aspx?ID=1234567&lcn=1")
 
-    def test_post_log(self):
-        def mock_request(self, url, *, expect="soup", method="GET", login_check=True, **kwargs):
-            class mocked_soup():
-                def find_all(*args):
-                    return {}
-            return mocked_soup()
-
-        def mock_load_log_page(self):
-            return ({'temporarily disable listing': '22', 'archive': '5', 'write note': '4', "didn't find it": '3', '- select type of log -': '-1', 'update coordinates': '47', 'needs maintenance': '45', 'owner maintenance': '46'}, {})
-
-        real_request = Geocaching._request
-        Geocaching._request = mock_request
-
-        real_load_log_page = Cache._load_log_page
-        Cache._load_log_page = mock_load_log_page
-
-        with self.subTest("invalid log type"):
-            l = Log(text="Test log.", visited=date.today(), type = LogType.found_it)
-            with self.assertRaises(ValueError):
-                self.c.post_log(l)
-
-        with self.subTest("valid log type"):
-            l = Log(text="Test log.", visited=date.today(), type = LogType.didnt_find_it)
-            self.c.post_log(l)
-
-        with self.subTest("empty log text"):
-            l = Log(text="", visited=date.today(), type = LogType.note)
-            with self.assertRaises(ValueError):
-                self.c.post_log(l)
-
-        Geocaching._request = real_request
-        Cache._load_log_page = real_load_log_page
 
 class TestMethods(unittest.TestCase):
 
@@ -179,8 +148,38 @@ class TestMethods(unittest.TestCase):
         cls.gc = Geocaching()
         cls.gc.login(_username, _password)
         cls.c = Cache(cls.gc, "GC1PAR2")
+        cls.c.load()
 
     def test_load_logbook(self):
         log_authors = list(map(lambda log: log.author, self.c.load_logbook(limit=200)))  # limit over 100 tests pagging
         for expected_author in ["Dudny-1995", "Sopdet Reviewer", "donovanstangiano83"]:
             self.assertIn(expected_author, log_authors)
+
+    @mock.patch.object(Cache, '_load_log_page')
+    @mock.patch.object(Geocaching, '_request')
+    def test_post_log(self, mock_request, mock_load_log_page):
+        mock_load_log_page.return_value = (
+                {"temporarily disable listing": "22",
+                 "archive": "5",
+                 "write note": "4",
+                 "didn't find it": "3",
+                 "- select type of log -": "-1",
+                 "update coordinates": "4",
+                 "needs maintenance": "45",
+                 "owner maintenance": "46"},
+                {})
+        with self.subTest("invalid log type"):
+            l = Log(text="Test log.", visited=date.today(), type = LogType.found_it)
+            with self.assertRaises(ValueError):
+                self.c.post_log(l)
+
+        with self.subTest("valid log type"):
+            l = Log(text="Test log.", visited=date.today(), type = LogType.didnt_find_it)
+            self.assertFalse(self.gc._request.called)
+            self.c.post_log(l)
+            self.assertTrue(self.gc._request.called)
+
+        with self.subTest("empty log text"):
+            l = Log(text="", visited=date.today(), type = LogType.note)
+            with self.assertRaises(ValueError):
+                self.c.post_log(l)
