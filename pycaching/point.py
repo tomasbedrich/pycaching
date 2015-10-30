@@ -126,3 +126,6 @@ class Point(geopy.Point):
     def inside_area(self, area):
         """Check if point is inside given area"""
         return area.inside_area(self)
+
+    def __format__(self, format_spec):
+        return "{:{}}".format(str(self), format_spec)

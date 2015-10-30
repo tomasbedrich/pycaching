@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
 import unittest
-import unittest.mock as mock
+from unittest import mock
 from datetime import date
 from pycaching.errors import ValueError
 from pycaching.enums import Type, Size, LogType
 from pycaching import Cache
 from pycaching import Geocaching
 from pycaching import Point
-from pycaching import Trackable
 from pycaching import Log
 
 from test.test_geocaching import _username, _password
@@ -158,28 +157,29 @@ class TestMethods(unittest.TestCase):
     @mock.patch.object(Cache, '_load_log_page')
     @mock.patch.object(Geocaching, '_request')
     def test_post_log(self, mock_request, mock_load_log_page):
-        mock_load_log_page.return_value = (
-                {"temporarily disable listing": "22",
-                 "archive": "5",
-                 "write note": "4",
-                 "didn't find it": "3",
-                 "- select type of log -": "-1",
-                 "update coordinates": "4",
-                 "needs maintenance": "45",
-                 "owner maintenance": "46"},
-                {})
+        mock_load_log_page.return_value = ({
+            "temporarily disable listing": "22",
+            "archive": "5",
+            "write note": "4",
+            "didn't find it": "3",
+            "- select type of log -": "-1",
+            "update coordinates": "4",
+            "needs maintenance": "45",
+            "owner maintenance": "46"
+        }, {})
+
         with self.subTest("invalid log type"):
-            l = Log(text="Test log.", visited=date.today(), type = LogType.found_it)
+            l = Log(text="Test log.", visited=date.today(), type=LogType.found_it)
             with self.assertRaises(ValueError):
                 self.c.post_log(l)
 
         with self.subTest("valid log type"):
-            l = Log(text="Test log.", visited=date.today(), type = LogType.didnt_find_it)
+            l = Log(text="Test log.", visited=date.today(), type=LogType.didnt_find_it)
             self.assertFalse(self.gc._request.called)
             self.c.post_log(l)
             self.assertTrue(self.gc._request.called)
 
         with self.subTest("empty log text"):
-            l = Log(text="", visited=date.today(), type = LogType.note)
+            l = Log(text="", visited=date.today(), type=LogType.note)
             with self.assertRaises(ValueError):
                 self.c.post_log(l)

@@ -164,7 +164,8 @@ class Cache(object):
     @geocaching.setter
     def geocaching(self, geocaching):
         if not hasattr(geocaching, "_request"):
-            raise errors.ValueError("Passed object (type: '{}') doesn't contain '_request' method.".format(_type(geocaching)))
+            raise errors.ValueError(
+                "Passed object (type: '{}') doesn't contain '_request' method.".format(_type(geocaching)))
         self._geocaching = geocaching
 
     @property
@@ -364,11 +365,6 @@ class Cache(object):
     def trackable_page_url(self, trackable_page_url):
         self._trackable_page_url = trackable_page_url
 
-    @property
-    @lazy_loaded
-    def logbook_token(self):
-        return self._logbook_token
-
     @logbook_token.setter
     def logbook_token(self, logbook_token):
         self._logbook_token = logbook_token
@@ -420,7 +416,8 @@ class Cache(object):
 
         # if there are some trackables
         if len(inventory_widget.find_all("a")) >= 3:
-            trackable_page_url = inventory_widget.find(id="ctl00_ContentBody_uxTravelBugList_uxViewAllTrackableItems").get("href")
+            trackable_page_url = inventory_widget.find(
+                id="ctl00_ContentBody_uxTravelBugList_uxViewAllTrackableItems").get("href")
         else:
             trackable_page_url = None
 
@@ -454,11 +451,12 @@ class Cache(object):
 
         Loads just basic cache details, but very quickly."""
 
-        res = self.geocaching._request("http://tiles01.geocaching.com/map.details", params={"i": wp}, expect="json")
+        res = self.geocaching._request("http://tiles01.geocaching.com/map.details",
+                                       params={"i": self.wp}, expect="json")
 
         if res["status"] == "failed" or len(res["data"]) != 1:
             error_msg = res["msg"] if "msg" in res else "Unknown error (probably not existing cache)"
-            raise errors.LoadError("Waypoint '{}' cannot be loaded: {}".format(wp, error_msg))
+            raise errors.LoadError("Waypoint '{}' cannot be loaded: {}".format(self.wp, error_msg))
 
         data = res["data"][0]
 
@@ -480,7 +478,7 @@ class Cache(object):
         """Loads one page from logbook."""
 
         res = self.geocaching._request("seek/geocache.logbook", params={
-            "tkn": self.logbook_token ,  # will trigger lazy_loading if needed
+            "tkn": self.logbook_token,  # will trigger lazy_loading if needed
             "idx": int(page) + 1,  # Groundspeak indexes this from 1 (OMG..)
             "num": int(per_page),
             "decrypt": "true"
@@ -524,7 +522,6 @@ class Cache(object):
                 l.author = log_data["UserName"]
                 self.logbook.append(l)
                 yield l
-
 
     # TODO: trackable list can have multiple pages - handle it in similar way as _logbook_get_page
     # for example see: http://www.geocaching.com/geocache/GC26737_geocaching-jinak-tb-gc-hrbitov
@@ -575,9 +572,9 @@ class Cache(object):
         post = {field["name"]: (field["value"] if field.has_attr("value") else "") for field in hidden}
         post["ctl00$ContentBody$LogBookPanel1$btnSubmitLog"] = "Submit Log Entry"
 
-        #fill form from Log object
+        # fill form from Log object
         post["ctl00$ContentBody$LogBookPanel1$ddLogType"] = valid_types[l.type.value]
         post["ctl00$ContentBody$LogBookPanel1$uxDateVisited"] = l.visited.strftime("%m/%d/%Y")
         post["ctl00$ContentBody$LogBookPanel1$uxLogInfo"] = l.text
 
-        log_result = self.geocaching._request(self.log_page_url, method="POST", data=post)
+        self.geocaching._request(self.log_page_url, method="POST", data=post)

@@ -23,6 +23,12 @@ class UTFGrid:
     max_zoom = 18                    # geocaching.com restriction
     size = 64                        # UTFGrid implementation (will be checked)
 
+    _tile_url = "http://tiles01.geocaching.com/"
+    _urls = {
+        "tile":              _tile_url + "map.png",
+        "grid":              _tile_url + "map.info",
+    }
+
     def __init__(self, geocaching, x, y, z):
         """Initialize UTFGrid
 
@@ -37,9 +43,7 @@ class UTFGrid:
         self.x = x
         self.y = y
         self.z = z
-        self._urls = {i: self._gc._urls[i] + "?x={}&y={}&z={}".format(x, y, z)
-                      for i in ["tile", "grid"]}
-        self.geocaches = []               # List of Cache instances
+        self.geocaches = []  # list of Cache instances
 
     def download(self, get_png_first=False):
         """Download UTFGrid from geocaching.com
@@ -62,26 +66,32 @@ class UTFGrid:
         and if this should be done all the time.  Requesting for UTFgrid
         and waiting for 204 response takes also its time."""
 
-        logging.info("Downloading UTFGrid for tile ({}, {}, {})".format(
-            self.x, self.y, self.z))
-        try:
+        logging.info("Downloading UTFGrid for tile ({}, {}, {})".format(self.x, self.y, self.z))
+
+        params = {
+            "x": self.x,
+            "y": self.y,
+            "z": self.z
+        }
+
+        if get_png_first:
+            logging.debug("Getting .png file first")
+            self._gc._request(self._urls["tile"], params=params, expect="raw")
+
+        logging.debug("Getting UTFGrid")
+        res = self._gc._request(self._urls["grid"], params=params, expect="raw")
+
+        if res.status_code == 204:
             if get_png_first:
-                logging.debug(".. getting .png file first")
-                self._gc._browser.get(self._urls["tile"])
-            logging.debug(".. getting UTFGrid")
-            res = self._gc._browser.get(self._urls["grid"])
-            if res.status_code == 204:
-                if get_png_first:
-                    logging.debug("There is really no content! Returning 0 caches.")
-                    return
-                logging.debug("Cannot load UTFgrid: no content. "
-                              "Trying to load .png tile first")
-                new_caches = self.download(get_png_first=True)
-        except requests.exceptions.ConnectionError as e:
-            raise Error("Cannot load UTFgrid.") from e
+                logging.debug("There is really no content! Returning 0 caches.")
+                return
+            logging.debug("Cannot load UTFgrid: no content. Trying to load .png tile first")
+            new_caches = self.download(get_png_first=True)
+
         if res.status_code == 200:
             try:
                 json_grid = res.json()
+                new_caches = self._parse_utfgrid(json_grid)
             except ValueError as e:
                 # This happened during testing, don't know why.
                 if get_png_first:
@@ -89,7 +99,7 @@ class UTFGrid:
                 else:
                     logging.debug("JSON parsing failed, trying .png first")
                     return self.download(get_png_first=True)
-            new_caches = self._parse_utfgrid(json_grid)
+
         for c in new_caches:
             self.geocaches.append(c)
             yield c
@@ -121,8 +131,7 @@ class UTFGrid:
         size = len(json_grid["grid"])
         assert len(json_grid["grid"][1]) == size   # square grid
         if size != self.size:
-            logging.warning("GC.com UTFGrid specs seem to have changed: "
-                            "grid resolution is not 64!")
+            logging.warning("GC.com UTFGrid specs seem to have changed: grid resolution is not 64!")
             self.size = size
         caches = {}
         for coordinate_key in json_grid["data"]:
@@ -133,14 +142,12 @@ class UTFGrid:
                 waypoint = cache_dic["i"]
                 # Store all found coordinate points
                 if waypoint not in caches:
-                    c = Cache(self.gc, waypoint, name=cache_dic["n"])
-                    caches[waypoint] \
-                        = [c, GridCoordinateBlock(self, (x_i, y_i),)]
+                    c = Cache(self._gc, waypoint, name=cache_dic["n"])
+                    caches[waypoint] = [c, GridCoordinateBlock(self, (x_i, y_i),)]
                 else:
                     caches[waypoint][1].add((x_i, y_i))
         # Try to determine grid coordinate block size
-        GridCoordinateBlock.determine_block_size(
-            *[len(caches[wp][1].points) for wp in caches])
+        GridCoordinateBlock.determine_block_size(*[len(caches[wp][1].points) for wp in caches])
         # Calculate geocache coordinates and yield objects
         for waypoint in caches:
             c, coord_block = caches[waypoint]
@@ -175,8 +182,7 @@ class GridCoordinateBlock:
             new_n = int(math.sqrt(group_order[0]))
             if new_n == cls.size:
                 return
-            logging.warning("Coordinate block in UTFGrid is not what we "
-                            "expected.  Has something else changed?")
+            logging.warning("Coordinate block in UTFGrid is not what we expected. Has something else changed?")
             # If new block is not a square, this class needs revising
             assert new_n == math.sqrt(group_order[0]), "Block should be square"
             cls.size = new_n
@@ -213,9 +219,7 @@ class GridCoordinateBlock:
     def get_location(self):
         """Calculate actual coordinates of this grid block"""
         x_i, y_i = self._get_middle_point()
-        return Point.from_tile(
-            self.utf_grid.x, self.utf_grid.y, self.utf_grid.z,
-            x_i, y_i, self.utf_grid.size)
+        return Point.from_tile(self.utf_grid.x, self.utf_grid.y, self.utf_grid.z, x_i, y_i, self.utf_grid.size)
 
     def _calculate_limits(self):
         """Calculate minimum and maximum coordinate values of points"""
@@ -223,8 +227,7 @@ class GridCoordinateBlock:
             self._xlim = [None, None]
             self._ylim = [None, None]
         else:
-            self._xlim, self._ylim = [(min(i), max(i))
-                                      for i in zip(*self.points)]
+            self._xlim, self._ylim = [(min(i), max(i)) for i in zip(*self.points)]
 
     def _get_middle_point(self):
         """Get middle point from list of x, y coordinates
