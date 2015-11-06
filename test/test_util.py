@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 import unittest
-from pycaching.util import *
 import datetime
 import itertools
+from pycaching.util import rot13, to_decimal, to_mindec, parse_date, get_possible_attributes
 
 
 class TestUtil(unittest.TestCase):

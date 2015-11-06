@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-import logging
 from pycaching import errors
 from pycaching.util import lazy_loaded
 
 # prefix _type() function to avoid colisions with trackable type
 _type = type
+
 
 class Trackable(object):
 
@@ -54,7 +54,8 @@ class Trackable(object):
     @geocaching.setter
     def geocaching(self, geocaching):
         if not hasattr(geocaching, "_request"):
-            raise errors.ValueError("Passed object (type: '{}') doesn't contain '_request' method.".format(_type(geocaching)))
+            raise errors.ValueError(
+                "Passed object (type: '{}') doesn't contain '_request' method.".format(_type(geocaching)))
         self._geocaching = geocaching
 
     @property
@@ -137,6 +138,6 @@ class Trackable(object):
         location_raw = root.find(id="ctl00_ContentBody_BugDetails_BugLocation")
         location_url = location_raw.get("href")
         if "cache_details" in location_url:
-            self.location = Cache(self, None, url=location_url)
+            self.location = location_url
         else:
             self.location = location_raw.text

@@ -3,12 +3,12 @@
 import unittest
 from unittest import mock
 from datetime import date
-from pycaching.errors import ValueError
+from pycaching.errors import ValueError as PycachingValueError, LoadError, PMOnlyException
 from pycaching.enums import Type, Size, LogType
-from pycaching import Cache
-from pycaching import Geocaching
-from pycaching import Point
-from pycaching import Log
+from pycaching.cache import Cache
+from pycaching.geocaching import Geocaching
+from pycaching.point import Point
+from pycaching.log import Log
 
 from test.test_geocaching import _username, _password
 
@@ -30,14 +30,14 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c, Cache(self.gc, "GC12345"))
 
     def test_geocaching(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(PycachingValueError):
             Cache(None, "GC12345")
 
     def test_wp(self):
         self.assertEqual(self.c.wp, "GC12345")
 
         with self.subTest("filter invalid"):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(PycachingValueError):
                 self.c.wp = "xxx"
 
     def test_name(self):
@@ -47,7 +47,7 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.type, Type.traditional)
 
         with self.subTest("filter invalid"):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(PycachingValueError):
                 self.c.type = "xxx"
 
     def test_location(self):
@@ -58,11 +58,11 @@ class TestProperties(unittest.TestCase):
             self.assertEqual(self.c.location, Point.from_string("S 36 51.918 E 174 46.725"))
 
         with self.subTest("filter invalid string"):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(PycachingValueError):
                 self.c.location = "somewhere"
 
         with self.subTest("filter invalid types"):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(PycachingValueError):
                 self.c.location = None
 
     def test_state(self):
@@ -75,21 +75,21 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.size, Size.micro)
 
         with self.subTest("filter invalid"):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(PycachingValueError):
                 self.c.size = "xxx"
 
     def test_difficulty(self):
         self.assertEqual(self.c.difficulty, 1.5)
 
         with self.subTest("filter invalid"):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(PycachingValueError):
                 self.c.difficulty = 10
 
     def test_terrain(self):
         self.assertEqual(self.c.terrain, 5)
 
         with self.subTest("filter invalid"):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(PycachingValueError):
                 self.c.terrain = -1
 
     def test_author(self):
@@ -103,11 +103,11 @@ class TestProperties(unittest.TestCase):
             self.assertEqual(self.c.hidden, date(2000, 1, 30))
 
         with self.subTest("filter invalid string"):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(PycachingValueError):
                 self.c.hidden = "now"
 
         with self.subTest("filter invalid types"):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(PycachingValueError):
                 self.c.hidden = None
 
     def test_attributes(self):
@@ -118,7 +118,7 @@ class TestProperties(unittest.TestCase):
             self.assertEqual(self.c.attributes, {"onehour": True})
 
         with self.subTest("filter invalid"):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(PycachingValueError):
                 self.c.attributes = None
 
     def test_summary(self):
@@ -149,13 +149,54 @@ class TestMethods(unittest.TestCase):
         cls.c = Cache(cls.gc, "GC1PAR2")
         cls.c.load()
 
+    def test_load(self):
+        with self.subTest("normal (with explicit call of load())"):
+            cache = Cache(self.gc, "GC4808G")
+            cache.load()
+            self.assertEqual("Nekonecne ticho", cache.name)
+
+        with self.subTest("normal"):
+            cache = Cache(self.gc, "GC4808G")
+            self.assertEqual("Nekonecne ticho", cache.name)
+
+        with self.subTest("non-ascii chars"):
+            cache = Cache(self.gc, "GC4FRG5")
+            self.assertEqual("Entre l'arbre et la grille.", cache.hint)
+
+        with self.subTest("PM only"):
+            with self.assertRaises(PMOnlyException):
+                cache = Cache(self.gc, "GC3AHDM")
+                cache.load()
+
+        with self.subTest("fail"):
+            with self.assertRaises(LoadError):
+                cache = Cache(self.gc, "GC123456")
+                cache.load()
+
+    def test_load_quick(self):
+        with self.subTest("normal"):
+            cache = Cache(self.gc, "GC4808G")
+            cache.load_quick()
+            self.assertEqual(4, cache.terrain)
+            self.assertEqual(Size.regular, cache.size)
+
+        with self.subTest("fail"):
+            with self.assertRaises(LoadError):
+                cache = Cache(self.gc, "GC123456")
+                cache.load_quick()
+
+    def test_load_trackables(self):
+        cache = Cache(self.gc, "GC26737")  # TB graveyard - will surelly have some trackables
+        trackable_list = list(cache.load_trackables(limit=10))
+        self.assertTrue(isinstance(trackable_list, list))
+
     def test_load_logbook(self):
         log_authors = list(map(lambda log: log.author, self.c.load_logbook(limit=200)))  # limit over 100 tests pagging
         for expected_author in ["Dudny-1995", "Sopdet Reviewer", "donovanstangiano83"]:
             self.assertIn(expected_author, log_authors)
 
-    @mock.patch.object(Cache, '_load_log_page')
-    @mock.patch.object(Geocaching, '_request')
+    @mock.patch.object(Cache, "_load_log_page")
+    @mock.patch.object(Geocaching, "_request")
     def test_post_log(self, mock_request, mock_load_log_page):
 
         # mock _load_log_page
@@ -169,12 +210,12 @@ class TestMethods(unittest.TestCase):
 
         with self.subTest("empty log text"):
             l = Log(text="", visited=date.today(), type=LogType.note)
-            with self.assertRaises(ValueError):
+            with self.assertRaises(PycachingValueError):
                 self.c.post_log(l)
 
         with self.subTest("invalid log type"):
             l = Log(text=test_log_text, visited=date.today(), type=LogType.found_it)
-            with self.assertRaises(ValueError):
+            with self.assertRaises(PycachingValueError):
                 self.c.post_log(l)
 
         with self.subTest("valid log"):

@@ -27,3 +27,7 @@ class PMOnlyException(Error):
 
 class ValueError(Error, ValueError):
     pass
+
+
+class BadBlockError(Error):
+    pass

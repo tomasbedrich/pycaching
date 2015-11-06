@@ -3,7 +3,7 @@
 import math
 import re
 import geopy
-from pycaching import errors
+from pycaching.errors import ValueError as PycachingValueError, GeocodeError
 from pycaching.util import to_decimal
 
 
@@ -20,7 +20,7 @@ class Point(geopy.Point):
         res = geocaching._request("api/geocode", params={"q": location}, expect="json")
 
         if res["status"] != "success":
-            raise errors.GeocodeError(res["msg"])
+            raise GeocodeError(res["msg"])
 
         return cls(float(res["data"]["lat"]), float(res["data"]["lng"]))
 
@@ -59,33 +59,41 @@ class Point(geopy.Point):
             return super(cls, cls).from_string(string)
         except ValueError as e:
             # wrap possible error to pycaching.errors.ValueError
-            raise errors.ValueError() from e
+            raise PycachingValueError() from e
 
     @classmethod
-    def from_tile(cls, x, y, z, pos_x=0, pos_y=0, tile_resolution=256):
+    def from_block(cls, block):
+        return cls.from_tile(block.tile, block.middle_point)
+
+    @classmethod
+    def from_tile(cls, tile, point=None):
         """Calculate location from web map tile coordinates
 
-        Parameters x, y and z are map tile coordinates as specified in
-        Google Maps JavaScript API [1].  Optional parameters pos_x and
-        pos_y determine position inside the tile, starting from
-        northwest corner.  They are in range [0, tile_resolution].  This
-        code is modified from OpenStreetMap Wiki [2].
+        Parameter represents a map tile coordinates as specified in
+        Google Maps JavaScript API [1].  Optional parameter point
+        determine position inside the tile, starting from northwest
+        corner. Its x and y coords are in range [0, tile.size].
+        This code is modified from OpenStreetMap Wiki [2].
 
         [1] https://developers.google.com/maps/documentation/javascript/maptypes#MapCoordinates
         [2] http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
-
         """
-        dx = float(pos_x) / tile_resolution
-        dy = float(pos_y) / tile_resolution
-        n = 2.0 ** z
-        lon_deg = (x + dx) / n * 360.0 - 180.0
-        lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * (y + dy) / n)))
+
+        if point:
+            dx = float(point.x) / tile.size
+            dy = float(point.y) / tile.size
+        else:
+            dx, dy = 0, 0
+
+        n = 2.0 ** tile.z
+        lon_deg = (tile.x + dx) / n * 360.0 - 180.0
+        lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * (tile.y + dy) / n)))
         lat_deg = math.degrees(lat_rad)
         p = cls(lat_deg, lon_deg)
-        p.precision = p.precision_from_tile_zoom(z, tile_resolution)
+        p.precision = p.precision_from_tile_zoom(tile.z, tile.size)
         return p
 
-    def to_map_tile(self, zoom, fractions=False):
+    def to_tile_coords(self, zoom, fractions=False):
         """Calculate web map tile where point is located
 
         Return x, y, z.  If fractions, return x and y as floats.  This

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import logging
 import datetime
 from pycaching.errors import ValueError
 from pycaching.enums import LogType as Type

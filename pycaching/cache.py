@@ -146,6 +146,16 @@ class Cache(object):
     def __eq__(self, other):
         return self.wp == other.wp
 
+    @classmethod
+    def from_trackable(cls, trackable):
+        return cls(trackable.geocaching, None, url=trackable.location_url)
+
+    @classmethod
+    def from_block(cls, geocaching, block):
+        c = cls(geocaching, block.cache_wp, name=block.cache_name)
+        c.location = Point.from_block(block)
+        return c
+
     @property
     def wp(self):
         return self._wp
@@ -188,7 +198,8 @@ class Cache(object):
         if _type(location) is str:
             location = Point.from_string(location)
         elif _type(location) is not Point:
-            raise errors.ValueError("Passed object is not Point instance nor string containing coordinates.")
+            raise errors.ValueError(
+                "Passed object is not Point instance nor string containing coordinates.")
         self._location = location
 
     @property
@@ -275,7 +286,8 @@ class Cache(object):
         if _type(hidden) is str:
             hidden = parse_date(hidden)
         elif _type(hidden) is not datetime.date:
-            raise errors.ValueError("Passed object is not datetime.date instance nor string containing a date.")
+            raise errors.ValueError(
+                "Passed object is not datetime.date instance nor string containing a date.")
         self._hidden = hidden
 
     @property
@@ -379,25 +391,32 @@ class Cache(object):
         self._log_page_url = log_page_url
 
     def load(self):
-        # pick url based on what info we have right now
-        if hasattr(self, "url"):
-            root = self.geocaching._request(self.url)
-        elif hasattr(self, "_wp"):
-            root = self.geocaching._request("seek/cache_details.aspx", params={"wp": self._wp})
-        else:
-            raise errors.LoadError("Cache lacks info for loading")
+        try:
+            # pick url based on what info we have right now
+            if hasattr(self, "url"):
+                root = self.geocaching._request(self.url)
+            elif hasattr(self, "_wp"):
+                root = self.geocaching._request("seek/cache_details.aspx", params={"wp": self._wp})
+            else:
+                raise errors.LoadError("Cache lacks info for loading")
+
+        except errors.Error as e:
+            # probably 404 during cache loading - cache not exists
+            raise errors.LoadError("Error in loading cache") from e
 
         # check for PM only caches if using free account
         if root.find("p", "PMOWarning") is not None:
             raise errors.PMOnlyException("Premium Members only.")
 
         cache_details = root.find(id="cacheDetails")
-        attributes_widget, inventory_widget, *bookmarks_widget = root.find_all("div", "CacheDetailNavigationWidget")
+        attributes_widget, inventory_widget, * \
+            bookmarks_widget = root.find_all("div", "CacheDetailNavigationWidget")
 
         # parse raw data
         wp = root.title.string.split(" ")[0]
         name = cache_details.find("h2")
-        type = cache_details.find("img").get("src").split("/")[-1].rsplit(".", 1)[0]  # filename w/o extension
+        type = cache_details.find("img").get("src").split(
+            "/")[-1].rsplit(".", 1)[0]  # filename w/o extension
         author = cache_details("a")[1]
         hidden = cache_details.find("div", "minorCacheDetails").find_all("div")[1]
         location = root.find(id="uxLatLon")
@@ -417,7 +436,7 @@ class Cache(object):
         # if there are some trackables
         if len(inventory_widget.find_all("a")) >= 3:
             trackable_page_url = inventory_widget.find(
-                id="ctl00_ContentBody_uxTravelBugList_uxViewAllTrackableItems").get("href")
+                id="ctl00_ContentBody_uxTravelBugList_uxViewAllTrackableItems").get("href")[3:]  # has "../" on start
         else:
             trackable_page_url = None
 
@@ -432,7 +451,8 @@ class Cache(object):
         self.state = state is None
         self.found = found and ("Found It!" or "Attended" in found.text) or False
         self.difficulty, self.terrain = [float(_.get("alt").split()[0]) for _ in D_T]
-        self.size = Size.from_filename(size.get("src").split("/")[-1].rsplit(".", 1)[0])  # filename w/o extension
+        self.size = Size.from_filename(size.get("src").split(
+            "/")[-1].rsplit(".", 1)[0])  # filename w/o extension
         attributes_raw = [_.get("src").split("/")[-1].rsplit("-", 1) for _ in attributes_raw]
         self.attributes = {attribute_name: appendix.startswith("yes")
                            for attribute_name, appendix in attributes_raw if not appendix.startswith("blank")}
@@ -455,7 +475,8 @@ class Cache(object):
                                        params={"i": self.wp}, expect="json")
 
         if res["status"] == "failed" or len(res["data"]) != 1:
-            error_msg = res["msg"] if "msg" in res else "Unknown error (probably not existing cache)"
+            error_msg = res[
+                "msg"] if "msg" in res else "Unknown error (probably not existing cache)"
             raise errors.LoadError("Waypoint '{}' cannot be loaded: {}".format(self.wp, error_msg))
 
         data = res["data"][0]
@@ -569,7 +590,8 @@ class Cache(object):
         valid_types, hidden = self._load_log_page()
         if l.type.value not in valid_types:
             raise errors.ValueError("The Cache does not accept this type of log")
-        post = {field["name"]: (field["value"] if field.has_attr("value") else "") for field in hidden}
+        post = {field["name"]: (field["value"] if field.has_attr("value") else "")
+                for field in hidden}
         post["ctl00$ContentBody$LogBookPanel1$btnSubmitLog"] = "Submit Log Entry"
 
         # fill form from Log object

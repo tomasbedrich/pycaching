@@ -2,9 +2,9 @@
 
 import unittest
 from datetime import date
-from pycaching.errors import ValueError
+from pycaching.log import Log
 from pycaching.enums import LogType as Type
-from pycaching import Log
+from pycaching.errors import ValueError as PycachingValueError
 
 
 class TestProperties(unittest.TestCase):
@@ -29,11 +29,11 @@ class TestProperties(unittest.TestCase):
             self.assertEqual(self.l.visited, date(2000, 1, 30))
 
         with self.subTest("filter invalid string"):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(PycachingValueError):
                 self.l.visited = "now"
 
         with self.subTest("filter invalid types"):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(PycachingValueError):
                 self.l.visited = None
 
     def test_author(self):

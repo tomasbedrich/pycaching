@@ -20,7 +20,7 @@ def lazy_loaded(func):
         try:
             return func(*args, **kwargs)
         except AttributeError:
-            logging.debug("Lazy loading: %s", func.__name__)
+            logging.debug("Lazy loading {} into <object {} id {}>".format(func.__name__, type(self), id(self)))
             self.load()
             return func(*args, **kwargs)  # try to return it again
 
