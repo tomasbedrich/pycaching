@@ -6,7 +6,7 @@ from pycaching.log import Log, Type
 from pycaching.errors import ValueError as PycachingValueError
 
 
-class TestProperties(unittest.TestCase):
+class TestLog(unittest.TestCase):
 
     def setUp(self):
         self.l = Log(type="found it", text="text", visited="2012-02-02", author="human")
@@ -37,3 +37,14 @@ class TestProperties(unittest.TestCase):
 
     def test_author(self):
         self.assertEqual(self.l.author, "human")
+
+
+class TestType(unittest.TestCase):
+
+    def test_from_string(self):
+        with self.subTest("valid type"):
+            self.assertEqual(Type.found_it, Type.from_string("found it"))
+
+        with self.subTest("invalid type"):
+            with self.assertRaises(PycachingValueError):
+                Type.from_string("invalid type")

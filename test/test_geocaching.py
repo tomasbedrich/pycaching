@@ -120,12 +120,12 @@ class TestShortcuts(unittest.TestCase):
         ref_point = Point(49.74774, 13.37752)
         self.assertLess(great_circle(self.g.geocode("Pilsen"), ref_point).miles, 10)
 
-    def test_load_cache(self):
-        c = self.g.load_cache("GC4808G")
+    def test_get_cache(self):
+        c = self.g.get_cache("GC4808G")
         self.assertEqual("Nekonecne ticho", c.name)
 
-    def test_load_trackable(self):
-        t = self.g.load_trackable("TB1KEZ9")
+    def test_get_trackable(self):
+        t = self.g.get_trackable("TB1KEZ9")
         self.assertEqual("Lilagul #2: SwedenHawk Geocoin", t.name)
 
     def test_post_log(self):
