@@ -8,7 +8,7 @@ from pycaching import errors
 from pycaching.geo import Point
 from pycaching.trackable import Trackable
 from pycaching.log import Log
-from pycaching.util import parse_date, rot13, lazy_loaded
+from pycaching.util import parse_date, format_date, rot13, lazy_loaded
 
 # prefix _type() function to avoid colisions with cache type
 _type = type
@@ -532,28 +532,34 @@ class Cache(object):
 
     def _load_log_page(self):
         log_page = self.geocaching._request(self.log_page_url)
-        # Find all valid log types for the cache
-        type_options = log_page.find_all("option")
-        valid_types = {o.get_text().lower(): o["value"] for o in type_options}
 
-        # Find all static data fields needed for log
-        hidden_elements = log_page.find_all("input", type=["hidden", "submit"])
-        return (valid_types, hidden_elements)
+        # find all valid log types for the cache (-1 kicks out "- select type of log -")
+        valid_types = {o.get_text().lower(): o["value"]
+                       for o in log_page.find_all("option") if o["value"] != "-1"}
+
+        # find all static data fields needed for log
+        hidden_inputs = log_page.find_all("input", type=["hidden", "submit"])
+        hidden_inputs = {i["name"]: i.get("value", "") for i in hidden_inputs}
+
+        # get user date format
+        date_format = log_page.find(
+            id="ctl00_ContentBody_LogBookPanel1_uxDateFormatHint").text.strip("()")
+
+        return valid_types, hidden_inputs, date_format
 
     def post_log(self, l):
         if not l.text:
             raise errors.ValueError("Log text is empty")
 
-        valid_types, hidden = self._load_log_page()
+        valid_types, hidden_inputs, date_format = self._load_log_page()
         if l.type.value not in valid_types:
             raise errors.ValueError("The Cache does not accept this type of log")
-        post = {field["name"]: (field["value"] if field.has_attr("value") else "")
-                for field in hidden}
-        post["ctl00$ContentBody$LogBookPanel1$btnSubmitLog"] = "Submit Log Entry"
 
-        # fill form from Log object
+        # assemble post data
+        post = hidden_inputs
+        post["ctl00$ContentBody$LogBookPanel1$btnSubmitLog"] = "Submit Log Entry"
         post["ctl00$ContentBody$LogBookPanel1$ddLogType"] = valid_types[l.type.value]
-        post["ctl00$ContentBody$LogBookPanel1$uxDateVisited"] = l.visited.strftime("%m/%d/%Y")
+        post["ctl00$ContentBody$LogBookPanel1$uxDateVisited"] = format_date(l.visited, date_format)
         post["ctl00$ContentBody$LogBookPanel1$uxLogInfo"] = l.text
 
         self.geocaching._request(self.log_page_url, method="POST", data=post)

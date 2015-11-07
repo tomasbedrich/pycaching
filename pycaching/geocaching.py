@@ -2,10 +2,12 @@
 
 import logging
 import requests
+import datetime
 from urllib.parse import urljoin
 from mechanicalsoup import Browser
 from bs4 import BeautifulSoup
 from pycaching.cache import Cache, Type, Size
+from pycaching.log import Log, Type as LogType
 from pycaching.geo import Point
 from pycaching.trackable import Trackable
 from pycaching.errors import Error, NotLoggedInException, LoginFailedException
@@ -220,3 +222,8 @@ class Geocaching(object):
     def load_trackable(self, tid):
         """Return a cache by its TID."""
         return Trackable(self, tid)
+
+    def post_log(self, wp, text, type=LogType.found_it, date=datetime.date.today()):
+        """Post log for cache."""
+        l = Log(type=type, text=text, visited=date)
+        self.load_cache(wp).post_log(l)

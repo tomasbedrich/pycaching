@@ -194,6 +194,19 @@ class TestMethods(unittest.TestCase):
         for expected_author in ["Dudny-1995", "Sopdet Reviewer", "donovanstangiano83"]:
             self.assertIn(expected_author, log_authors)
 
+    def test_load_log_page(self):
+        expected_types = set((t.value for t in (LogType.found_it, LogType.didnt_find_it, LogType.note)))
+        expected_inputs = "__EVENTTARGET", "__VIEWSTATE"  # and more ...
+        expected_date_format = "d.M.yyyy"
+
+        # make request
+        valid_types, hidden_inputs, user_date_format = self.c._load_log_page()
+
+        self.assertSequenceEqual(expected_types, set(valid_types.keys()))
+        for i in expected_inputs:
+            self.assertIn(i, hidden_inputs.keys())
+        self.assertEqual(expected_date_format, user_date_format)
+
     @mock.patch.object(Cache, "_load_log_page")
     @mock.patch.object(Geocaching, "_request")
     def test_post_log(self, mock_request, mock_load_log_page):
@@ -204,7 +217,7 @@ class TestMethods(unittest.TestCase):
             "write note": "4",
             "didn't find it": "3",
         }
-        mock_load_log_page.return_value = (valid_log_types, {})
+        mock_load_log_page.return_value = (valid_log_types, {}, "mm/dd/YYYY")
         test_log_text = "Test log."
 
         with self.subTest("empty log text"):

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+import re
 from datetime import datetime
 from pycaching import errors
 
@@ -46,6 +47,23 @@ def parse_date(raw):
             pass
 
     raise errors.ValueError("Unknown date format - '{}'.".format(raw))
+
+
+def format_date(date, user_date_format):
+    # parse user format
+    date_format = user_date_format.lower()
+    date_format = re.split("(\W+)", date_format)
+    formats = {
+        "dd": r'%d',
+        "d": r'%-d',
+        "mmm": r'%b',
+        "mm": r'%m',
+        "m": r'%-m',
+        "yyyy": r'%Y',
+        "yy": r'%y',
+    }
+    date_format = "".join((formats[c] if c in formats else c for c in date_format))
+    return date.strftime(date_format)
 
 
 def get_possible_attributes():
