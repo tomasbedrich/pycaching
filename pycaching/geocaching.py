@@ -2,17 +2,19 @@
 
 import logging
 import requests
+from urllib.parse import urljoin
 from mechanicalsoup import Browser
 from bs4 import BeautifulSoup
 from pycaching.cache import Cache, Type, Size
 from pycaching.geo import Point
+from pycaching.trackable import Trackable
 from pycaching.errors import Error, NotLoggedInException, LoginFailedException
 from pycaching.util import parse_date
 
 
 class Geocaching(object):
 
-    _baseurl = "http://www.geocaching.com"
+    _baseurl = "https://www.geocaching.com"
     _urls = {
         "login_page":        "login/default.aspx",
         "search":            "play/search",
@@ -28,8 +30,7 @@ class Geocaching(object):
         if login_check and self._logged_in is False:
             raise NotLoggedInException("Login is needed.")
 
-        # TODO maybe use urljoin()
-        url = url if "//" in url else "/".join([self._baseurl, url])
+        url = url if "//" in url else urljoin(self._baseurl, url)
 
         try:
             res = self._browser.request(method, url, **kwargs)
@@ -206,3 +207,16 @@ class Geocaching(object):
                 else:
                     # can yield more caches (which are not exactly in desired area)
                     yield cache
+
+    # add some shortcuts ensure backwards compatibility
+
+    def geocode(self, location):
+        return Point.from_location(self, location)
+
+    def load_cache(self, wp):
+        """Return a cache by its WP."""
+        return Cache(self, wp)
+
+    def load_trackable(self, tid):
+        """Return a cache by its TID."""
+        return Trackable(self, tid)

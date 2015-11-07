@@ -4,6 +4,7 @@
 import unittest
 import pycaching
 import itertools
+from geopy.distance import great_circle
 from pycaching import Geocaching, Point, Rectangle
 from pycaching.errors import NotLoggedInException, LoginFailedException, PMOnlyException
 
@@ -105,7 +106,24 @@ class TestLoginOperations(unittest.TestCase):
         self.assertIsNone(self.g.get_logged_user())
 
 
-class TestPackage(unittest.TestCase):
+class TestShortcuts(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.g = Geocaching()
+        cls.g.login(_username, _password)
 
     def test_login(self):
         pycaching.login(_username, _password)
+
+    def test_load_cache(self):
+        c = self.g.load_cache("GC4808G")
+        self.assertEqual("Nekonecne ticho", c.name)
+
+    def test_load_trackable(self):
+        t = self.g.load_trackable("TB1KEZ9")
+        self.assertEqual("Lilagul #2: SwedenHawk Geocoin", t.name)
+
+    def test_geocode(self):
+        ref_point = Point(49.74774, 13.37752)
+        self.assertLess(great_circle(self.g.geocode("Pilsen"), ref_point).miles, 10)
