@@ -4,11 +4,10 @@ import unittest
 from unittest import mock
 from datetime import date
 from pycaching.errors import ValueError as PycachingValueError, LoadError, PMOnlyException
-from pycaching.enums import Type, Size, LogType
-from pycaching.cache import Cache
+from pycaching.cache import Cache, Type, Size
 from pycaching.geocaching import Geocaching
-from pycaching.point import Point
-from pycaching.log import Log
+from pycaching.geo import Point
+from pycaching.log import Log, Type as LogType
 
 from test.test_geocaching import _username, _password
 

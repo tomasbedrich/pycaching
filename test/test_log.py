@@ -2,8 +2,7 @@
 
 import unittest
 from datetime import date
-from pycaching.log import Log
-from pycaching.enums import LogType as Type
+from pycaching.log import Log, Type
 from pycaching.errors import ValueError as PycachingValueError
 
 

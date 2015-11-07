@@ -1,12 +1,224 @@
 #!/usr/bin/env python3
 
+import math
+import re
 import logging
 import weakref
-from math import sqrt
+import itertools
+import geopy
+import geopy.distance
 from statistics import mean
 from collections import namedtuple
+from pycaching.errors import ValueError as PycachingValueError, GeocodeError, BadBlockError, Error
 from pycaching.util import lazy_loaded
-from pycaching.errors import Error, BadBlockError
+
+
+def to_decimal(deg, min):
+    """Returns a decimal interpretation of coordinate in MinDec format."""
+    return round(deg + min / 60, 5)
+
+
+def to_mindec(decimal):
+    """Returns a DecMin interpretation of coordinate in decimal format."""
+    return int(decimal), round(60 * (decimal - int(decimal)), 3)
+
+
+class Point(geopy.Point):
+    """A point on earth defined by its latitude and longitude and possibly more attributes."""
+
+    def __new__(cls, *args, **kwargs):
+        precision = kwargs.pop("precision", None)
+        self = super(Point, cls).__new__(cls, *args, **kwargs)
+        self.precision = precision
+        return self
+
+    @classmethod
+    def from_location(cls, geocaching, location):
+        res = geocaching._request("api/geocode", params={"q": location}, expect="json")
+
+        if res["status"] != "success":
+            raise GeocodeError(res["msg"])
+
+        return cls(float(res["data"]["lat"]), float(res["data"]["lng"]))
+
+    @classmethod
+    def from_string(cls, string):
+        """Parses the coords in Degree Minutes format. Expecting:
+
+        S 36 51.918 E 174 46.725 or
+        N 6 52.861  W174   43.327
+
+        Spaces do not matter. Neither does having the degree symbol.
+
+        Returns a geopy.Point instance."""
+
+        # Make it uppercase for consistency
+        coords = string.upper().replace("N", " ").replace("S", " ") \
+            .replace("E", " ").replace("W", " ").replace("+", " ")
+
+        try:
+            m = re.match(r"\s*(-?\s*\d+)\D+(\d+[\.,]\d+)\D?\s*(-?\s*\d+)\D+(\d+[\.,]\d+)", coords)
+
+            latDeg, latMin, lonDeg, lonMin = [
+                float(part.replace(" ", "").replace(",", ".")) for part in m.groups()]
+
+            if "S" in string:
+                latDeg *= -1
+            if "W" in string:
+                lonDeg *= -1
+
+            return cls(to_decimal(latDeg, latMin), to_decimal(lonDeg, lonMin))
+
+        except AttributeError:
+            pass
+
+        # fallback
+        try:
+            return super(cls, cls).from_string(string)
+        except ValueError as e:
+            # wrap possible error to pycaching.errors.ValueError
+            raise PycachingValueError() from e
+
+    @classmethod
+    def from_block(cls, block):
+        return cls.from_tile(block.tile, block.middle_point)
+
+    @classmethod
+    def from_tile(cls, tile, tile_point=None):
+        """Calculate location from web map tile coordinates
+
+        Parameter represents a map tile coordinates as specified in
+        Google Maps JavaScript API [1].  Optional parameter point
+        determine position inside the tile, starting from northwest
+        corner. Its x and y coords are in range [0, tile.size].
+        This code is modified from OpenStreetMap Wiki [2].
+
+        [1] https://developers.google.com/maps/documentation/javascript/maptypes#MapCoordinates
+        [2] http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+        """
+
+        if tile_point:
+            dx = float(tile_point.x) / tile.size
+            dy = float(tile_point.y) / tile.size
+        else:
+            dx, dy = 0, 0
+
+        n = 2.0 ** tile.z
+        lon_deg = (tile.x + dx) / n * 360.0 - 180.0
+        lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * (tile.y + dy) / n)))
+        lat_deg = math.degrees(lat_rad)
+        p = cls(lat_deg, lon_deg)
+        p.precision = tile.precision(p)
+        return p
+
+    def to_tile(self, geocaching, zoom):
+        """Calculate web map tile where point is located
+
+        Return x, y, z.  If fractions, return x and y as floats.  This
+        code is modified from OpenStreetMap Wiki [1].
+
+        [1] http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+        """
+        lat_deg = self.latitude
+        lon_deg = self.longitude
+        lat_rad = math.radians(lat_deg)
+        n = 2.0 ** zoom
+        x = int((lon_deg + 180.0) / 360.0 * n)
+        y = int((1.0 - math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
+        return Tile(geocaching, x, y, zoom)
+
+    def __format__(self, format_spec):
+        return "{:{}}".format(str(self), format_spec)
+
+
+class Area:
+    """Geometrical area"""
+    pass
+
+
+class Polygon(Area):
+    """Area defined by bordering Point instances"""
+
+    def __init__(self, *points):
+        """Define polygon by list of consecutive Points"""
+        assert len(points) >= 3
+        self.points = points
+
+    @property
+    def bounding_box(self):
+        """Get extreme latitude and longitude values.
+
+        Return Rectangle that contains all points"""
+
+        lats = sorted([p.latitude for p in self.points])
+        lons = sorted([p.longitude for p in self.points])
+        return Rectangle(Point(min(lats), min(lons)),
+                         Point(max(lats), max(lons)))
+
+    @property
+    def mean_point(self):
+        """Return point with average latitude and longitude of points"""
+        x = mean([p.latitude for p in self.points])
+        y = mean([p.longitude for p in self.points])
+        return Point(x, y)
+
+    @property
+    def diagonal(self):
+        """Return bounding box diagonal"""
+        return self.bounding_box.diagonal
+
+    def to_tiles(self, gc, zoom=None):
+        """Return list of tiles covering this area"""
+
+        corners = self.bounding_box.corners
+
+        if not zoom:
+            # calculate zoom, where whole area can fit into one tile
+            # TODO this can be done without cycle, just by computing - but it
+            # is too complex, that it is more readable to just try some values
+            for zoom in range(Tile.max_zoom, 1, -1):
+                if corners[0].to_tile(gc, zoom) == corners[1].to_tile(gc, zoom):
+                    break
+
+        # get corner tiles
+        nw_tile = corners[0].to_tile(gc, zoom)
+        se_tile = corners[1].to_tile(gc, zoom)
+
+        # sort corner coords because of range
+        x1, x2 = sorted((nw_tile.x, se_tile.x))
+        y1, y2 = sorted((nw_tile.y, se_tile.y))
+
+        logging.debug("Area converted to {} tiles, zoom level {}".format(
+            (x2 - x1) * (y2 - y1), zoom))
+
+        # for each tile between corners
+        for x, y in itertools.product(range(x1, x2 + 1), range(y1, y2 + 1)):
+            yield Tile(gc, x, y, zoom)
+
+
+class Rectangle(Polygon):
+    """Upright rectangle"""
+
+    def __init__(self, point_a, point_b):
+        """Create rectangle defined by opposite corners
+
+        Parameters point_a and point_b are Point instances."""
+
+        assert point_a != point_b, "Corner points cannot be the same"
+        self.corners = [point_a, point_b]
+        self.points = [point_a, Point(point_a.latitude, point_b.longitude),
+                       point_b, Point(point_b.latitude, point_a.longitude)]
+
+    def __contains__(self, p):
+        """Is point p inside area?"""
+        lats = sorted([_.latitude for _ in self.points])
+        lons = sorted([_.longitude for _ in self.points])
+        return min(lats) <= p.latitude <= max(lats) and min(lons) <= p.longitude <= max(lons)
+
+    @property
+    def diagonal(self):
+        """Return rectangle diagonal"""
+        return geopy.distance.distance(self.corners[0], self.corners[1]).meters
 
 
 class Tile(object):
@@ -120,13 +332,18 @@ class Tile(object):
 
         utfgrid = self._download_utfgrid()
 
+        if not utfgrid:
+            self._blocks = {}
+            logging.debug("No block loaded to {}".format(self))
+            return
+
         size = len(utfgrid["grid"])
         assert len(utfgrid["grid"][1]) == size, "UTFGrid is not square"
         if size != self.size:
             logging.warning("UTFGrid has unexpected size.")
             self.size = size
 
-        self._blocks = {}   # format: { waypoint: (<Cache>, <Block>) }
+        self._blocks = {}   # format: { waypoint: <Block> }
 
         # for all non-empty in coords
         for coordinate_key in utfgrid["data"]:
@@ -146,10 +363,22 @@ class Tile(object):
                 self._blocks[waypoint].add(point)
 
         # try to determine grid coordinate block size
-        # TODO: move this to TileGroup
-        # Block.determine_block_size()
+        Block.determine_block_size()
 
         logging.debug("Loaded {} blocks to {}".format(len(self._blocks), self))
+
+    def precision(self, point=None):
+        """Return (x-axis) coordinate precision for current tile and point"""
+        diam = geopy.distance.ELLIPSOIDS["WGS-84"][0] * 1e3 * 2
+        lat_correction = math.cos(math.radians(point.latitude)) if point else 1
+        tile_length = math.pi * diam * lat_correction * 2 ** (-self.z)
+        return tile_length / self.size
+
+    def __eq__(self, other):
+        for attr in ['geocaching', 'x', 'y', 'z']:
+            if getattr(self, attr) != getattr(other, attr):
+                return False
+        return True
 
     def __str__(self):
         return "<object Tile, id {}, coords ({}, {}, {})>".format(id(self), self.x, self.y, self.z)
@@ -188,7 +417,7 @@ class Block(object):
         if len(cls.instances) < 20:
             logging.warning("Trying to determine block size with small number of blocks.")
 
-        avg_block_size = round(mean((sqrt(len(i().points)) for i in cls.instances)))
+        avg_block_size = round(mean((math.sqrt(len(i().points)) for i in cls.instances)))
         if cls.size != avg_block_size:
             logging.warning("UTFGrid coordinate block has unexpected size.")
             cls.size = avg_block_size

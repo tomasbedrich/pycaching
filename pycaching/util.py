@@ -20,7 +20,8 @@ def lazy_loaded(func):
         try:
             return func(*args, **kwargs)
         except AttributeError:
-            logging.debug("Lazy loading {} into <object {} id {}>".format(func.__name__, type(self), id(self)))
+            logging.debug("Lazy loading {} into <object {} id {}>".format(
+                func.__name__, type(self), id(self)))
             self.load()
             return func(*args, **kwargs)  # try to return it again
 
@@ -30,16 +31,6 @@ def lazy_loaded(func):
 def rot13(text):
     """Returns a text encoded by rot13 cipher."""
     return str.translate(text, _rot13codeTable)
-
-
-def to_decimal(deg, min):
-    """Returns a decimal interpretation of coordinate in MinDec format."""
-    return round(deg + min / 60, 5)
-
-
-def to_mindec(decimal):
-    """Returns a DecMin interpretation of coordinate in decimal format."""
-    return int(decimal), round(60 * (decimal - int(decimal)), 3)
 
 
 def parse_date(raw):
@@ -60,7 +51,8 @@ def parse_date(raw):
 def get_possible_attributes():
     """Returns dict of all possible attributes parsed from Groundspeak's website."""
 
-    # imports are here not to slow down other parts of program which normally doesn't use this method
+    # imports are here not to slow down other parts of program which normally
+    # doesn't use this method
     from itertools import chain
     import requests
     from bs4 import BeautifulSoup

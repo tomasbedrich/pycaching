@@ -3,20 +3,14 @@
 import unittest
 import datetime
 import itertools
-from pycaching.util import rot13, to_decimal, to_mindec, parse_date, get_possible_attributes
+from pycaching.util import rot13, parse_date, get_possible_attributes
 
 
-class TestUtil(unittest.TestCase):
+class TestModule(unittest.TestCase):
 
     def test_rot13(self):
         self.assertEqual(rot13("Text"), "Grkg")
         self.assertEqual(rot13("abc'ř"), "nop'ř")
-
-    def test_coord_conversion(self):
-        self.assertEqual(to_decimal(49, 43.850), 49.73083)
-        self.assertEqual(to_decimal(13, 22.905), 13.38175)
-        self.assertEqual(to_mindec(13.38175), (13, 22.905))
-        self.assertEqual(to_mindec(49.73083), (49, 43.850))
 
     def test_date_parsing(self):
         dates = (datetime.date(2014, 1, 30), datetime.date(2000, 1, 1), datetime.date(2020, 12, 13))

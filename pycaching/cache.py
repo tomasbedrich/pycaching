@@ -3,9 +3,9 @@
 import logging
 import datetime
 import re
+import enum
 from pycaching import errors
-from pycaching.point import Point
-from pycaching.enums import Type, Size
+from pycaching.geo import Point
 from pycaching.trackable import Trackable
 from pycaching.log import Log
 from pycaching.util import parse_date, rot13, lazy_loaded
@@ -87,72 +87,33 @@ class Cache(object):
         "wirelessbeacon": "Wireless Beacon"
     }
 
-    def __init__(self, geocaching, wp, *, name=None, type=None, location=None, state=None,
-                 found=None, size=None, difficulty=None, terrain=None, author=None, hidden=None,
-                 attributes=None, summary=None, description=None, hint=None, favorites=None,
-                 pm_only=None, url=None, trackable_page_url=None, logbook_token=None,
-                 log_page_url=None):
+    def __init__(self, geocaching, wp, **kwargs):
+
         self.geocaching = geocaching
-        # properties
         if wp is not None:
             self.wp = wp
-        if name is not None:
-            self.name = name
-        if type is not None:
-            self.type = type
-        if location is not None:
-            self.location = location
-        if state is not None:
-            self.state = state
-        if found is not None:
-            self.found = found
-        if size is not None:
-            self.size = size
-        if difficulty is not None:
-            self.difficulty = difficulty
-        if terrain is not None:
-            self.terrain = terrain
-        if author is not None:
-            self.author = author
-        if hidden is not None:
-            self.hidden = hidden
-        if attributes is not None:
-            self.attributes = attributes
-        if summary is not None:
-            self.summary = summary
-        if description is not None:
-            self.description = description
-        if hint is not None:
-            self.hint = hint
-        if favorites is not None:
-            self.favorites = favorites
-        if pm_only is not None:
-            self.pm_only = pm_only
-        if url is not None:
-            self.url = url
-        # related
-        self.logbook = []
-        self.trackables = []
-        if logbook_token is not None:
-            self.logbook_token = logbook_token
-        if trackable_page_url is not None:
-            self.trackable_page_url = trackable_page_url
-        if log_page_url is not None:
-            self.log_page_url = log_page_url
+
+        known_kwargs = {"name", "type", "location", "state", "found", "size", "difficulty", "terrain",
+                        "author", "hidden", "attributes", "summary", "description", "hint", "favorites",
+                        "pm_only", "url", "trackable_page_url", "logbook_token", "log_page_url"}
+
+        for name in known_kwargs:
+            if name in kwargs:
+                setattr(self, name, kwargs[name])
 
     def __str__(self):
         return self.wp
 
     def __eq__(self, other):
-        return self.wp == other.wp
+        return self.geocaching == other.geocaching and self.wp == other.wp
 
     @classmethod
     def from_trackable(cls, trackable):
         return cls(trackable.geocaching, None, url=trackable.location_url)
 
     @classmethod
-    def from_block(cls, geocaching, block):
-        c = cls(geocaching, block.cache_wp, name=block.cache_name)
+    def from_block(cls, block):
+        c = cls(block.tile.geocaching, block.cache_wp, name=block.cache_name)
         c.location = Point.from_block(block)
         return c
 
@@ -354,10 +315,6 @@ class Cache(object):
     @pm_only.setter
     def pm_only(self, pm_only):
         self._pm_only = bool(pm_only)
-
-    def inside_area(self, area):
-        """Calculate if geocache is inside given area"""
-        return area.inside_area(self.location)
 
     @property
     @lazy_loaded
@@ -600,3 +557,96 @@ class Cache(object):
         post["ctl00$ContentBody$LogBookPanel1$uxLogInfo"] = l.text
 
         self.geocaching._request(self.log_page_url, method="POST", data=post)
+
+
+class Type(enum.Enum):
+
+    # value is cache image filename (http://www.geocaching.com/images/WptTypes/[VALUE].gif)
+    traditional = "2"
+    multicache = "3"
+    mystery = unknown = "8"
+    letterbox = "5"
+    event = "6"
+    mega_event = "mega"
+    giga_event = "giga"
+    earthcache = "137"
+    cito = cache_in_trash_out_event = "13"
+    webcam = "11"
+    virtual = "4"
+    wherigo = "1858"
+    lost_and_found_event = "10Years_32"
+    project_ape = "ape_32"
+    groundspeak_hq = "HQ_32"
+    gps_adventures_exhibit = "1304"
+    groundspeak_block_party = "4738"
+    locationless = reverse = "12"
+
+    @classmethod
+    def from_filename(cls, filename):
+        """Returns cache type from its image filename"""
+
+        if filename == "earthcache":
+            filename = "137"  # fuck Groundspeak, they use 2 exactly same icons with 2 different names
+
+        return cls(filename)
+
+    @classmethod
+    def from_string(cls, name):
+        """Returns cache type from its human readable name"""
+
+        name = name.replace(" Geocache", "")  # with space!
+        name = name.replace(" Cache", "")  # with space!
+        name = name.lower().strip()
+
+        name_mapping = {
+            "traditional": cls.traditional,
+            "multi-cache": cls.multicache,
+            "mystery": cls.mystery,
+            "unknown": cls.unknown,
+            "letterbox hybrid": cls.letterbox,
+            "event": cls.event,
+            "mega-event": cls.mega_event,
+            "giga-event": cls.giga_event,
+            "earthcache": cls.earthcache,
+            "cito": cls.cito,
+            "cache in trash out event": cls.cache_in_trash_out_event,
+            "webcam": cls.webcam,
+            "virtual": cls.virtual,
+            "wherigo": cls.wherigo,
+            "lost and found event": cls.lost_and_found_event,
+            "project ape": cls.project_ape,
+            "groundspeak hq": cls.groundspeak_hq,
+            "gps adventures exhibit": cls.gps_adventures_exhibit,
+            "groundspeak block party": cls.groundspeak_block_party,
+            "locationless (reverse)": cls.locationless,
+        }
+
+        try:
+            return name_mapping[name]
+        except KeyError as e:
+            raise errors.ValueError("Unknown cache type '{}'.".format(name)) from e
+
+
+class Size(enum.Enum):
+    micro = "micro"
+    small = "small"
+    regular = "regular"
+    large = "large"
+    not_chosen = "not chosen"
+    virtual = "virtual"
+    other = "other"
+
+    @classmethod
+    def from_filename(cls, filename):
+        """Returns cache size from its image filename"""
+        return cls[filename]
+
+    @classmethod
+    def from_string(cls, name):
+        """Returns cache size from its human readable name"""
+        name = name.strip().lower()
+
+        try:
+            return cls(name)
+        except ValueError as e:
+            raise errors.ValueError("Unknown cache type '{}'.".format(name)) from e

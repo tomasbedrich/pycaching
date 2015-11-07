@@ -3,16 +3,16 @@
 # import os
 import unittest
 import pycaching
-from pycaching import Geocaching, Point
-from pycaching.errors import NotLoggedInException, LoginFailedException
-# from pycaching.area import Rectangle
+import itertools
+from pycaching import Geocaching, Point, Rectangle
+from pycaching.errors import NotLoggedInException, LoginFailedException, PMOnlyException
 
 
 # please DO NOT CHANGE!
 _username, _password = "cache-map", "pGUgNw59"
 
 
-class TestLoading(unittest.TestCase):
+class TestMethods(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -30,125 +30,44 @@ class TestLoading(unittest.TestCase):
             caches = list(self.g.search(Point(49.733867, 13.397091), 100))
             self.assertNotEqual(caches[0], caches[50])
 
-    # def test_search_quick(self):
-    #     """Perform search and check found caches"""
-    #     rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.40))
-    #     caches = list(self.g.search_quick(rect))
-    #     strict_caches = list(self.g.search_quick(rect, strict=True))
-    #     precise_caches = list(self.g.search_quick(rect, precision=45.))
-    #
-    #     # Check for known geocaches
-    #     expected = ["GC41FJC", "GC17E8Y", "GC5ND9F"]
-    #     for i in expected:
-    #         found = False
-    #         for c in caches:
-    #             if c.wp == i:
-    #                 found = True
-    #                 break
-    #         with self.subTest("Check if {} is in results".format(c.wp)):
-    #             self.assertTrue(found)
-    #
-    #     with self.subTest("Precision is in assumed range"):
-    #         self.assertLess(caches[0].location.precision, 49.5)
-    #         self.assertGreater(caches[0].location.precision, 49.3)
-    #
-    #     with self.subTest("Found roughly correct amount of caches"):
-    #         # At time of writing, there were 108 caches inside inspected tile
-    #         self.assertLess(len(caches), 130)
-    #         self.assertGreater(len(caches), 90)
-    #
-    #     with self.subTest("Strict handling of cache coordinates"):
-    #         # ...but only 12 inside this stricter area
-    #         self.assertLess(len(strict_caches), 16)
-    #         self.assertGreater(len(strict_caches), 7)
-    #
-    #     with self.subTest("Precision grows when asking for it"):
-    #         self.assertLess(precise_caches[0].location.precision, 45.)
-    #
-    # def test_calculate_initial_tiles(self):
-    #     expect_tiles = [(2331, 1185, 12), (2331, 1186, 12),
-    #                     (2332, 1185, 12), (2332, 1186, 12)]
-    #     expect_precision = 76.06702024121832
-    #     r = Rectangle(Point(60.15, 24.95), Point(60.17, 25.00))
-    #     tiles, starting_precision = self.g._calculate_initial_tiles(r)
-    #     for t in tiles:
-    #         with self.subTest("Tile {} expected as initial tile".format(t)):
-    #             self.assertIn(t, expect_tiles)
-    #     with self.subTest("Expected precision"):
-    #         self.assertAlmostEqual(starting_precision, expect_precision)
-    #
-    # def test_get_utfgrid_caches(self):
-    #     """Load tiles and check if expected caches are found"""
-    #
-    #     # load expected result
-    #     file_path = os.path.join(os.path.dirname(__file__), "sample_caches.csv")
-    #     expected_caches = set()
-    #     with open(file_path) as f:
-    #         for row in f:
-    #             wp = row.split(',')[0]
-    #             expected_caches.add(wp)
-    #     n_orig = len(expected_caches)
-    #
-    #     # load search result
-    #     additional_caches = set()
-    #     for c in self.g._get_utfgrid_caches((8800, 5574, 14),):
-    #         if c.wp in expected_caches:
-    #             expected_caches.discard(c.wp)
-    #         else:
-    #             additional_caches.add(c.wp)
-    #
-    #     with self.subTest("Expected caches found"):
-    #         self.assertLess(len(expected_caches) / n_orig, 0.2,
-    #                         "Over 20 % of expected caches are lost.")
-    #
-    #     with self.subTest("Unexpected caches not found"):
-    #         self.assertLess(len(additional_caches) / n_orig, 0.2,
-    #                         "Over 20 % of found caches are unexpected.")
-    #
-    # def test_bordering_tiles(self):
-    #     """Check if geocache is near tile border"""
-    #     # description, function parameters, set of bordering tiles
-    #     checks = [
-    #         ["Not on border", (8800.3, 5575.4, 14),      set()],
-    #         ["Not on border", (8800.3, 5575.4, 14, 0.2), set()],
-    #         ["Now inside border", (8800.3, 5575.4, 14, 0.31),
-    #          {(8799, 5575, 14)}],
-    #         ["Also inside border", (8800.05, 5575.4, 14), {(8799, 5575, 14)}],
-    #         ["Inside another border", (8800.3, 5575.95, 14),
-    #          {(8800, 5576, 14)}],
-    #         ["A corner", (8800.05, 5575.95, 14),
-    #          {(8799, 5576, 14), (8800, 5576, 14), (8799, 5575, 14)}]
-    #     ]
-    #     for description, params, output in checks:
-    #         with self.subTest(description):
-    #             self.assertEqual(self.g._bordering_tiles(*params), output)
-    #
-    # def test_get_zoom_by_distance(self):
-    #     """Check that calculated zoom levels are correct"""
-    #     with self.subTest("World map zoom level"):
-    #         self.assertEqual(
-    #             self.g._get_zoom_by_distance(40e6, 0., 1., 'le'), 0)
-    #
-    #     with self.subTest("Next level"):
-    #         self.assertEqual(
-    #             self.g._get_zoom_by_distance(40e6, 0., 1., 'ge'), 1)
-    #
-    #     with self.subTest("Tile width greater or equal to 1 km"):
-    #         self.assertEqual(
-    #             self.g._get_zoom_by_distance(1e3, 49., 1., 'le'), 14)
-    #
-    #     with self.subTest("More accurate than 10 m"):
-    #         self.assertEqual(
-    #             self.g._get_zoom_by_distance(10., 49., 256, 'ge'), 14)
-    #
-    #     with self.subTest("Previous test was correct"):
-    #         p = Point(49., 13.)
-    #         self.assertGreater(p.precision_from_tile_zoom(13), 10)
-    #         self.assertLess(p.precision_from_tile_zoom(14), 10)
+    def test_search_quick(self):
+        """Perform search and check found caches"""
+        # at time of writing, there were exactly 16 caches in this area + one PM only
+        expected_cache_num = 16
+        rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.40))
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.g.logout()
+        with self.subTest("normal"):
+            res = [c.wp for c in self.g.search_quick(rect)]
+            for wp in ["GC41FJC", "GC17E8Y", "GC5ND9F"]:
+                self.assertIn(wp, res)
+            # but 108 caches larger tile
+            self.assertLess(len(res), 130)
+            self.assertGreater(len(res), 90)
+
+        with self.subTest("strict handling of cache coordinates"):
+            res = list(self.g.search_quick(rect, strict=True))
+            self.assertLess(len(res), expected_cache_num + 5)
+            self.assertGreater(len(res), expected_cache_num - 5)
+
+        with self.subTest("larger zoom - more precise"):
+            res1 = list(self.g.search_quick(rect, strict=True, zoom=15))
+            res2 = list(self.g.search_quick(rect, strict=True, zoom=14))
+            for res in res1, res2:
+                self.assertLess(len(res), expected_cache_num + 5)
+                self.assertGreater(len(res), expected_cache_num - 5)
+            for c1, c2 in itertools.product(res1, res2):
+                self.assertLess(c1.location.precision, c2.location.precision)
+
+    def test_search_quick_match_load(self):
+        """Test if search results matches exact cache locations."""
+        rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.39))
+        caches = list(self.g.search_quick(rect, strict=True, zoom=15))
+        for cache in caches:
+            try:
+                cache.load()
+                self.assertIn(cache.location, rect)
+            except PMOnlyException:
+                pass
 
 
 class TestLoginOperations(unittest.TestCase):
@@ -184,9 +103,6 @@ class TestLoginOperations(unittest.TestCase):
         self.g.login(_username, _password)
         self.g.logout()
         self.assertIsNone(self.g.get_logged_user())
-
-    def tearDown(self):
-        self.g.logout()
 
 
 class TestPackage(unittest.TestCase):

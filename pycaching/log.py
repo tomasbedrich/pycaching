@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import datetime
-from pycaching.errors import ValueError
-from pycaching.enums import LogType as Type
+import enum
+from pycaching import errors
 from pycaching.util import parse_date
 
 # prefix _type() function to avoid colisions with log type
@@ -52,7 +52,8 @@ class Log(object):
         if _type(visited) is str:
             visited = parse_date(visited)
         elif _type(visited) is not datetime.date:
-            raise ValueError("Passed object is not datetime.date instance nor string containing a date.")
+            raise ValueError(
+                "Passed object is not datetime.date instance nor string containing a date.")
         self._visited = visited
 
     @property
@@ -62,3 +63,42 @@ class Log(object):
     @author.setter
     def author(self, author):
         self._author = author.strip()
+
+
+class Type(enum.Enum):
+    found_it = "found it"
+    didnt_find_it = "didn't find it"
+    note = "write note"
+    publish_listing = "publish listing"
+    enable_listing = "enable listing"
+    archive = "archive"
+    unarchive = "unarchive"
+    temp_disable_listing = "temporarily disable listing"
+    needs_archive = "needs archived"
+    will_attend = "will attend"
+    attended = "attended"
+    retrieved_it = "retrieved it"
+    placed_it = "placed it"
+    grabbed_it = "grabbed it"
+    needs_maintenance = "needs maintenance"
+    owner_maintenance = "owner maintenance"
+    update_coordinates = "update coordinates"
+    discovered_it = "discovered it"
+    post_reviewer_note = "post reviewer note"
+    submit_for_review = "submit for review"
+    visit = "visit"
+    webcam_photo_taken = "webcam photo taken"
+    announcement = "announcement"
+    retract = "retract listing"
+    marked_missing = "marked missing"
+    oc_team_comment = "X1"
+
+    @classmethod
+    def from_string(cls, name):
+        """Returns log type from its human readable name"""
+        name = name.strip().lower()
+
+        try:
+            return cls(name)
+        except ValueError as e:
+            raise errors.ValueError("Unknown log type '{}'.".format(name)) from e
