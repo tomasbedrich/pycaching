@@ -11,7 +11,7 @@ from pycaching.log import Log, Type as LogType
 from pycaching.geo import Point
 from pycaching.trackable import Trackable
 from pycaching.errors import Error, NotLoggedInException, LoginFailedException
-from pycaching.util import parse_date
+from pycaching.util import parse_date, deprecated
 
 
 class Geocaching(object):
@@ -210,20 +210,30 @@ class Geocaching(object):
                     # can yield more caches (which are not exactly in desired area)
                     yield cache
 
-    # add some shortcuts ensure backwards compatibility
+    # add some shortcuts ------------------------------------------------------
 
     def geocode(self, location):
         return Point.from_location(self, location)
 
-    def load_cache(self, wp):
+    def get_cache(self, wp):
         """Return a cache by its WP."""
         return Cache(self, wp)
 
-    def load_trackable(self, tid):
+    def get_trackable(self, tid):
         """Return a cache by its TID."""
         return Trackable(self, tid)
 
     def post_log(self, wp, text, type=LogType.found_it, date=datetime.date.today()):
         """Post log for cache."""
         l = Log(type=type, text=text, visited=date)
-        self.load_cache(wp).post_log(l)
+        self.get_cache(wp).post_log(l)
+
+    #  ensure backwards compatibility -----------------------------------------
+
+    @deprecated
+    def load_cache(self, wp):
+        return self.get_cache(wp)
+
+    @deprecated
+    def load_trackable(self, tid):
+        return self.get_trackable(tid)

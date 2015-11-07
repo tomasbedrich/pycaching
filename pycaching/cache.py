@@ -428,13 +428,13 @@ class Cache(object):
 
         Loads just basic cache details, but very quickly."""
 
-        res = self.geocaching._request("http://tiles01.geocaching.com/map.details",
-                                       params={"i": self.wp}, expect="json")
+        res = self.geocaching._request("http://tiles01.geocaching.com/map.details", params={
+            "i": self.wp
+        }, expect="json")
 
         if res["status"] == "failed" or len(res["data"]) != 1:
-            error_msg = res[
-                "msg"] if "msg" in res else "Unknown error (probably not existing cache)"
-            raise errors.LoadError("Waypoint '{}' cannot be loaded: {}".format(self.wp, error_msg))
+            msg = res["msg"] if "msg" in res else "Unknown error (probably not existing cache)"
+            raise errors.LoadError("Waypoint '{}' cannot be loaded: {}".format(self.wp, msg))
 
         data = res["data"][0]
 
@@ -508,6 +508,9 @@ class Cache(object):
         self.trackables = []
 
         url = self.trackable_page_url  # will trigger lazy_loading if needed
+        if not url:
+            # no link to all trackables = no trackables in cache
+            raise StopIteration()
         res = self.geocaching._request(url)
 
         trackable_table = res.find_all("table")[1]

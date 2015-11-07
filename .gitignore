@@ -1,6 +1,9 @@
 # CUSTOM ===========================================================
 
+# script for upload to PIP
 register.sh
+# tmp file for testing some snippets of code
+test.py
 
 
 

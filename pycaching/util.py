@@ -2,6 +2,9 @@
 
 import logging
 import re
+import warnings
+import inspect
+import functools
 from datetime import datetime
 from pycaching import errors
 
@@ -27,6 +30,25 @@ def lazy_loaded(func):
             return func(*args, **kwargs)  # try to return it again
 
     return wrapper
+
+
+# copied from:
+# https://wiki.python.org/moin/PythonDecoratorLibrary#Generating_Deprecation_Warnings
+def deprecated(func):
+    """This is a decorator which can be used to mark functions
+    as deprecated. It will result in a warning being emitted
+    when the function is used."""
+
+    @functools.wraps(func)
+    def new_func(*args, **kwargs):
+        warnings.warn_explicit(
+            "Call to deprecated function {}.".format(func.__name__),
+            category=FutureWarning,
+            filename=inspect.getfile(func),
+            lineno=inspect.getsourcelines(func)[1] + 1
+        )
+        return func(*args, **kwargs)
+    return new_func
 
 
 def rot13(text):
