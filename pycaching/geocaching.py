@@ -117,7 +117,7 @@ class Geocaching(object):
             with open(credentials_file, 'r') as file:
                 credentials = json.load(file)
                 return credentials["username"], credentials["password"]
-        except json.JSONDecodeError:
+        except ValueError:
             raise LoginFailedException("Wrong format of .gc_credentials, error when parsing JSON")
         except KeyError:
             raise LoginFailedException("File .gc_credentials, doesnt contain username and password")
