@@ -4,7 +4,9 @@ import logging
 import datetime
 import requests
 import bs4
+import json
 from urllib.parse import urljoin
+from os import path
 from pycaching.cache import Cache, Type, Size
 from pycaching.log import Log, Type as LogType
 from pycaching.geo import Point
@@ -48,10 +50,31 @@ class Geocaching(object):
         except requests.exceptions.RequestException as e:
             raise Error("Cannot load page: {}".format(url)) from e
 
-    def login(self, username, password):
+    def login(self, username=None, password=None):
         """Logs the user in.
 
         Downloads the relevant cookies to keep the user logged in."""
+        if not username or not password:
+            try:
+                credentials_file = ".gc_credentials"
+                if path.isfile(credentials_file):
+                    logging.info("Loading credentials file .gc_credentials")
+                else:
+                    credentials_file = path.join(path.expanduser("~"), credentials_file)
+                    if path.isfile(credentials_file):
+                        logging.info("Loading credentials file .gc_credentials form home directory")
+                    else:
+                        raise LoginFailedException("Cannot login without credentials or file .gc_credentials")
+                with open(credentials_file, 'r') as file:
+                    credentials = json.load(file)
+                    username = credentials["username"]
+                    password = credentials["password"]
+            except json.JSONDecodeError:
+                raise LoginFailedException("Wrong format of .gc_credentials, error when parsing JSON")
+            except KeyError:
+                raise LoginFailedException("File .gc_credentials, doesnt contain username and password")
+            except IOError:
+                raise LoginFailedException("File .gc_credentials reading error")                
 
         logging.info("Logging in...")
         login_page = self._request(self._urls["login_page"], login_check=False)
