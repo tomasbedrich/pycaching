@@ -54,7 +54,7 @@ class Geocaching(object):
         """Logs the user in.
 
         Downloads the relevant cookies to keep the user logged in."""
-        if not username or not password:
+        if username is None or password is None:
             try:
                 credentials_file = ".gc_credentials"
                 if path.isfile(credentials_file):
