@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
 import logging
-import requests
 import datetime
+import requests
+import bs4
 from urllib.parse import urljoin
-from mechanicalsoup import Browser
-from bs4 import BeautifulSoup
 from pycaching.cache import Cache, Type, Size
 from pycaching.log import Log, Type as LogType
 from pycaching.geo import Point
@@ -25,7 +24,7 @@ class Geocaching(object):
 
     def __init__(self):
         self._logged_in = False
-        self._browser = Browser()
+        self._session = requests.Session()
 
     def _request(self, url, *, expect="soup", method="GET", login_check=True, **kwargs):
         # check login unless explicitly turned off
@@ -35,12 +34,12 @@ class Geocaching(object):
         url = url if "//" in url else urljoin(self._baseurl, url)
 
         try:
-            res = self._browser.request(method, url, **kwargs)
+            res = self._session.request(method, url, **kwargs)
             res.raise_for_status()
 
             # return bs4.BeautifulSoup, JSON dict or raw requests.Response
             if expect == "soup":
-                return res.soup
+                return bs4.BeautifulSoup(res.text, "html.parser")
             elif expect == "json":
                 return res.json()
             elif expect == "raw":
@@ -99,17 +98,17 @@ class Geocaching(object):
     def logout(self):
         """Logs out the user.
 
-        Logs out the user by creating new browser."""
+        Logs out the user by creating new session."""
 
         logging.info("Logging out.")
         self._logged_in = False
-        self._browser = Browser()
+        self._session = requests.Session()
 
     def get_logged_user(self, login_page=None):
         """Returns the name of curently logged user or None, if no user is logged in."""
 
         login_page = login_page or self._request(self._urls["login_page"], login_check=False)
-        assert isinstance(login_page, BeautifulSoup)
+        assert isinstance(login_page, bs4.BeautifulSoup)
 
         logging.debug("Checking for already logged user.")
         try:
@@ -193,7 +192,7 @@ class Geocaching(object):
                 "originTreatment": 0
             }, expect="json")
 
-            return BeautifulSoup(res["HtmlString"].strip())
+            return bs4.BeautifulSoup(res["HtmlString"].strip(), "html.parser")
 
     def search_quick(self, area, *, strict=False, zoom=None):
         logging.info("Searching quick in {}".format(area))
@@ -228,7 +227,8 @@ class Geocaching(object):
         l = Log(type=type, text=text, visited=date)
         self.get_cache(wp).post_log(l)
 
-    #  ensure backwards compatibility -----------------------------------------
+    # ensure backwards compatibility ------------------------------------------
+    # deprecated methods will be removed in next version!
 
     @deprecated
     def load_cache(self, wp):

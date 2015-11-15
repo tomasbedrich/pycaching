@@ -312,7 +312,7 @@ class Tile(object):
     def load(self):
         """Parse cache coordinates from UTFGrid
 
-        Consume json-decoded UTFGrid data from MechanicalSoup browser.
+        Consume json-decoded UTFGrid data from browser.
         Calculate waypoint coordinates and fill caches' location.
 
         Geocaching.com UTFGrids do not follow UTFGrid specification [2]
