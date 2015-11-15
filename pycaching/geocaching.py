@@ -140,7 +140,7 @@ class Geocaching(object):
         """Returns the name of curently logged user or None, if no user is logged in."""
 
         login_page = login_page or self._request(self._urls["login_page"], login_check=False)
-        assert isinstance(login_page, bs4.BeautifulSoup)
+        assert hasattr(login_page, "find") and callable(login_page.find)
 
         logging.debug("Checking for already logged user.")
         try:
@@ -150,8 +150,6 @@ class Geocaching(object):
 
     def search(self, point, limit=float("inf")):
         """Returns a generator object of caches around some point."""
-
-        assert isinstance(point, Point)
 
         logging.info("Searching at {}".format(point))
 
@@ -201,6 +199,8 @@ class Geocaching(object):
             start_index += 1
 
     def _search_get_page(self, point, start_index):
+
+        assert hasattr(point, "format") and callable(point.format)
         logging.debug("Loading page from start_index {}".format(start_index))
 
         if start_index == 0:
