@@ -4,6 +4,9 @@
 import unittest
 import pycaching
 import itertools
+import tempfile
+import os
+import json
 from geopy.distance import great_circle
 from pycaching import Geocaching, Point, Rectangle
 from pycaching.errors import NotLoggedInException, LoginFailedException, PMOnlyException
@@ -84,7 +87,7 @@ class TestLoginOperations(unittest.TestCase):
     def test_login(self):
         with self.subTest("bad username"):
             with self.assertRaises(LoginFailedException):
-                self.g.login("", "")
+                self.g.login("0", "0")
 
         with self.subTest("good username"):
             self.g.login(_username, _password)
@@ -94,7 +97,7 @@ class TestLoginOperations(unittest.TestCase):
 
         with self.subTest("bad username automatic logout"):
             with self.assertRaises(LoginFailedException):
-                self.g.login("", "")
+                self.g.login("0", "0")
 
     def test_get_logged_user(self):
         self.g.login(_username, _password)
@@ -105,6 +108,68 @@ class TestLoginOperations(unittest.TestCase):
         self.g.logout()
         self.assertIsNone(self.g.get_logged_user())
 
+    def test_load_credentials(self):
+        filename_backup = self.g._credentials_file
+        credentials = {"username": _username, "password": _password}
+        empty_valid_json = {}
+        nonsense_str = b"ss{}ef"        
+
+        with self.subTest("Try to load nonexistent file from current directory"):
+            self.g._credentials_file = "this_file_doesnt_exist.json"
+            with self.assertRaises(LoginFailedException):
+                username, password = self.g._load_credentials()
+
+        with self.subTest("Try to load valid credentials from current directory"):
+            valid = tempfile.NamedTemporaryFile(suffix='.json', prefix='gc_cred_valid_', dir='./', delete=False)
+            valid.write(json.dumps(credentials).encode())
+            valid.close()
+            self.g._credentials_file = os.path.basename(valid.name)
+            username, password = self.g._load_credentials()
+            self.assertEqual(_username, username)
+            self.assertEqual(_password, password)
+        try:
+            os.remove(valid.name)
+        except:
+            pass
+
+        with self.subTest("Try to load empty file from current directory"):
+            empty = tempfile.NamedTemporaryFile(suffix='.json', prefix='gc_cred_empty_', dir='./', delete=False)
+            empty.write(json.dumps(empty_valid_json).encode())
+            empty.close()
+            self.g._credentials_file = os.path.basename(empty.name)
+            with self.assertRaises(LoginFailedException):
+                username, password = self.g._load_credentials()
+        try:
+            os.remove(empty.name)
+        except:
+            pass
+
+        with self.subTest("Try to load nonsense file from current directory"):
+            nonsense = tempfile.NamedTemporaryFile(suffix='.json', prefix='gc_cred_nonsense_', dir='./', delete=False)
+            nonsense.write(nonsense_str)
+            nonsense.close()
+            self.g._credentials_file = os.path.basename(nonsense.name)
+            with self.assertRaises(LoginFailedException):
+                username, password = self.g._load_credentials()
+        try:
+            os.remove(nonsense.name)
+        except:
+            pass
+
+        with self.subTest("Try to load valid credentials from home directory"):
+            home_file = tempfile.NamedTemporaryFile(suffix='.json', prefix='gc_cred_', dir=os.path.expanduser("~"), delete=False)
+            home_file.write(json.dumps(credentials).encode())
+            home_file.close()
+            self.g._credentials_file = os.path.basename(home_file.name)
+            username, password = self.g._load_credentials()
+            self.assertEqual(_username, username)
+            self.assertEqual(_password, password)
+        try:
+            os.remove(home_file.name)
+        except:
+            pass
+
+        self.g._credentials_file = filename_backup
 
 class TestShortcuts(unittest.TestCase):
 
