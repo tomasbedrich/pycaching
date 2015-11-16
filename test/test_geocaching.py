@@ -116,7 +116,7 @@ class TestLoginOperations(unittest.TestCase):
 
         with self.subTest("Try to load nonexistent file from current directory"):
             self.g._credentials_file = "this_file_doesnt_exist.json"
-            with self.assertRaises(LoginFailedException):
+            with self.assertRaises(FileNotFoundError):
                 username, password = self.g._load_credentials()
 
         with self.subTest("Try to load valid credentials from current directory"):
@@ -127,34 +127,25 @@ class TestLoginOperations(unittest.TestCase):
             username, password = self.g._load_credentials()
             self.assertEqual(_username, username)
             self.assertEqual(_password, password)
-        try:
-            os.remove(valid.name)
-        except:
-            pass
+        os.remove(valid.name)
 
         with self.subTest("Try to load empty file from current directory"):
             empty = tempfile.NamedTemporaryFile(suffix='.json', prefix='gc_cred_empty_', dir='./', delete=False)
             empty.write(json.dumps(empty_valid_json).encode())
             empty.close()
             self.g._credentials_file = os.path.basename(empty.name)
-            with self.assertRaises(LoginFailedException):
+            with self.assertRaises(KeyError):
                 username, password = self.g._load_credentials()
-        try:
-            os.remove(empty.name)
-        except:
-            pass
+        os.remove(empty.name)
 
         with self.subTest("Try to load nonsense file from current directory"):
             nonsense = tempfile.NamedTemporaryFile(suffix='.json', prefix='gc_cred_nonsense_', dir='./', delete=False)
             nonsense.write(nonsense_str)
             nonsense.close()
             self.g._credentials_file = os.path.basename(nonsense.name)
-            with self.assertRaises(LoginFailedException):
+            with self.assertRaises(ValueError):
                 username, password = self.g._load_credentials()
-        try:
-            os.remove(nonsense.name)
-        except:
-            pass
+        os.remove(nonsense.name)
 
         with self.subTest("Try to load valid credentials from home directory"):
             home_file = tempfile.NamedTemporaryFile(suffix='.json', prefix='gc_cred_', dir=os.path.expanduser("~"), delete=False)
@@ -164,10 +155,7 @@ class TestLoginOperations(unittest.TestCase):
             username, password = self.g._load_credentials()
             self.assertEqual(_username, username)
             self.assertEqual(_password, password)
-        try:
-            os.remove(home_file.name)
-        except:
-            pass
+        os.remove(home_file.name)
 
         self.g._credentials_file = filename_backup
 
