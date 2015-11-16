@@ -56,7 +56,16 @@ class Geocaching(object):
 
         Downloads the relevant cookies to keep the user logged in."""
         if not username or not password:
-            username, password = self._load_credentials()
+            try:
+                username, password = self._load_credentials()
+            except FileNotFoundError:
+                raise LoginFailedException("Credentials file not found and no username and password is given")
+            except ValueError:
+                raise LoginFailedException("Wrong format of credentials file, error when parsing JSON")
+            except KeyError:
+                raise LoginFailedException("Credentials file, doesnt contain username and password")
+            except IOError:
+                raise LoginFailedException("Credentials file reading error")  
 
         logging.info("Logging in...")
         login_page = self._request(self._urls["login_page"], login_check=False)
@@ -105,24 +114,19 @@ class Geocaching(object):
 
         Tries to find credentials file. If exists, loads it"""
         credentials_file = self._credentials_file
-        try:
+
+        if path.isfile(credentials_file):
+            logging.info("Loading credentials file from current directory")
+        else:
+            credentials_file = path.join(path.expanduser("~"), self._credentials_file)
             if path.isfile(credentials_file):
-                logging.info("Loading credentials file .gc_credentials")
+                logging.info("Loading credentials file form home directory")
             else:
-                credentials_file = path.join(path.expanduser("~"), self._credentials_file)
-                if path.isfile(credentials_file):
-                    logging.info("Loading credentials file .gc_credentials form home directory")
-                else:
-                    raise LoginFailedException("Cannot login without credentials or file .gc_credentials")
-            with open(credentials_file, 'r') as file:
-                credentials = json.load(file)
-                return credentials["username"], credentials["password"]
-        except ValueError:
-            raise LoginFailedException("Wrong format of .gc_credentials, error when parsing JSON")
-        except KeyError:
-            raise LoginFailedException("File .gc_credentials, doesnt contain username and password")
-        except IOError:
-            raise LoginFailedException("File .gc_credentials reading error")    
+                raise FileNotFoundError("Credentials file isn't in current directory or in home directory")
+        with open(credentials_file, 'r') as file:
+            credentials = json.load(file)
+            return credentials["username"], credentials["password"]
+  
 
     def logout(self):
         """Logs out the user.
