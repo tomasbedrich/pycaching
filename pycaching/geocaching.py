@@ -42,7 +42,8 @@ class Geocaching(object):
         :param method: HTTP method to use.
         :param expect: Expected type of data (either `soup`, `json` or `raw`).
         :param login_check: Whether to check if user is logged in or not.
-        :param kwargs: Passed to :func:`requests.request` as is.
+        :param kwargs: Passed to `requests.request
+            <http://docs.python-requests.org/en/latest/api/#requests.request>`_ as is.
         """
         # check login unless explicitly turned off
         if login_check and self._logged_in is False:
@@ -70,7 +71,7 @@ class Geocaching(object):
 
         If username or password is not set, try to load credentials from file. Then load login page
         and do some checks about currently logged user. As a last thing post the login form and
-        check result. Raise :class:`LoginFailedException` if something fails.
+        check result. Raise :class:`.LoginFailedException` if something fails.
         """
         if not username or not password:
             try:
@@ -163,7 +164,7 @@ class Geocaching(object):
     def get_logged_user(self, login_page=None):
         """Return the name of currently logged user.
 
-        :param login_page: :class:`bs4.BeautifulSoup` object containing already loaded page.
+        :param login_page: :class:`.bs4.BeautifulSoup` object containing already loaded page.
         :returns: User's name or `None`, if no user is logged in.
         """
         login_page = login_page or self._request(self._urls["login_page"], login_check=False)
@@ -179,7 +180,7 @@ class Geocaching(object):
         """Return a generator of caches around some point.
 
         Search for caches around some point by loading search pages and parsing the data from these
-        pages. Yield :class:`Cache` objects filled with data from search page. You can provide limit
+        pages. Yield :class:`.Cache` objects filled with data from search page. You can provide limit
         as a convinient way to stop generator after certain number of caches.
 
         :param point: Search center point.
@@ -268,12 +269,12 @@ class Geocaching(object):
     def search_quick(self, area, *, strict=False, zoom=None):
         """Return a generator of caches in some area.
 
-        Area is converted to map tiles, each tile is then loaded and :class:`Cache` objects are then
+        Area is converted to map tiles, each tile is then loaded and :class:`.Cache` objects are then
         created from its blocks.
 
         :param strict: Whether to return caches strictly in the `area` and discard the outside ones.
         :param zoom: Zoom level of tiles. You can also specify it manually, otherwise it is
-            automatically determined for whole :class:`Area` to fit into one :class:`Tile`. Higher
+            automatically determined for whole :class:`.Area` to fit into one :class:`.Tile`. Higher
             zoom level is more precise, but requires more tiles to be loaded.
         """
         logging.info("Searching quick in {}".format(area))
@@ -293,23 +294,23 @@ class Geocaching(object):
     # add some shortcuts ------------------------------------------------------
 
     def geocode(self, location):
-        """Return a :class:`Point` object from geocoded location."""
+        """Return a :class:`.Point` object from geocoded location."""
         return Point.from_location(self, location)
 
     def get_cache(self, wp):
-        """Return a :class:`Cache` object by its waypoint."""
+        """Return a :class:`.Cache` object by its waypoint."""
         return Cache(self, wp)
 
     def get_trackable(self, tid):
-        """Return a :class:`Trackable` object by its trackable ID."""
+        """Return a :class:`.Trackable` object by its trackable ID."""
         return Trackable(self, tid)
 
     def post_log(self, wp, text, type=LogType.found_it, date=datetime.date.today()):
         """Post a log for cache.
 
         :param wp: Cache waypoint.
-        :param text: :class:`Log` text.
-        :param type: Type of log (enum :class:`log.Type`).
+        :param text: :class:`.Log` text.
+        :param type: Type of log (enum :class:`.log.Type`).
         :param date: Date of cache visit.
         """
         l = Log(type=type, text=text, visited=date)
@@ -320,10 +321,10 @@ class Geocaching(object):
 
     @deprecated
     def load_cache(self, wp):
-        """Return a :class:`Cache` object by its waypoint."""
+        """Return a :class:`.Cache` object by its waypoint."""
         return self.get_cache(wp)
 
     @deprecated
     def load_trackable(self, tid):
-        """Return a :class:`Trackable` object by its trackable ID."""
+        """Return a :class:`.Trackable` object by its trackable ID."""
         return self.get_trackable(tid)

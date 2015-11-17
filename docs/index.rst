@@ -1,7 +1,15 @@
 .. include:: ../README.rst
+    :end-before: _installation:
+
+
+Documentation contents
+===============================================================================
+
 
 .. toctree::
-    :hidden:
     :maxdepth: 2
 
+    quickstart
     api
+    contributing
+    appendix

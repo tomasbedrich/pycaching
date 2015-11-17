@@ -54,8 +54,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'pycaching'
-copyright = '2015, Tomáš Bedřich'
-author = 'Tomáš Bedřich'
+copyright = '2015, pycaching contributors'
+author = 'pycaching contributors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
