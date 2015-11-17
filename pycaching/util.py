@@ -98,7 +98,7 @@ def get_possible_attributes():
     from bs4 import BeautifulSoup
 
     try:
-        page = BeautifulSoup(requests.get(_attributes_url).text)
+        page = BeautifulSoup(requests.get(_attributes_url).text, "html.parser")
     except requests.exceptions.ConnectionError as e:
         raise errors.Error("Cannot load attributes page.") from e
 
