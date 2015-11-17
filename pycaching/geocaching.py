@@ -76,15 +76,15 @@ class Geocaching(object):
             try:
                 username, password = self._load_credentials()
             except FileNotFoundError as e:
-                raise LoginFailedException("Credentials file not found and"
-                                           "no username and password is given") from e
+                raise LoginFailedException("Credentials file not found and "
+                                           "no username and password is given.") from e
             except ValueError as e:
-                raise LoginFailedException("Wrong format of credentials file") from e
+                raise LoginFailedException("Wrong format of credentials file.") from e
             except KeyError as e:
-                raise LoginFailedException("Credentials file doesn't"
-                                           "contain username and password") from e
+                raise LoginFailedException("Credentials file doesn't "
+                                           "contain username and password.") from e
             except IOError as e:
-                raise LoginFailedException("Credentials file reading error") from e
+                raise LoginFailedException("Credentials file reading error.") from e
 
         logging.info("Logging in...")
         login_page = self._request(self._urls["login_page"], login_check=False)
@@ -125,15 +125,21 @@ class Geocaching(object):
             return
         else:
             self.logout()
-            raise LoginFailedException(
-                "Cannot login to the site (probably wrong username or password).")
+            raise LoginFailedException("Cannot login to the site "
+                                       "(probably wrong username or password).")
 
     def _load_credentials(self):
-        """Tries to load credentials
+        """Load credentials from file.
 
-        Tries to find credentials file. If exists, loads it"""
+        Find credentials file in either current directory or user's home directory. If exists, load
+        it as a JSON and returns credentials from it.
+
+        :returns: Tuple of username and password loaded from file.
+        :raises: FileNotFoundError
+        """
         credentials_file = self._credentials_file
 
+        # find the location of a file
         if path.isfile(credentials_file):
             logging.info("Loading credentials file from current directory")
         else:
@@ -141,15 +147,15 @@ class Geocaching(object):
             if path.isfile(credentials_file):
                 logging.info("Loading credentials file form home directory")
             else:
-                raise FileNotFoundError(
-                    "Credentials file isn't in current directory or in home directory")
-        with open(credentials_file, 'r') as file:
-            credentials = json.load(file)
+                raise FileNotFoundError("Credentials file not found in current nor home directory.")
+
+        # load contents
+        with open(credentials_file, "r") as f:
+            credentials = json.load(f)
             return credentials["username"], credentials["password"]
 
     def logout(self):
         """Log out the user for this instance."""
-
         logging.info("Logging out.")
         self._logged_in = False
         self._session = requests.Session()
@@ -160,7 +166,6 @@ class Geocaching(object):
         :param login_page: :class:`bs4.BeautifulSoup` object containing already loaded page.
         :returns: User's name or `None`, if no user is logged in.
         """
-
         login_page = login_page or self._request(self._urls["login_page"], login_check=False)
         assert hasattr(login_page, "find") and callable(login_page.find)
 
@@ -180,7 +185,6 @@ class Geocaching(object):
         :param point: Search center point.
         :param limit: Maximum number of caches to generate.
         """
-
         logging.info("Searching at {}".format(point))
 
         start_index = 0
@@ -235,7 +239,6 @@ class Geocaching(object):
         :param start_index: Determines the page. If start_index is greater than zero, this method
             will use AJAX andpoint which is much faster.
         """
-
         assert hasattr(point, "format") and callable(point.format)
         logging.debug("Loading page from start_index {}".format(start_index))
 
