@@ -58,14 +58,14 @@ class Geocaching(object):
         if not username or not password:
             try:
                 username, password = self._load_credentials()
-            except FileNotFoundError:
-                raise LoginFailedException("Credentials file not found and no username and password is given")
-            except ValueError:
-                raise LoginFailedException("Wrong format of credentials file, error when parsing JSON")
-            except KeyError:
-                raise LoginFailedException("Credentials file, doesnt contain username and password")
-            except IOError:
-                raise LoginFailedException("Credentials file reading error")  
+            except FileNotFoundError as e:
+                raise LoginFailedException("Credentials file not found and no username and password is given") from e
+            except ValueError as e:
+                raise LoginFailedException("Wrong format of credentials file, error when parsing JSON") from e
+            except KeyError as e:
+                raise LoginFailedException("Credentials file, doesn't contain username and password") from e
+            except IOError as e:
+                raise LoginFailedException("Credentials file reading error") from e
 
         logging.info("Logging in...")
         login_page = self._request(self._urls["login_page"], login_check=False)
@@ -126,7 +126,6 @@ class Geocaching(object):
         with open(credentials_file, 'r') as file:
             credentials = json.load(file)
             return credentials["username"], credentials["password"]
-  
 
     def logout(self):
         """Logs out the user.
