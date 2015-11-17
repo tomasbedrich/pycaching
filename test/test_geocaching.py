@@ -4,9 +4,9 @@
 import unittest
 import pycaching
 import itertools
-import tempfile
 import os
 import json
+from tempfile import NamedTemporaryFile
 from geopy.distance import great_circle
 from pycaching import Geocaching, Point, Rectangle
 from pycaching.errors import NotLoggedInException, LoginFailedException, PMOnlyException
@@ -112,52 +112,62 @@ class TestLoginOperations(unittest.TestCase):
         filename_backup = self.g._credentials_file
         credentials = {"username": _username, "password": _password}
         empty_valid_json = {}
-        nonsense_str = b"ss{}ef"        
+        nonsense_str = b"ss{}ef"
 
         with self.subTest("Try to load nonexistent file from current directory"):
             self.g._credentials_file = "this_file_doesnt_exist.json"
             with self.assertRaises(FileNotFoundError):
                 username, password = self.g._load_credentials()
 
+        # each of the following subtests consists of:
+        # 1. creating tempfile with some contents and **closing it**
+        # 3. doing some tests (will reopen tempfile)
+        # 4. removing tempfile (whether the subtest passed or not)
+
         with self.subTest("Try to load valid credentials from current directory"):
-            valid = tempfile.NamedTemporaryFile(suffix='.json', prefix='gc_cred_valid_', dir='./', delete=False)
-            valid.write(json.dumps(credentials).encode())
-            valid.close()
-            self.g._credentials_file = os.path.basename(valid.name)
-            username, password = self.g._load_credentials()
-            self.assertEqual(_username, username)
-            self.assertEqual(_password, password)
-        os.remove(valid.name)
+            try:
+                with NamedTemporaryFile(dir='.', delete=False) as valid:
+                    valid.write(json.dumps(credentials).encode())
+                self.g._credentials_file = os.path.basename(valid.name)
+                username, password = self.g._load_credentials()
+                self.assertEqual(_username, username)
+                self.assertEqual(_password, password)
+            finally:
+                os.remove(valid.name)
 
         with self.subTest("Try to load empty file from current directory"):
-            empty = tempfile.NamedTemporaryFile(suffix='.json', prefix='gc_cred_empty_', dir='./', delete=False)
-            empty.write(json.dumps(empty_valid_json).encode())
-            empty.close()
-            self.g._credentials_file = os.path.basename(empty.name)
-            with self.assertRaises(KeyError):
-                username, password = self.g._load_credentials()
-        os.remove(empty.name)
+            try:
+                with NamedTemporaryFile(dir='.', delete=False) as empty:
+                    empty.write(json.dumps(empty_valid_json).encode())
+                self.g._credentials_file = os.path.basename(empty.name)
+                with self.assertRaises(KeyError):
+                    username, password = self.g._load_credentials()
+            finally:
+                os.remove(empty.name)
 
         with self.subTest("Try to load nonsense file from current directory"):
-            nonsense = tempfile.NamedTemporaryFile(suffix='.json', prefix='gc_cred_nonsense_', dir='./', delete=False)
-            nonsense.write(nonsense_str)
-            nonsense.close()
-            self.g._credentials_file = os.path.basename(nonsense.name)
-            with self.assertRaises(ValueError):
-                username, password = self.g._load_credentials()
-        os.remove(nonsense.name)
+            try:
+                with NamedTemporaryFile(dir='.', delete=False) as nonsense:
+                    nonsense.write(nonsense_str)
+                self.g._credentials_file = os.path.basename(nonsense.name)
+                with self.assertRaises(ValueError):
+                    username, password = self.g._load_credentials()
+            finally:
+                os.remove(nonsense.name)
 
         with self.subTest("Try to load valid credentials from home directory"):
-            home_file = tempfile.NamedTemporaryFile(suffix='.json', prefix='gc_cred_', dir=os.path.expanduser("~"), delete=False)
-            home_file.write(json.dumps(credentials).encode())
-            home_file.close()
-            self.g._credentials_file = os.path.basename(home_file.name)
-            username, password = self.g._load_credentials()
-            self.assertEqual(_username, username)
-            self.assertEqual(_password, password)
-        os.remove(home_file.name)
+            try:
+                with NamedTemporaryFile(dir=os.path.expanduser("~"), delete=False) as home_file:
+                    home_file.write(json.dumps(credentials).encode())
+                self.g._credentials_file = os.path.basename(home_file.name)
+                username, password = self.g._load_credentials()
+                self.assertEqual(_username, username)
+                self.assertEqual(_password, password)
+            finally:
+                os.remove(home_file.name)
 
         self.g._credentials_file = filename_backup
+
 
 class TestShortcuts(unittest.TestCase):
 
