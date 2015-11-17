@@ -4,7 +4,9 @@ import logging
 import datetime
 import requests
 import bs4
+import json
 from urllib.parse import urljoin
+from os import path
 from pycaching.cache import Cache, Type, Size
 from pycaching.log import Log, Type as LogType
 from pycaching.geo import Point
@@ -21,6 +23,7 @@ class Geocaching(object):
         "search":            "play/search",
         "search_more":       "play/search/more-results",
     }
+    _credentials_file = ".gc_credentials"
 
     def __init__(self):
         self._logged_in = False
@@ -48,10 +51,21 @@ class Geocaching(object):
         except requests.exceptions.RequestException as e:
             raise Error("Cannot load page: {}".format(url)) from e
 
-    def login(self, username, password):
+    def login(self, username=None, password=None):
         """Logs the user in.
 
         Downloads the relevant cookies to keep the user logged in."""
+        if not username or not password:
+            try:
+                username, password = self._load_credentials()
+            except FileNotFoundError as e:
+                raise LoginFailedException("Credentials file not found and no username and password is given") from e
+            except ValueError as e:
+                raise LoginFailedException("Wrong format of credentials file, error when parsing JSON") from e
+            except KeyError as e:
+                raise LoginFailedException("Credentials file, doesn't contain username and password") from e
+            except IOError as e:
+                raise LoginFailedException("Credentials file reading error") from e
 
         logging.info("Logging in...")
         login_page = self._request(self._urls["login_page"], login_check=False)
@@ -94,6 +108,24 @@ class Geocaching(object):
             self.logout()
             raise LoginFailedException(
                 "Cannot login to the site (probably wrong username or password).")
+
+    def _load_credentials(self):
+        """Tries to load credentials
+
+        Tries to find credentials file. If exists, loads it"""
+        credentials_file = self._credentials_file
+
+        if path.isfile(credentials_file):
+            logging.info("Loading credentials file from current directory")
+        else:
+            credentials_file = path.join(path.expanduser("~"), self._credentials_file)
+            if path.isfile(credentials_file):
+                logging.info("Loading credentials file form home directory")
+            else:
+                raise FileNotFoundError("Credentials file isn't in current directory or in home directory")
+        with open(credentials_file, 'r') as file:
+            credentials = json.load(file)
+            return credentials["username"], credentials["password"]
 
     def logout(self):
         """Logs out the user.

@@ -7,7 +7,7 @@ from pycaching.trackable import Trackable  # NOQA
 from pycaching.geo import Point, Rectangle  # NOQA
 
 
-def login(username, password):
+def login(username=None, password=None):
     """Logs the user in. A shortcut for Geocaching().login()."""
     g = Geocaching()
     g.login(username, password)
