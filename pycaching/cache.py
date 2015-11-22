@@ -450,7 +450,7 @@ class Cache(object):
 
         :type: :class:`str`
         """
-        return self._logbook_token
+        return self.__logbook_token
 
     @_logbook_token.setter
     def _logbook_token(self, logbook_token):
