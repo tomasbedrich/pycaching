@@ -19,6 +19,7 @@ _attributes_url = "http://www.geocaching.com/about/icons.aspx"
 def lazy_loaded(func):
     """Decorator providing lazy loading. Used by Cache and Trackable."""
 
+    @functools.wraps(func)
     def wrapper(*args, **kwargs):
         self = args[0]
         try:
