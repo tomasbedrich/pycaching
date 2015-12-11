@@ -837,11 +837,11 @@ class Size(enum.Enum):
     def from_string(cls, name):
         """Return a cache size from its human readable name.
 
-        :raise ValueError: If cache type cannot be determined.
+        :raise ValueError: If cache size cannot be determined.
         """
         name = name.strip().lower()
 
         try:
             return cls(name)
         except ValueError as e:
-            raise errors.ValueError("Unknown cache type '{}'.".format(name)) from e
+            raise errors.ValueError("Unknown cache size '{}'.".format(name)) from e
