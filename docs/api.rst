@@ -37,8 +37,13 @@ Cache
 Logs
 -------------------------------------------------------------------------------
 
-.. automodule:: pycaching.log
+.. autoclass:: pycaching.log.Log
    :members:
+
+.. autoclass:: pycaching.log.Type
+   :members:
+   :undoc-members:
+   :inherited-members:
 
 
 Trackables

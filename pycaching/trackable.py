@@ -8,6 +8,7 @@ _type = type
 
 
 class Trackable(object):
+    """Represents a trackable with its properties."""
 
     def __init__(self, geocaching, tid, *, name=None, location=None, owner=None,
                  type=None, description=None, goal=None, url=None):
@@ -30,14 +31,20 @@ class Trackable(object):
             self.url = url
 
     def __str__(self):
+        """Return trackable ID."""
         return self.tid
 
     def __eq__(self, other):
+        """Compare trackables by their ID."""
         return self.tid == other.tid
 
     @property
     @lazy_loaded
     def tid(self):
+        """The trackable ID, must start with `TB`.
+
+        :type: :class:`str`
+        """
         return self._tid
 
     @tid.setter
@@ -49,6 +56,10 @@ class Trackable(object):
 
     @property
     def geocaching(self):
+        """A reference to :class:`.Geocaching` used for communicating with geocaching.com.
+
+        :type: :class:`.Geocaching` instance
+        """
         return self._geocaching
 
     @geocaching.setter
@@ -61,6 +72,10 @@ class Trackable(object):
     @property
     @lazy_loaded
     def name(self):
+        """A human readable trackable name.
+
+        :type: :class:`str`
+        """
         return self._name
 
     @name.setter
@@ -71,6 +86,12 @@ class Trackable(object):
     @property
     @lazy_loaded
     def location(self):
+        """The trackable current location.
+
+        Can be either string with location description (eg. "in the hands of someone") or cache URL.
+
+        :type: :class:`str`
+        """
         return self._location
 
     @location.setter
@@ -80,6 +101,10 @@ class Trackable(object):
     @property
     @lazy_loaded
     def goal(self):
+        """The trackable goal.
+
+        :type: :class:`str`
+        """
         return self._goal
 
     @goal.setter
@@ -89,6 +114,10 @@ class Trackable(object):
     @property
     @lazy_loaded
     def description(self):
+        """The trackable long description.
+
+        :type: :class:`str`
+        """
         return self._description
 
     @description.setter
@@ -98,6 +127,10 @@ class Trackable(object):
     @property
     @lazy_loaded
     def owner(self):
+        """The trackable owner.
+
+        :type: :class:`str`
+        """
         return self._owner
 
     @owner.setter
@@ -107,6 +140,13 @@ class Trackable(object):
     @property
     @lazy_loaded
     def type(self):
+        """The trackable type.
+
+        A type depends on the trackable icon. It can be either "Travel Bug Dog Tag" or specific
+            geocoin name, eg. "Adventure Race Hracholusky 2015 Geocoin".
+
+        :type: :class:`str`
+        """
         return self._type
 
     @type.setter
@@ -114,7 +154,14 @@ class Trackable(object):
         self._type = type.strip()
 
     def load(self):
-        """Loads details from trackable page."""
+        """Load all possible details about the trackable.
+
+        .. note::
+           This method is called automatically when you access a property which isn't yet filled in
+           (so-called "lazy loading"). You don't have to call it explicitly.
+
+        :raise LoadError: If trackable loading fails (probably because of not existing cache).
+        """
 
         # pick url based on what info we have right now
         if hasattr(self, "url"):
