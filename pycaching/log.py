@@ -10,6 +10,7 @@ _type = type
 
 
 class Log(object):
+    """Represents a log record with its properties."""
 
     def __init__(self, *, type=None, text=None, visited=None, author=None):
         if type is not None:
@@ -22,10 +23,17 @@ class Log(object):
             self.author = author
 
     def __str__(self):
+        """Return log text."""
         return self.text
 
     @property
     def type(self):
+        """The log type.
+
+        :setter: Set a log type. If :class:`str` is passed, then :meth:`.log.Type.from_string`
+            is used and its return value is stored as a type.
+        :type: :class:`.log.Type`
+        """
         return self._type
 
     @type.setter
@@ -36,6 +44,10 @@ class Log(object):
 
     @property
     def text(self):
+        """The log text.
+
+        :type: :class:`str`
+        """
         return self._text
 
     @text.setter
@@ -45,6 +57,12 @@ class Log(object):
 
     @property
     def visited(self):
+        """The log date.
+
+        :setter: Set a log date. If :class:`str` is passed, then :meth:`.util.parse_date`
+            is used and its return value is stored as a date.
+        :type: :class:`datetime.date`
+        """
         return self._visited
 
     @visited.setter
@@ -58,6 +76,10 @@ class Log(object):
 
     @property
     def author(self):
+        """The log author.
+
+        :type: :class:`str`
+        """
         return self._author
 
     @author.setter
@@ -66,6 +88,11 @@ class Log(object):
 
 
 class Type(enum.Enum):
+    """Enum of possible log types.
+
+    Values are human readable log types.
+    """
+
     found_it = "found it"
     didnt_find_it = "didn't find it"
     note = "write note"
@@ -95,7 +122,10 @@ class Type(enum.Enum):
 
     @classmethod
     def from_string(cls, name):
-        """Returns log type from its human readable name"""
+        """Return a log type from its human readable name.
+
+        :raise ValueError: If log type cannot be determined.
+        """
         name = name.strip().lower()
 
         try:
