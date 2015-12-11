@@ -58,3 +58,10 @@ Geo utilities
 
 .. automodule:: pycaching.geo
    :members: Point, Rectangle
+
+
+Errors
+-------------------------------------------------------------------------------
+
+.. automodule:: pycaching.errors
+   :members:

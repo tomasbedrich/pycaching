@@ -53,12 +53,12 @@ def deprecated(func):
 
 
 def rot13(text):
-    """Returns a text encoded by rot13 cipher."""
+    """Return a text encoded by rot13 cipher."""
     return str.translate(text, _rot13codeTable)
 
 
 def parse_date(raw):
-    """Returns parsed date."""
+    """Return a parsed date."""
     raw = raw.strip()
     patterns = ("%Y-%m-%d", "%Y/%m/%d", "%m/%d/%Y", "%d/%m/%Y",
                 "%d.%m.%Y", "%d/%b/%Y", "%d.%b.%Y", "%b/%d/%Y", "%d %b %y")
@@ -73,6 +73,7 @@ def parse_date(raw):
 
 
 def format_date(date, user_date_format):
+    """Format a date according to user_date_format."""
     # parse user format
     date_format = user_date_format.lower()
     date_format = re.split("(\W+)", date_format)
@@ -90,7 +91,7 @@ def format_date(date, user_date_format):
 
 
 def get_possible_attributes():
-    """Returns dict of all possible attributes parsed from Groundspeak's website."""
+    """Return a dict of all possible attributes parsed from Groundspeak's website."""
 
     # imports are here not to slow down other parts of program which normally
     # doesn't use this method
