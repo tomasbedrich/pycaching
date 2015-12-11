@@ -40,7 +40,7 @@ class Geocaching(object):
 
         :param str url: Request target.
         :param str method: HTTP method to use.
-        :param str expect: Expected type of data (either `soup`, `json` or `raw`).
+        :param str expect: Expected type of data (either :code:`soup`, :code:`json` or :code:`raw`).
         :param bool login_check: Whether to check if user is logged in or not.
         :param kwargs: Passed to `requests.request
             <http://docs.python-requests.org/en/latest/api/#requests.request>`_ as is.
@@ -168,7 +168,7 @@ class Geocaching(object):
         """Return the name of currently logged user.
 
         :param .bs4.BeautifulSoup login_page: Object containing already loaded page.
-        :return: User's name or `None`, if no user is logged in.
+        :return: User's name or :code:`None`, if no user is logged in.
         """
         login_page = login_page or self._request(self._urls["login_page"], login_check=False)
         assert hasattr(login_page, "find") and callable(login_page.find)

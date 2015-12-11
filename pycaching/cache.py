@@ -155,7 +155,7 @@ class Cache(object):
 
     @property
     def wp(self):
-        """The cache waypoint, must start with `GC`.
+        """The cache waypoint, must start with :code:`GC`.
 
         :type: :class:`str`
         """
@@ -239,7 +239,7 @@ class Cache(object):
     def state(self):
         """The cache status.
 
-        `True` if cache is enabled, `False` if cache is disabled.
+        :code:`True` if cache is enabled, :code:`False` if cache is disabled.
 
         :type: :class:`bool`
         """
@@ -254,7 +254,7 @@ class Cache(object):
     def found(self):
         """The cache found status.
 
-        `True` if cache is found by current user, `False` if not.
+        :code:`True` if cache is found by current user, :code:`False` if not.
 
         :type: :class:`bool`
         """

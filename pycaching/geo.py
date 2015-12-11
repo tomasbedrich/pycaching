@@ -14,17 +14,16 @@ from pycaching.util import lazy_loaded
 
 
 def to_decimal(deg, min):
-    """Returns a decimal interpretation of coordinate in MinDec format."""
+    """Convert coordinates from degrees minutes to decimal degrees format."""
     return round(deg + min / 60, 5)
 
 
-def to_mindec(decimal):
-    """Returns a DecMin interpretation of coordinate in decimal format."""
-    return int(decimal), round(60 * (decimal - int(decimal)), 3)
-
-
 class Point(geopy.Point):
-    """A point on earth defined by its latitude and longitude and possibly more attributes."""
+    """A point on earth defined by its latitude, longitude and possibly more attributes.
+
+    It is a subclass of `geopy.Point
+    <http://geopy.readthedocs.org/en/latest/index.html#geopy.point.Point>`_.
+    """
 
     def __new__(cls, *args, **kwargs):
         precision = kwargs.pop("precision", None)
@@ -34,6 +33,13 @@ class Point(geopy.Point):
 
     @classmethod
     def from_location(cls, geocaching, location):
+        """Return a :class:`.Point` instance from geocoded location.
+
+        :param .Geocaching geocaching: Reference to :class:`.Geocaching` instance, used to do
+            a geocoding request.
+        :param str location: Location to geocode.
+        :raise GeocodeError: If location cannot be geocoded (not found).
+        """
         res = geocaching._request("api/geocode", params={"q": location}, expect="json")
 
         if res["status"] != "success":
@@ -43,14 +49,16 @@ class Point(geopy.Point):
 
     @classmethod
     def from_string(cls, string):
-        """Parses the coords in Degree Minutes format. Expecting:
+        """Return a :class:`.Point` instance from coordinates in degrees minutes format.
 
-        S 36 51.918 E 174 46.725 or
-        N 6 52.861  W174   43.327
+        This method can handle various malformed formats. Example inputs are:
 
-        Spaces do not matter. Neither does having the degree symbol.
+        - :code:`S 36 51.918 E 174 46.725` or
+        - :code:`N 6 52.861  W174   43.327`
 
-        Returns a geopy.Point instance."""
+        :param str string: Coordinates to parse.
+        :raise ValueError: If string cannot be parsed as coordinates.
+        """
 
         # Make it uppercase for consistency
         coords = string.upper().replace("N", " ").replace("S", " ") \
@@ -81,20 +89,20 @@ class Point(geopy.Point):
 
     @classmethod
     def from_block(cls, block):
+        """Return a new :class:`.Point` instance from :class:`.Block` instance.
+
+        :param Block block: UTFGrid block.
+        """
         return cls.from_tile(block.tile, block.middle_point)
 
     @classmethod
     def from_tile(cls, tile, tile_point=None):
-        """Calculate location from web map tile coordinates
+        """Return a new :class:`.Point` instance from :class:`.Tile` instance.
 
-        Parameter represents a map tile coordinates as specified in
-        Google Maps JavaScript API [1].  Optional parameter point
-        determine position inside the tile, starting from northwest
-        corner. Its x and y coords are in range [0, tile.size].
-        This code is modified from OpenStreetMap Wiki [2].
+        .. seealso:: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
 
-        [1] https://developers.google.com/maps/documentation/javascript/maptypes#MapCoordinates
-        [2] http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+        :param Tile tile: Map tile.
+        :param UTFGridPoint tile_point: Optional point inside a tile (from NW corner).
         """
 
         if tile_point:
@@ -112,12 +120,12 @@ class Point(geopy.Point):
         return p
 
     def to_tile(self, geocaching, zoom):
-        """Calculate web map tile where point is located
+        """Return a new :class:`.Tile` instance where current :class:`.Point` is located.
 
-        Return x, y, z.  If fractions, return x and y as floats.  This
-        code is modified from OpenStreetMap Wiki [1].
+        .. seealso:: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
 
-        [1] http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+        :param .Geocaching geocaching: Reference to :class:`.Geocaching` instance (passed to tile).
+        :param int zoom: Zoom level of newly created tile.
         """
         lat_deg = self.latitude
         lon_deg = self.longitude
@@ -132,24 +140,21 @@ class Point(geopy.Point):
 
 
 class Area:
-    """Geometrical area"""
+    """Geometrical area."""
     pass
 
 
 class Polygon(Area):
-    """Area defined by bordering Point instances"""
+    """Area defined by bordering Point instances."""
 
     def __init__(self, *points):
-        """Define polygon by list of consecutive Points"""
+        """Define polygon by list of consecutive Points."""
         assert len(points) >= 3
         self.points = points
 
     @property
     def bounding_box(self):
-        """Get extreme latitude and longitude values.
-
-        Return Rectangle that contains all points"""
-
+        """Get area's bounding box (:class:`.Rectangle` computed from min and max coordinates)."""
         lats = sorted([p.latitude for p in self.points])
         lons = sorted([p.longitude for p in self.points])
         return Rectangle(Point(min(lats), min(lons)),
@@ -157,19 +162,18 @@ class Polygon(Area):
 
     @property
     def mean_point(self):
-        """Return point with average latitude and longitude of points"""
+        """Return :class:`.Point` with average latitude and longitude of all area's points."""
         x = mean([p.latitude for p in self.points])
         y = mean([p.longitude for p in self.points])
         return Point(x, y)
 
-    @property
-    def diagonal(self):
-        """Return bounding box diagonal"""
-        return self.bounding_box.diagonal
-
     def to_tiles(self, gc, zoom=None):
-        """Return list of tiles covering this area"""
+        """Return list of tiles covering this area.
 
+        :param .Geocaching gc: Reference to :class:`.Geocaching` instance (passed to tiles).
+        :param int zoom: Desired zoom level. If :code:`None`, the `zoom` is coputed for whole area
+            to fit into one tile.
+        """
         corners = self.bounding_box.corners
 
         if not zoom:
@@ -197,12 +201,14 @@ class Polygon(Area):
 
 
 class Rectangle(Polygon):
-    """Upright rectangle"""
+    """Upright rectangle."""
 
     def __init__(self, point_a, point_b):
-        """Create rectangle defined by opposite corners
+        """Create rectangle defined by its corners.
 
-        Parameters point_a and point_b are Point instances."""
+        :param .Point point_a: Top left corner.
+        :param .Point point_b: Bottom right corner.
+        """
 
         assert point_a != point_b, "Corner points cannot be the same"
         self.corners = [point_a, point_b]
@@ -210,14 +216,17 @@ class Rectangle(Polygon):
                        point_b, Point(point_b.latitude, point_a.longitude)]
 
     def __contains__(self, p):
-        """Is point p inside area?"""
+        """Return if the rectangle contains a point.
+
+        :param .Point p: Examined point.
+        """
         lats = sorted([_.latitude for _ in self.points])
         lons = sorted([_.longitude for _ in self.points])
         return min(lats) <= p.latitude <= max(lats) and min(lons) <= p.longitude <= max(lons)
 
     @property
     def diagonal(self):
-        """Return rectangle diagonal"""
+        """Return a lenght of bounding box diagonal in meters as :class:`int`."""
         return geopy.distance.distance(self.corners[0], self.corners[1]).meters
 
 

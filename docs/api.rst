@@ -57,7 +57,16 @@ Geo utilities
 -------------------------------------------------------------------------------
 
 .. automodule:: pycaching.geo
-   :members: Point, Rectangle
+   :members: to_decimal
+
+.. autoclass:: pycaching.geo.Point
+   :members: from_location, from_string
+
+.. autoclass:: pycaching.geo.Polygon
+   :members: bounding_box, mean_point
+
+.. autoclass:: pycaching.geo.Rectangle
+   :members: __contains__, diagonal
 
 
 Errors

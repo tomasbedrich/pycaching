@@ -41,7 +41,7 @@ class Trackable(object):
     @property
     @lazy_loaded
     def tid(self):
-        """The trackable ID, must start with `TB`.
+        """The trackable ID, must start with :code:`TB`.
 
         :type: :class:`str`
         """

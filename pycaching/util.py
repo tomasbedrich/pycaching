@@ -11,7 +11,8 @@ from pycaching import errors
 
 _rot13codeTable = str.maketrans(
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
-    "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM")
+    "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM"
+)
 
 _attributes_url = "http://www.geocaching.com/about/icons.aspx"
 
