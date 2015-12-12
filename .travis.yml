@@ -3,13 +3,14 @@ sudo: false
 
 python:
   - 3.4
+  - 3.5
 
 install:
-  - pip install .
-  - pip install coverage python-coveralls
+  - python3 setup.py build install
+  - pip install python-coveralls
 
 script:
-  nosetests --with-coverage --cover-package=pycaching
+  python3 setup.py lint test
 
 after_success:
   coveralls

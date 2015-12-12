@@ -3,6 +3,7 @@
 import os
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
+from setuptools import Command
 
 
 # see http://fgimian.github.io/blog/2014/04/27/running-nose-tests-with-plugins-using-the-python-setuptools-test-command
@@ -19,9 +20,29 @@ class NoseTestCommand(TestCommand):
         nose.run_exit(argv=["nosetests", "--with-coverage", "--cover-package=pycaching"])
 
 
+class LintCommand(Command):
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        import flake8.main
+        import sys
+        sys.argv = []
+        flake8.main.main()
+
+
 root = os.path.dirname(__file__) or "."
-f = open(os.path.join(root, "README.rst"))
-long_description = f.read()
+
+with open(os.path.join(root, "README.rst")) as f:
+    long_description = f.read()
+
+with open(os.path.join(root, "requirements.txt")) as f:
+    requirements = list(filter(None, (row.strip() for row in f)))
 
 info = {
     "name":                "pycaching",
@@ -35,9 +56,9 @@ info = {
     "description":         "Geocaching.com site crawler. Provides tools for searching, fetching caches and geocoding.",
     "long_description":    long_description,
     "keywords":            ["geocaching", "crawler", "geocache", "cache", "search", "geocode", "travelbug"],
-    "install_requires":    ["requests >= 2.8", "beautifulsoup4 >= 4.4", "geopy >= 1.11"],
-    "setup_requires":      ["nose >= 1.3", "flake8 >= 2.4.0", "coverage >= 3.7"],
-    "cmdclass":            {"test": NoseTestCommand},
+    "install_requires":    requirements,
+    "setup_requires":      ["nose", "flake8", "coverage"],
+    "cmdclass":            {"test": NoseTestCommand, "lint": LintCommand},
 }
 
 setup(**info)
