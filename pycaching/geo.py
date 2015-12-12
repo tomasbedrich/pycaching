@@ -14,17 +14,15 @@ from pycaching.util import lazy_loaded
 
 
 def to_decimal(deg, min):
-    """Returns a decimal interpretation of coordinate in MinDec format."""
+    """Convert coordinates from degrees minutes to decimal degrees format."""
     return round(deg + min / 60, 5)
 
 
-def to_mindec(decimal):
-    """Returns a DecMin interpretation of coordinate in decimal format."""
-    return int(decimal), round(60 * (decimal - int(decimal)), 3)
-
-
 class Point(geopy.Point):
-    """A point on earth defined by its latitude and longitude and possibly more attributes."""
+    """A point on earth defined by its latitude, longitude and possibly more attributes.
+
+    Subclass of `geopy.Point <http://geopy.readthedocs.org/en/latest/index.html#geopy.point.Point>`_.
+    """
 
     def __new__(cls, *args, **kwargs):
         precision = kwargs.pop("precision", None)
@@ -34,6 +32,13 @@ class Point(geopy.Point):
 
     @classmethod
     def from_location(cls, geocaching, location):
+        """Return a :class:`.Point` instance from geocoded location.
+
+        :param .Geocaching geocaching: Reference to :class:`.Geocaching` instance, used to do
+            a geocoding request.
+        :param str location: Location to geocode.
+        :raise GeocodeError: If location cannot be geocoded (not found).
+        """
         res = geocaching._request("api/geocode", params={"q": location}, expect="json")
 
         if res["status"] != "success":
@@ -43,14 +48,16 @@ class Point(geopy.Point):
 
     @classmethod
     def from_string(cls, string):
-        """Parses the coords in Degree Minutes format. Expecting:
+        """Return a :class:`.Point` instance from coordinates in degrees minutes format.
 
-        S 36 51.918 E 174 46.725 or
-        N 6 52.861  W174   43.327
+        This method can handle various malformed formats. Example inputs are:
 
-        Spaces do not matter. Neither does having the degree symbol.
+        - :code:`S 36 51.918 E 174 46.725` or
+        - :code:`N 6 52.861  W174   43.327`
 
-        Returns a geopy.Point instance."""
+        :param str string: Coordinates to parse.
+        :raise ValueError: If string cannot be parsed as coordinates.
+        """
 
         # Make it uppercase for consistency
         coords = string.upper().replace("N", " ").replace("S", " ") \
@@ -81,20 +88,20 @@ class Point(geopy.Point):
 
     @classmethod
     def from_block(cls, block):
+        """Return a new :class:`.Point` instance from :class:`.Block` instance.
+
+        :param Block block: UTFGrid block.
+        """
         return cls.from_tile(block.tile, block.middle_point)
 
     @classmethod
     def from_tile(cls, tile, tile_point=None):
-        """Calculate location from web map tile coordinates
+        """Return a new :class:`.Point` instance from :class:`.Tile` instance.
 
-        Parameter represents a map tile coordinates as specified in
-        Google Maps JavaScript API [1].  Optional parameter point
-        determine position inside the tile, starting from northwest
-        corner. Its x and y coords are in range [0, tile.size].
-        This code is modified from OpenStreetMap Wiki [2].
+        .. seealso:: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
 
-        [1] https://developers.google.com/maps/documentation/javascript/maptypes#MapCoordinates
-        [2] http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+        :param .Tile tile: Map tile.
+        :param .UTFGridPoint tile_point: Optional point inside a tile.
         """
 
         if tile_point:
@@ -112,12 +119,12 @@ class Point(geopy.Point):
         return p
 
     def to_tile(self, geocaching, zoom):
-        """Calculate web map tile where point is located
+        """Return a new :class:`.Tile` instance where current :class:`.Point` is located.
 
-        Return x, y, z.  If fractions, return x and y as floats.  This
-        code is modified from OpenStreetMap Wiki [1].
+        .. seealso:: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
 
-        [1] http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+        :param .Geocaching geocaching: Reference to :class:`.Geocaching` instance (passed to tile).
+        :param int zoom: Zoom level of newly created tile.
         """
         lat_deg = self.latitude
         lon_deg = self.longitude
@@ -132,24 +139,24 @@ class Point(geopy.Point):
 
 
 class Area:
-    """Geometrical area"""
+    """Geometrical area."""
     pass
 
 
 class Polygon(Area):
-    """Area defined by bordering Point instances"""
+    """Area defined by bordering Point instances.
+
+    Subclass of :class:`.Area`.
+    """
 
     def __init__(self, *points):
-        """Define polygon by list of consecutive Points"""
+        """Define polygon by list of consecutive Points."""
         assert len(points) >= 3
         self.points = points
 
     @property
     def bounding_box(self):
-        """Get extreme latitude and longitude values.
-
-        Return Rectangle that contains all points"""
-
+        """Get area's bounding box (:class:`.Rectangle` computed from min and max coordinates)."""
         lats = sorted([p.latitude for p in self.points])
         lons = sorted([p.longitude for p in self.points])
         return Rectangle(Point(min(lats), min(lons)),
@@ -157,19 +164,18 @@ class Polygon(Area):
 
     @property
     def mean_point(self):
-        """Return point with average latitude and longitude of points"""
+        """Return :class:`.Point` with average latitude and longitude of all area's points."""
         x = mean([p.latitude for p in self.points])
         y = mean([p.longitude for p in self.points])
         return Point(x, y)
 
-    @property
-    def diagonal(self):
-        """Return bounding box diagonal"""
-        return self.bounding_box.diagonal
-
     def to_tiles(self, gc, zoom=None):
-        """Return list of tiles covering this area"""
+        """Return list of tiles covering this area.
 
+        :param .Geocaching gc: Reference to :class:`.Geocaching` instance (passed to tiles).
+        :param int zoom: Desired zoom level. If :code:`None`, the `zoom` is coputed for whole area
+            to fit into one tile.
+        """
         corners = self.bounding_box.corners
 
         if not zoom:
@@ -197,12 +203,17 @@ class Polygon(Area):
 
 
 class Rectangle(Polygon):
-    """Upright rectangle"""
+    """Upright rectangle.
+
+    Subclass of :class:`.Polygon`.
+    """
 
     def __init__(self, point_a, point_b):
-        """Create rectangle defined by opposite corners
+        """Create rectangle defined by its corners.
 
-        Parameters point_a and point_b are Point instances."""
+        :param .Point point_a: Top left corner.
+        :param .Point point_b: Bottom right corner.
+        """
 
         assert point_a != point_b, "Corner points cannot be the same"
         self.corners = [point_a, point_b]
@@ -210,26 +221,27 @@ class Rectangle(Polygon):
                        point_b, Point(point_b.latitude, point_a.longitude)]
 
     def __contains__(self, p):
-        """Is point p inside area?"""
+        """Return if the rectangle contains a point.
+
+        :param .Point p: Examined point.
+        """
         lats = sorted([_.latitude for _ in self.points])
         lons = sorted([_.longitude for _ in self.points])
         return min(lats) <= p.latitude <= max(lats) and min(lons) <= p.longitude <= max(lons)
 
     @property
     def diagonal(self):
-        """Return rectangle diagonal"""
+        """Return a lenght of bounding box diagonal in meters as :class:`int`."""
         return geopy.distance.distance(self.corners[0], self.corners[1]).meters
 
 
 class Tile(object):
-    """Geocaching.com UTFGrid tile
+    """UTFGrid map tile.
 
-    Geocaching.com serves so-called UTFGrids [1] on their tile map
-    server. These can be used as information sources to get approximate
-    locations of geocaches in a given area.
-
-    [1] https://github.com/mapbox/utfgrid-spec"""
-
+    Geocaching.com serves so-called `UTFGrids <https://github.com/mapbox/utfgrid-spec>`_ on their
+    tile map server. These can be used as information sources to get approximate locations
+    of geocaches in a given area.
+    """
     max_zoom = 18  # geocaching.com restriction
     size = 64      # UTFGrid implementation (will be checked)
 
@@ -240,12 +252,17 @@ class Tile(object):
     }
 
     def __init__(self, geocaching, x, y, z):
-        """Initialize Tile
+        """Initialize a Tile.
 
-        Parameters x, y and z are integer map tile coordinates as specified in
-        Google Maps JavaScript API [1].
+        Parameters are map tile coordinates as specified in `Google Maps JavaScript API
+        <https://developers.google.com/maps/documentation/javascript/maptypes#MapCoordinates>`_
 
-        [1] https://developers.google.com/maps/documentation/javascript/maptypes#MapCoordinates"""
+        :param .Geocaching geocaching: Reference to :class:`.Geocaching` instance, used for loading
+            a UTFGrid tile.
+        :param int x: Map tile X coordinate.
+        :param int y: Map tile Y coordinate.
+        :param int z: Map tile Z coordinate.
+        """
 
         self.geocaching = geocaching
         self.x = x
@@ -256,25 +273,25 @@ class Tile(object):
     @property
     @lazy_loaded
     def blocks(self):
+        """Return loaded :class:`.Block`s for this tile."""
         return self._blocks.values()
 
     def _download_utfgrid(self, *, get_png=False):
-        """Load UTFGrid tile from geocaching.com
+        """Load UTFGrid tile from geocaching.com.
 
-        It appears to be mandatory to first download map tile (.png
-        file) and only then UTFGrid. However, this is not enforced all
-        the time. There is probably some time limit from previous
-        loading of the same tile and also a general traffic regulator
-        involved. Try first to download grid and if it does not work,
-        get .png first and then try again.
+        It appears to be mandatory to first download map tile (.png file) and only then UTFGrid.
+        However, this is not enforced all the time. There is probably some time limit from previous
+        loading of the same tile and also a general traffic regulator involved. Try first to
+        download grid and if it does not work, get .png and then try it again.
 
-        TODO: It might be useful to store time when tile is last
-        downloaded and act based on that. Logging some statistics (time
-        when tile is loaded + received status code + content length +
-        time spent on request) might help in algorithm design and
-        evaluating if additional traffic from .png loading is tolerable
-        and if this should be done all the time. Requesting for UTFgrid
-        and waiting for 204 response takes also its time."""
+        :param bool get_png: Whether to download .png first.
+        :return dict: JSON with raw tile data.
+        """
+        # TODO: It might be useful to store time when tile is last downloaded and act based on that.
+        # Logging some statistics (time when tile is loaded + received status code + content length
+        # + time spent on request) might help in algorithm design and evaluating if additional
+        # traffic from .png loading is tolerable and if this should be done all the time.
+        # Requesting for UTFgrid and waiting for 204 response takes also its time.
 
         logging.debug("Downloading UTFGrid for {}".format(self))
 
@@ -310,25 +327,19 @@ class Tile(object):
                     return self._download_utfgrid(get_png=True)
 
     def load(self):
-        """Parse cache coordinates from UTFGrid
+        """Load :class:`.Block`s for this tile.
 
-        Consume json-decoded UTFGrid data from browser.
-        Calculate waypoint coordinates and fill caches' location.
-
-        Geocaching.com UTFGrids do not follow UTFGrid specification [2]
-        in grid contents and key values.  List "grid" contains valid
-        code pixels that are individual, but list "keys" contain a list
-        of coordinates as "(x, y)" for points where there are geocaches
-        on the grid.  Code pixels can however be decoded to produce
-        index of coordinate point in list "keys".  Grid resolution is
-        64x64 and coordinates run from northwest corner.  Dictionary
-        "data" has key-value pairs, where keys are same coordinates as
-        previously described and values are lists of dictionaries each
-        containing geocache waypoint code and name in form {"n": name,
-        "i": waypoint}.  Waypoints seem to appear nine times each, if
+        Geocaching.com UTFGrid do not follow `UTFGrid specification
+        <https://github.com/mapbox/utfgrid-spec>`_ in grid contents and key values. List
+        :code:`grid` contains valid code pixels that are individual, but list :code:`keys` contains
+        a list of coordinates as :code:`(x, y)` for points where there are geocaches on the grid.
+        Code pixels can however be decoded to produce index of coordinate point in list
+        :code:`keys`. Grid resolution is 64x64 and coordinates run from NW corner. Dictionary
+        :code:`data` has key-value pairs, where keys are same coordinates as previously described
+        and values are lists of dictionaries each containing geocache waypoint code and name in
+        form :code:`{"n": name, "i": waypoint}`.  Waypoints seem to appear nine times each, if
         the cache is not cut out from edges.
-
-        [2] https://github.com/mapbox/utfgrid-spec"""
+        """
 
         utfgrid = self._download_utfgrid()
 
@@ -368,39 +379,56 @@ class Tile(object):
         logging.debug("Loaded {} blocks to {}".format(len(self._blocks), self))
 
     def precision(self, point=None):
-        """Return (x-axis) coordinate precision for current tile and point"""
+        """Return (x-axis) coordinate precision for current tile.
+
+        :param .Point point: Optional point to increase precision calculation.
+        """
         diam = geopy.distance.ELLIPSOIDS["WGS-84"][0] * 1e3 * 2
         lat_correction = math.cos(math.radians(point.latitude)) if point else 1
         tile_length = math.pi * diam * lat_correction * 2 ** (-self.z)
         return tile_length / self.size
 
     def __eq__(self, other):
+        """Compare tiles by their coordinates and contained :class:`.Geocaching` reference."""
         for attr in ['geocaching', 'x', 'y', 'z']:
             if getattr(self, attr) != getattr(other, attr):
                 return False
         return True
 
     def __str__(self):
+        """Return tile object ID and its coordinates."""
         return "<object Tile, id {}, coords ({}, {}, {})>".format(id(self), self.x, self.y, self.z)
 
 
 UTFGridPoint = namedtuple("UTFGridPoint", "x y")
+"""Point inside a :class:`.Tile`.
+
+Represents Xth row and Yth column in UTFGrid tile from NW corner.
+"""
 
 
 class Block(object):
-
-    """Container for grouped coordinate points in UTFGrid"""
+    """Container for grouped :class:`.UTFGridPoint`s inside a tile"""
 
     # this class can have a lot of instances so use __slots__
     __slots__ = "tile", "cache_wp", "cache_name", "_points", "_xlim", "_ylim", "__weakref__"
 
     instances = []
 
-    # Assume that block points form a N*N matrix in the UTFGrid, or a part of
-    # it. If N cannot be determined automatically, use this fallback value.
+    # Assume that block points form a N*N matrix in the UTFGrid, or a part of it.
+    # If N cannot be determined automatically, use this fallback value.
     size = 3
 
     def __init__(self, tile=None, wp=None, name=None):
+        """Initialize an empty :class:`.Block`.
+
+        Also add the new instance to class-level list of all instances, used for computing the
+        block size.
+
+        :param .Tile tile: Base map tile.
+        :param str wp: Waypoint of :class:`.Cache` represented by this block.
+        :param str wp: Human readable name of :class:`.Cache` represented by this block.
+        """
         self.tile = tile
         self.cache_wp = wp
         self.cache_name = name
@@ -409,7 +437,7 @@ class Block(object):
 
     @classmethod
     def determine_block_size(cls):
-        """Compute average block size from all block points of all instances"""
+        """Update the class-level block size from the data of all instances."""
 
         # remove invalid instances
         cls.instances = list(filter(lambda i: i(), cls.instances))
@@ -424,7 +452,11 @@ class Block(object):
 
     @property
     def points(self):
-        """Set of individual points in grid block"""
+        """Individual points in grid block.
+
+        :setter: Set new points and internally update X, Y limits.
+        :type: :class:`set`
+        """
         return self._points
 
     @points.setter
@@ -435,37 +467,50 @@ class Block(object):
         self.update(values)
 
     def add(self, point):
-        """Add UTFGridPoint to grid block"""
+        """Add a point to this block.
+
+        :param .UTFGridPoint point: Point to add.
+        """
         point = UTFGridPoint(*point)
         self._points.add(point)
         self._update_limits(point)
 
     def update(self, points):
-        """Update points with the union of existing and given points"""
+        """Union poins in current block with given points.
+
+        :param list point: List of :class:`.UTFGridPoint`s to union with existing block points.
+        """
         for point in set(points):
             self.add(point)
 
     def _update_limits(self, point):
+        """Update limits used for determining block middle point.
+
+        :param .UTFGridPoint point: Point used to update limits.
+        """
         self._xlim = min(self._xlim[0], point.x), max(self._xlim[1], point.x)
         self._ylim = min(self._ylim[0], point.y), max(self._ylim[1], point.y)
 
     @property
     def middle_point(self):
-        """Get middle point of this block
+        """A middle point of this block.
 
-        The points form a rectangular matrix, whose maximum size is
-        self.size ** 2, but it can be smaller if the matrix is at the
-        edge of UTFGrid. Investigate block and return x, y coordinates
-        of uncut square block middle point."""
+        The points form a rectangular matrix, whose maximum size is :code:`self.size ** 2`, but it
+        can be smaller if the matrix is at the edge of UTFGrid. This method threat the block
+        as uncut square to determine its middle point.
+
+        :type: :class:`.UTFGridPoint`
+        """
         self._check_block()
-        x = mean(self._get_corrected_limits(self._xlim))
-        y = mean(self._get_corrected_limits(self._ylim))
+        x = mean(self._get_corrected_limits(*self._xlim))
+        y = mean(self._get_corrected_limits(*self._ylim))
         return UTFGridPoint(x, y)
 
     def _check_block(self):
-        """Check if block points are valid
+        """Check if block is valid.
 
-        Throw Error if block is not entirely filled with points or larger than expeced."""
+        :raise .BadBlockError: If block is not entirely filled with points or larger than expeced.
+        """
 
         # check for missing points in rectangle
         for x in range(self._xlim[0], self._xlim[1] + 1):
@@ -479,14 +524,16 @@ class Block(object):
             if block_size > self.size:
                 raise BadBlockError("Block is larger than expected.")
 
-    def _get_corrected_limits(self, limits):
-        """Calculate corrected limits for a block
+    def _get_corrected_limits(self, lim_min, lim_max):
+        """Calculate corrected limits for a block (works for both, X and Y limits).
 
-        If the block is at the edge of UTFgrid, minimum or maximum x, y
-        values for these points fall outside current grid size. This is
-        intentional."""
+        If the block is at the edge of UTFgrid, minimum or maximum x, y values for these points
+        fall outside current grid size. This is intentional.
 
-        lim_min, lim_max = limits
+        :param int lim_min: Lower limit.
+        :param int lim_max: Higher limit.
+        :return tuple: Pair of corrected values of (lim_min, lim_max).
+        """
 
         # if block has normal size in this axis, there is no need to fix limits
         if lim_max - lim_min + 1 == self.size:

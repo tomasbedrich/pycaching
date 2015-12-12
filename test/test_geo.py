@@ -8,7 +8,7 @@ from os import path
 from geopy.distance import great_circle
 from pycaching import Geocaching, Cache
 from pycaching.geo import Point, Polygon, Rectangle, Tile, UTFGridPoint, Block
-from pycaching.geo import to_decimal, to_mindec
+from pycaching.geo import to_decimal
 from pycaching.errors import GeocodeError, BadBlockError
 
 from test.test_geocaching import _username, _password
@@ -152,9 +152,6 @@ class TestPolygon(unittest.TestCase):
             self.assertEqual(mp.latitude, -8.0)
         with self.subTest("longitude"):
             self.assertEqual(mp.longitude, -23.0)
-
-    def test_diagonal(self):
-        self.assertAlmostEqual(self.p.diagonal, 15174552.821484847)
 
 
 class TestRectangle(unittest.TestCase):
@@ -397,16 +394,14 @@ class TestBlock(unittest.TestCase):
             self.b.points = points
 
             with self.subTest("{} points, X axis".format(i)):
-                self.assertEqual(self.b._get_corrected_limits(self.b._xlim), ref_xlim)
+                self.assertEqual(self.b._get_corrected_limits(*self.b._xlim), ref_xlim)
 
             with self.subTest("{} points, Y axis".format(i)):
-                self.assertEqual(self.b._get_corrected_limits(self.b._ylim), ref_ylim)
+                self.assertEqual(self.b._get_corrected_limits(*self.b._ylim), ref_ylim)
 
 
 class TestModule(unittest.TestCase):
 
-    def test_coord_conversion(self):
+    def test_to_decimal(self):
         self.assertEqual(to_decimal(49, 43.850), 49.73083)
         self.assertEqual(to_decimal(13, 22.905), 13.38175)
-        self.assertEqual(to_mindec(13.38175), (13, 22.905))
-        self.assertEqual(to_mindec(49.73083), (49, 43.850))

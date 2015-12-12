@@ -1,10 +1,11 @@
-=================================
+===================================================================================================
 pycaching - Geocaching for Python
-=================================
+===================================================================================================
 
---------
+.. _features:
+
 Features
---------
+===================================================================================================
 
 -  **login** to Geocaching.com
 -  **search** caches
@@ -12,21 +13,20 @@ Features
    - normal search (unlimited number of caches from any point)
    - quick search (all caches inside some area)
 
--  **load cache** and its details
+-  **get cache** and its details
 
-   -  normal loading (loads all details)
-   -  quick loading (loads just basic info very quickly)
-   -  lazy loading (create cache object and load info on demand)
+   -  normal loading (can load all details)
+   -  quick loading (can load just basic info but very quickly)
    -  load logbook for given cache
 
+-  **get trackable** details by tracking code
 -  **post log** to cache logbook
--  **load trackable** details by tracking code
 -  **geocode** given location
 
+.. _installation:
 
-------------
 Installation
-------------
+===================================================================================================
 
 Stable version - using pip:
 
@@ -51,20 +51,31 @@ Pycaching has following requirements:
   geopy>=1.11
 
 
--------------
-Example usage
--------------
+Examples
+===================================================================================================
 
 Login
-~~~~~
+---------------------------------------------------------------------------------------------------
+
+Simly call ``pycaching.login`` method and it will do all things for you.
 
 .. code:: python
 
     import pycaching
     geocaching = pycaching.login("user", "pass")
 
+If you won't provide an username or password, pycaching will try to load
+``.gc_credentials`` file from current directory or home folder. It will try to
+parse it as JSON and use the keys ``username`` and ``password`` from that file
+as login credentials.
+
+.. code:: python
+
+    import pycaching
+    geocaching = pycaching.login()  # assume the .gc_credentials file is presented
+
 Load a cache details
-~~~~~~~~~~~~~~~~~~~~
+---------------------------------------------------------------------------------------------------
 
 .. code:: python
 
@@ -100,17 +111,17 @@ Or its trackables:
         print(trackable.name)
 
 Post a log to cache
-~~~~~~~~~~~~~~~~~~~
+---------------------------------------------------------------------------------------------------
 
 .. code:: python
 
-    geocaching.post_log("GC1PAR2", "Found cache in the rain. Nice Place, TFTC!")
+    geocaching.post_log("GC1PAR2", "Found cache in the rain. Nice place, TFTC!")
 
 It is also possible to call post_log on ``Cache`` object, but you would have
 to create ``Log`` object manually and pass it to this method.
 
 Search for all traditional caches around
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------------------------------------------------------------------------
 
 .. code:: python
 
@@ -128,7 +139,7 @@ returns a generator object, which would fetch the caches forever in case
 of simple loop.
 
 Geocode adress and search around
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------------------------------------------------------------------------
 
 .. code:: python
 
@@ -138,7 +149,7 @@ Geocode adress and search around
         print(cache.name)
 
 Find caches with their approximate locations in some area
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------------------------------------------------------------------------
 
 .. code:: python
 
@@ -151,20 +162,20 @@ Find caches with their approximate locations in some area
 
 
 Load a trackable details
-~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------------------------------------------------------------------------
 
 .. code:: python
 
     trackable = geocaching.get_trackable("TB3ZGT2")
     print(trackable.name, trackable.goal, trackable.description, trackable.location)
 
+.. _appendix:
 
---------
 Appendix
---------
+===================================================================================================
 
 Legal notice
-~~~~~~~~~~~~
+---------------------------------------------------------------------------------------------------
 
 Be sure to read `Geocaching.com's terms of
 use <http://www.geocaching.com/about/termsofuse.aspx>`__. By using this
@@ -174,7 +185,7 @@ the data you really need, nothing more. This software is provided "as
 is" and I am not responsible for any damage possibly caused by it.
 
 Inspiration
-~~~~~~~~~~~
+---------------------------------------------------------------------------------------------------
 
 Original version was inspired by these packages:
 
@@ -183,16 +194,13 @@ Original version was inspired by these packages:
 
 Although the new version was massively rewritten, I'd like to thank to their authors.
 
-Author
-~~~~~~
+Authors
+---------------------------------------------------------------------------------------------------
 
-| Tomáš Bedřich
-| `tbedrich.cz <http://tbedrich.cz>`__
-| ja@tbedrich.cz
+Authors of this project are `all contributors <https://github.com/tomasbedrich/pycaching/graphs/contributors>`__.
+Maintainer is `Tomáš Bedřich <http://tbedrich.cz>`__.
 
-Thanks to `all contributors <https://github.com/tomasbedrich/pycaching/graphs/contributors>`__!
-
-------------------------------------------------------------------------------------
+.. _build_status:
 
 |Build Status| |Coverage Status| |PyPI monthly downloads|
 

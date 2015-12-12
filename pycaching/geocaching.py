@@ -16,6 +16,11 @@ from pycaching.util import parse_date, deprecated
 
 
 class Geocaching(object):
+    """Provides some basic methods for communicating with geocaching.com website.
+
+    Provides methods to login and search. There are also some shortcut methods in this class to make
+    working with pycaching more convinient.
+    """
 
     _baseurl = "https://www.geocaching.com"
     _urls = {
@@ -30,6 +35,16 @@ class Geocaching(object):
         self._session = requests.Session()
 
     def _request(self, url, *, expect="soup", method="GET", login_check=True, **kwargs):
+        """
+        Do a HTTP request and return a response based on expect param.
+
+        :param str url: Request target.
+        :param str method: HTTP method to use.
+        :param str expect: Expected type of data (either :code:`soup`, :code:`json` or :code:`raw`).
+        :param bool login_check: Whether to check if user is logged in or not.
+        :param kwargs: Passed to `requests.request
+            <http://docs.python-requests.org/en/latest/api/#requests.request>`_ as is.
+        """
         # check login unless explicitly turned off
         if login_check and self._logged_in is False:
             raise NotLoggedInException("Login is needed.")
@@ -52,20 +67,28 @@ class Geocaching(object):
             raise Error("Cannot load page: {}".format(url)) from e
 
     def login(self, username=None, password=None):
-        """Logs the user in.
+        """Log in the user for this instance of Geocaching.
 
-        Downloads the relevant cookies to keep the user logged in."""
+        If username or password is not set, try to load credentials from file. Then load login page
+        and do some checks about currently logged user. As a last thing post the login form and
+        check result.
+
+        :raise LoginFailedException: If login fails either because of bad credentials or
+            non-existing credentials file.
+        """
         if not username or not password:
             try:
                 username, password = self._load_credentials()
             except FileNotFoundError as e:
-                raise LoginFailedException("Credentials file not found and no username and password is given") from e
+                raise LoginFailedException("Credentials file not found and "
+                                           "no username and password is given.") from e
             except ValueError as e:
-                raise LoginFailedException("Wrong format of credentials file, error when parsing JSON") from e
+                raise LoginFailedException("Wrong format of credentials file.") from e
             except KeyError as e:
-                raise LoginFailedException("Credentials file, doesn't contain username and password") from e
+                raise LoginFailedException("Credentials file doesn't "
+                                           "contain username and password.") from e
             except IOError as e:
-                raise LoginFailedException("Credentials file reading error") from e
+                raise LoginFailedException("Credentials file reading error.") from e
 
         logging.info("Logging in...")
         login_page = self._request(self._urls["login_page"], login_check=False)
@@ -74,11 +97,11 @@ class Geocaching(object):
         logged = self.get_logged_user(login_page)
         if logged:
             if logged == username:
-                logging.info("Already logged as %s.", logged)
+                logging.info("Already logged as {}.".format(logged))
                 self._logged_in = True
                 return
             else:
-                logging.info("Already logged as %s, but want to log in as %s.", logged, username)
+                logging.info("Already logged as {}, but want to log in as {}.".format(logged, username))
                 self.logout()
 
         # continue logging in
@@ -101,20 +124,26 @@ class Geocaching(object):
 
         logging.debug("Checking the result.")
         if self.get_logged_user(after_login_page):
-            logging.info("Logged in successfully as %s.", username)
+            logging.info("Logged in successfully as {}.".format(username))
             self._logged_in = True
             return
         else:
             self.logout()
-            raise LoginFailedException(
-                "Cannot login to the site (probably wrong username or password).")
+            raise LoginFailedException("Cannot login to the site "
+                                       "(probably wrong username or password).")
 
     def _load_credentials(self):
-        """Tries to load credentials
+        """Load credentials from file.
 
-        Tries to find credentials file. If exists, loads it"""
+        Find credentials file in either current directory or user's home directory. If exists, load
+        it as a JSON and return credentials from it.
+
+        :return: Tuple of username and password loaded from file.
+        :raise FileNotFoundError: If credentials file cannot be found.
+        """
         credentials_file = self._credentials_file
 
+        # find the location of a file
         if path.isfile(credentials_file):
             logging.info("Loading credentials file from current directory")
         else:
@@ -122,25 +151,27 @@ class Geocaching(object):
             if path.isfile(credentials_file):
                 logging.info("Loading credentials file form home directory")
             else:
-                raise FileNotFoundError("Credentials file isn't in current directory or in home directory")
-        with open(credentials_file, 'r') as file:
-            credentials = json.load(file)
+                raise FileNotFoundError("Credentials file not found in current nor home directory.")
+
+        # load contents
+        with open(credentials_file, "r") as f:
+            credentials = json.load(f)
             return credentials["username"], credentials["password"]
 
     def logout(self):
-        """Logs out the user.
-
-        Logs out the user by creating new session."""
-
+        """Log out the user for this instance."""
         logging.info("Logging out.")
         self._logged_in = False
         self._session = requests.Session()
 
     def get_logged_user(self, login_page=None):
-        """Returns the name of curently logged user or None, if no user is logged in."""
+        """Return the name of currently logged user.
 
+        :param .bs4.BeautifulSoup login_page: Object containing already loaded page.
+        :return: User's name or :code:`None`, if no user is logged in.
+        """
         login_page = login_page or self._request(self._urls["login_page"], login_check=False)
-        assert isinstance(login_page, bs4.BeautifulSoup)
+        assert hasattr(login_page, "find") and callable(login_page.find)
 
         logging.debug("Checking for already logged user.")
         try:
@@ -149,10 +180,15 @@ class Geocaching(object):
             return None
 
     def search(self, point, limit=float("inf")):
-        """Returns a generator object of caches around some point."""
+        """Return a generator of caches around some point.
 
-        assert isinstance(point, Point)
+        Search for caches around some point by loading search pages and parsing the data from these
+        pages. Yield :class:`.Cache` objects filled with data from search page. You can provide limit
+        as a convinient way to stop generator after certain number of caches.
 
+        :param .geo.Point point: Search center point.
+        :param int limit: Maximum number of caches to generate.
+        """
         logging.info("Searching at {}".format(point))
 
         start_index = 0
@@ -195,12 +231,19 @@ class Geocaching(object):
                 c.hidden = parse_date(row.find(attrs={"data-column": "PlaceDate"}).text)
                 c.author = row.find("span", "owner").text[3:]  # delete "by "
 
-                logging.debug("Cache parsed: %s", c)
+                logging.debug("Cache parsed: {}".format(c))
                 yield c
 
             start_index += 1
 
     def _search_get_page(self, point, start_index):
+        """Return one page for standard search as class:`bs4.BeautifulSoup` object.
+
+        :param .geo.Point point: Search center point.
+        :param int start_index: Determines the page. If start_index is greater than zero, this
+            method will use AJAX andpoint which is much faster.
+        """
+        assert hasattr(point, "format") and callable(point.format)
         logging.debug("Loading page from start_index {}".format(start_index))
 
         if start_index == 0:
@@ -227,6 +270,16 @@ class Geocaching(object):
             return bs4.BeautifulSoup(res["HtmlString"].strip(), "html.parser")
 
     def search_quick(self, area, *, strict=False, zoom=None):
+        """Return a generator of caches in some area.
+
+        Area is converted to map tiles, each tile is then loaded and :class:`.Cache` objects are then
+        created from its blocks.
+
+        :param bool strict: Whether to return caches strictly in the `area` and discard others.
+        :param int zoom: Zoom level of tiles. You can also specify it manually, otherwise it is
+            automatically determined for whole :class:`.Area` to fit into one :class:`.Tile`. Higher
+            zoom level is more precise, but requires more tiles to be loaded.
+        """
         logging.info("Searching quick in {}".format(area))
 
         tiles = area.to_tiles(self, zoom)
@@ -244,18 +297,34 @@ class Geocaching(object):
     # add some shortcuts ------------------------------------------------------
 
     def geocode(self, location):
+        """Return a :class:`.Point` object from geocoded location.
+
+        :param str location: Location to geocode.
+        """
         return Point.from_location(self, location)
 
     def get_cache(self, wp):
-        """Return a cache by its WP."""
+        """Return a :class:`.Cache` object by its waypoint.
+
+        :param str wp: Cache waypoint.
+        """
         return Cache(self, wp)
 
     def get_trackable(self, tid):
-        """Return a cache by its TID."""
+        """Return a :class:`.Trackable` object by its trackable ID.
+
+        :param str wp: Trackable ID.
+        """
         return Trackable(self, tid)
 
     def post_log(self, wp, text, type=LogType.found_it, date=datetime.date.today()):
-        """Post log for cache."""
+        """Post a log for cache.
+
+        :param str wp: Cache waypoint.
+        :param str text: Log text.
+        :param .log.Type type: Type of log.
+        :param datetime.date date: Log date.
+        """
         l = Log(type=type, text=text, visited=date)
         self.get_cache(wp).post_log(l)
 
@@ -264,8 +333,17 @@ class Geocaching(object):
 
     @deprecated
     def load_cache(self, wp):
+        """Return a :class:`.Cache` object by its waypoint.
+
+        .. deprecated:: 3.4
+            Use :meth:`.get_cache` instead.
+        """
         return self.get_cache(wp)
 
     @deprecated
     def load_trackable(self, tid):
+        """Return a :class:`.Trackable` object by its trackable ID.
+
+        .. deprecated:: 3.4
+            Use :meth:`.get_trackable` instead."""
         return self.get_trackable(tid)

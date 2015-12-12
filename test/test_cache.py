@@ -20,7 +20,7 @@ class TestProperties(unittest.TestCase):
                        found=False, size=Size.micro, difficulty=1.5, terrain=5, author="human", hidden=date(2000, 1, 1),
                        attributes={"onehour": True, "kids": False, "available": True}, summary="text",
                        description="long text", hint="rot13", favorites=0, pm_only=False,
-                       log_page_url="/seek/log.aspx?ID=1234567&lcn=1")
+                       _log_page_url="/seek/log.aspx?ID=1234567&lcn=1")
 
     def test___str__(self):
         self.assertEqual(str(self.c), "GC12345")
@@ -136,7 +136,7 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.pm_only, False)
 
     def test_log_page_url(self):
-        self.assertEqual(self.c.log_page_url, "/seek/log.aspx?ID=1234567&lcn=1")
+        self.assertEqual(self.c._log_page_url, "/seek/log.aspx?ID=1234567&lcn=1")
 
 
 class TestMethods(unittest.TestCase):
@@ -241,4 +241,4 @@ class TestMethods(unittest.TestCase):
                 "ctl00$ContentBody$LogBookPanel1$uxDateVisited": date.today().strftime("%m/%d/%Y"),
                 "ctl00$ContentBody$LogBookPanel1$uxLogInfo": test_log_text,
             }
-            mock_request.assert_called_with(self.c.log_page_url, method="POST", data=expected_post_data)
+            mock_request.assert_called_with(self.c._log_page_url, method="POST", data=expected_post_data)
