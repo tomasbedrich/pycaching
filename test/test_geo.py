@@ -394,10 +394,10 @@ class TestBlock(unittest.TestCase):
             self.b.points = points
 
             with self.subTest("{} points, X axis".format(i)):
-                self.assertEqual(self.b._get_corrected_limits(self.b._xlim), ref_xlim)
+                self.assertEqual(self.b._get_corrected_limits(*self.b._xlim), ref_xlim)
 
             with self.subTest("{} points, Y axis".format(i)):
-                self.assertEqual(self.b._get_corrected_limits(self.b._ylim), ref_ylim)
+                self.assertEqual(self.b._get_corrected_limits(*self.b._ylim), ref_ylim)
 
 
 class TestModule(unittest.TestCase):
