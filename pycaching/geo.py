@@ -408,7 +408,7 @@ Represents Xth row and Yth column in UTFGrid tile from NW corner.
 
 
 class Block(object):
-    """Container for grouped :class:`.UTFGridPoint`s inside a tile"""
+    """Container for grouped :class:`.UTFGridPoint`s inside a tile."""
 
     # this class can have a lot of instances so use __slots__
     __slots__ = "tile", "cache_wp", "cache_name", "_points", "_xlim", "_ylim", "__weakref__"

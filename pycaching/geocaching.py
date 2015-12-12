@@ -345,5 +345,6 @@ class Geocaching(object):
         """Return a :class:`.Trackable` object by its trackable ID.
 
         .. deprecated:: 3.4
-            Use :meth:`.get_trackable` instead."""
+            Use :meth:`.get_trackable` instead.
+        """
         return self.get_trackable(tid)

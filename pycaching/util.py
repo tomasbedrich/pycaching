@@ -18,8 +18,7 @@ _attributes_url = "http://www.geocaching.com/about/icons.aspx"
 
 
 def lazy_loaded(func):
-    """Decorator providing lazy loading. Used by Cache and Trackable."""
-
+    """Decorator providing lazy loading."""
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         self = args[0]
@@ -37,10 +36,10 @@ def lazy_loaded(func):
 # copied from:
 # https://wiki.python.org/moin/PythonDecoratorLibrary#Generating_Deprecation_Warnings
 def deprecated(func):
-    """This is a decorator which can be used to mark functions
-    as deprecated. It will result in a warning being emitted
-    when the function is used."""
+    """Decorator to mark fuction as deprecated.
 
+    It will result in a warning being emitted when the function is used.
+    """
     @functools.wraps(func)
     def new_func(*args, **kwargs):
         warnings.warn_explicit(
@@ -93,9 +92,7 @@ def format_date(date, user_date_format):
 
 def get_possible_attributes():
     """Return a dict of all possible attributes parsed from Groundspeak's website."""
-
-    # imports are here not to slow down other parts of program which normally
-    # doesn't use this method
+    # imports are here not to slow down other parts of program which normally doesn't use this method
     from itertools import chain
     import requests
     from bs4 import BeautifulSoup

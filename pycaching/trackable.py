@@ -162,7 +162,6 @@ class Trackable(object):
 
         :raise LoadError: If trackable loading fails (probably because of not existing cache).
         """
-
         # pick url based on what info we have right now
         if hasattr(self, "url"):
             url = self.url
