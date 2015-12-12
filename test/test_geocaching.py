@@ -38,6 +38,7 @@ class TestMethods(unittest.TestCase):
         """Perform search and check found caches"""
         # at time of writing, there were exactly 16 caches in this area + one PM only
         expected_cache_num = 16
+        tolerance = 7
         rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.40))
 
         with self.subTest("normal"):
@@ -50,15 +51,15 @@ class TestMethods(unittest.TestCase):
 
         with self.subTest("strict handling of cache coordinates"):
             res = list(self.g.search_quick(rect, strict=True))
-            self.assertLess(len(res), expected_cache_num + 5)
-            self.assertGreater(len(res), expected_cache_num - 5)
+            self.assertLess(len(res), expected_cache_num + tolerance)
+            self.assertGreater(len(res), expected_cache_num - tolerance)
 
         with self.subTest("larger zoom - more precise"):
             res1 = list(self.g.search_quick(rect, strict=True, zoom=15))
             res2 = list(self.g.search_quick(rect, strict=True, zoom=14))
             for res in res1, res2:
-                self.assertLess(len(res), expected_cache_num + 5)
-                self.assertGreater(len(res), expected_cache_num - 5)
+                self.assertLess(len(res), expected_cache_num + tolerance)
+                self.assertGreater(len(res), expected_cache_num - tolerance)
             for c1, c2 in itertools.product(res1, res2):
                 self.assertLess(c1.location.precision, c2.location.precision)
 
