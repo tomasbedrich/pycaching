@@ -38,10 +38,10 @@ class LintCommand(Command):
 
 root = os.path.dirname(__file__) or "."
 
-with open(os.path.join(root, "README.rst")) as f:
+with open(os.path.join(root, "README.rst"), encoding="utf-8") as f:
     long_description = f.read()
 
-with open(os.path.join(root, "requirements.txt")) as f:
+with open(os.path.join(root, "requirements.txt"), encoding="utf-8") as f:
     requirements = list(filter(None, (row.strip() for row in f)))
 
 info = {
@@ -61,4 +61,5 @@ info = {
     "cmdclass":            {"test": NoseTestCommand, "lint": LintCommand},
 }
 
-setup(**info)
+if __name__ == "__main__":
+    setup(**info)

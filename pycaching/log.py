@@ -124,7 +124,7 @@ class Type(enum.Enum):
     def from_string(cls, name):
         """Return a log type from its human readable name.
 
-        :raise ValueError: If log type cannot be determined.
+        :raise .ValueError: If log type cannot be determined.
         """
         name = name.strip().lower()
 

@@ -193,5 +193,5 @@ class TestShortcuts(unittest.TestCase):
         self.assertEqual("Lilagul #2: SwedenHawk Geocoin", t.name)
 
     def test_post_log(self):
-        # I refuse to write 30 lines of tests (mocking etc.) because of simple 2 lines of code
+        # I refuse to write 30 lines of tests (mocking etc.) because of 4 simple lines of code.
         pass

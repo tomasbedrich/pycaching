@@ -73,7 +73,9 @@ class Geocaching(object):
         and do some checks about currently logged user. As a last thing post the login form and
         check result.
 
-        :raise LoginFailedException: If login fails either because of bad credentials or
+        :param str username: User's username or :code:`None` to use data from credentials file.
+        :param str password: User's password or :code:`None` to use data from credentials file.
+        :raise .LoginFailedException: If login fails either because of bad credentials or
             non-existing credentials file.
         """
         if not username or not password:
@@ -139,7 +141,7 @@ class Geocaching(object):
         it as a JSON and return credentials from it.
 
         :return: Tuple of username and password loaded from file.
-        :raise FileNotFoundError: If credentials file cannot be found.
+        :raise .FileNotFoundError: If credentials file cannot be found.
         """
         credentials_file = self._credentials_file
 
@@ -313,18 +315,21 @@ class Geocaching(object):
     def get_trackable(self, tid):
         """Return a :class:`.Trackable` object by its trackable ID.
 
-        :param str wp: Trackable ID.
+        :param str tid: Trackable ID.
         """
         return Trackable(self, tid)
 
-    def post_log(self, wp, text, type=LogType.found_it, date=datetime.date.today()):
+    def post_log(self, wp, text, type=LogType.found_it, date=None):
         """Post a log for cache.
 
         :param str wp: Cache waypoint.
         :param str text: Log text.
         :param .log.Type type: Type of log.
-        :param datetime.date date: Log date.
+        :param datetime.date date: Log date. If set to :code:`None`, :meth:`datetime.date.today`
+            is used instead.
         """
+        if not date:
+            date = datetime.date.today()
         l = Log(type=type, text=text, visited=date)
         self.get_cache(wp).post_log(l)
 

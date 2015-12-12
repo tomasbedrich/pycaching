@@ -37,7 +37,7 @@ class Point(geopy.Point):
         :param .Geocaching geocaching: Reference to :class:`.Geocaching` instance, used to do
             a geocoding request.
         :param str location: Location to geocode.
-        :raise GeocodeError: If location cannot be geocoded (not found).
+        :raise .GeocodeError: If location cannot be geocoded (not found).
         """
         res = geocaching._request("api/geocode", params={"q": location}, expect="json")
 
@@ -56,7 +56,7 @@ class Point(geopy.Point):
         - :code:`N 6 52.861  W174   43.327`
 
         :param str string: Coordinates to parse.
-        :raise ValueError: If string cannot be parsed as coordinates.
+        :raise .ValueError: If string cannot be parsed as coordinates.
         """
 
         # Make it uppercase for consistency
@@ -90,7 +90,7 @@ class Point(geopy.Point):
     def from_block(cls, block):
         """Return a new :class:`.Point` instance from :class:`.Block` instance.
 
-        :param Block block: UTFGrid block.
+        :param .Block block: UTFGrid block.
         """
         return cls.from_tile(block.tile, block.middle_point)
 

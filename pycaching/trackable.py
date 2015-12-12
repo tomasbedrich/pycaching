@@ -160,7 +160,7 @@ class Trackable(object):
            This method is called automatically when you access a property which isn't yet filled in
            (so-called "lazy loading"). You don't have to call it explicitly.
 
-        :raise LoadError: If trackable loading fails (probably because of not existing cache).
+        :raise .LoadError: If trackable loading fails (probably because of not existing cache).
         """
         # pick url based on what info we have right now
         if hasattr(self, "url"):

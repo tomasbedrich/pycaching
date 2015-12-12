@@ -10,6 +10,10 @@ Here you can find an overview of all avaliable classes and methods.
    For example: if you rely on some non-deprecated method in version 3.3, then it's fine to update
    once to 3.4. If the method gets deprecated in 3.4, then it will be removed in 3.5!
 
+.. automodule:: pycaching
+  :members: login
+
+
 Geocaching
 -------------------------------------------------------------------------------
 

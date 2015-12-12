@@ -8,7 +8,12 @@ from pycaching.geo import Point, Rectangle  # NOQA
 
 
 def login(username=None, password=None):
-    """Logs the user in. A shortcut for Geocaching().login()."""
+    """A shortcut for user login.
+
+    Create a :class:`.Geocaching` instance and try to login a user. See :meth:`.Geocaching.login`.
+
+    :return: Created :class:`.Geocaching` instance.
+    """
     g = Geocaching()
     g.login(username, password)
     return g

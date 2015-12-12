@@ -492,8 +492,8 @@ class Cache(object):
            This method is called automatically when you access a property which isn't yet filled in
            (so-called "lazy loading"). You don't have to call it explicitly.
 
-        :raise PMOnlyException: If cache is PM only and current user is basic member.
-        :raise LoadError: If cache loading fails (probably because of not existing cache).
+        :raise .PMOnlyException: If cache is PM only and current user is basic member.
+        :raise .LoadError: If cache loading fails (probably because of not existing cache).
         """
         try:
             # pick url based on what info we have right now
@@ -578,7 +578,7 @@ class Cache(object):
         the only loaded properties are: `name`, `type`, `state`, `size`, `difficulty`, `terrain`,
         `hidden`, `author`, `favorites` and `pm_only`.
 
-        :raise LoadError: If cache loading fails (probably because of not existing cache).
+        :raise .LoadError: If cache loading fails (probably because of not existing cache).
         """
         res = self.geocaching._request("http://tiles01.geocaching.com/map.details", params={
             "i": self.wp
@@ -609,7 +609,7 @@ class Cache(object):
 
         :param int page: Logbook page to load.
         :param int per_page: Logs per page (used to calculate start index).
-        :raise LoadError: If loading fails.
+        :raise .LoadError: If loading fails.
         """
         res = self.geocaching._request("seek/geocache.logbook", params={
             "tkn": self._logbook_token,  # will trigger lazy_loading if needed
@@ -779,7 +779,7 @@ class Type(enum.Enum):
     def from_string(cls, name):
         """Return a cache type from its human readable name.
 
-        :raise ValueError: If cache type cannot be determined.
+        :raise .ValueError: If cache type cannot be determined.
         """
         name = name.replace(" Geocache", "")  # with space!
         name = name.replace(" Cache", "")  # with space!
@@ -837,7 +837,7 @@ class Size(enum.Enum):
     def from_string(cls, name):
         """Return a cache size from its human readable name.
 
-        :raise ValueError: If cache size cannot be determined.
+        :raise .ValueError: If cache size cannot be determined.
         """
         name = name.strip().lower()
 
