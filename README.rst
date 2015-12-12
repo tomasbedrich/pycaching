@@ -2,6 +2,8 @@
 pycaching - Geocaching for Python
 ===================================================================================================
 
+Complete documentation can be found at `Read the Docs <http://pycaching.readthedocs.org/>`_.
+
 .. _features:
 
 Features
