@@ -2,6 +2,22 @@
 
 import os
 from setuptools import setup
+from setuptools.command.test import test as TestCommand
+
+
+# see http://fgimian.github.io/blog/2014/04/27/running-nose-tests-with-plugins-using-the-python-setuptools-test-command
+class NoseTestCommand(TestCommand):
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        # Run nose ensuring that argv simulates running nosetests directly
+        import nose
+        nose.run_exit(argv=["nosetests", "--with-coverage", "--cover-package=pycaching"])
+
 
 root = os.path.dirname(__file__) or "."
 f = open(os.path.join(root, "README.rst"))
@@ -20,7 +36,8 @@ info = {
     "long_description":    long_description,
     "keywords":            ["geocaching", "crawler", "geocache", "cache", "search", "geocode", "travelbug"],
     "install_requires":    ["requests >= 2.8", "beautifulsoup4 >= 4.4", "geopy >= 1.11"],
-    "test_suite":          "test"
+    "setup_requires":      ["nose >= 1.3", "flake8 >= 2.4.0", "coverage >= 3.7"],
+    "cmdclass":            {"test": NoseTestCommand},
 }
 
 setup(**info)

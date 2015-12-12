@@ -30,25 +30,26 @@ Installation
 
 Stable version - using pip:
 
-.. code:: bash
+.. code-block:: bash
 
     pip install pycaching
 
 Dev version - manually from GIT:
 
-.. code:: bash
+.. code-block:: bash
 
     git clone https://github.com/tomasbedrich/pycaching.git
-    pip install ./pycaching
+    cd pycaching
+    pip install .
 
 Pycaching has following requirements:
 
 .. code::
 
-  Python>=3.4
-  requests >= 2.8
-  beautifulsoup4 >= 4.4
-  geopy>=1.11
+    Python>=3.4
+    requests>=2.8
+    beautifulsoup4>=4.4
+    geopy>=1.11
 
 
 Examples
@@ -57,9 +58,9 @@ Examples
 Login
 ---------------------------------------------------------------------------------------------------
 
-Simly call ``pycaching.login`` method and it will do all things for you.
+Simly call :meth:`.login` method and it will do all things for you.
 
-.. code:: python
+.. code-block:: python
 
     import pycaching
     geocaching = pycaching.login("user", "pass")
@@ -69,7 +70,7 @@ If you won't provide an username or password, pycaching will try to load
 parse it as JSON and use the keys ``username`` and ``password`` from that file
 as login credentials.
 
-.. code:: python
+.. code-block:: python
 
     import pycaching
     geocaching = pycaching.login()  # assume the .gc_credentials file is presented
@@ -77,19 +78,19 @@ as login credentials.
 Load a cache details
 ---------------------------------------------------------------------------------------------------
 
-.. code:: python
+.. code-block:: python
 
     cache = geocaching.get_cache("GC1PAR2")
     print(cache.name)  # cache.load() is automatically called
     print(cache.location)  # stored in cache, printed immediately
 
-This uses lazy loading, so the ``Cache`` object is created immediately and the
+This uses lazy loading, so the :class:`.Cache` object is created immediately and the
 page is loaded when needed (accessing the name).
 
 You can use different method of loading cache details. It will be much faster,
 but it will load less details:
 
-.. code:: python
+.. code-block:: python
 
     cache = geocaching.get_cache("GC1PAR2")
     cache.load_quick()  # takes a small while
@@ -98,14 +99,14 @@ but it will load less details:
 
 You can also load a logbook for cache:
 
-.. code:: python
+.. code-block:: python
 
     for log in cache.load_logbook(limit=200):
         print(log.visited, log.type, log.author, log.text)
 
 Or its trackables:
 
-.. code:: python
+.. code-block:: python
 
     for trackable in cache.load_trackables(limit=5):
         print(trackable.name)
@@ -113,17 +114,17 @@ Or its trackables:
 Post a log to cache
 ---------------------------------------------------------------------------------------------------
 
-.. code:: python
+.. code-block:: python
 
     geocaching.post_log("GC1PAR2", "Found cache in the rain. Nice place, TFTC!")
 
-It is also possible to call post_log on ``Cache`` object, but you would have
-to create ``Log`` object manually and pass it to this method.
+It is also possible to call post_log on :class:`.Cache` object, but you would have
+to create :class:`.Log` object manually and pass it to this method.
 
 Search for all traditional caches around
 ---------------------------------------------------------------------------------------------------
 
-.. code:: python
+.. code-block:: python
 
     from pycaching import Point
     from pycaching.cache import Type
@@ -134,14 +135,14 @@ Search for all traditional caches around
         if cache.type == Type.traditional:
             print(cache.name)
 
-Notice the ``limit`` in search function. It is because ``search()``
+Notice the ``limit`` in search function. It is because :meth:`.Geocaching.search`
 returns a generator object, which would fetch the caches forever in case
 of simple loop.
 
 Geocode adress and search around
 ---------------------------------------------------------------------------------------------------
 
-.. code:: python
+.. code-block:: python
 
     point = geocaching.geocode("Prague")
 
@@ -151,7 +152,7 @@ Geocode adress and search around
 Find caches with their approximate locations in some area
 ---------------------------------------------------------------------------------------------------
 
-.. code:: python
+.. code-block:: python
 
     from pycaching import Point, Rectangle
 
@@ -164,7 +165,7 @@ Find caches with their approximate locations in some area
 Load a trackable details
 ---------------------------------------------------------------------------------------------------
 
-.. code:: python
+.. code-block:: python
 
     trackable = geocaching.get_trackable("TB3ZGT2")
     print(trackable.name, trackable.goal, trackable.description, trackable.location)
