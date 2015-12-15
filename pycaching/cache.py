@@ -488,6 +488,11 @@ class Cache(object):
         Use full cache details page. Therefore all possible properties are filled in, but the
         loading is a bit slow.
 
+        If you want to load basic details about a PM only cache, the :class:`.PMOnlyException` is
+        still thrown, but avaliable details are filled in. If you know, that the cache you are
+        loading is PM only, please consider using :meth:`load_quick` as it will load the same
+        details, but quicker.
+
         .. note::
            This method is called automatically when you access a property which isn't yet filled in
            (so-called "lazy loading"). You don't have to call it explicitly.
@@ -509,65 +514,92 @@ class Cache(object):
             raise errors.LoadError("Error in loading cache") from e
 
         # check for PM only caches if using free account
-        if root.find("p", "PMOWarning") is not None:
-            raise errors.PMOnlyException("Premium Members only.")
+        self.pm_only = root.find("p", "PMOWarning") is not None
 
-        cache_details = root.find(id="cacheDetails")
-        attributes_widget, inventory_widget, * \
-            bookmarks_widget = root.find_all("div", "CacheDetailNavigationWidget")
+        cache_details = root.find(id="ctl00_divContentMain") if self.pm_only else root.find(id="cacheDetails")
 
-        # parse raw data
-        wp = root.title.string.split(" ")[0]
-        name = cache_details.find("h2")
-        type = cache_details.find("img").get("src").split(
-            "/")[-1].rsplit(".", 1)[0]  # filename w/o extension
-        author = cache_details("a")[1]
-        hidden = cache_details.find("div", "minorCacheDetails").find_all("div")[1]
-        location = root.find(id="uxLatLon")
-        state = root.find("ul", "OldWarning")
+        # details also avaliable for basic members for PM only caches -----------------------------
+
+        if self.pm_only:
+            # parse from title in format: "cache name (WAYPOINT)"
+            self.wp = cache_details.find("h2").text.split("(")[-1].strip(")")
+
+            name = cache_details.find("h2").text
+            self.name = name.rsplit("(", 1)[0] if self.pm_only else name  # everything before last bracket
+
+            author = root.find(id="ctl00_ContentBody_uxCacheType").text
+            self.author = author[len("A cache by "):]
+
+            size = root.find("p", "PMCacheInfoSpacing")
+
+            # skip first, which is size <img>
+            D_and_T_img = root.find("p", "PMCacheInfoSpacing").find_all("img")[1:]
+
+        else:
+            # parse from <title> - get first word
+            self.wp = root.title.string.split(" ")[0]
+
+            self.name = cache_details.find("h2").text
+
+            self.author = cache_details("a")[1].text
+
+            size = root.find("div", "CacheSize")
+
+            D_and_T_img = root.find("div", "CacheStarLabels").find_all("img")
+
+        size = size.find("img").get("src")  # size img src
+        size = size.split("/")[-1].rsplit(".", 1)[0]  # filename w/o extension
+        self.size = Size.from_filename(size)
+
+        self.difficulty, self.terrain = [float(img.get("alt").split()[0]) for img in D_and_T_img]
+
+        type = cache_details.find("img").get("src")  # type img src
+        type = type.split("/")[-1].rsplit(".", 1)[0]  # filename w/o extension
+        self.type = Type.from_filename(type)
+
+        if self.pm_only:
+            raise errors.PMOnlyException()
+
+        # details not avaliable for basic members for PM only caches ------------------------------
+
+        attributes_widget, inventory_widget, *_ = root.find_all("div", "CacheDetailNavigationWidget")
+
+        hidden = cache_details.find("div", "minorCacheDetails").find_all("div")[1].text
+        self.hidden = parse_date(hidden.split(":")[-1])
+
+        self.location = Point.from_string(root.find(id="uxLatLon").text)
+
+        self.state = root.find("ul", "OldWarning") is None
+
         found = root.find("div", "FoundStatus")
-        D_T = root.find("div", "CacheStarLabels").find_all("img")
-        size = root.find("div", "CacheSize").find("img")
-        attributes_raw = attributes_widget.find_all("img")
-        user_content = root.find_all("div", "UserSuppliedContent")
-        hint = root.find(id="div_hint")
-        favorites = root.find("span", "favorite-value")
+        self.found = found and ("Found It!" or "Attended" in found.text) or False
 
-        # load logbook_token
+        attributes_raw = attributes_widget.find_all("img")
+        attributes_raw = [_.get("src").split("/")[-1].rsplit("-", 1) for _ in attributes_raw]
+
+        self.attributes = {attribute_name: appendix.startswith("yes") for attribute_name, appendix
+                           in attributes_raw if not appendix.startswith("blank")}
+
+        user_content = root.find_all("div", "UserSuppliedContent")
+        self.summary = user_content[0].text
+        self.description = str(user_content[1])
+
+        self.hint = rot13(root.find(id="div_hint").text.strip())
+
+        favorites = root.find("span", "favorite-value")
+        self.favorites = 0 if favorites is None else int(favorites.text)
+
+        self._log_page_url = root.find(id="ctl00_ContentBody_GeoNav_logButton")["href"]
+
         js_content = "\n".join(map(lambda i: i.text, root.find_all("script")))
-        logbook_token = re.findall("userToken\\s*=\\s*'([^']+)'", js_content)[0]
+        self._logbook_token = re.findall("userToken\\s*=\\s*'([^']+)'", js_content)[0]
 
         # if there are some trackables
         if len(inventory_widget.find_all("a")) >= 3:
-            trackable_page_url = inventory_widget.find(
-                id="ctl00_ContentBody_uxTravelBugList_uxViewAllTrackableItems").get("href")[3:]  # has "../" on start
+            trackable_page_url = inventory_widget.find(id="ctl00_ContentBody_uxTravelBugList_uxViewAllTrackableItems")
+            self._trackable_page_url = trackable_page_url.get("href")[3:]  # has "../" on start
         else:
-            trackable_page_url = None
-
-        log_page_url = root.find(id="ctl00_ContentBody_GeoNav_logButton")["href"]
-        # prettify data
-        self.wp = wp
-        self.name = name.text
-        self.type = Type.from_filename(type)
-        self.author = author.text
-        self.hidden = parse_date(hidden.text.split(":")[-1])
-        self.location = Point.from_string(location.text)
-        self.state = state is None
-        self.found = found and ("Found It!" or "Attended" in found.text) or False
-        self.difficulty, self.terrain = [float(_.get("alt").split()[0]) for _ in D_T]
-        self.size = Size.from_filename(size.get("src").split(
-            "/")[-1].rsplit(".", 1)[0])  # filename w/o extension
-        attributes_raw = [_.get("src").split("/")[-1].rsplit("-", 1) for _ in attributes_raw]
-        self.attributes = {attribute_name: appendix.startswith("yes")
-                           for attribute_name, appendix in attributes_raw if not appendix.startswith("blank")}
-        self.summary = user_content[0].text
-        self.description = str(user_content[1])
-        self.hint = rot13(hint.text.strip())
-        self.favorites = 0 if favorites is None else int(favorites.text)
-
-        self._logbook_token = logbook_token
-        self._trackable_page_url = trackable_page_url
-        self._log_page_url = log_page_url
+            self._trackable_page_url = None
 
         logging.debug("Cache loaded: {}".format(self))
 
