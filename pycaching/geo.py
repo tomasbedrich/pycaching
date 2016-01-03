@@ -173,18 +173,15 @@ class Polygon(Area):
         """Return list of tiles covering this area.
 
         :param .Geocaching gc: Reference to :class:`.Geocaching` instance (passed to tiles).
-        :param int zoom: Desired zoom level. If :code:`None`, the `zoom` is coputed for whole area
-            to fit into one tile.
+        :param int zoom: Desired zoom level. If :code:`None`, the `zoom` is computed so that tile
+            width is smallest possible, but greater than area width.
         """
         corners = self.bounding_box.corners
 
         if not zoom:
-            # calculate zoom, where whole area can fit into one tile
-            # TODO this can be done without cycle, just by computing - but it
-            # is too complex, that it is more readable to just try some values
-            for zoom in range(Tile.max_zoom, 1, -1):
-                if corners[0].to_tile(gc, zoom) == corners[1].to_tile(gc, zoom):
-                    break
+            # calculate zoom, where tile width is just above bounding box width
+            d_lon = corners[1].longitude - corners[0].longitude
+            zoom = math.floor(math.log2(360 / d_lon))
 
         # get corner tiles
         nw_tile = corners[0].to_tile(gc, zoom)
