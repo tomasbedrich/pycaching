@@ -72,6 +72,12 @@ If you won't provide an username or password, pycaching will try to load
 parse it as JSON and use the keys ``username`` and ``password`` from that file
 as login credentials.
 
+.. code-block:: json
+
+   # sample .gc_credentials JSON file
+   { "username": "myusername", "password": "mypassword" }
+
+
 .. code-block:: python
 
     import pycaching
