@@ -508,33 +508,35 @@ class Cache(object):
                 root = self.geocaching._request("seek/cache_details.aspx", params={"wp": self._wp})
             else:
                 raise errors.LoadError("Cache lacks info for loading")
-
         except errors.Error as e:
             # probably 404 during cache loading - cache not exists
             raise errors.LoadError("Error in loading cache") from e
 
         # check for PM only caches if using free account
-        self.pm_only = root.find("p", "PMOWarning") is not None
+        self.pm_only = root.find("section", "pmo-banner") is not None
 
         cache_details = root.find(id="ctl00_divContentMain") if self.pm_only else root.find(id="cacheDetails")
 
         # details also avaliable for basic members for PM only caches -----------------------------
 
         if self.pm_only:
-            # parse from title in format: "cache name (WAYPOINT)"
-            self.wp = cache_details.find("h2").text.split("(")[-1].strip(")")
+            self.wp = cache_details.find("li", "li__gccode").text.strip()
 
-            name = cache_details.find("h2").text
-            self.name = name.rsplit("(", 1)[0] if self.pm_only else name  # everything before last bracket
+            self.name = cache_details.find("h1").text.strip()
 
-            author = root.find(id="ctl00_ContentBody_uxCacheType").text
+            author = cache_details.find(id="ctl00_ContentBody_uxCacheBy").text
             self.author = author[len("A cache by "):]
 
-            size = root.find("p", "PMCacheInfoSpacing")
+            # parse cache detail list into a python list
+            details = cache_details.find("ul", "ul__hide-details").text.split("\n")
 
-            # skip first, which is size <img>
-            D_and_T_img = root.find("p", "PMCacheInfoSpacing").find_all("img")[1:]
+            self.difficulty = float(details[2])
 
+            self.terrain = float(details[5])
+
+            self.size = Size.from_string(details[8])
+
+            self.favorites = int(details[11])
         else:
             # parse from <title> - get first word
             self.wp = root.title.string.split(" ")[0]
@@ -547,11 +549,11 @@ class Cache(object):
 
             D_and_T_img = root.find("div", "CacheStarLabels").find_all("img")
 
-        size = size.find("img").get("src")  # size img src
-        size = size.split("/")[-1].rsplit(".", 1)[0]  # filename w/o extension
-        self.size = Size.from_filename(size)
+            size = size.find("img").get("src")  # size img src
+            size = size.split("/")[-1].rsplit(".", 1)[0]  # filename w/o extension
+            self.size = Size.from_filename(size)
 
-        self.difficulty, self.terrain = [float(img.get("alt").split()[0]) for img in D_and_T_img]
+            self.difficulty, self.terrain = [float(img.get("alt").split()[0]) for img in D_and_T_img]
 
         type = cache_details.find("img").get("src")  # type img src
         type = type.split("/")[-1].rsplit(".", 1)[0]  # filename w/o extension
