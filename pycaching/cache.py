@@ -561,6 +561,8 @@ class Cache(object):
             raise errors.PMOnlyException()
 
         # details not avaliable for basic members for PM only caches ------------------------------
+        pm_only_warning = root.find("p", "Warning NoBottomSpacing")
+        self.pm_only = pm_only_warning and ("Premium Member Only" in pm_only_warning.text) or False
 
         attributes_widget, inventory_widget, *_ = root.find_all("div", "CacheDetailNavigationWidget")
 
