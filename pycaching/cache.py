@@ -594,7 +594,7 @@ class Cache(object):
 
         self.location = Point.from_string(root.find(id="uxLatLon").text)
 
-        #find original location if any
+        # find original location if any
         scripts = [s.text for s in root.find_all("script") if "oldLatLng\":" in s.text] or None
         if scripts and len(scripts) > 0:
             old_lat_long = scripts[0].split("oldLatLng\":")[1].split(']')[0].split('[')[1]
