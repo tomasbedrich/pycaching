@@ -594,12 +594,6 @@ class Cache(object):
 
         self.location = Point.from_string(root.find(id="uxLatLon").text)
 
-        # find original location if any
-        scripts = [s.text for s in root.find_all("script") if "oldLatLng\":" in s.text] or None
-        if scripts and len(scripts) > 0:
-            old_lat_long = scripts[0].split("oldLatLng\":")[1].split(']')[0].split('[')[1]
-            self.original_location = Point(old_lat_long)
-
         self.state = root.find("ul", "OldWarning") is None
 
         found = root.find("div", "FoundStatus")
@@ -624,6 +618,10 @@ class Cache(object):
 
         js_content = "\n".join(map(lambda i: i.text, root.find_all("script")))
         self._logbook_token = re.findall("userToken\\s*=\\s*'([^']+)'", js_content)[0]
+        # find original location if any
+        if "oldLatLng\":" in js_content:
+            old_lat_long = js_content.split("oldLatLng\":")[1].split(']')[0].split('[')[1]
+            self.original_location = Point(old_lat_long)
 
         # if there are some trackables
         if len(inventory_widget.find_all("a")) >= 3:
