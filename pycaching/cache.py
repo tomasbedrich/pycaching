@@ -4,6 +4,7 @@ import logging
 import datetime
 import re
 import enum
+from collections import namedtuple
 from pycaching import errors
 from pycaching.geo import Point
 from pycaching.trackable import Trackable
@@ -114,7 +115,7 @@ class Cache(object):
 
         known_kwargs = {"name", "type", "location", "original_location", "state", "found", "size",
                         "difficulty", "terrain", "author", "hidden", "attributes", "summary",
-                        "description", "hint", "favorites", "pm_only", "url", "_logbook_token",
+                        "description", "hint", "favorites", "pm_only", "url", "additional_locations", "_logbook_token",
                         "_trackable_page_url", "_log_page_url"}
 
         for name in known_kwargs:
@@ -237,6 +238,19 @@ class Cache(object):
             raise errors.ValueError(
                 "Passed object is not Point instance nor string containing coordinates.")
         self._original_location = original_location
+
+    @property
+    @lazy_loaded
+    def additional_locations(self):
+        """Any additional locations listed in the cache.
+
+        :setter: store a dictionary of locations using their lookup
+        """
+        return self._additional_locations
+
+    @additional_locations.setter
+    def additional_locations(self, additional_locations):
+        self._additional_locations = additional_locations
 
     @property
     @lazy_loaded
@@ -634,6 +648,9 @@ class Cache(object):
         else:
             self._trackable_page_url = None
 
+        # Additional Waypoints
+        self.additional_locations = parse_additional_waypoints(root)
+
         logging.debug("Cache loaded: {}".format(self))
 
     def load_quick(self):
@@ -805,6 +822,22 @@ class Cache(object):
         post["ctl00$ContentBody$LogBookPanel1$uxLogInfo"] = log.text
 
         self.geocaching._request(self._log_page_url, method="POST", data=post)
+
+
+def parse_additional_waypoints(root):
+    additional_location = namedtuple('AdditionalLocation', ['identifier', 'type', 'location', 'note'])
+    additionals_dict = {}
+    additionals_table = root.find('table', id="ctl00_ContentBody_Waypoints")
+    if additionals_table:
+        additionals_table = additionals_table.find_all("tr")
+        for r1, r2 in zip(additionals_table[1::2], additionals_table[2::2]):
+            columns = r1.find_all("td") + r2.find_all("td")
+            identifier = columns[4].text.strip()
+            type = columns[2].find("img").get("title")
+            loc = Point(columns[6].text.strip())
+            note = columns[10].text.strip()
+            additionals_dict[identifier] = additional_location(identifier, type, loc, note)
+    return additionals_dict
 
 
 class Type(enum.Enum):
