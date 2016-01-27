@@ -233,7 +233,7 @@ class Cache(object):
     def original_location(self, original_location):
         if _type(original_location) is str:
             original_location = Point.from_string(original_location)
-        elif _type(original_location) is not Point:
+        elif _type(original_location) is not Point and original_location is not None:
             raise errors.ValueError(
                 "Passed object is not Point instance nor string containing coordinates.")
         self._original_location = original_location
@@ -622,6 +622,8 @@ class Cache(object):
         if "oldLatLng\":" in js_content:
             old_lat_long = js_content.split("oldLatLng\":")[1].split(']')[0].split('[')[1]
             self.original_location = Point(old_lat_long)
+        else:
+            self.original_location = None
 
         # if there are some trackables
         if len(inventory_widget.find_all("a")) >= 3:
