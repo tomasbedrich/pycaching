@@ -72,13 +72,16 @@ class TestProperties(unittest.TestCase):
             self.assertEqual(self.c.original_location,
                              Point.from_string("S 36 51.918 E 174 46.725"))
 
+        with self.subTest("None type"):
+            self.c.original_location = None
+
         with self.subTest("filter invalid string"):
             with self.assertRaises(PycachingValueError):
                 self.c.original_location = "somewhere"
 
         with self.subTest("filter invalid types"):
             with self.assertRaises(PycachingValueError):
-                self.c.original_location = None
+                self.c.original_location = 123
 
     def test_state(self):
         self.assertEqual(self.c.state, True)
