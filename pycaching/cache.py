@@ -112,9 +112,10 @@ class Cache(object):
         if wp is not None:
             self.wp = wp
 
-        known_kwargs = {"name", "type", "location", "state", "found", "size", "difficulty", "terrain",
-                        "author", "hidden", "attributes", "summary", "description", "hint", "favorites",
-                        "pm_only", "url", "_logbook_token", "_trackable_page_url", "_log_page_url"}
+        known_kwargs = {"name", "type", "location", "original_location", "state", "found", "size",
+                        "difficulty", "terrain", "author", "hidden", "attributes", "summary",
+                        "description", "hint", "favorites", "pm_only", "url", "_logbook_token",
+                        "_trackable_page_url", "_log_page_url"}
 
         for name in known_kwargs:
             if name in kwargs:
@@ -216,6 +217,26 @@ class Cache(object):
             raise errors.ValueError(
                 "Passed object is not Point instance nor string containing coordinates.")
         self._location = location
+
+    @property
+    @lazy_loaded
+    def original_location(self):
+        """The cache original location.
+
+        :setter: Set a cache original location. If :class:`str` is passed, then
+        :meth:`.Point.from_string` is used and its return value is stored as a location.
+        :type: :class:`.Point`
+        """
+        return self._original_location
+
+    @original_location.setter
+    def original_location(self, original_location):
+        if _type(original_location) is str:
+            original_location = Point.from_string(original_location)
+        elif _type(original_location) is not Point and original_location is not None:
+            raise errors.ValueError(
+                "Passed object is not Point instance nor string containing coordinates.")
+        self._original_location = original_location
 
     @property
     @lazy_loaded
@@ -597,6 +618,12 @@ class Cache(object):
 
         js_content = "\n".join(map(lambda i: i.text, root.find_all("script")))
         self._logbook_token = re.findall("userToken\\s*=\\s*'([^']+)'", js_content)[0]
+        # find original location if any
+        if "oldLatLng\":" in js_content:
+            old_lat_long = js_content.split("oldLatLng\":")[1].split(']')[0].split('[')[1]
+            self.original_location = Point(old_lat_long)
+        else:
+            self.original_location = None
 
         # if there are some trackables
         if len(inventory_widget.find_all("a")) >= 3:

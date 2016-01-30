@@ -20,7 +20,7 @@ class TestProperties(unittest.TestCase):
                        found=False, size=Size.micro, difficulty=1.5, terrain=5, author="human", hidden=date(2000, 1, 1),
                        attributes={"onehour": True, "kids": False, "available": True}, summary="text",
                        description="long text", hint="rot13", favorites=0, pm_only=False,
-                       _log_page_url="/seek/log.aspx?ID=1234567&lcn=1")
+                       _log_page_url="/seek/log.aspx?ID=1234567&lcn=1", original_location=Point())
 
     def test___str__(self):
         self.assertEqual(str(self.c), "GC12345")
@@ -63,6 +63,25 @@ class TestProperties(unittest.TestCase):
         with self.subTest("filter invalid types"):
             with self.assertRaises(PycachingValueError):
                 self.c.location = None
+
+    def test_original_location(self):
+        self.assertEqual(self.c.original_location, Point())
+
+        with self.subTest("automatic str conversion"):
+            self.c.original_location = "S 36 51.918 E 174 46.725"
+            self.assertEqual(self.c.original_location,
+                             Point.from_string("S 36 51.918 E 174 46.725"))
+
+        with self.subTest("None type"):
+            self.c.original_location = None
+
+        with self.subTest("filter invalid string"):
+            with self.assertRaises(PycachingValueError):
+                self.c.original_location = "somewhere"
+
+        with self.subTest("filter invalid types"):
+            with self.assertRaises(PycachingValueError):
+                self.c.original_location = 123
 
     def test_state(self):
         self.assertEqual(self.c.state, True)
