@@ -25,7 +25,7 @@ class TestMethods(unittest.TestCase):
 
     def test_search(self):
         with self.subTest("normal"):
-            expected = ["GC41FJC", "GC17E8Y", "GC5ND9F"]
+            expected = ["GC41FJC", "GC17E8Y", "GC5VJ0P"]
             caches = self.g.search(Point(49.733867, 13.397091), 3)
             for cache in caches:
                 self.assertIn(cache.wp, expected)
@@ -43,7 +43,7 @@ class TestMethods(unittest.TestCase):
 
         with self.subTest("normal"):
             res = [c.wp for c in self.g.search_quick(rect)]
-            for wp in ["GC41FJC", "GC17E8Y", "GC5ND9F"]:
+            for wp in ["GC41FJC", "GC17E8Y", "GC383XN"]:
                 self.assertIn(wp, res)
             # but 108 caches larger tile
             self.assertLess(len(res), 130)
