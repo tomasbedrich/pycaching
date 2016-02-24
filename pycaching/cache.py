@@ -115,7 +115,7 @@ class Cache(object):
 
         known_kwargs = {"name", "type", "location", "original_location", "state", "found", "size",
                         "difficulty", "terrain", "author", "hidden", "attributes", "summary",
-                        "description", "hint", "favorites", "pm_only", "url", "additional_locations", "_logbook_token",
+                        "description", "hint", "favorites", "pm_only", "url", "waypoints", "_logbook_token",
                         "_trackable_page_url", "_log_page_url"}
 
         for name in known_kwargs:
@@ -241,16 +241,16 @@ class Cache(object):
 
     @property
     @lazy_loaded
-    def additional_locations(self):
-        """Any additional locations listed in the cache.
+    def waypoints(self):
+        """Any waypoints listed in the cache.
 
         :setter: store a dictionary of locations using their lookup
         """
-        return self._additional_locations
+        return self._waypoints
 
-    @additional_locations.setter
-    def additional_locations(self, additional_locations):
-        self._additional_locations = additional_locations
+    @waypoints.setter
+    def waypoints(self, waypoints):
+        self._waypoints = waypoints
 
     @property
     @lazy_loaded
@@ -649,7 +649,7 @@ class Cache(object):
             self._trackable_page_url = None
 
         # Additional Waypoints
-        self.additional_locations = parse_additional_waypoints(root)
+        self.waypoints = Waypoint.from_html(root)
 
         logging.debug("Cache loaded: {}".format(self))
 
@@ -823,21 +823,37 @@ class Cache(object):
 
         self.geocaching._request(self._log_page_url, method="POST", data=post)
 
+class Waypoint():
+    """Waypoint represents a waypoint to locations related to the cache.
+       This may be a Parking spot, a stage in a multi-cache or similar.
 
-def parse_additional_waypoints(root):
-    additional_location = namedtuple('AdditionalLocation', ['identifier', 'type', 'location', 'note'])
-    additionals_dict = {}
-    additionals_table = root.find('table', id="ctl00_ContentBody_Waypoints")
-    if additionals_table:
-        additionals_table = additionals_table.find_all("tr")
-        for r1, r2 in zip(additionals_table[1::2], additionals_table[2::2]):
-            columns = r1.find_all("td") + r2.find_all("td")
-            identifier = columns[4].text.strip()
-            type = columns[2].find("img").get("title")
-            loc = Point(columns[6].text.strip())
-            note = columns[10].text.strip()
-            additionals_dict[identifier] = additional_location(identifier, type, loc, note)
-    return additionals_dict
+       The object contains:
+          identifier: the unique identifier of the location
+          type: type of waypoint
+          location: waypoint coordinates 
+          note: Information about the waypoint
+    """
+    def __init__(self, id=None, type=None, location=None, note=None):
+        self.identifier = id
+        self.type = type
+        self.location = location
+        self.note = note
+
+    @classmethod
+    def from_html(cls, root):
+        """Return a dictionary of all waypoints found in the page representation"""
+        waypoints_dict = {}
+        waypoints_table = root.find('table', id="ctl00_ContentBody_Waypoints")
+        if waypoints_table:
+            waypoints_table = waypoints_table.find_all("tr")
+            for r1, r2 in zip(waypoints_table[1::2], waypoints_table[2::2]):
+                columns = r1.find_all("td") + r2.find_all("td")
+                identifier = columns[4].text.strip()
+                type = columns[2].find("img").get("title")
+                loc = Point(columns[6].text.strip())
+                note = columns[10].text.strip()
+                waypoints_dict[identifier] = cls(identifier, type, loc, note)
+        return waypoints_dict
 
 
 class Type(enum.Enum):
