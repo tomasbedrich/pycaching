@@ -105,7 +105,7 @@ class Cache(object):
 
         :param .Geocaching geocaching: Reference to :class:`.Geocaching` instance, used for loading
             cache data.
-        :param str wp: Cache waypoint, eg. "GC1PAR2".
+        :param str wp: Cache GC Code, eg. "GC1PAR2".
         :param **kwargs: Other cache properties. For possible keywords, please see class properites.
         """
 
@@ -123,11 +123,11 @@ class Cache(object):
                 setattr(self, name, kwargs[name])
 
     def __str__(self):
-        """Return cache waypoint."""
+        """Return cache GC code."""
         return self._wp  # not to trigger lazy_loading !
 
     def __eq__(self, other):
-        """Compare caches by their waypoint and contained :class:`.Geocaching` reference."""
+        """Compare caches by their GC code and contained :class:`.Geocaching` reference."""
         return self.geocaching == other.geocaching and self.wp == other.wp
 
     @classmethod
@@ -146,7 +146,7 @@ class Cache(object):
     def from_block(cls, block):
         """Return :class:`.Cache` instance from :class:`.Block`.
 
-        Used during quick search. The Cache will have only waypoint, name and approximate location
+        Used during quick search. The Cache will have only GC code, name and approximate location
         filled in.
 
         :param .Block block: Source block
@@ -157,7 +157,7 @@ class Cache(object):
 
     @property
     def wp(self):
-        """The cache waypoint, must start with :code:`GC`.
+        """The cache GC code, must start with :code:`GC`.
 
         :type: :class:`str`
         """
@@ -167,7 +167,7 @@ class Cache(object):
     def wp(self, wp):
         wp = str(wp).upper().strip()
         if not wp.startswith("GC"):
-            raise errors.ValueError("Waypoint '{}' doesn't start with 'GC'.".format(wp))
+            raise errors.ValueError("GC code '{}' doesn't start with 'GC'.".format(wp))
         self._wp = wp
 
     @property
