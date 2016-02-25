@@ -4,7 +4,6 @@ import logging
 import datetime
 import re
 import enum
-from collections import namedtuple
 from pycaching import errors
 from pycaching.geo import Point
 from pycaching.trackable import Trackable
@@ -823,6 +822,7 @@ class Cache(object):
 
         self.geocaching._request(self._log_page_url, method="POST", data=post)
 
+
 class Waypoint():
     """Waypoint represents a waypoint to locations related to the cache.
        This may be a Parking spot, a stage in a multi-cache or similar.
@@ -830,7 +830,7 @@ class Waypoint():
        The object contains:
           identifier: the unique identifier of the location
           type: type of waypoint
-          location: waypoint coordinates 
+          location: waypoint coordinates
           note: Information about the waypoint
     """
     def __init__(self, id=None, type=None, location=None, note=None):
