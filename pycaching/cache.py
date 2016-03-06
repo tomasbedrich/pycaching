@@ -855,6 +855,9 @@ class Waypoint():
                 waypoints_dict[identifier] = cls(identifier, type, loc, note)
         return waypoints_dict
 
+    def __str__(self):
+        return self.identifier
+
 
 class Type(enum.Enum):
     """Enum of possible cache types.
