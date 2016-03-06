@@ -27,6 +27,11 @@ Cache
 .. autoclass:: pycaching.cache.Cache
    :members:
 
+.. autoclass:: pycaching.cache.Waypoint
+   :members:
+   :undoc-members:
+   :inherited-members:
+
 .. autoclass:: pycaching.cache.Type
    :members:
    :undoc-members:

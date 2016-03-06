@@ -243,7 +243,8 @@ class Cache(object):
     def waypoints(self):
         """Any waypoints listed in the cache.
 
-        :setter: store a dictionary of locations using their lookup
+        :setter: Store a dictionary of locations using their lookup.
+        :type: :class:`dict`
         """
         return self._waypoints
 
@@ -824,14 +825,13 @@ class Cache(object):
 
 
 class Waypoint():
-    """Waypoint represents a waypoint to locations related to the cache.
-       This may be a Parking spot, a stage in a multi-cache or similar.
+    """Waypoint represents a waypoint related to the cache. This may be a
+       Parking spot, a stage in a multi-cache or similar.
 
-       The object contains:
-          identifier: the unique identifier of the location
-          type: type of waypoint
-          location: waypoint coordinates
-          note: Information about the waypoint
+       :param str identifier: the unique identifier of the location
+       :param str type: type of waypoint
+       :param Point location: waypoint coordinates
+       :param str note: Information about the waypoint
     """
     def __init__(self, id=None, type=None, location=None, note=None):
         self.identifier = id
