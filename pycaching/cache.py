@@ -560,8 +560,10 @@ class Cache(object):
             self.favorites = int(details[11])
         else:
             # parse from <title> - get first word
-            self.wp = root.title.string.split(" ")[0]
-
+            try:
+                self.wp = root.title.string.split(" ")[0]
+            except:
+                raise errors.LoadError
             self.name = cache_details.find("h2").text
 
             self.author = cache_details("a")[1].text
