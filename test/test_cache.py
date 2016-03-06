@@ -4,7 +4,7 @@ import unittest
 from unittest import mock
 from datetime import date
 from pycaching.errors import ValueError as PycachingValueError, LoadError, PMOnlyException
-from pycaching.cache import Cache, Type, Size
+from pycaching.cache import Cache, Type, Size, Waypoint
 from pycaching.geocaching import Geocaching
 from pycaching.geo import Point
 from pycaching.log import Log, Type as LogType
@@ -20,7 +20,8 @@ class TestProperties(unittest.TestCase):
                        found=False, size=Size.micro, difficulty=1.5, terrain=5, author="human", hidden=date(2000, 1, 1),
                        attributes={"onehour": True, "kids": False, "available": True}, summary="text",
                        description="long text", hint="rot13", favorites=0, pm_only=False,
-                       _log_page_url="/seek/log.aspx?ID=1234567&lcn=1", original_location=Point())
+                       _log_page_url="/seek/log.aspx?ID=1234567&lcn=1", original_location=Point(),
+                       waypoints={})
 
     def test___str__(self):
         self.assertEqual(str(self.c), "GC12345")
@@ -82,6 +83,9 @@ class TestProperties(unittest.TestCase):
         with self.subTest("filter invalid types"):
             with self.assertRaises(PycachingValueError):
                 self.c.original_location = 123
+
+    def test_waypoints(self):
+        self.assertEqual(type(self.c.waypoints), type({}))
 
     def test_state(self):
         self.assertEqual(self.c.state, True)
@@ -261,3 +265,25 @@ class TestMethods(unittest.TestCase):
                 "ctl00$ContentBody$LogBookPanel1$uxLogInfo": test_log_text,
             }
             mock_request.assert_called_with(self.c._log_page_url, method="POST", data=expected_post_data)
+
+
+class TestWaypointProperties(unittest.TestCase):
+
+    def setUp(self):
+        self.w = Waypoint("id", "Parking", Point("N 56° 50.006′ E 13° 56.423′"),
+                          "This is a test")
+
+    def test_id(self):
+        self.assertEqual(self.w.identifier, "id")
+
+    def test_type(self):
+        self.assertEqual(self.w.type, "Parking")
+
+    def test_location(self):
+        self.assertEqual(self.w.location, Point("N 56° 50.006′ E 13° 56.423′"))
+
+    def test_note(self):
+        self.assertEqual(self.w.note, "This is a test")
+
+    def test_str(self):
+        self.assertEqual(str(self.w), "id")
