@@ -281,9 +281,23 @@ class TestWaypointProperties(unittest.TestCase):
 
     def test_location(self):
         self.assertEqual(self.w.location, Point("N 56° 50.006′ E 13° 56.423′"))
+        with self.subTest("automatic str conversion"):
+            self.w.location = "S 36 51.918 E 174 46.725"
+            self.assertEqual(self.w.location, Point.from_string("S 36 51.918 E 174 46.725"))
+
+        with self.subTest("filter invalid string"):
+            with self.assertRaises(PycachingValueError):
+                self.w.location = "somewhere"
+
+        with self.subTest("filter invalid types"):
+            with self.assertRaises(PycachingValueError):
+                self.w.location = None
 
     def test_note(self):
         self.assertEqual(self.w.note, "This is a test")
+        with self.subTest("Setter test"):
+            self.w.note = "This is another test"
+            self.assertEqual(self.w.note, "This is another test")
 
     def test_str(self):
         self.assertEqual(str(self.w), "id")

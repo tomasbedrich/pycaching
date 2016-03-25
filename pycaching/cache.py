@@ -834,10 +834,10 @@ class Waypoint():
        :param str note: Information about the waypoint
     """
     def __init__(self, id=None, type=None, location=None, note=None):
-        self.identifier = id
-        self.type = type
-        self.location = location
-        self.note = note
+        self._identifier = id
+        self._type = type
+        self._location = location
+        self._note = note
 
     @classmethod
     def from_html(cls, root):
@@ -857,6 +857,59 @@ class Waypoint():
 
     def __str__(self):
         return self.identifier
+
+    @property
+    def identifier(self):
+        """The waypoint unique identifier.
+
+        :type: :class:`str`
+        """
+        return self._identifier
+
+    @identifier.setter
+    def identifier(self, identifier):
+        self._identifier = identifier
+
+    @property
+    def type(self):
+        """The waypoint type.
+
+        :type: :class:`str`
+        """
+        return self._type
+
+    @type.setter
+    def type(self, type):
+        self._type = type
+
+    @property
+    def location(self):
+        """The waypoint location.
+
+        :type: :class:`.Point`
+        """
+        return self._location
+
+    @location.setter
+    def location(self, location):
+        if _type(location) is str:
+            location = Point.from_string(location)
+        elif _type(location) is not Point:
+            raise errors.ValueError(
+                "Passed object is not Point instance nor string containing coordinates.")
+        self._location = location
+
+    @property
+    def note(self):
+        """Any additional information about the waypoint.
+
+        :type: :class:`str`
+        """
+        return self._note
+
+    @note.setter
+    def note(self, note):
+        self._note = note
 
 
 class Type(enum.Enum):
