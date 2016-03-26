@@ -104,7 +104,7 @@ class Cache(object):
 
         :param .Geocaching geocaching: Reference to :class:`.Geocaching` instance, used for loading
             cache data.
-        :param str wp: Cache waypoint, eg. "GC1PAR2".
+        :param str wp: Cache GC Code, eg. "GC1PAR2".
         :param **kwargs: Other cache properties. For possible keywords, please see class properites.
         """
 
@@ -114,7 +114,7 @@ class Cache(object):
 
         known_kwargs = {"name", "type", "location", "original_location", "state", "found", "size",
                         "difficulty", "terrain", "author", "hidden", "attributes", "summary",
-                        "description", "hint", "favorites", "pm_only", "url", "_logbook_token",
+                        "description", "hint", "favorites", "pm_only", "url", "waypoints", "_logbook_token",
                         "_trackable_page_url", "_log_page_url"}
 
         for name in known_kwargs:
@@ -122,11 +122,11 @@ class Cache(object):
                 setattr(self, name, kwargs[name])
 
     def __str__(self):
-        """Return cache waypoint."""
+        """Return cache GC code."""
         return self._wp  # not to trigger lazy_loading !
 
     def __eq__(self, other):
-        """Compare caches by their waypoint and contained :class:`.Geocaching` reference."""
+        """Compare caches by their GC code and contained :class:`.Geocaching` reference."""
         return self.geocaching == other.geocaching and self.wp == other.wp
 
     @classmethod
@@ -145,7 +145,7 @@ class Cache(object):
     def from_block(cls, block):
         """Return :class:`.Cache` instance from :class:`.Block`.
 
-        Used during quick search. The Cache will have only waypoint, name and approximate location
+        Used during quick search. The Cache will have only GC code, name and approximate location
         filled in.
 
         :param .Block block: Source block
@@ -156,7 +156,7 @@ class Cache(object):
 
     @property
     def wp(self):
-        """The cache waypoint, must start with :code:`GC`.
+        """The cache GC code, must start with :code:`GC`.
 
         :type: :class:`str`
         """
@@ -166,7 +166,7 @@ class Cache(object):
     def wp(self, wp):
         wp = str(wp).upper().strip()
         if not wp.startswith("GC"):
-            raise errors.ValueError("Waypoint '{}' doesn't start with 'GC'.".format(wp))
+            raise errors.ValueError("GC code '{}' doesn't start with 'GC'.".format(wp))
         self._wp = wp
 
     @property
@@ -237,6 +237,20 @@ class Cache(object):
             raise errors.ValueError(
                 "Passed object is not Point instance nor string containing coordinates.")
         self._original_location = original_location
+
+    @property
+    @lazy_loaded
+    def waypoints(self):
+        """Any waypoints listed in the cache.
+
+        :setter: Store a dictionary of locations using their lookup.
+        :type: :class:`dict`
+        """
+        return self._waypoints
+
+    @waypoints.setter
+    def waypoints(self, waypoints):
+        self._waypoints = waypoints
 
     @property
     @lazy_loaded
@@ -634,6 +648,9 @@ class Cache(object):
         else:
             self._trackable_page_url = None
 
+        # Additional Waypoints
+        self.waypoints = Waypoint.from_html(root)
+
         logging.debug("Cache loaded: {}".format(self))
 
     def load_quick(self):
@@ -805,6 +822,94 @@ class Cache(object):
         post["ctl00$ContentBody$LogBookPanel1$uxLogInfo"] = log.text
 
         self.geocaching._request(self._log_page_url, method="POST", data=post)
+
+
+class Waypoint():
+    """Waypoint represents a waypoint related to the cache. This may be a
+       Parking spot, a stage in a multi-cache or similar.
+
+       :param str identifier: the unique identifier of the location
+       :param str type: type of waypoint
+       :param Point location: waypoint coordinates
+       :param str note: Information about the waypoint
+    """
+    def __init__(self, id=None, type=None, location=None, note=None):
+        self._identifier = id
+        self._type = type
+        self._location = location
+        self._note = note
+
+    @classmethod
+    def from_html(cls, root):
+        """Return a dictionary of all waypoints found in the page representation"""
+        waypoints_dict = {}
+        waypoints_table = root.find('table', id="ctl00_ContentBody_Waypoints")
+        if waypoints_table:
+            waypoints_table = waypoints_table.find_all("tr")
+            for r1, r2 in zip(waypoints_table[1::2], waypoints_table[2::2]):
+                columns = r1.find_all("td") + r2.find_all("td")
+                identifier = columns[4].text.strip()
+                type = columns[2].find("img").get("title")
+                loc = Point(columns[6].text.strip())
+                note = columns[10].text.strip()
+                waypoints_dict[identifier] = cls(identifier, type, loc, note)
+        return waypoints_dict
+
+    def __str__(self):
+        return self.identifier
+
+    @property
+    def identifier(self):
+        """The waypoint unique identifier.
+
+        :type: :class:`str`
+        """
+        return self._identifier
+
+    @identifier.setter
+    def identifier(self, identifier):
+        self._identifier = identifier
+
+    @property
+    def type(self):
+        """The waypoint type.
+
+        :type: :class:`str`
+        """
+        return self._type
+
+    @type.setter
+    def type(self, type):
+        self._type = type
+
+    @property
+    def location(self):
+        """The waypoint location.
+
+        :type: :class:`.Point`
+        """
+        return self._location
+
+    @location.setter
+    def location(self, location):
+        if _type(location) is str:
+            location = Point.from_string(location)
+        elif _type(location) is not Point:
+            raise errors.ValueError(
+                "Passed object is not Point instance nor string containing coordinates.")
+        self._location = location
+
+    @property
+    def note(self):
+        """Any additional information about the waypoint.
+
+        :type: :class:`str`
+        """
+        return self._note
+
+    @note.setter
+    def note(self, note):
+        self._note = note
 
 
 class Type(enum.Enum):

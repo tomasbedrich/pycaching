@@ -4,7 +4,7 @@ import unittest
 from unittest import mock
 from datetime import date
 from pycaching.errors import ValueError as PycachingValueError, LoadError, PMOnlyException
-from pycaching.cache import Cache, Type, Size
+from pycaching.cache import Cache, Type, Size, Waypoint
 from pycaching.geocaching import Geocaching
 from pycaching.geo import Point
 from pycaching.log import Log, Type as LogType
@@ -20,7 +20,8 @@ class TestProperties(unittest.TestCase):
                        found=False, size=Size.micro, difficulty=1.5, terrain=5, author="human", hidden=date(2000, 1, 1),
                        attributes={"onehour": True, "kids": False, "available": True}, summary="text",
                        description="long text", hint="rot13", favorites=0, pm_only=False,
-                       _log_page_url="/seek/log.aspx?ID=1234567&lcn=1", original_location=Point())
+                       _log_page_url="/seek/log.aspx?ID=1234567&lcn=1", original_location=Point(),
+                       waypoints={})
 
     def test___str__(self):
         self.assertEqual(str(self.c), "GC12345")
@@ -82,6 +83,9 @@ class TestProperties(unittest.TestCase):
         with self.subTest("filter invalid types"):
             with self.assertRaises(PycachingValueError):
                 self.c.original_location = 123
+
+    def test_waypoints(self):
+        self.assertEqual(type(self.c.waypoints), type({}))
 
     def test_state(self):
         self.assertEqual(self.c.state, True)
@@ -261,3 +265,50 @@ class TestMethods(unittest.TestCase):
                 "ctl00$ContentBody$LogBookPanel1$uxLogInfo": test_log_text,
             }
             mock_request.assert_called_with(self.c._log_page_url, method="POST", data=expected_post_data)
+
+
+class TestWaypointProperties(unittest.TestCase):
+
+    def setUp(self):
+        self.w = Waypoint("id", "Parking", Point("N 56° 50.006′ E 13° 56.423′"),
+                          "This is a test")
+
+    def test_id(self):
+        with self.subTest("init"):
+            self.assertEqual(self.w.identifier, "id")
+        with self.subTest("setter"):
+            self.w.identifier = "New id"
+            self.assertEqual(self.w.identifier, "New id")
+
+    def test_type(self):
+        with self.subTest("init"):
+            self.assertEqual(self.w.type, "Parking")
+        with self.subTest("setter"):
+            self.w.type = "Physical step"
+            self.assertEqual(self.w.type, "Physical step")
+
+    def test_location(self):
+        with self.subTest("init"):
+            self.assertEqual(self.w.location, Point("N 56° 50.006′ E 13° 56.423′"))
+        with self.subTest("automatic str conversion"):
+            self.w.location = "S 36 51.918 E 174 46.725"
+            self.assertEqual(self.w.location, Point.from_string("S 36 51.918 E 174 46.725"))
+
+        with self.subTest("filter invalid string"):
+            with self.assertRaises(PycachingValueError):
+                self.w.location = "somewhere"
+
+        with self.subTest("filter invalid types"):
+            with self.assertRaises(PycachingValueError):
+                self.w.location = None
+
+    def test_note(self):
+        with self.subTest("init"):
+            self.assertEqual(self.w.note, "This is a test")
+
+        with self.subTest("Setter test"):
+            self.w.note = "This is another test"
+            self.assertEqual(self.w.note, "This is another test")
+
+    def test_str(self):
+        self.assertEqual(str(self.w), "id")
