@@ -274,13 +274,22 @@ class TestWaypointProperties(unittest.TestCase):
                           "This is a test")
 
     def test_id(self):
-        self.assertEqual(self.w.identifier, "id")
+        with self.subTest("init"):
+            self.assertEqual(self.w.identifier, "id")
+        with self.subTest("setter"):
+            self.w.identifier = "New id"
+            self.assertEqual(self.w.identifier, "New id")
 
     def test_type(self):
-        self.assertEqual(self.w.type, "Parking")
+        with self.subTest("init"):
+            self.assertEqual(self.w.type, "Parking")
+        with self.subTest("setter"):
+            self.w.type = "Physical step"
+            self.assertEqual(self.w.type, "Physical step")
 
     def test_location(self):
-        self.assertEqual(self.w.location, Point("N 56° 50.006′ E 13° 56.423′"))
+        with self.subTest("init"):
+            self.assertEqual(self.w.location, Point("N 56° 50.006′ E 13° 56.423′"))
         with self.subTest("automatic str conversion"):
             self.w.location = "S 36 51.918 E 174 46.725"
             self.assertEqual(self.w.location, Point.from_string("S 36 51.918 E 174 46.725"))
@@ -294,7 +303,9 @@ class TestWaypointProperties(unittest.TestCase):
                 self.w.location = None
 
     def test_note(self):
-        self.assertEqual(self.w.note, "This is a test")
+        with self.subTest("init"):
+            self.assertEqual(self.w.note, "This is a test")
+
         with self.subTest("Setter test"):
             self.w.note = "This is another test"
             self.assertEqual(self.w.note, "This is another test")
