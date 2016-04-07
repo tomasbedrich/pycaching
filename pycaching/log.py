@@ -30,16 +30,12 @@ class Log(object):
     def type(self):
         """The log type.
 
-        :setter: Set a log type. If :class:`str` is passed, then :meth:`.log.Type.from_string`
-            is used and its return value is stored as a type.
         :type: :class:`.log.Type`
         """
         return self._type
 
     @type.setter
     def type(self, type):
-        if _type(type) is not Type:
-            type = Type.from_string(type)
         self._type = type
 
     @property
@@ -90,45 +86,48 @@ class Log(object):
 class Type(enum.Enum):
     """Enum of possible log types.
 
-    Values are human readable log types.
+    Values are log type IDs (as used in HTML <option value=XX> on the log page).
+    Also the log images can be found there - https://www.geocaching.com/images/logtypes/[VALUE].png
     """
 
-    found_it = "found it"
-    didnt_find_it = "didn't find it"
-    note = "write note"
-    publish_listing = "publish listing"
-    enable_listing = "enable listing"
-    archive = "archive"
-    unarchive = "unarchive"
-    temp_disable_listing = "temporarily disable listing"
-    needs_archive = "needs archived"
-    will_attend = "will attend"
-    attended = "attended"
-    retrieved_it = "retrieved it"
-    placed_it = "placed it"
-    grabbed_it = "grabbed it"
-    needs_maintenance = "needs maintenance"
-    owner_maintenance = "owner maintenance"
-    update_coordinates = "update coordinates"
-    discovered_it = "discovered it"
-    post_reviewer_note = "post reviewer note"
-    submit_for_review = "submit for review"
-    visit = "visit"
-    webcam_photo_taken = "webcam photo taken"
-    announcement = "announcement"
-    retract = "retract listing"
-    marked_missing = "marked missing"
-    oc_team_comment = "X1"
+    announcement = "74"
+    archive = "5"
+    attended = "10"
+    didnt_find_it = "3"
+    discovered_it = "48"
+    enable_listing = "23"
+    found_it = "2"
+    grabbed_it = "19"
+    marked_missing = "16"
+    needs_archive = "7"
+    needs_maintenance = "45"
+    note = "4"
+    oc_team_comment = "83"  # doesn't have an image
+    owner_maintenance = "46"
+    placed_it = "14"
+    post_reviewer_note = "18"
+    publish_listing = "23"
+    retract = "25"
+    retrieved_it = "13"
+    submit_for_review = "76"
+    temp_disable_listing = "22"
+    unarchive = "12"
+    update_coordinates = "47"
+    visit = "75"
+    webcam_photo_taken = "11"
+    will_attend = "9"
 
     @classmethod
-    def from_string(cls, name):
-        """Return a log type from its human readable name.
-
-        :raise .ValueError: If log type cannot be determined.
-        """
-        name = name.strip().lower()
+    def from_filename(cls, filename):
+        """Return a log type from its image filename."""
+        if filename == "1003":
+            # 2 different IDs for publish_listing
+            return cls.publish_listing
+        elif filename == "1001":
+            # 2 different IDs for visit
+            return cls.visit
 
         try:
-            return cls(name)
+            return cls(filename)
         except ValueError as e:
-            raise errors.ValueError("Unknown log type '{}'.".format(name)) from e
+            raise errors.ValueError("Unknown log type '{}'.".format(filename)) from e

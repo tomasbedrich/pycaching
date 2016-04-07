@@ -22,7 +22,7 @@ Features
    -  load logbook for given cache
 
 -  **get trackable** details by tracking code
--  **post log** to cache logbook
+-  **post log** for a cache or a trackable
 -  **geocode** given location
 
 .. _installation:
@@ -177,6 +177,19 @@ Load a trackable details
 
     trackable = geocaching.get_trackable("TB3ZGT2")
     print(trackable.name, trackable.goal, trackable.description, trackable.location)
+
+
+Post a log for trackable
+---------------------------------------------------------------------------------------------------
+
+.. code-block:: python
+
+    from pycaching.log import Log, Type as LogType
+    import datetime
+
+    log = Log(type=LogType.discovered_it, text="Nice TB!", visited=datetime.date.today())
+    tracking_code = "ABCDEF"
+    trackable.post_log(log, tracking_code)
 
 .. _appendix:
 

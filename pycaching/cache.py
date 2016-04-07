@@ -7,7 +7,7 @@ import enum
 from pycaching import errors
 from pycaching.geo import Point
 from pycaching.trackable import Trackable
-from pycaching.log import Log
+from pycaching.log import Log, Type as LogType
 from pycaching.util import parse_date, format_date, rot13, lazy_loaded
 
 # prefix _type() function to avoid colisions with cache type
@@ -733,9 +733,11 @@ class Cache(object):
                 if limit < 0:
                     raise StopIteration()
 
+                img_filename = log_data["LogTypeImage"].rsplit(".", 1)[0]  # filename w/o extension
+
                 # create and fill log object
                 l = Log()
-                l.type = log_data["LogType"]
+                l.type = LogType.from_filename(img_filename)
                 l.text = log_data["LogText"]
                 l.visited = log_data["Visited"]
                 l.author = log_data["UserName"]
@@ -787,9 +789,8 @@ class Cache(object):
         url = self._log_page_url  # will trigger lazy_loading if needed
         log_page = self.geocaching._request(url)
 
-        # find all valid log types for the cache (-1 kicks out "- select type of log -")
-        valid_types = {o.get_text().lower(): o["value"]
-                       for o in log_page.find_all("option") if o["value"] != "-1"}
+        # find all valid log types for the cache (-1 removes "- select type of log -")
+        valid_types = {o["value"] for o in log_page.find_all("option") if o["value"] != "-1"}
 
         # find all static data fields needed for log
         hidden_inputs = log_page.find_all("input", type=["hidden", "submit"])
@@ -811,13 +812,13 @@ class Cache(object):
 
         valid_types, hidden_inputs, date_format = self._load_log_page()
         if log.type.value not in valid_types:
-            raise errors.ValueError("The Cache does not accept this type of log")
+            raise errors.ValueError("The cache does not accept this type of log")
 
         # assemble post data
         post = hidden_inputs
         formatted_date = format_date(log.visited, date_format)
         post["ctl00$ContentBody$LogBookPanel1$btnSubmitLog"] = "Submit Log Entry"
-        post["ctl00$ContentBody$LogBookPanel1$ddLogType"] = valid_types[log.type.value]
+        post["ctl00$ContentBody$LogBookPanel1$ddLogType"] = log.type.value
         post["ctl00$ContentBody$LogBookPanel1$uxDateVisited"] = formatted_date
         post["ctl00$ContentBody$LogBookPanel1$uxLogInfo"] = log.text
 
