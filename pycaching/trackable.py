@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from pycaching import errors
-from pycaching.util import lazy_loaded
+from pycaching.util import lazy_loaded, format_date
 
 # prefix _type() function to avoid colisions with trackable type
 _type = type
@@ -11,7 +11,7 @@ class Trackable(object):
     """Represents a trackable with its properties."""
 
     def __init__(self, geocaching, tid, *, name=None, location=None, owner=None,
-                 type=None, description=None, goal=None, url=None):
+                 type=None, description=None, goal=None, url=None, _log_page_url=None):
         self.geocaching = geocaching
         if tid is not None:
             self.tid = tid
@@ -29,6 +29,8 @@ class Trackable(object):
             self.type = type
         if url is not None:
             self.url = url
+        if _log_page_url is not None:
+            self._log_page_url = _log_page_url
 
     def __str__(self):
         """Return trackable ID."""
@@ -153,6 +155,19 @@ class Trackable(object):
     def type(self, type):
         self._type = type.strip()
 
+    @property
+    @lazy_loaded
+    def _log_page_url(self):
+        """The URL of logging page for this trackable.
+
+        :type: :class:`str`
+        """
+        return self.__log_page_url
+
+    @_log_page_url.setter
+    def _log_page_url(self, log_page_url):
+        self.__log_page_url = log_page_url
+
     def load(self):
         """Load all possible details about the trackable.
 
@@ -181,9 +196,57 @@ class Trackable(object):
         self.goal = root.find(id="TrackableGoal").text
         self.description = root.find(id="TrackableDetails").text
 
+        # another Groundspeak trick... inconsistent relative / absolute URL on one page
+        self._log_page_url = "/track/" + root.find(id="ctl00_ContentBody_LogLink")["href"]
+
         location_raw = root.find(id="ctl00_ContentBody_BugDetails_BugLocation")
         location_url = location_raw.get("href")
         if "cache_details" in location_url:
             self.location = location_url
         else:
             self.location = location_raw.text
+
+    def _load_log_page(self):
+        """Load a logging page for this trackable.
+
+        :return: Tuple of data nescessary to log the trackable.
+        """
+        url = self._log_page_url  # will trigger lazy_loading if needed
+        log_page = self.geocaching._request(url)
+
+        # find all valid log types for the trackable (-1 removes "- select type of log -")
+        valid_types = {o["value"] for o in log_page.find_all("option") if o["value"] != "-1"}
+
+        # find all static data fields needed for log
+        hidden_inputs = log_page.find_all("input", type=["hidden", "submit"])
+        hidden_inputs = {i["name"]: i.get("value", "") for i in hidden_inputs}
+
+        # get user date format
+        date_format = log_page.find(
+            id="ctl00_ContentBody_LogBookPanel1_uxDateFormatHint").text.strip("()")
+
+        return valid_types, hidden_inputs, date_format
+
+    def post_log(self, log, tracking_code):
+        """Post a log for this trackable.
+
+        :param .Log log: Previously created :class:`Log` filled with data.
+        :param str tracking_code: A tracking code to verify current trackable holder.
+        """
+        if not log.text:
+            raise errors.ValueError("Log text is empty")
+
+        valid_types, hidden_inputs, date_format = self._load_log_page()
+        if log.type.value not in valid_types:
+            raise errors.ValueError("The trackable does not accept this type of log")
+
+        # assemble post data
+        post = hidden_inputs
+        formatted_date = format_date(log.visited, date_format)
+        post["ctl00$ContentBody$LogBookPanel1$btnSubmitLog"] = "Submit Log Entry"
+        post["ctl00$ContentBody$LogBookPanel1$ddLogType"] = log.type.value
+        post["ctl00$ContentBody$LogBookPanel1$uxDateVisited"] = formatted_date
+        post["ctl00$ContentBody$LogBookPanel1$tbCode"] = tracking_code
+        post["ctl00$ContentBody$LogBookPanel1$uxLogInfo"] = log.text
+
+        self.geocaching._request(self._log_page_url, method="POST", data=post)
