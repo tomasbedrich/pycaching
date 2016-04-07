@@ -46,7 +46,7 @@ with open(os.path.join(root, "requirements.txt"), encoding="utf-8") as f:
 
 info = {
     "name":                "pycaching",
-    "version":             "3.4.1",  # PEP 386
+    "version":             "3.5.0",  # PEP 386
     "author":              "Tomas Bedrich",
     "author_email":        "ja@tbedrich.cz",
     "url":                 "https://github.com/tomasbedrich/pycaching",

@@ -12,7 +12,7 @@ from pycaching.log import Log, Type as LogType
 from pycaching.geo import Point
 from pycaching.trackable import Trackable
 from pycaching.errors import Error, NotLoggedInException, LoginFailedException
-from pycaching.util import parse_date, deprecated
+from pycaching.util import parse_date
 
 
 class Geocaching(object):
@@ -333,24 +333,3 @@ class Geocaching(object):
             date = datetime.date.today()
         l = Log(type=type, text=text, visited=date)
         self.get_cache(wp).post_log(l)
-
-    # ensure backwards compatibility ------------------------------------------
-    # deprecated methods will be removed in next version!
-
-    @deprecated
-    def load_cache(self, wp):
-        """Return a :class:`.Cache` object by its waypoint.
-
-        .. deprecated:: 3.4
-            Use :meth:`.get_cache` instead.
-        """
-        return self.get_cache(wp)
-
-    @deprecated
-    def load_trackable(self, tid):
-        """Return a :class:`.Trackable` object by its trackable ID.
-
-        .. deprecated:: 3.4
-            Use :meth:`.get_trackable` instead.
-        """
-        return self.get_trackable(tid)
