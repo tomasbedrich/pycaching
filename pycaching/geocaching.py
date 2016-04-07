@@ -266,7 +266,8 @@ class Geocaching(object):
             res = self._request(self._urls["search_more"], params={
                 "inputOrigin": point.format(None, "", "", ""),
                 "startIndex": start_index,
-                "originTreatment": 0
+                "ot": 0,
+                "ssvu": 2,
             }, expect="json")
 
             return bs4.BeautifulSoup(res["HtmlString"].strip(), "html.parser")

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import unittest
-from pycaching import Geocaching, Trackable, Point
+from pycaching import Geocaching, Trackable
 from pycaching.errors import ValueError as PycachingValueError, LoadError
 
 from test.test_geocaching import _username, _password
@@ -37,7 +37,7 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.t.owner, "human")
 
     def test_location(self):
-        self.assertEqual(self.c.location, "in the hands of human")
+        self.assertEqual(self.t.location, "in the hands of human")
 
     def test_description(self):
         self.assertEqual(self.t.description, "long text")
