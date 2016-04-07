@@ -9,7 +9,7 @@ from pycaching.errors import ValueError as PycachingValueError
 class TestLog(unittest.TestCase):
 
     def setUp(self):
-        self.l = Log(type="found it", text="text", visited="2012-02-02", author="human")
+        self.l = Log(type=Type.found_it, text="text", visited="2012-02-02", author="human")
 
     def test___str__(self):
         self.assertEqual(str(self.l), "text")
@@ -41,10 +41,15 @@ class TestLog(unittest.TestCase):
 
 class TestType(unittest.TestCase):
 
-    def test_from_string(self):
-        with self.subTest("valid type"):
-            self.assertEqual(Type.found_it, Type.from_string("found it"))
+    def test_from_filename(self):
+        with self.subTest("valid types"):
+            self.assertEqual(Type.found_it, Type.from_filename("2"))
+            self.assertEqual(Type.visit, Type.from_filename("75"))
+
+        with self.subTest("special valid types"):
+            self.assertEqual(Type.visit, Type.from_filename("1001"))
+            self.assertEqual(Type.publish_listing, Type.from_filename("1003"))
 
         with self.subTest("invalid type"):
             with self.assertRaises(PycachingValueError):
-                Type.from_string("invalid type")
+                Type.from_filename("6666")

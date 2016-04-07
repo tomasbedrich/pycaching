@@ -218,14 +218,14 @@ class TestMethods(unittest.TestCase):
             self.assertIn(expected_author, log_authors)
 
     def test_load_log_page(self):
-        expected_types = set((t.value for t in (LogType.found_it, LogType.didnt_find_it, LogType.note)))
+        expected_types = {t.value for t in (LogType.found_it, LogType.didnt_find_it, LogType.note)}
         expected_inputs = "__EVENTTARGET", "__VIEWSTATE"  # and more ...
         expected_date_format = "d.M.yyyy"
 
         # make request
         valid_types, hidden_inputs, user_date_format = self.c._load_log_page()
 
-        self.assertSequenceEqual(expected_types, set(valid_types.keys()))
+        self.assertSequenceEqual(expected_types, valid_types)
         for i in expected_inputs:
             self.assertIn(i, hidden_inputs.keys())
         self.assertEqual(expected_date_format, user_date_format)
@@ -236,9 +236,9 @@ class TestMethods(unittest.TestCase):
 
         # mock _load_log_page
         valid_log_types = {
-            # intentionally missing "found_it" to test invalid log type
-            "write note": "4",
-            "didn't find it": "3",
+            # intentionally missing "found it" to test invalid log type
+            "4",  # write note
+            "3",  # didn't find it
         }
         mock_load_log_page.return_value = (valid_log_types, {}, "mm/dd/YYYY")
         test_log_text = "Test log."
