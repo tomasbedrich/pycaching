@@ -49,5 +49,5 @@ Other instructions
 
 - **Importing modules** is okay for modules from standard library. If you want to include
   third-party module, please consult it on GitHub before.
-- Please use regular expressions only as a last resort. When possible, use string manipulations,
+- `Please use regular expressions only as a last resort. <http://imgur.com/j3G9xyP>`_ When possible, use string manipulations,
   such as :code:`split()` and then list operations. It is more readable.
