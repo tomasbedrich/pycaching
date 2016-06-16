@@ -24,7 +24,7 @@ class Geocaching(object):
 
     _baseurl = "https://www.geocaching.com"
     _urls = {
-        "login_page":        "login/default.aspx",
+        "login_page":        "account/login",
         "search":            "play/search",
         "search_more":       "play/search/more-results",
     }
@@ -32,6 +32,7 @@ class Geocaching(object):
 
     def __init__(self):
         self._logged_in = False
+        self._logged_username = None
         self._session = requests.Session()
 
     def _request(self, url, *, expect="soup", method="GET", login_check=True, **kwargs):
@@ -78,6 +79,8 @@ class Geocaching(object):
         :raise .LoginFailedException: If login fails either because of bad credentials or
             non-existing credentials file.
         """
+        logging.info("Logging in...")
+
         if not username or not password:
             try:
                 username, password = self._load_credentials()
@@ -92,42 +95,37 @@ class Geocaching(object):
             except IOError as e:
                 raise LoginFailedException("Credentials file reading error.") from e
 
-        logging.info("Logging in...")
-        login_page = self._request(self._urls["login_page"], login_check=False)
-
         logging.debug("Checking for previous login.")
-        logged = self.get_logged_user(login_page)
-        if logged:
-            if logged == username:
-                logging.info("Already logged as {}.".format(logged))
-                self._logged_in = True
+        if self._logged_in:
+            logging.info("Already logged in as {}.".format(self._logged_username))
+            if self._logged_username == username:
                 return
             else:
-                logging.info("Already logged as {}, but want to log in as {}.".format(logged, username))
+                logging.info("Want to login as {} => logging out.".format(username))
                 self.logout()
 
-        # continue logging in
-        post = {}
+        login_page = self._request(self._urls["login_page"], login_check=False)
+
+        # continue logging in, assemble POST
         logging.debug("Assembling POST data.")
-
-        # login fields
-        login_elements = login_page.find_all("input", type=["text", "password", "checkbox"])
-        post.update({field["name"]: val for field, val in zip(
-            login_elements, [username, password, 1])})
-
-        # other nescessary fields
-        other_elements = login_page.find_all("input", type=["hidden", "submit"])
-        post.update({field["name"]: field["value"] for field in other_elements})
+        token_field_name = "__RequestVerificationToken"
+        token_value = login_page.find("input", attrs={"name": token_field_name})["value"]
+        post = {
+            "Username": username,
+            "Password": password,
+            token_field_name: token_value
+        }
 
         # login to the site
         logging.debug("Submiting login form.")
-        after_login_page = self._request(
-            self._urls["login_page"], method="POST", data=post, login_check=False)
+        after_login_page = self._request(self._urls["login_page"], method="POST",
+                                         data=post, login_check=False)
 
         logging.debug("Checking the result.")
         if self.get_logged_user(after_login_page):
             logging.info("Logged in successfully as {}.".format(username))
             self._logged_in = True
+            self._logged_username = username
             return
         else:
             self.logout()
@@ -164,6 +162,7 @@ class Geocaching(object):
         """Log out the user for this instance."""
         logging.info("Logging out.")
         self._logged_in = False
+        self._logged_username = None
         self._session = requests.Session()
 
     def get_logged_user(self, login_page=None):
@@ -177,7 +176,7 @@ class Geocaching(object):
 
         logging.debug("Checking for already logged user.")
         try:
-            return login_page.find("div", "LoggedIn").find("strong").text
+            return login_page.find("a", "li-user-info").find_all("span")[1].text
         except AttributeError:
             return None
 
