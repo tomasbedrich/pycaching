@@ -253,7 +253,7 @@ class Geocaching(object):
 
             # make request
             res = self._request(self._urls["search"], params={
-                "origin": point.format(None, "", "", "")
+                "origin": point.format_decimal(),
             })
             return res.find(id="geocaches")
 
@@ -263,10 +263,10 @@ class Geocaching(object):
 
             # make request
             res = self._request(self._urls["search_more"], params={
-                "inputOrigin": point.format(None, "", "", ""),
+                "origin": point.format_decimal(),
                 "startIndex": start_index,
-                "ot": 0,
                 "ssvu": 2,
+                "selectAll": "false",
             }, expect="json")
 
             return bs4.BeautifulSoup(res["HtmlString"].strip(), "html.parser")
