@@ -7,6 +7,7 @@ import weakref
 import itertools
 import geopy
 import geopy.distance
+import geopy.format
 from statistics import mean
 from collections import namedtuple
 from pycaching.errors import ValueError as PycachingValueError, GeocodeError, BadBlockError, Error
@@ -136,6 +137,20 @@ class Point(geopy.Point):
 
     def __format__(self, format_spec):
         return "{:{}}".format(str(self), format_spec)
+
+    def format_gc(self):
+        """Return a location of this point in a typical Geocaching format.
+
+        :return str: Human-readable location.
+        """
+        hemisphere_lat = self.latitude >= 0 and "N" or "S"
+        hemisphere_lon = self.longitude >= 0 and "E" or "W"
+
+        fmt = "%(degrees)d%(deg)s %(minutes).3f"
+        lat = geopy.format.format_degrees(abs(self.latitude), fmt, geopy.format.UNICODE_SYMBOLS)
+        lon = geopy.format.format_degrees(abs(self.longitude), fmt, geopy.format.UNICODE_SYMBOLS)
+
+        return "{} {}, {} {}".format(hemisphere_lat, lat, hemisphere_lon, lon)
 
 
 class Area:

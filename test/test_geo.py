@@ -127,6 +127,11 @@ class TestPoint(unittest.TestCase):
         with self.subTest("increase in longitude: increase in x value"):
             self.assertGreater(Point(49.75, 14.).to_tile(None, 14).x, t.x)
 
+    def test_format_gc(self):
+        """Test Geocaching point formatting."""
+        self.assertEqual(Point(49.73012, 13.40102).format_gc(), "N 49° 43.807, E 13° 24.061")
+        self.assertEqual(Point(-49.73012, -13.40102).format_gc(), "S 49° 43.807, W 13° 24.061")
+
 
 class TestPolygon(unittest.TestCase):
 
