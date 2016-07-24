@@ -20,8 +20,8 @@ class TestProperties(unittest.TestCase):
                        found=False, size=Size.micro, difficulty=1.5, terrain=5, author="human", hidden=date(2000, 1, 1),
                        attributes={"onehour": True, "kids": False, "available": True}, summary="text",
                        description="long text", hint="rot13", favorites=0, pm_only=False,
-                       _log_page_url="/seek/log.aspx?ID=1234567&lcn=1", original_location=Point(),
-                       waypoints={})
+                       original_location=Point(), waypoints={})
+        self.c._log_page_url = "/seek/log.aspx?ID=1234567&lcn=1"
 
     def test___str__(self):
         self.assertEqual(str(self.c), "GC12345")

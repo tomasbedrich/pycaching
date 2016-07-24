@@ -11,7 +11,7 @@ class Trackable(object):
     """Represents a trackable with its properties."""
 
     def __init__(self, geocaching, tid, *, name=None, location=None, owner=None,
-                 type=None, description=None, goal=None, url=None, _log_page_url=None):
+                 type=None, description=None, goal=None, url=None):
         self.geocaching = geocaching
         if tid is not None:
             self.tid = tid
@@ -29,8 +29,7 @@ class Trackable(object):
             self.type = type
         if url is not None:
             self.url = url
-        if _log_page_url is not None:
-            self._log_page_url = _log_page_url
+        self._log_page_url = None
 
     def __str__(self):
         """Return trackable ID."""
@@ -155,19 +154,6 @@ class Trackable(object):
     def type(self, type):
         self._type = type.strip()
 
-    @property
-    @lazy_loaded
-    def _log_page_url(self):
-        """The URL of logging page for this trackable.
-
-        :type: :class:`str`
-        """
-        return self.__log_page_url
-
-    @_log_page_url.setter
-    def _log_page_url(self, log_page_url):
-        self.__log_page_url = log_page_url
-
     def load(self):
         """Load all possible details about the trackable.
 
@@ -211,8 +197,9 @@ class Trackable(object):
 
         :return: Tuple of data nescessary to log the trackable.
         """
-        url = self._log_page_url  # will trigger lazy_loading if needed
-        log_page = self.geocaching._request(url)
+        if not self._log_page_url:
+            self.load()  # fills self._log_page_url
+        log_page = self.geocaching._request(self._log_page_url)
 
         # find all valid log types for the trackable (-1 removes "- select type of log -")
         valid_types = {o["value"] for o in log_page.find_all("option") if o["value"] != "-1"}

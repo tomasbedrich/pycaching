@@ -109,13 +109,14 @@ class Cache(object):
         """
 
         self.geocaching = geocaching
+        self._log_page_url = None
         if wp is not None:
             self.wp = wp
 
         known_kwargs = {"name", "type", "location", "original_location", "state", "found", "size",
                         "difficulty", "terrain", "author", "hidden", "attributes", "summary",
                         "description", "hint", "favorites", "pm_only", "url", "waypoints", "_logbook_token",
-                        "_trackable_page_url", "_log_page_url"}
+                        "_trackable_page_url"}
 
         for name in known_kwargs:
             if name in kwargs:
@@ -504,19 +505,6 @@ class Cache(object):
     def _trackable_page_url(self, trackable_page_url):
         self.__trackable_page_url = trackable_page_url
 
-    @property
-    @lazy_loaded
-    def _log_page_url(self):
-        """The URL of logging page for this cache.
-
-        :type: :class:`str`
-        """
-        return self.__log_page_url
-
-    @_log_page_url.setter
-    def _log_page_url(self, log_page_url):
-        self.__log_page_url = log_page_url
-
     def load(self):
         """Load all possible cache details.
 
@@ -786,8 +774,9 @@ class Cache(object):
 
         :return: Tuple of data nescessary to log the cache.
         """
-        url = self._log_page_url  # will trigger lazy_loading if needed
-        log_page = self.geocaching._request(url)
+        if not self._log_page_url:
+            self.load()  # fills self._log_page_url
+        log_page = self.geocaching._request(self._log_page_url)
 
         # find all valid log types for the cache (-1 removes "- select type of log -")
         valid_types = {o["value"] for o in log_page.find_all("option") if o["value"] != "-1"}

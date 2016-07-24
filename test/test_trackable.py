@@ -15,8 +15,8 @@ class TestProperties(unittest.TestCase):
     def setUp(self):
         self.gc = Geocaching()
         self.t = Trackable(self.gc, "TB123AB", name="Testing", type="Travel Bug", location="in the hands of human",
-                           owner="human", description="long text", goal="short text",
-                           _log_page_url="/track/details.aspx?id=6359246")
+                           owner="human", description="long text", goal="short text")
+        self.t._log_page_url = "/track/details.aspx?id=6359246"
 
     def test___str__(self):
         self.assertEqual(str(self.t), "TB123AB")
