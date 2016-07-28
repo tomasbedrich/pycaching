@@ -60,17 +60,18 @@ Examples
 Login
 ---------------------------------------------------------------------------------------------------
 
-Simly call :meth:`.login` method and it will do all things for you.
+Simly call `pycaching.login()
+<https://pycaching.readthedocs.io/en/latest/api.html#pycaching.geocaching.Geocaching.login>`__
+method and it will do everything for you.
 
 .. code-block:: python
 
     import pycaching
     geocaching = pycaching.login("user", "pass")
 
-If you won't provide an username or password, pycaching will try to load
-``.gc_credentials`` file from current directory or home folder. It will try to
-parse it as JSON and use the keys ``username`` and ``password`` from that file
-as login credentials.
+If you won't provide an username or password, pycaching will try to load ``.gc_credentials`` file
+from current directory or home folder. It will try to parse it as JSON and use the keys ``username``
+and ``password`` from that file as login credentials.
 
 .. code-block:: json
 
@@ -92,11 +93,11 @@ Load a cache details
     print(cache.name)  # cache.load() is automatically called
     print(cache.location)  # stored in cache, printed immediately
 
-This uses lazy loading, so the :class:`.Cache` object is created immediately and the
-page is loaded when needed (accessing the name).
+This uses lazy loading, so the `Cache <https://pycaching.readthedocs.io/en/latest/api.html#cache>`__
+object is created immediately and the page is loaded when needed (accessing the name).
 
-You can use different method of loading cache details. It will be much faster,
-but it will load less details:
+You can use different method of loading cache details. It will be much faster, but it will load less
+details:
 
 .. code-block:: python
 
@@ -126,8 +127,10 @@ Post a log to cache
 
     geocaching.post_log("GC1PAR2", "Found cache in the rain. Nice place, TFTC!")
 
-It is also possible to call post_log on :class:`.Cache` object, but you would have
-to create :class:`.Log` object manually and pass it to this method.
+It is also possible to call post_log on `Cache
+<https://pycaching.readthedocs.io/en/latest/api.html#cache>`__ object, but you would have to create
+`Log <https://pycaching.readthedocs.io/en/latest/api.html#log>`__ object manually and pass it to
+this method.
 
 Search for all traditional caches around
 ---------------------------------------------------------------------------------------------------
@@ -143,9 +146,9 @@ Search for all traditional caches around
         if cache.type == Type.traditional:
             print(cache.name)
 
-Notice the ``limit`` in search function. It is because :meth:`.Geocaching.search`
-returns a generator object, which would fetch the caches forever in case
-of simple loop.
+Notice the ``limit`` in the search function. It is because `geocaching.search()
+<https://pycaching.readthedocs.io/en/latest/api.html#pycaching.geocaching.Geocaching.search>`__
+returns a generator object, which would fetch the caches forever in case of simple loop.
 
 Geocode adress and search around
 ---------------------------------------------------------------------------------------------------
@@ -199,12 +202,10 @@ Appendix
 Legal notice
 ---------------------------------------------------------------------------------------------------
 
-Be sure to read `Geocaching.com's terms of
-use <http://www.geocaching.com/about/termsofuse.aspx>`__. By using this
-piece of software you break them and your Geocaching account may be
-suspended or *even deleted*. To prevent this, I recommend you to load
-the data you really need, nothing more. This software is provided "as
-is" and I am not responsible for any damage possibly caused by it.
+Be sure to read `Geocaching.com's terms of use <http://www.geocaching.com/about/termsofuse.aspx>`__.
+By using this piece of software you break them and your Geocaching account may be suspended or *even
+deleted*. To prevent this, I recommend you to load the data you really need, nothing more. This
+software is provided "as is" and I am not responsible for any damage possibly caused by it.
 
 Inspiration
 ---------------------------------------------------------------------------------------------------
@@ -219,8 +220,9 @@ Although the new version was massively rewritten, I'd like to thank to their aut
 Authors
 ---------------------------------------------------------------------------------------------------
 
-Authors of this project are `all contributors <https://github.com/tomasbedrich/pycaching/graphs/contributors>`__.
-Maintainer is `Tomáš Bedřich <http://tbedrich.cz>`__.
+Authors of this project are `all contributors
+<https://github.com/tomasbedrich/pycaching/graphs/contributors>`__. Maintainer is `Tomáš Bedřich
+<http://tbedrich.cz>`__.
 
 .. _build_status:
 

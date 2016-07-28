@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os
+from pathlib import Path
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 from setuptools import Command
@@ -35,18 +35,15 @@ class LintCommand(Command):
         sys.argv = []
         flake8.main.main()
 
-
-root = os.path.dirname(__file__) or "."
-
-with open(os.path.join(root, "README.rst"), encoding="utf-8") as f:
+with Path("./README.rst").open(encoding="utf-8") as f:
     long_description = f.read()
 
-with open(os.path.join(root, "requirements.txt"), encoding="utf-8") as f:
+with Path("./requirements.txt").open(encoding="utf-8") as f:
     requirements = list(filter(None, (row.strip() for row in f)))
 
 info = {
     "name":                "pycaching",
-    "version":             "3.5.2",  # PEP 386
+    "version":             "3.5.3",  # PEP 386
     "author":              "Tomas Bedrich",
     "author_email":        "ja@tbedrich.cz",
     "url":                 "https://github.com/tomasbedrich/pycaching",
@@ -57,7 +54,7 @@ info = {
     "long_description":    long_description,
     "keywords":            ["geocaching", "crawler", "geocache", "cache", "search", "geocode", "travelbug"],
     "install_requires":    requirements,
-    "setup_requires":      ["nose", "flake8", "coverage"],
+    "setup_requires":      ["nose", "flake8<3.0.0", "coverage"],  # flake8 >= 3.0 has incompatible API
     "cmdclass":            {"test": NoseTestCommand, "lint": LintCommand},
 }
 

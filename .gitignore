@@ -1,13 +1,20 @@
 # CUSTOM ===========================================================
 
-# script for upload to PIP
+# script for upload to PyPI
 register.sh
+
 # tmp file for testing some snippets of code
 test.py
+
+# testing IPython notebooks
+*.ipynb
 
 
 
 # DEFAULT ==========================================================
+
+# IPythonNotebook temporary data
+.ipynb_checkpoints/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
