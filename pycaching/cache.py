@@ -846,7 +846,7 @@ class Waypoint():
                 except ValueError:
                     loc = None
                     logging.debug("No valid location format in waypoint %s: %s"
-                        % (identifier, location_string))
+                                  % (identifier, location_string))
                 note = columns[10].text.strip()
                 waypoints_dict[identifier] = cls(identifier, type, loc, note)
         return waypoints_dict
