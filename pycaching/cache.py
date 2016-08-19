@@ -840,7 +840,13 @@ class Waypoint():
                 columns = r1.find_all("td") + r2.find_all("td")
                 identifier = columns[4].text.strip()
                 type = columns[2].find("img").get("title")
-                loc = Point(columns[6].text.strip())
+                location_string = columns[6].text.strip()
+                try:
+                    loc = Point(location_string)
+                except ValueError:
+                    loc = None
+                    logging.debug("No valid location format in waypoint %s: %s"
+                        % (identifier, location_string))
                 note = columns[10].text.strip()
                 waypoints_dict[identifier] = cls(identifier, type, loc, note)
         return waypoints_dict
