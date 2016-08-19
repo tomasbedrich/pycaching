@@ -27,10 +27,6 @@ class TestProperties(unittest.TestCase):
     def test_tid(self):
         self.assertEqual(self.t.tid, "TB123AB")
 
-        with self.subTest("filter invalid"):
-            with self.assertRaises(PycachingValueError):
-                self.t.tid = "xxx"
-
     def test_name(self):
         self.assertEqual(self.t.name, "Testing")
 

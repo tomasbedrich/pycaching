@@ -51,8 +51,6 @@ class Trackable(object):
     @tid.setter
     def tid(self, tid):
         tid = str(tid).upper().strip()
-        if not tid.startswith("TB"):
-            raise errors.ValueError("Trackable ID '{}' doesn't start with 'TB'.".format(tid))
         self._tid = tid
 
     @property
