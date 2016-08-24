@@ -91,10 +91,12 @@ class Geocaching(object):
             except ValueError as e:
                 raise LoginFailedException("Wrong format of credentials file.") from e
             except KeyError as e:
-                raise LoginFailedException("Credentials file doesn't "
-                                           "contain username and password.") from e
+                raise LoginFailedException("Credentials file doesn't contain "
+                                           "username or password/password_cmd.") from e
             except IOError as e:
                 raise LoginFailedException("Credentials file reading error.") from e
+            except subprocess.CalledProcessError as e:
+                raise LoginFailedException("Error calling password retrieval command.") from e
 
         logging.debug("Checking for previous login.")
         if self._logged_in:

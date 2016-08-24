@@ -7,6 +7,7 @@ import itertools
 import os
 import json
 from subprocess import CalledProcessError
+from unittest.mock import patch
 from tempfile import NamedTemporaryFile
 from geopy.distance import great_circle
 from pycaching import Geocaching, Point, Rectangle
@@ -100,6 +101,36 @@ class TestLoginOperations(unittest.TestCase):
         with self.subTest("bad username automatic logout"):
             with self.assertRaises(LoginFailedException):
                 self.g.login("0", "0")
+
+        with self.subTest("FileNotFoundError is reraised as LoginFailedException"):
+            with patch.object(Geocaching, '_load_credentials',
+                              side_effect=FileNotFoundError):
+                with self.assertRaises(LoginFailedException):
+                    self.g.login()
+
+        with self.subTest("ValueError is reraised as LoginFailedException"):
+            with patch.object(Geocaching, '_load_credentials',
+                              side_effect=ValueError):
+                with self.assertRaises(LoginFailedException):
+                    self.g.login()
+
+        with self.subTest("KeyError is reraised as LoginFailedException"):
+            with patch.object(Geocaching, '_load_credentials',
+                              side_effect=KeyError):
+                with self.assertRaises(LoginFailedException):
+                    self.g.login()
+
+        with self.subTest("IOError is reraised as LoginFailedException"):
+            with patch.object(Geocaching, '_load_credentials',
+                              side_effect=IOError):
+                with self.assertRaises(LoginFailedException):
+                    self.g.login()
+
+        with self.subTest("CalledProcessError is reraised as LoginFailedException"):
+            with patch.object(Geocaching, '_load_credentials',
+                              side_effect=CalledProcessError(1, 'error')):
+                with self.assertRaises(LoginFailedException):
+                    self.g.login()
 
     def test_get_logged_user(self):
         self.g.login(_username, _password)
