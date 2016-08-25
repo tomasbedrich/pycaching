@@ -143,9 +143,9 @@ class Geocaching(object):
 
         :return: Tuple of username and password loaded from file.
         :raise .FileNotFoundError: If credentials file cannot be found.
-        :raise .KeyError: If 'username' was not found.
-        :raise .KeyError: If neither 'password' nor 'password_cmd' where found.
-        :raise .KeyError: If 'password' and 'password_cmd' where found at the
+        :raise .KeyError: If "username" was not found.
+        :raise .KeyError: If neither "password" nor "password_cmd" where found.
+        :raise .KeyError: If "password" and "password_cmd" where found at the
             same time.
         """
         credentials_file = self._credentials_file
@@ -164,14 +164,15 @@ class Geocaching(object):
         with open(credentials_file, "r") as f:
             credentials = json.load(f)
             if "password" in credentials and "password_cmd" in credentials:
-                raise KeyError("Ambiguous keys. Choose either 'password' or 'password_cmd'.")
+                raise KeyError("Ambiguous keys. Choose either \"password\" or \"password_cmd\".")
             elif "password" in credentials:
                 return credentials["username"], credentials["password"]
             elif "password_cmd" in credentials:
                 stdout = subprocess.check_output(credentials["password_cmd"], shell=True)
-                return credentials["username"], stdout.decode('utf-8').strip()
+                return credentials["username"], stdout.decode("utf-8").strip()
             else:
-                raise KeyError("No password was key. Use either 'password' or 'password_cmd'")
+                raise KeyError("No password was key found. "
+                               "Use either \"password\" or \"password_cmd\".")
 
     def logout(self):
         """Log out the user for this instance."""
