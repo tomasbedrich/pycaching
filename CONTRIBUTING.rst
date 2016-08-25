@@ -6,30 +6,43 @@ Contributing
 First time
 -------------------------------------------------------------------------------
 
-1. clone a repository from GitHub:
+1. Clone a repository from GitHub:
 
    .. code-block:: bash
 
        git clone https://github.com/tomasbedrich/pycaching.git
        cd pycaching
 
-2. setup the enviroment
+2. *Optional:* create a virtualenv:
+
+   .. code-block:: bash
+
+       python3 -m venv .
+       source bin/activate
+
+3. Setup an enviroment:
 
    .. code-block:: bash
 
        python3 setup.py develop
 
 
-Workflow in a nutshell
+Typical workflow
 -------------------------------------------------------------------------------
 
-1. Pick an issue with `contributors friendly
+1. Pick an issue labeled as `"contributors friendly"
    <https://github.com/tomasbedrich/pycaching/issues?q=is:open+is:issue+label:"contributors+friendly">`_
-   label and write a comment about your choice on GitHub.
-2. Write some code and tests. Follow `PEP8 <https://www.python.org/dev/peps/pep-0008/>`_ with
-   **double quotes** and line length of **100 characters** (or 120 if absolutely nescessary).
-   Don't forget to update the docs (follow `PEP257 <https://www.python.org/dev/peps/pep-0257/>`_).
-3. Run the linter and tests:
+   or create a new one. **Notify others** that you will solve this problem (write a comment
+   on GitHub).
+2. *Optional:* Activate the virtualenv:
+
+   .. code-block:: bash
+
+       source bin/activate
+
+3. Write some **code and tests**. After that, don't forget to update the **docs**. See coding style
+   below.
+4. Run the linter and tests:
 
    .. code-block:: bash
 
@@ -41,12 +54,18 @@ Workflow in a nutshell
    - all tests are passing,
    - the coverage is above 95%.
 
-4. Push your work and create a pull request.
+5. Push your work and create a **pull request**. Yay!
 
-
-Other instructions
+Coding style
 -------------------------------------------------------------------------------
 
+- For code, follow `PEP8 <https://www.python.org/dev/peps/pep-0008/>`_.
+
+  - Use **double quotes**.
+  - Try to keep line length below **100 characters** (or 120 if absolutely nescessary).
+  - Use `.format()` for string formatting.
+
+- For docs, please follow `PEP257 <https://www.python.org/dev/peps/pep-0257/>`_.
 - **Importing modules** is okay for modules from standard library. If you want to include
   third-party module, please consult it on GitHub before.
 - `Please use regular expressions only as a last resort. <http://imgur.com/j3G9xyP>`_ When possible, use string manipulations,
