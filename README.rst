@@ -84,6 +84,19 @@ and ``password`` from that file as login credentials.
     import pycaching
     geocaching = pycaching.login()  # assume the .gc_credentials file is presented
 
+In case you have a password manager in place featuring a command line interface
+(e.g. `GNU pass <https://www.passwordstore.org/>`__) you may specify a password retrieval command
+using the ``password_cmd`` key instead of ``password``.
+
+.. code-block:: json
+
+   # sample .gc_credentials JSON file with password command
+   { "username": "myusername", "password_cmd": "pass geocaching.com/myUsername" }
+
+Note that the ``password`` and ``password_cmd`` keys are mutually exclusisive.
+
+
+
 Load a cache details
 ---------------------------------------------------------------------------------------------------
 

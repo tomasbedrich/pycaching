@@ -6,6 +6,8 @@ import pycaching
 import itertools
 import os
 import json
+from subprocess import CalledProcessError
+from unittest.mock import patch
 from tempfile import NamedTemporaryFile
 from geopy.distance import great_circle
 from pycaching import Geocaching, Point, Rectangle
@@ -100,6 +102,36 @@ class TestLoginOperations(unittest.TestCase):
             with self.assertRaises(LoginFailedException):
                 self.g.login("0", "0")
 
+        with self.subTest("FileNotFoundError is reraised as LoginFailedException"):
+            with patch.object(Geocaching, "_load_credentials",
+                              side_effect=FileNotFoundError):
+                with self.assertRaises(LoginFailedException):
+                    self.g.login()
+
+        with self.subTest("ValueError is reraised as LoginFailedException"):
+            with patch.object(Geocaching, "_load_credentials",
+                              side_effect=ValueError):
+                with self.assertRaises(LoginFailedException):
+                    self.g.login()
+
+        with self.subTest("KeyError is reraised as LoginFailedException"):
+            with patch.object(Geocaching, "_load_credentials",
+                              side_effect=KeyError):
+                with self.assertRaises(LoginFailedException):
+                    self.g.login()
+
+        with self.subTest("IOError is reraised as LoginFailedException"):
+            with patch.object(Geocaching, "_load_credentials",
+                              side_effect=IOError):
+                with self.assertRaises(LoginFailedException):
+                    self.g.login()
+
+        with self.subTest("CalledProcessError is reraised as LoginFailedException"):
+            with patch.object(Geocaching, "_load_credentials",
+                              side_effect=CalledProcessError(1, "error")):
+                with self.assertRaises(LoginFailedException):
+                    self.g.login()
+
     def test_get_logged_user(self):
         self.g.login(_username, _password)
         self.assertEqual(self.g.get_logged_user(), _username)
@@ -114,6 +146,8 @@ class TestLoginOperations(unittest.TestCase):
         credentials = {"username": _username, "password": _password}
         empty_valid_json = {}
         nonsense_str = b"ss{}ef"
+        password_cmd = "echo {}".format(_password)
+        invalid_cmd = "exit 1"
 
         with self.subTest("Try to load nonexistent file from current directory"):
             self.g._credentials_file = "this_file_doesnt_exist.json"
@@ -127,7 +161,7 @@ class TestLoginOperations(unittest.TestCase):
 
         with self.subTest("Try to load valid credentials from current directory"):
             try:
-                with NamedTemporaryFile(dir='.', delete=False) as valid:
+                with NamedTemporaryFile(dir=".", delete=False) as valid:
                     valid.write(json.dumps(credentials).encode())
                 self.g._credentials_file = os.path.basename(valid.name)
                 username, password = self.g._load_credentials()
@@ -138,7 +172,7 @@ class TestLoginOperations(unittest.TestCase):
 
         with self.subTest("Try to load empty file from current directory"):
             try:
-                with NamedTemporaryFile(dir='.', delete=False) as empty:
+                with NamedTemporaryFile(dir=".", delete=False) as empty:
                     empty.write(json.dumps(empty_valid_json).encode())
                 self.g._credentials_file = os.path.basename(empty.name)
                 with self.assertRaises(KeyError):
@@ -148,7 +182,7 @@ class TestLoginOperations(unittest.TestCase):
 
         with self.subTest("Try to load nonsense file from current directory"):
             try:
-                with NamedTemporaryFile(dir='.', delete=False) as nonsense:
+                with NamedTemporaryFile(dir=".", delete=False) as nonsense:
                     nonsense.write(nonsense_str)
                 self.g._credentials_file = os.path.basename(nonsense.name)
                 with self.assertRaises(ValueError):
@@ -166,6 +200,44 @@ class TestLoginOperations(unittest.TestCase):
                 self.assertEqual(_password, password)
             finally:
                 os.remove(home_file.name)
+
+        with self.subTest("Try to load credentials with password cmd"):
+            credentials_with_pass_cmd = {
+                "username": _username, "password_cmd": password_cmd}
+            try:
+                with NamedTemporaryFile(dir=".", delete=False) as valid:
+                    valid.write(json.dumps(credentials_with_pass_cmd).encode())
+                self.g._credentials_file = os.path.basename(valid.name)
+                username, password = self.g._load_credentials()
+                self.assertEqual(_username, username)
+                self.assertEqual(_password, password)
+            finally:
+                os.remove(valid.name)
+
+        with self.subTest("Try to load credentials with invalid password cmd"):
+            credentials_with_pass_cmd = {
+                "username": _username, "password_cmd": invalid_cmd}
+            try:
+                with NamedTemporaryFile(dir=".", delete=False) as invalid:
+                    invalid.write(json.dumps(credentials_with_pass_cmd).encode())
+                self.g._credentials_file = os.path.basename(invalid.name)
+                with self.assertRaises(CalledProcessError):
+                    username, password = self.g._load_credentials()
+            finally:
+                os.remove(invalid.name)
+
+        with self.subTest("Try to load credentials with ambiguous password"):
+            credentials_with_ambiguous_pass = {"username": _username,
+                                               "password": _password,
+                                               "password_cmd": password_cmd}
+            try:
+                with NamedTemporaryFile(dir=".", delete=False) as ambiguous:
+                    ambiguous.write(json.dumps(credentials_with_ambiguous_pass).encode())
+                self.g._credentials_file = os.path.basename(ambiguous.name)
+                with self.assertRaises(KeyError):
+                    username, password = self.g._load_credentials()
+            finally:
+                os.remove(ambiguous.name)
 
         self.g._credentials_file = filename_backup
 

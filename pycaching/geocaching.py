@@ -5,6 +5,7 @@ import datetime
 import requests
 import bs4
 import json
+import subprocess
 from urllib.parse import urljoin
 from os import path
 from pycaching.cache import Cache, Type, Size
@@ -90,10 +91,12 @@ class Geocaching(object):
             except ValueError as e:
                 raise LoginFailedException("Wrong format of credentials file.") from e
             except KeyError as e:
-                raise LoginFailedException("Credentials file doesn't "
-                                           "contain username and password.") from e
+                raise LoginFailedException("Credentials file doesn't contain "
+                                           "username or password/password_cmd.") from e
             except IOError as e:
                 raise LoginFailedException("Credentials file reading error.") from e
+            except subprocess.CalledProcessError as e:
+                raise LoginFailedException("Error calling password retrieval command.") from e
 
         logging.debug("Checking for previous login.")
         if self._logged_in:
@@ -140,6 +143,10 @@ class Geocaching(object):
 
         :return: Tuple of username and password loaded from file.
         :raise .FileNotFoundError: If credentials file cannot be found.
+        :raise .KeyError: If "username" was not found.
+        :raise .KeyError: If neither "password" nor "password_cmd" where found.
+        :raise .KeyError: If "password" and "password_cmd" where found at the
+            same time.
         """
         credentials_file = self._credentials_file
 
@@ -156,7 +163,16 @@ class Geocaching(object):
         # load contents
         with open(credentials_file, "r") as f:
             credentials = json.load(f)
-            return credentials["username"], credentials["password"]
+            if "password" in credentials and "password_cmd" in credentials:
+                raise KeyError("Ambiguous keys. Choose either \"password\" or \"password_cmd\".")
+            elif "password" in credentials:
+                return credentials["username"], credentials["password"]
+            elif "password_cmd" in credentials:
+                stdout = subprocess.check_output(credentials["password_cmd"], shell=True)
+                return credentials["username"], stdout.decode("utf-8").strip()
+            else:
+                raise KeyError("No password was key found. "
+                               "Use either \"password\" or \"password_cmd\".")
 
     def logout(self):
         """Log out the user for this instance."""
