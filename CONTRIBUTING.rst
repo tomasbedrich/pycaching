@@ -18,7 +18,8 @@ First time
    .. code-block:: bash
 
        python3 -m venv .
-       source bin/activate
+       source bin/activate  # Unix
+       Scripts\activate  # Windows
 
 3. Setup an enviroment:
 
@@ -38,7 +39,9 @@ Typical workflow
 
    .. code-block:: bash
 
-       source bin/activate
+       source bin/activate  # Unix
+       Scripts\activate  # Windows
+
 
 3. Write some **code and tests**. After that, don't forget to update the **docs**. See coding style
    below.
