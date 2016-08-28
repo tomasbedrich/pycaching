@@ -32,7 +32,7 @@ class LintCommand(Command):
     def run(self):
         import flake8.main
         import sys
-        sys.argv = []
+        sys.argv = sys.argv[:1]
         flake8.main.main()
 
 with Path("./README.rst").open(encoding="utf-8") as f:
