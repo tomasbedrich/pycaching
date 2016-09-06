@@ -152,6 +152,50 @@ class Trackable(object):
     def type(self, type):
         self._type = type.strip()
 
+    @property
+    @lazy_loaded
+    def kmlurl(self):
+        """The link to the kml route of the trackable.
+
+        :type: :class:`str`
+        """
+        return self._kmlurl
+
+    @kmlurl.setter
+    def kmlurl(self, kmlurl):
+        self._kmlurl = kmlurl.strip()
+
+    def get_KML(self):
+        """The kml route of the trackable.
+
+        :type: :class:`str`
+        """
+        self.kml = str(self.geocaching._request(self.kmlurl))
+
+        # as bs4 seems to replace some xml tags, these replacements have to be reverted
+        self.tagsToReplace = {
+            "<document>": "<Document>",
+            "</document>": "</Document>",
+            "<style>": "<Style>",
+            "</style>": "</Style>",
+            "<folder>": "<Folder>",
+            "</folder>": "</Folder>",
+            "<placemark>": "<Placemark>",
+            "</placemark>": "</Placemark>",
+            "<point>": "<Point>",
+            "</point>": "</Point>",
+            "<styleurl>": "<styleUrl>",
+            "</styleurl>": "</styleUrl>",
+            "<linestring>": "<LineString>",
+            "</linestring>": "</LineString>",
+            "<altitudemode>": "<altitudeMode>",
+            "</altitudemode>": "</altitudeMode>",
+            "<style id": "<Style id",
+            }
+        for tag in self.tagsToReplace:
+            self.kml = self.kml.replace(tag, self.tagsToReplace[tag])
+        return self.kml
+
     def load(self):
         """Load all possible details about the trackable.
 
@@ -179,6 +223,7 @@ class Trackable(object):
         self.owner = root.find(id="ctl00_ContentBody_BugDetails_BugOwner").text
         self.goal = root.find(id="TrackableGoal").text
         self.description = root.find(id="TrackableDetails").text
+        self.kmlurl = root.find(id="ctl00_ContentBody_lnkGoogleKML").get("href")
 
         # another Groundspeak trick... inconsistent relative / absolute URL on one page
         self._log_page_url = "/track/" + root.find(id="ctl00_ContentBody_LogLink")["href"]
