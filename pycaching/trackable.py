@@ -194,6 +194,7 @@ class Trackable(object):
             }
         for tag in self.tagsToReplace:
             self.kml = self.kml.replace(tag, self.tagsToReplace[tag])
+
         return self.kml
 
     def load(self):
