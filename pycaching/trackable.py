@@ -170,32 +170,7 @@ class Trackable(object):
 
         :type: :class:`str`
         """
-        self.kml = str(self.geocaching._request(self.kmlurl))
-
-        # as bs4 seems to replace some xml tags, these replacements have to be reverted
-        self.tagsToReplace = {
-            "<document>": "<Document>",
-            "</document>": "</Document>",
-            "<style>": "<Style>",
-            "</style>": "</Style>",
-            "<folder>": "<Folder>",
-            "</folder>": "</Folder>",
-            "<placemark>": "<Placemark>",
-            "</placemark>": "</Placemark>",
-            "<point>": "<Point>",
-            "</point>": "</Point>",
-            "<styleurl>": "<styleUrl>",
-            "</styleurl>": "</styleUrl>",
-            "<linestring>": "<LineString>",
-            "</linestring>": "</LineString>",
-            "<altitudemode>": "<altitudeMode>",
-            "</altitudemode>": "</altitudeMode>",
-            "<style id": "<Style id",
-            }
-        for tag in self.tagsToReplace:
-            self.kml = self.kml.replace(tag, self.tagsToReplace[tag])
-
-        return self.kml
+        return self.geocaching._request(self.kmlurl, expect="raw").text
 
     def load(self):
         """Load all possible details about the trackable.
