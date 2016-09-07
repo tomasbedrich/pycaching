@@ -154,9 +154,9 @@ class Trackable(object):
         self._type = type.strip()
 
     def get_KML(self):
-        """The kml route of the trackable.
+        """Return the KML route of the trackable.
 
-        :type: :class:`str`
+        :rtype: :class:`str`
         """
         if not self._kml_url:
             self.load()  # fills self._kml_url
