@@ -30,6 +30,7 @@ class Trackable(object):
         if url is not None:
             self.url = url
         self._log_page_url = None
+        self._kml_url = None
 
     def __str__(self):
         """Return trackable ID."""
@@ -152,25 +153,14 @@ class Trackable(object):
     def type(self, type):
         self._type = type.strip()
 
-    @property
-    @lazy_loaded
-    def kmlurl(self):
-        """The link to the kml route of the trackable.
-
-        :type: :class:`str`
-        """
-        return self._kmlurl
-
-    @kmlurl.setter
-    def kmlurl(self, kmlurl):
-        self._kmlurl = kmlurl.strip()
-
     def get_KML(self):
         """The kml route of the trackable.
 
         :type: :class:`str`
         """
-        return self.geocaching._request(self.kmlurl, expect="raw").text
+        if not self._kml_url:
+            self.load()  # fills self._kml_url
+        return self.geocaching._request(self._kml_url, expect="raw").text
 
     def load(self):
         """Load all possible details about the trackable.
@@ -199,7 +189,7 @@ class Trackable(object):
         self.owner = root.find(id="ctl00_ContentBody_BugDetails_BugOwner").text
         self.goal = root.find(id="TrackableGoal").text
         self.description = root.find(id="TrackableDetails").text
-        self.kmlurl = root.find(id="ctl00_ContentBody_lnkGoogleKML").get("href")
+        self._kml_url = root.find(id="ctl00_ContentBody_lnkGoogleKML").get("href")
 
         # another Groundspeak trick... inconsistent relative / absolute URL on one page
         self._log_page_url = "/track/" + root.find(id="ctl00_ContentBody_LogLink")["href"]

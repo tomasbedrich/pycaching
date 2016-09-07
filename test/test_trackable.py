@@ -126,9 +126,9 @@ class TestMethods(unittest.TestCase):
             mock_request.assert_called_with(self.t._log_page_url, method="POST", data=expected_post_data)
 
     def test_get_KML(self):
-        self.kml = self.t.get_KML()
-        self.assertTrue("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" in self.kml)
-        self.assertTrue("<kml xmlns=\"http://earth.google.com/kml/2.2\">" in self.kml)
-        self.assertTrue("#tbTravelStyle" in self.kml)
-        self.assertTrue("<visibility>1</visibility>" in self.kml)
-        self.assertTrue("</Placemark></Document></kml>" in self.kml)
+        kml = self.t.get_KML()
+        self.assertTrue("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" in kml)
+        self.assertTrue("<kml xmlns=\"http://earth.google.com/kml/2.2\">" in kml)
+        self.assertTrue("#tbTravelStyle" in kml)
+        self.assertTrue("<visibility>1</visibility>" in kml)
+        self.assertTrue("</Placemark></Document></kml>" in kml)
