@@ -142,6 +142,7 @@ class Geocaching(object):
         it as a JSON and return credentials from it.
 
         :return: Tuple of username and password loaded from file.
+        :rtype: :class:`tuple` of :class:`str`
         :raise .FileNotFoundError: If credentials file cannot be found.
         :raise .KeyError: If "username" was not found.
         :raise .KeyError: If neither "password" nor "password_cmd" where found.
@@ -186,6 +187,7 @@ class Geocaching(object):
 
         :param .bs4.BeautifulSoup login_page: Object containing already loaded page.
         :return: User's name or :code:`None`, if no user is logged in.
+        :rtype: :class:`str` or :code:`None`
         """
         login_page = login_page or self._request(self._urls["login_page"], login_check=False)
         assert hasattr(login_page, "find") and callable(login_page.find)

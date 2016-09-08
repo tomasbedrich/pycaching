@@ -225,7 +225,7 @@ class Cache(object):
         """The cache original location.
 
         :setter: Set a cache original location. If :class:`str` is passed, then
-        :meth:`.Point.from_string` is used and its return value is stored as a location.
+            :meth:`.Point.from_string` is used and its return value is stored as a location.
         :type: :class:`.Point`
         """
         return self._original_location
@@ -773,6 +773,7 @@ class Cache(object):
         """Load a logging page for this cache.
 
         :return: Tuple of data nescessary to log the cache.
+        :rtype: :class:`tuple` of (:class:`set`:, :class:`dict`, class:`str`)
         """
         if not self._log_page_url:
             self.load()  # fills self._log_page_url

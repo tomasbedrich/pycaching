@@ -205,6 +205,7 @@ class Trackable(object):
         """Load a logging page for this trackable.
 
         :return: Tuple of data nescessary to log the trackable.
+        :rtype: :class:`tuple` of (:class:`set`:, :class:`dict`, class:`str`)
         """
         if not self._log_page_url:
             self.load()  # fills self._log_page_url

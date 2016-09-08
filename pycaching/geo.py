@@ -141,7 +141,8 @@ class Point(geopy.Point):
     def format_gc(self):
         """Return a location of this point in a typical Geocaching format.
 
-        :return str: Human-readable location.
+        :return: Human-readable location.
+        :rtype: :class:`str`
         """
         hemisphere_lat = self.latitude >= 0 and "N" or "S"
         hemisphere_lon = self.longitude >= 0 and "E" or "W"
@@ -297,7 +298,8 @@ class Tile(object):
         download grid and if it does not work, get .png and then try it again.
 
         :param bool get_png: Whether to download .png first.
-        :return dict: JSON with raw tile data.
+        :return: JSON with raw tile data.
+        :rtype: :class:`dict`
         """
         # TODO: It might be useful to store time when tile is last downloaded and act based on that.
         # Logging some statistics (time when tile is loaded + received status code + content length
@@ -545,6 +547,7 @@ class Block(object):
         :param int lim_min: Lower limit.
         :param int lim_max: Higher limit.
         :return tuple: Pair of corrected values of (lim_min, lim_max).
+        :rtype: :class:`tuple` of :class:`int`
         """
 
         # if block has normal size in this axis, there is no need to fix limits
