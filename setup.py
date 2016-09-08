@@ -35,10 +35,12 @@ class LintCommand(Command):
         sys.argv = sys.argv[:1]
         flake8.main.main()
 
-with Path("./README.rst").open(encoding="utf-8") as f:
+root = Path(__file__).parent or "."
+
+with (root / "README.rst").open(encoding="utf-8") as f:
     long_description = f.read()
 
-with Path("./requirements.txt").open(encoding="utf-8") as f:
+with (root / "requirements.txt").open(encoding="utf-8") as f:
     requirements = list(filter(None, (row.strip() for row in f)))
 
 info = {

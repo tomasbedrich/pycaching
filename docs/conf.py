@@ -14,14 +14,21 @@
 # serve to show the default.
 
 import sys
-import os
-import shlex
 import sphinx_rtd_theme
+from pathlib import Path
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('..'))
+
+# import pycaching
+sys.path.append(str(Path('..').resolve()))
+
+# import site-packages
+for package_path in Path('../lib/python3.5/site-packages').glob('*.egg'):
+    sys.path.append(str(package_path.resolve()))
+
+print(sys.path)
 
 from setup import info
 
