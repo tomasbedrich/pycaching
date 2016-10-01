@@ -207,6 +207,19 @@ class TestMethods(unittest.TestCase):
                 cache = Cache(self.gc, "GC123456")
                 cache.load_quick()
 
+    @mock.patch("pycaching.Cache.load")
+    @mock.patch("pycaching.Cache.load_quick")
+    def test_load_by_guid(self, mock_load, mock_load_quick):
+        with self.subTest("normal"):
+            cache = Cache(self.gc, "GC4808G")
+            cache.load_by_guid()
+            self.assertEqual(cache.guid, "15ad3a3d-92c1-4f7c-b273-60937bcc2072")
+
+        with self.subTest("fail"):
+            with self.assertRaises(LoadError):
+                cache = Cache(self.gc, "GC123456")
+                cache.load_by_guid()
+
     def test_load_trackables(self):
         cache = Cache(self.gc, "GC26737")  # TB graveyard - will surelly have some trackables
         trackable_list = list(cache.load_trackables(limit=10))

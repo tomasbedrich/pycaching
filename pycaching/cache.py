@@ -99,6 +99,13 @@ class Cache(object):
         "wirelessbeacon": "Wireless Beacon"
     }
 
+    # collection of urls used within the Cache class
+    _urls = {
+        "tiles_server": "http://tiles01.geocaching.com/map.details",
+        "logbook": "seek/geocache.logbook",
+        "cache_details": "seek/cache_details.aspx",
+    }
+
     def __init__(self, geocaching, wp, **kwargs):
         """Create a cache instance.
 
@@ -116,7 +123,7 @@ class Cache(object):
         known_kwargs = {"name", "type", "location", "original_location", "state", "found", "size",
                         "difficulty", "terrain", "author", "hidden", "attributes", "summary",
                         "description", "hint", "favorites", "pm_only", "url", "waypoints", "_logbook_token",
-                        "_trackable_page_url"}
+                        "_trackable_page_url", "guid"}
 
         for name in known_kwargs:
             if name in kwargs:
@@ -528,7 +535,8 @@ class Cache(object):
             if hasattr(self, "url"):
                 root = self.geocaching._request(self.url)
             elif hasattr(self, "_wp"):
-                root = self.geocaching._request("seek/cache_details.aspx", params={"wp": self._wp})
+                root = self.geocaching._request(self._urls["cache_details"],
+                                                params={"wp": self._wp})
             else:
                 raise errors.LoadError("Cache lacks info for loading")
         except errors.Error as e:
@@ -650,9 +658,9 @@ class Cache(object):
 
         :raise .LoadError: If cache loading fails (probably because of not existing cache).
         """
-        res = self.geocaching._request("http://tiles01.geocaching.com/map.details", params={
-            "i": self.wp
-        }, expect="json")
+        res = self.geocaching._request(self._urls["tiles_server"],
+                                       params={"i": self.wp},
+                                       expect="json")
 
         if res["status"] == "failed" or len(res["data"]) != 1:
             msg = res["msg"] if "msg" in res else "Unknown error (probably not existing cache)"
@@ -674,6 +682,22 @@ class Cache(object):
 
         logging.debug("Cache loaded: {}".format(self))
 
+    def load_by_guid(self):
+        if not hasattr(self, "guid"):
+            self._load_guid()
+
+    def _load_guid(self):
+        res = self.geocaching._request(self._urls["tiles_server"],
+                                       params={"i": self.wp},
+                                       expect="json")
+
+        if res["status"] == "failed" or len(res["data"]) != 1:
+            msg = res["msg"] if "msg" in res else "Unknown error (probably not existing cache)"
+            raise errors.LoadError("Cache {} cannot be loaded: {}".format(self, msg))
+
+        self.guid = res["data"][0]["g"]
+        logging.debug("Cache guid found: {}".format(self.guid))
+
     def _logbook_get_page(self, page=0, per_page=25):
         """Load one page from logbook.
 
@@ -681,7 +705,7 @@ class Cache(object):
         :param int per_page: Logs per page (used to calculate start index).
         :raise .LoadError: If loading fails.
         """
-        res = self.geocaching._request("seek/geocache.logbook", params={
+        res = self.geocaching._request(self._urls["logbook"], params={
             "tkn": self._logbook_token,  # will trigger lazy_loading if needed
             "idx": int(page) + 1,  # Groundspeak indexes this from 1 (OMG..)
             "num": int(per_page),
