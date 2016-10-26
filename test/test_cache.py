@@ -8,6 +8,7 @@ from pycaching.cache import Cache, Type, Size, Waypoint
 from pycaching.geocaching import Geocaching
 from pycaching.geo import Point
 from pycaching.log import Log, Type as LogType
+from pycaching.util import parse_date
 
 from test.test_geocaching import _username, _password
 
@@ -211,13 +212,40 @@ class TestMethods(unittest.TestCase):
     @mock.patch("pycaching.Cache.load_quick")
     def test_load_by_guid(self, mock_load, mock_load_quick):
         with self.subTest("normal"):
-            cache = Cache(self.gc, "GC4808G")
+            cache = Cache(self.gc, "GC2WXPN")
             cache.load_by_guid()
-            self.assertEqual(cache.guid, "15ad3a3d-92c1-4f7c-b273-60937bcc2072")
+            self.assertEqual(cache.guid, "5f45114d-1d79-4fdb-93ae-8f49f1d27188")
+            self.assertEqual(cache.name, "Der Schatz vom Luftschloss")
+            self.assertEqual(cache.location, Point("N 49° 57.895' E 008° 12.988'"))
+            self.assertEqual(cache.type, Type.mystery)
+            self.assertEqual(cache.size, Size.large)
+            self.assertEqual(cache.difficulty, 2.5)
+            self.assertEqual(cache.terrain, 1.5)
+            self.assertEqual(cache.author, "engelmz & Punxsutawney Phil")
+            self.assertEqual(cache.hidden, parse_date("23/06/2011"))
+            self.assertDictEqual(cache.attributes, {
+                "bicycles": True,
+                "available": True,
+                "firstaid": True,
+                "parking": True,
+                "onehour": True,
+                "kids": True,
+                "s-tool": True,
+            })
+            self.assertEqual(cache.summary, "Gibt es das Luftschloss wirklich?")
+            self.assertIn("Seit dem 16.", cache.description)
+            self.assertEqual(cache.hint, "Das ist nicht nötig")
+            self.assertGreater(cache.favorites, 380)
+            self.assertEqual(len(cache.waypoints), 2)
 
         with self.subTest("fail"):
             with self.assertRaises(LoadError):
                 cache = Cache(self.gc, "GC123456")
+                cache.load_by_guid()
+
+        with self.subTest("PM-only"):
+            cache = Cache(self.gc, "GC6MKEF")
+            with self.assertRaises(PMOnlyException):
                 cache.load_by_guid()
 
     def test_load_trackables(self):

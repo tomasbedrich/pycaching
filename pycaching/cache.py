@@ -4,6 +4,7 @@ import logging
 import datetime
 import re
 import enum
+import os
 from pycaching import errors
 from pycaching.geo import Point
 from pycaching.trackable import Trackable
@@ -104,6 +105,7 @@ class Cache(object):
         "tiles_server": "http://tiles01.geocaching.com/map.details",
         "logbook": "seek/geocache.logbook",
         "cache_details": "seek/cache_details.aspx",
+        "print_page": "seek/cdpf.aspx",
     }
 
     def __init__(self, geocaching, wp, **kwargs):
@@ -232,7 +234,7 @@ class Cache(object):
         """The cache original location.
 
         :setter: Set a cache original location. If :class:`str` is passed, then
-            :meth:`.Point.from_string` is used and its return value is stored as a location.
+        :meth:`.Point.from_string` is used and its return value is stored as a location.
         :type: :class:`.Point`
         """
         return self._original_location
@@ -683,8 +685,69 @@ class Cache(object):
         logging.debug("Cache loaded: {}".format(self))
 
     def load_by_guid(self):
+        """Load cache details using the GUID to request and parse the caches
+        'print-page'. Loading as many properties as possible except the
+        following ones, since they are not present on the 'print-page':
+
+          + original_location
+          + state
+          + found
+          + pm_only
+
+        :raise .PMOnlyException: If the PM only warning is shown on the page
+        """
         if not hasattr(self, "guid"):
             self._load_guid()
+        res = self.geocaching._request(self._urls["print_page"],
+                                       params={"guid": self.guid})
+        if res.find("p", {"class": "Warning"}) is not None:
+            raise errors.PMOnlyException()
+        content = res.find(id="Content")
+
+        self.name = content.find("h2").get_text()
+
+        self.location = Point.from_string(
+            content.find("p", {"class": "LatLong Meta"}).text)
+
+        type_img = os.path.basename(content.find("h2").img.get("src"))
+        self.type = Type.from_filename(os.path.splitext(type_img)[0])
+
+        size_img = content.find("img", src=re.compile("\/icons\/container\/"))
+        self.size = Size.from_string(size_img.get("alt").split(": ")[1])
+
+        D_and_T_img = content.find(
+            "p", {"class": "Meta DiffTerr"}).find_all("img")
+        self.difficulty, self.terrain = [
+            float(img.get("alt").split()[0]) for img in D_and_T_img
+        ]
+
+        self.author = content.find(
+            "p", text=re.compile("Placed by:")).text.split("\r\n")[2].strip()
+
+        self.hidden = content.find(
+            "p", text=re.compile("Placed Date:")).text.split(": ")[1]
+
+        attr_img = content.find_all("img", src=re.compile("\/attributes\/"))
+        attributes_raw = [
+            _.get("src").split("/")[-1].rsplit("-", 1) for _ in attr_img
+        ]
+        self.attributes = {
+            name: appendix.startswith("yes") for name, appendix
+            in attributes_raw if not appendix.startswith("blank")
+        }
+
+        self.summary = content.find(
+            "h2", text="Short Description").find_next("div").text
+
+        self.description = content.find(
+            "h2", text="Long Description").find_next("div").text
+
+        self.hint = rot13(content.find(id="uxDecryptedHint").text)
+
+        self.favorites = content.find(
+            "strong", text=re.compile("Favorites:")).parent.text.split()[-1]
+
+        self.waypoints = Waypoint.from_html(content, "Waypoints")
 
     def _load_guid(self):
         res = self.geocaching._request(self._urls["tiles_server"],
@@ -855,10 +918,14 @@ class Waypoint():
         self._note = note
 
     @classmethod
-    def from_html(cls, root):
-        """Return a dictionary of all waypoints found in the page representation"""
+    def from_html(cls, root, id_="ctl00_ContentBody_Waypoints"):
+        """Return a dictionary of all waypoints found in the page
+        representation
+
+        :param str id_: html id of the waypoints table
+        """
         waypoints_dict = {}
-        waypoints_table = root.find('table', id="ctl00_ContentBody_Waypoints")
+        waypoints_table = root.find('table', id=id_)
         if waypoints_table:
             waypoints_table = waypoints_table.find_all("tr")
             for r1, r2 in zip(waypoints_table[1::2], waypoints_table[2::2]):
