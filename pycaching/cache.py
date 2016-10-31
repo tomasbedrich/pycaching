@@ -647,7 +647,7 @@ class Cache(object):
             self._trackable_page_url = None
 
         # Additional Waypoints
-        self.waypoints = Waypoint.from_html(root)
+        self.waypoints = Waypoint.from_html(root, "ctl00_ContentBody_Waypoints")
 
         logging.debug("Cache loaded: {}".format(self))
 
@@ -918,14 +918,16 @@ class Waypoint():
         self._note = note
 
     @classmethod
-    def from_html(cls, root, id_="ctl00_ContentBody_Waypoints"):
+    def from_html(cls, soup, table_id):
         """Return a dictionary of all waypoints found in the page
         representation
 
-        :param str id_: html id of the waypoints table
+        :param bs4.BeautifulSoup soup: parsed html document containing the
+            waypoints table
+        :param str table_id: html id of the waypoints table
         """
         waypoints_dict = {}
-        waypoints_table = root.find('table', id=id_)
+        waypoints_table = soup.find('table', id=table_id)
         if waypoints_table:
             waypoints_table = waypoints_table.find_all("tr")
             for r1, r2 in zip(waypoints_table[1::2], waypoints_table[2::2]):
