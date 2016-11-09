@@ -704,7 +704,7 @@ class Cache(object):
             raise errors.PMOnlyException()
         content = res.find(id="Content")
 
-        self.name = content.find("h2").get_text()
+        self.name = content.find("h2").text
 
         self.location = Point.from_string(
             content.find("p", {"class": "LatLong Meta"}).text)
