@@ -729,7 +729,7 @@ class Cache(object):
 
         attr_img = content.find_all("img", src=re.compile("\/attributes\/"))
         attributes_raw = [
-            _.get("src").split("/")[-1].rsplit("-", 1) for _ in attr_img
+            os.path.basename(_.get("src")).rsplit("-", 1) for _ in attr_img
         ]
         self.attributes = {
             name: appendix.startswith("yes") for name, appendix
