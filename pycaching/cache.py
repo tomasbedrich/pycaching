@@ -724,8 +724,8 @@ class Cache(object):
         self.author = content.find(
             "p", text=re.compile("Placed by:")).text.split("\r\n")[2].strip()
 
-        self.hidden = content.find(
-            "p", text=re.compile("Placed Date:")).text.split(": ")[1]
+        hidden_p = content.find("p", text=re.compile("Placed Date:"))
+        self.hidden = hidden_p.text.replace("Placed Date:", "").strip()
 
         attr_img = content.find_all("img", src=re.compile("\/attributes\/"))
         attributes_raw = [
