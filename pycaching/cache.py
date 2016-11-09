@@ -709,7 +709,7 @@ class Cache(object):
         self.location = Point.from_string(
             content.find("p", {"class": "LatLong Meta"}).text)
 
-        type_img = os.path.basename(content.find("h2").img.get("src"))
+        type_img = os.path.basename(content.find("img").get("src"))
         self.type = Type.from_filename(os.path.splitext(type_img)[0])
 
         size_img = content.find("img", src=re.compile("\/icons\/container\/"))
