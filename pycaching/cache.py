@@ -742,7 +742,7 @@ class Cache(object):
         self.description = content.find(
             "h2", text="Long Description").find_next("div").text
 
-        self.hint = rot13(content.find(id="uxDecryptedHint").text)
+        self.hint = content.find(id="uxEncryptedHint").text
 
         self.favorites = content.find(
             "strong", text=re.compile("Favorites:")).parent.text.split()[-1]
