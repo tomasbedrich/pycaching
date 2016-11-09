@@ -700,14 +700,14 @@ class Cache(object):
             self._load_guid()
         res = self.geocaching._request(self._urls["print_page"],
                                        params={"guid": self.guid})
-        if res.find("p", {"class": "Warning"}) is not None:
+        if res.find("p", "Warning") is not None:
             raise errors.PMOnlyException()
         content = res.find(id="Content")
 
         self.name = content.find("h2").text
 
         self.location = Point.from_string(
-            content.find("p", {"class": "LatLong Meta"}).text)
+            content.find("p", "LatLong Meta").text)
 
         type_img = os.path.basename(content.find("img").get("src"))
         self.type = Type.from_filename(os.path.splitext(type_img)[0])
@@ -715,8 +715,7 @@ class Cache(object):
         size_img = content.find("img", src=re.compile("\/icons\/container\/"))
         self.size = Size.from_string(size_img.get("alt").split(": ")[1])
 
-        D_and_T_img = content.find(
-            "p", {"class": "Meta DiffTerr"}).find_all("img")
+        D_and_T_img = content.find("p", "Meta DiffTerr").find_all("img")
         self.difficulty, self.terrain = [
             float(img.get("alt").split()[0]) for img in D_and_T_img
         ]
