@@ -195,7 +195,7 @@ class Trackable(object):
         self._log_page_url = "/track/" + root.find(id="ctl00_ContentBody_LogLink")["href"]
 
         location_raw = root.find(id="ctl00_ContentBody_BugDetails_BugLocation")
-        location_url = location_raw.get("href")
+        location_url = location_raw.get("href", "")
         if "cache_details" in location_url:
             self.location = location_url
         else:
