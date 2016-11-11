@@ -215,7 +215,7 @@ class Trackable(object):
         valid_types = {o["value"] for o in log_page.find_all("option") if o["value"] != "-1"}
 
         # find all static data fields needed for log
-        hidden_inputs = log_page.find_all("input", type=["hidden", "submit"])
+        hidden_inputs = log_page.find_all("input", type=["hidden"])
         hidden_inputs = {i["name"]: i.get("value", "") for i in hidden_inputs}
 
         # get user date format
