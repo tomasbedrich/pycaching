@@ -27,17 +27,17 @@ class TestMethods(unittest.TestCase):
 
     def test_search(self):
         with self.subTest("normal"):
-            expected = ["GC41FJC", "GC17E8Y", "GC5VJ0P"]
-            caches = self.g.search(Point(49.733867, 13.397091), 3)
-            for cache in caches:
-                self.assertIn(cache.wp, expected)
+            tolerance = 2
+            expected = {"GC5VJ0P", "GC41FJC", "GC17E8Y", "GC14AV5", "GC50AQ6", "GC167Y7"}
+            found = {cache.wp for cache in self.g.search(Point(49.733867, 13.397091), 20)}
+            self.assertGreater(len(expected & found), len(expected) - tolerance)
 
         with self.subTest("pagging"):
             caches = list(self.g.search(Point(49.733867, 13.397091), 100))
             self.assertNotEqual(caches[0], caches[50])
 
     def test_search_quick(self):
-        """Perform search and check found caches"""
+        """Perform quick search and check found caches"""
         # at time of writing, there were exactly 16 caches in this area + one PM only
         expected_cache_num = 16
         tolerance = 7
@@ -66,7 +66,7 @@ class TestMethods(unittest.TestCase):
                 self.assertLess(c1.location.precision, c2.location.precision)
 
     def test_search_quick_match_load(self):
-        """Test if search results matches exact cache locations."""
+        """Test if quick search results matches exact cache locations."""
         rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.39))
         caches = list(self.g.search_quick(rect, strict=True, zoom=15))
         for cache in caches:
