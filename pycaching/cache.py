@@ -180,6 +180,22 @@ class Cache(object):
         self._wp = wp
 
     @property
+    def guid(self):
+        """The cache GUID. An identifier used at some places on geoaching.com
+
+        :type: :class:`str`
+        """
+        return self._guid
+
+    @guid.setter
+    def guid(self, guid):
+        guid = guid.strip()
+        guid_regex = "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        if not re.match(guid_regex, guid):
+            raise errors.ValueError("GUID not well formatted: {}".format(guid))
+        self._guid = guid
+
+    @property
     def geocaching(self):
         """A reference to :class:`.Geocaching` used for communicating with geocaching.com.
 
@@ -681,6 +697,7 @@ class Cache(object):
         self.author = data["owner"]["text"]
         self.favorites = int(data["fp"])
         self.pm_only = data["subrOnly"]
+        self.guid = res["data"][0]["g"]
 
         logging.debug("Cache loaded: {}".format(self))
 
@@ -697,7 +714,7 @@ class Cache(object):
         :raise .PMOnlyException: If the PM only warning is shown on the page
         """
         if not hasattr(self, "guid"):
-            self._load_guid()
+            self.load_quick()
         res = self.geocaching._request(self._urls["print_page"],
                                        params={"guid": self.guid})
         if res.find("p", "Warning") is not None:
@@ -747,18 +764,6 @@ class Cache(object):
             "strong", text=re.compile("Favorites:")).parent.text.split()[-1]
 
         self.waypoints = Waypoint.from_html(content, "Waypoints")
-
-    def _load_guid(self):
-        res = self.geocaching._request(self._urls["tiles_server"],
-                                       params={"i": self.wp},
-                                       expect="json")
-
-        if res["status"] == "failed" or len(res["data"]) != 1:
-            msg = res["msg"] if "msg" in res else "Unknown error (probably not existing cache)"
-            raise errors.LoadError("Cache {} cannot be loaded: {}".format(self, msg))
-
-        self.guid = res["data"][0]["g"]
-        logging.debug("Cache guid found: {}".format(self.guid))
 
     def _logbook_get_page(self, page=0, per_page=25):
         """Load one page from logbook.

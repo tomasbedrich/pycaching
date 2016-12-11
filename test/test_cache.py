@@ -21,7 +21,7 @@ class TestProperties(unittest.TestCase):
                        found=False, size=Size.micro, difficulty=1.5, terrain=5, author="human", hidden=date(2000, 1, 1),
                        attributes={"onehour": True, "kids": False, "available": True}, summary="text",
                        description="long text", hint="rot13", favorites=0, pm_only=False,
-                       original_location=Point(), waypoints={})
+                       original_location=Point(), waypoints={}, guid="53d34c4d-12b5-4771-86d3-89318f71efb1")
         self.c._log_page_url = "/seek/log.aspx?ID=1234567&lcn=1"
 
     def test___str__(self):
@@ -40,6 +40,13 @@ class TestProperties(unittest.TestCase):
         with self.subTest("filter invalid"):
             with self.assertRaises(PycachingValueError):
                 self.c.wp = "xxx"
+
+    def test_guid(self):
+        self.assertEqual(self.c.guid, "53d34c4d-12b5-4771-86d3-89318f71efb1")
+
+        with self.subTest("filter invalid"):
+            with self.assertRaises(PycachingValueError):
+                self.c.guid = "123"
 
     def test_name(self):
         self.assertEqual(self.c.name, "Testing")
@@ -202,6 +209,7 @@ class TestMethods(unittest.TestCase):
             cache.load_quick()
             self.assertEqual(4, cache.terrain)
             self.assertEqual(Size.regular, cache.size)
+            self.assertEqual(cache.guid, "15ad3a3d-92c1-4f7c-b273-60937bcc2072")
 
         with self.subTest("fail"):
             with self.assertRaises(LoadError):
@@ -212,9 +220,8 @@ class TestMethods(unittest.TestCase):
     @mock.patch("pycaching.Cache.load_quick")
     def test_load_by_guid(self, mock_load, mock_load_quick):
         with self.subTest("normal"):
-            cache = Cache(self.gc, "GC2WXPN")
+            cache = Cache(self.gc, "GC2WXPN", guid="5f45114d-1d79-4fdb-93ae-8f49f1d27188")
             cache.load_by_guid()
-            self.assertEqual(cache.guid, "5f45114d-1d79-4fdb-93ae-8f49f1d27188")
             self.assertEqual(cache.name, "Der Schatz vom Luftschloss")
             self.assertEqual(cache.location, Point("N 49° 57.895' E 008° 12.988'"))
             self.assertEqual(cache.type, Type.mystery)
@@ -238,13 +245,8 @@ class TestMethods(unittest.TestCase):
             self.assertGreater(cache.favorites, 380)
             self.assertEqual(len(cache.waypoints), 2)
 
-        with self.subTest("fail"):
-            with self.assertRaises(LoadError):
-                cache = Cache(self.gc, "GC123456")
-                cache.load_by_guid()
-
         with self.subTest("PM-only"):
-            cache = Cache(self.gc, "GC6MKEF")
+            cache = Cache(self.gc, "GC6MKEF", guid="53d34c4d-12b5-4771-86d3-89318f71efb1")
             with self.assertRaises(PMOnlyException):
                 cache.load_by_guid()
 
