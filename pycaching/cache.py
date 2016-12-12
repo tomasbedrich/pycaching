@@ -185,7 +185,7 @@ class Cache(object):
 
         :type: :class:`str`
         """
-        return self._guid
+        return getattr(self, "_guid", None)
 
     @guid.setter
     def guid(self, guid):
@@ -713,8 +713,11 @@ class Cache(object):
 
         :raise .PMOnlyException: If the PM only warning is shown on the page
         """
-        if not hasattr(self, "guid"):
+        # If GUID has not yet been set, load it using the "tiles_server"
+        # utilizing `load_quick()`
+        if not self.guid:
             self.load_quick()
+
         res = self.geocaching._request(self._urls["print_page"],
                                        params={"guid": self.guid})
         if res.find("p", "Warning") is not None:

@@ -218,7 +218,7 @@ class TestMethods(unittest.TestCase):
 
     @mock.patch("pycaching.Cache.load")
     @mock.patch("pycaching.Cache.load_quick")
-    def test_load_by_guid(self, mock_load, mock_load_quick):
+    def test_load_by_guid(self, mock_load_quick, mock_load):
         with self.subTest("normal"):
             cache = Cache(self.gc, "GC2WXPN", guid="5f45114d-1d79-4fdb-93ae-8f49f1d27188")
             cache.load_by_guid()
@@ -249,6 +249,12 @@ class TestMethods(unittest.TestCase):
             cache = Cache(self.gc, "GC6MKEF", guid="53d34c4d-12b5-4771-86d3-89318f71efb1")
             with self.assertRaises(PMOnlyException):
                 cache.load_by_guid()
+
+        with self.subTest("calls load_quick if no guid"):
+            cache = Cache(self.gc, "GC2WXPN")
+            with self.assertRaises(Exception):
+                cache.load_by_guid()  # Raises error since we mocked load_quick()
+            self.assertTrue(mock_load_quick.called)
 
     def test_load_trackables(self):
         cache = Cache(self.gc, "GC26737")  # TB graveyard - will surelly have some trackables
