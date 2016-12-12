@@ -4,6 +4,7 @@ import logging
 import datetime
 import re
 import enum
+import os
 from pycaching import errors
 from pycaching.geo import Point
 from pycaching.trackable import Trackable
@@ -99,6 +100,14 @@ class Cache(object):
         "wirelessbeacon": "Wireless Beacon"
     }
 
+    # collection of urls used within the Cache class
+    _urls = {
+        "tiles_server": "http://tiles01.geocaching.com/map.details",
+        "logbook": "seek/geocache.logbook",
+        "cache_details": "seek/cache_details.aspx",
+        "print_page": "seek/cdpf.aspx",
+    }
+
     def __init__(self, geocaching, wp, **kwargs):
         """Create a cache instance.
 
@@ -116,7 +125,7 @@ class Cache(object):
         known_kwargs = {"name", "type", "location", "original_location", "state", "found", "size",
                         "difficulty", "terrain", "author", "hidden", "attributes", "summary",
                         "description", "hint", "favorites", "pm_only", "url", "waypoints", "_logbook_token",
-                        "_trackable_page_url"}
+                        "_trackable_page_url", "guid"}
 
         for name in known_kwargs:
             if name in kwargs:
@@ -169,6 +178,22 @@ class Cache(object):
         if not wp.startswith("GC"):
             raise errors.ValueError("GC code '{}' doesn't start with 'GC'.".format(wp))
         self._wp = wp
+
+    @property
+    def guid(self):
+        """The cache GUID. An identifier used at some places on geoaching.com
+
+        :type: :class:`str`
+        """
+        return getattr(self, "_guid", None)
+
+    @guid.setter
+    def guid(self, guid):
+        guid = guid.strip()
+        guid_regex = "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        if not re.match(guid_regex, guid):
+            raise errors.ValueError("GUID not well formatted: {}".format(guid))
+        self._guid = guid
 
     @property
     def geocaching(self):
@@ -225,7 +250,7 @@ class Cache(object):
         """The cache original location.
 
         :setter: Set a cache original location. If :class:`str` is passed, then
-            :meth:`.Point.from_string` is used and its return value is stored as a location.
+        :meth:`.Point.from_string` is used and its return value is stored as a location.
         :type: :class:`.Point`
         """
         return self._original_location
@@ -528,7 +553,8 @@ class Cache(object):
             if hasattr(self, "url"):
                 root = self.geocaching._request(self.url)
             elif hasattr(self, "_wp"):
-                root = self.geocaching._request("seek/cache_details.aspx", params={"wp": self._wp})
+                root = self.geocaching._request(self._urls["cache_details"],
+                                                params={"wp": self._wp})
             else:
                 raise errors.LoadError("Cache lacks info for loading")
         except errors.Error as e:
@@ -637,7 +663,7 @@ class Cache(object):
             self._trackable_page_url = None
 
         # Additional Waypoints
-        self.waypoints = Waypoint.from_html(root)
+        self.waypoints = Waypoint.from_html(root, "ctl00_ContentBody_Waypoints")
 
         logging.debug("Cache loaded: {}".format(self))
 
@@ -650,9 +676,9 @@ class Cache(object):
 
         :raise .LoadError: If cache loading fails (probably because of not existing cache).
         """
-        res = self.geocaching._request("http://tiles01.geocaching.com/map.details", params={
-            "i": self.wp
-        }, expect="json")
+        res = self.geocaching._request(self._urls["tiles_server"],
+                                       params={"i": self.wp},
+                                       expect="json")
 
         if res["status"] == "failed" or len(res["data"]) != 1:
             msg = res["msg"] if "msg" in res else "Unknown error (probably not existing cache)"
@@ -671,8 +697,76 @@ class Cache(object):
         self.author = data["owner"]["text"]
         self.favorites = int(data["fp"])
         self.pm_only = data["subrOnly"]
+        self.guid = res["data"][0]["g"]
 
         logging.debug("Cache loaded: {}".format(self))
+
+    def load_by_guid(self):
+        """Load cache details using the GUID to request and parse the caches
+        'print-page'. Loading as many properties as possible except the
+        following ones, since they are not present on the 'print-page':
+
+          + original_location
+          + state
+          + found
+          + pm_only
+
+        :raise .PMOnlyException: If the PM only warning is shown on the page
+        """
+        # If GUID has not yet been set, load it using the "tiles_server"
+        # utilizing `load_quick()`
+        if not self.guid:
+            self.load_quick()
+
+        res = self.geocaching._request(self._urls["print_page"],
+                                       params={"guid": self.guid})
+        if res.find("p", "Warning") is not None:
+            raise errors.PMOnlyException()
+        content = res.find(id="Content")
+
+        self.name = content.find("h2").text
+
+        self.location = Point.from_string(
+            content.find("p", "LatLong Meta").text)
+
+        type_img = os.path.basename(content.find("img").get("src"))
+        self.type = Type.from_filename(os.path.splitext(type_img)[0])
+
+        size_img = content.find("img", src=re.compile("\/icons\/container\/"))
+        self.size = Size.from_string(size_img.get("alt").split(": ")[1])
+
+        D_and_T_img = content.find("p", "Meta DiffTerr").find_all("img")
+        self.difficulty, self.terrain = [
+            float(img.get("alt").split()[0]) for img in D_and_T_img
+        ]
+
+        self.author = content.find(
+            "p", text=re.compile("Placed by:")).text.split("\r\n")[2].strip()
+
+        hidden_p = content.find("p", text=re.compile("Placed Date:"))
+        self.hidden = hidden_p.text.replace("Placed Date:", "").strip()
+
+        attr_img = content.find_all("img", src=re.compile("\/attributes\/"))
+        attributes_raw = [
+            os.path.basename(_.get("src")).rsplit("-", 1) for _ in attr_img
+        ]
+        self.attributes = {
+            name: appendix.startswith("yes") for name, appendix
+            in attributes_raw if not appendix.startswith("blank")
+        }
+
+        self.summary = content.find(
+            "h2", text="Short Description").find_next("div").text
+
+        self.description = content.find(
+            "h2", text="Long Description").find_next("div").text
+
+        self.hint = content.find(id="uxEncryptedHint").text
+
+        self.favorites = content.find(
+            "strong", text=re.compile("Favorites:")).parent.text.split()[-1]
+
+        self.waypoints = Waypoint.from_html(content, "Waypoints")
 
     def _logbook_get_page(self, page=0, per_page=25):
         """Load one page from logbook.
@@ -681,7 +775,7 @@ class Cache(object):
         :param int per_page: Logs per page (used to calculate start index).
         :raise .LoadError: If loading fails.
         """
-        res = self.geocaching._request("seek/geocache.logbook", params={
+        res = self.geocaching._request(self._urls["logbook"], params={
             "tkn": self._logbook_token,  # will trigger lazy_loading if needed
             "idx": int(page) + 1,  # Groundspeak indexes this from 1 (OMG..)
             "num": int(per_page),
@@ -831,10 +925,16 @@ class Waypoint():
         self._note = note
 
     @classmethod
-    def from_html(cls, root):
-        """Return a dictionary of all waypoints found in the page representation"""
+    def from_html(cls, soup, table_id):
+        """Return a dictionary of all waypoints found in the page
+        representation
+
+        :param bs4.BeautifulSoup soup: parsed html document containing the
+            waypoints table
+        :param str table_id: html id of the waypoints table
+        """
         waypoints_dict = {}
-        waypoints_table = root.find('table', id="ctl00_ContentBody_Waypoints")
+        waypoints_table = soup.find('table', id=table_id)
         if waypoints_table:
             waypoints_table = waypoints_table.find_all("tr")
             for r1, r2 in zip(waypoints_table[1::2], waypoints_table[2::2]):
