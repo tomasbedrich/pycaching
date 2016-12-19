@@ -732,6 +732,8 @@ class Cache(object):
 
         self.name = content.find("h2").text
 
+        self.wp = res.find(id="Header").find_all("h1")[-1].text
+
         self.location = Point.from_string(
             content.find("p", "LatLong Meta").text)
 
