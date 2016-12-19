@@ -5,6 +5,7 @@ import datetime
 import re
 import enum
 import os
+import urllib.parse as urlparse
 from pycaching import errors
 from pycaching.geo import Point
 from pycaching.trackable import Trackable
@@ -614,6 +615,11 @@ class Cache(object):
             raise errors.PMOnlyException()
 
         # details not avaliable for basic members for PM only caches ------------------------------
+
+        parsed_url = urlparse(root.find(id="ctl00_ogUrl").get("content"))
+        query_string = urlparse.parse_qs(parsed_url)
+        self.guid = query_string['guid']
+
         pm_only_warning = root.find("p", "Warning NoBottomSpacing")
         self.pm_only = pm_only_warning and ("Premium Member Only" in pm_only_warning.text) or False
 
