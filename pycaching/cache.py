@@ -5,7 +5,7 @@ import datetime
 import re
 import enum
 import os
-import urllib.parse as urlparse
+from urllib.parse import urlparse, parse_qs
 from pycaching import errors
 from pycaching.geo import Point
 from pycaching.trackable import Trackable
@@ -616,9 +616,9 @@ class Cache(object):
 
         # details not avaliable for basic members for PM only caches ------------------------------
 
-        parsed_url = urlparse(root.find(id="ctl00_ogUrl").get("content"))
-        query_string = urlparse.parse_qs(parsed_url)
-        self.guid = query_string['guid']
+        parsed_url = urlparse(root.find("link", rel="canonical").get("href"))
+        query_string = parse_qs(parsed_url.query)
+        self.guid = query_string['guid'][0]
 
         pm_only_warning = root.find("p", "Warning NoBottomSpacing")
         self.pm_only = pm_only_warning and ("Premium Member Only" in pm_only_warning.text) or False
@@ -754,7 +754,8 @@ class Cache(object):
         hidden_p = content.find("p", text=re.compile("Placed Date:"))
         self.hidden = hidden_p.text.replace("Placed Date:", "").strip()
 
-        attr_img = content.find_all("img", src=re.compile("\/attributes\/"))
+        attributes_widget = content.find("div", "sortables")
+        attr_img = attributes_widget.find_all("img", src=re.compile("\/attributes\/"))
         attributes_raw = [
             os.path.basename(_.get("src")).rsplit("-", 1) for _ in attr_img
         ]
@@ -771,8 +772,8 @@ class Cache(object):
 
         self.hint = content.find(id="uxEncryptedHint").text
 
-        self.favorites = content.find(
-            "strong", text=re.compile("Favorites:")).parent.text.split()[-1]
+        favorites = content.find("strong", text=re.compile("Favorites:"))
+        self.favorites = 0 if favorites is None else int(favorites.parent.text.split()[-1])
 
         self.waypoints = Waypoint.from_html(content, "Waypoints")
 
