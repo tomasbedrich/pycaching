@@ -171,6 +171,7 @@ class TestProperties(unittest.TestCase):
 
 
 class TestMethods(unittest.TestCase):
+    _multiprocess_shared_ = True
 
     @classmethod
     def setUpClass(cls):
@@ -179,13 +180,31 @@ class TestMethods(unittest.TestCase):
         cls.c = Cache(cls.gc, "GC1PAR2")
         cls.c.load()
 
-    def test_load(self):
+    @mock.patch("pycaching.Cache.load_normal")
+    @mock.patch("pycaching.Cache.load_print")
+    def test_load(self, mock_load_print, mock_load_normal):
+        with self.subTest("use load_print for GUID"):
+            cache = Cache(self.gc, guid="5f45114d-1d79-4fdb-93ae-8f49f1d27188")
+            cache.load()
+            self.assertTrue(mock_load_print.called)
+
+        with self.subTest("use load_normal for WP"):
+            cache = Cache(self.gc, wp="GC4808G")
+            cache.load()
+            self.assertTrue(mock_load_normal.called)
+
+        with self.subTest("fail for no loading info"):
+            with self.assertRaises(LoadError):
+                cache = Cache(self.gc)
+                cache.load()
+
+    def test_load_normal(self):
         with self.subTest("normal (with explicit call of load())"):
             cache = Cache(self.gc, "GC4808G")
-            cache.load()
+            cache.load_normal()
             self.assertEqual("Nekonecne ticho", cache.name)
 
-        with self.subTest("normal"):
+        with self.subTest("normal (lazy-loaded)"):
             cache = Cache(self.gc, "GC4808G")
             self.assertEqual("Nekonecne ticho", cache.name)
 
@@ -196,12 +215,12 @@ class TestMethods(unittest.TestCase):
         with self.subTest("PM only"):
             with self.assertRaises(PMOnlyException):
                 cache = Cache(self.gc, "GC3AHDM")
-                cache.load()
+                cache.load_normal()
 
         with self.subTest("fail"):
             with self.assertRaises(LoadError):
                 cache = Cache(self.gc, "GC123456")
-                cache.load()
+                cache.load_normal()
 
     def test_load_quick(self):
         with self.subTest("normal"):
@@ -216,12 +235,11 @@ class TestMethods(unittest.TestCase):
                 cache = Cache(self.gc, "GC123456")
                 cache.load_quick()
 
-    @mock.patch("pycaching.Cache.load")
-    @mock.patch("pycaching.Cache.load_quick")
-    def test_load_by_guid(self, mock_load_quick, mock_load):
+    @mock.patch.object(Cache, "load_quick")
+    def test_load_print(self, mock_load_quick):
         with self.subTest("normal"):
             cache = Cache(self.gc, "GC2WXPN", guid="5f45114d-1d79-4fdb-93ae-8f49f1d27188")
-            cache.load_by_guid()
+            cache.load_print()
             self.assertEqual(cache.name, "Der Schatz vom Luftschloss")
             self.assertEqual(cache.location, Point("N 49° 57.895' E 008° 12.988'"))
             self.assertEqual(cache.type, Type.mystery)
@@ -248,12 +266,12 @@ class TestMethods(unittest.TestCase):
         with self.subTest("PM-only"):
             cache = Cache(self.gc, "GC6MKEF", guid="53d34c4d-12b5-4771-86d3-89318f71efb1")
             with self.assertRaises(PMOnlyException):
-                cache.load_by_guid()
+                cache.load_print()
 
         with self.subTest("calls load_quick if no guid"):
             cache = Cache(self.gc, "GC2WXPN")
             with self.assertRaises(Exception):
-                cache.load_by_guid()  # Raises error since we mocked load_quick()
+                cache.load_print()  # raises error since we mocked load_quick()
             self.assertTrue(mock_load_quick.called)
 
     def test_load_trackables(self):

@@ -18,6 +18,7 @@ _username, _password = "cache-map", "pGUgNw59"
 
 
 class TestMethods(unittest.TestCase):
+    _multiprocess_shared_ = True
 
     @classmethod
     def setUpClass(cls):
@@ -242,6 +243,7 @@ class TestLoginOperations(unittest.TestCase):
 
 
 class TestShortcuts(unittest.TestCase):
+    _multiprocess_shared_ = True
 
     @classmethod
     def setUpClass(cls):

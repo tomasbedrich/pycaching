@@ -179,6 +179,7 @@ class TestRectangle(unittest.TestCase):
 
 
 class TestTile(unittest.TestCase):
+    _multiprocess_shared_ = True
 
     # see
     # http://gis.stackexchange.com/questions/8650/how-to-measure-the-accuracy-of-latitude-and-longitude

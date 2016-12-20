@@ -50,6 +50,7 @@ class TestProperties(unittest.TestCase):
 
 
 class TestMethods(unittest.TestCase):
+    _multiprocess_shared_ = True
 
     @classmethod
     def setUpClass(cls):

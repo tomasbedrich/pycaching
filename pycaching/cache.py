@@ -109,7 +109,7 @@ class Cache(object):
         "print_page": "seek/cdpf.aspx",
     }
 
-    def __init__(self, geocaching, wp, **kwargs):
+    def __init__(self, geocaching, wp=None, **kwargs):
         """Create a cache instance.
 
         :param .Geocaching geocaching: Reference to :class:`.Geocaching` instance, used for loading
@@ -125,8 +125,8 @@ class Cache(object):
 
         known_kwargs = {"name", "type", "location", "original_location", "state", "found", "size",
                         "difficulty", "terrain", "author", "hidden", "attributes", "summary",
-                        "description", "hint", "favorites", "pm_only", "url", "waypoints", "_logbook_token",
-                        "_trackable_page_url", "guid"}
+                        "description", "hint", "favorites", "pm_only", "waypoints", "guid",
+                        "_logbook_token", "_trackable_page_url"}
 
         for name in known_kwargs:
             if name in kwargs:
@@ -181,12 +181,13 @@ class Cache(object):
         self._wp = wp
 
     @property
+    @lazy_loaded
     def guid(self):
         """The cache GUID. An identifier used at some places on geoaching.com
 
         :type: :class:`str`
         """
-        return getattr(self, "_guid", None)
+        return self._guid
 
     @guid.setter
     def guid(self, guid):
@@ -532,32 +533,47 @@ class Cache(object):
         self.__trackable_page_url = trackable_page_url
 
     def load(self):
-        """Load all possible cache details.
-
-        Use full cache details page. Therefore all possible properties are filled in, but the
-        loading is a bit slow.
-
-        If you want to load basic details about a PM only cache, the :class:`.PMOnlyException` is
-        still thrown, but avaliable details are filled in. If you know, that the cache you are
-        loading is PM only, please consider using :meth:`load_quick` as it will load the same
-        details, but quicker.
+        """Load cache details.
 
         .. note::
            This method is called automatically when you access a property which isn't yet filled in
            (so-called "lazy loading"). You don't have to call it explicitly.
 
+        This method picks the loading method based on the available cache ID:
+
+          + If a GUID is known, it uses :meth:`.Cache.load_print`.
+          + Else if a WP is known, it uses :meth:`.Cache.load_normal`.
+          + Else, it throws a :class:`.LoadError`.
+
+        For details on different loading methods, please see their documentation. Feel free not to
+        call this method, but please use directly that one, which better suits your needs.
+
+        :raise .PMOnlyException: If cache is PM only and current user is basic member.
+        :raise .LoadError: If cache cannot be loaded.
+        """
+        if hasattr(self, "_guid"):
+            return self.load_print()
+        elif hasattr(self, "_wp"):
+            return self.load_normal()
+        else:
+            raise errors.LoadError("Cache lacks info for loading")
+
+    def load_normal(self):
+        """Load all cache details.
+
+        It uses a full cache details page. Therefore all possible properties are filled in, but the
+        loading is a bit slow.
+
+        If you want to load basic details about a PM only cache, the :class:`.PMOnlyException` is
+        thrown, but all available details are filled in. If you know, that the cache you are
+        loading is PM only, please consider using :meth:`load_quick` as it will load the same
+        details, but faster.
+
         :raise .PMOnlyException: If cache is PM only and current user is basic member.
         :raise .LoadError: If cache loading fails (probably because of not existing cache).
         """
         try:
-            # pick url based on what info we have right now
-            if hasattr(self, "url"):
-                root = self.geocaching._request(self.url)
-            elif hasattr(self, "_wp"):
-                root = self.geocaching._request(self._urls["cache_details"],
-                                                params={"wp": self._wp})
-            else:
-                raise errors.LoadError("Cache lacks info for loading")
+            root = self.geocaching._request(self._urls["cache_details"], params={"wp": self._wp})
         except errors.Error as e:
             # probably 404 during cache loading - cache not exists
             raise errors.LoadError("Error in loading cache") from e
@@ -567,7 +583,7 @@ class Cache(object):
 
         cache_details = root.find(id="ctl00_divContentMain") if self.pm_only else root.find(id="cacheDetails")
 
-        # details also avaliable for basic members for PM only caches -----------------------------
+        # details also available for basic members for PM only caches -----------------------------
 
         if self.pm_only:
             self.wp = cache_details.find("li", "li__gccode").text.strip()
@@ -587,6 +603,7 @@ class Cache(object):
             self.size = Size.from_string(details[8])
 
             self.favorites = int(details[11])
+
         else:
             # parse from <title> - get first word
             try:
@@ -668,27 +685,41 @@ class Cache(object):
         else:
             self._trackable_page_url = None
 
-        # Additional Waypoints
+        # additional Waypoints
         self.waypoints = Waypoint.from_html(root, "ctl00_ContentBody_Waypoints")
 
-        logging.debug("Cache loaded: {}".format(self))
+        logging.debug("Cache loaded (normal): {}".format(self))
 
     def load_quick(self):
         """Load basic cache details.
 
-        Use information from geocaching map tooltips. Therefore loading is very quick, but
-        the only loaded properties are: `name`, `type`, `state`, `size`, `difficulty`, `terrain`,
-        `hidden`, `author`, `favorites` and `pm_only`.
+        Uses a data from geocaching map tooltips. Therefore loading is very quick, but the only
+        loaded properties are:
+
+          + `name`
+          + `type`
+          + `state`
+          + `size`
+          + `difficulty`
+          + `terrain`
+          + `hidden`
+          + `author`
+          + `favorites`
+          + `pm_only`
 
         :raise .LoadError: If cache loading fails (probably because of not existing cache).
         """
-        res = self.geocaching._request(self._urls["tiles_server"],
-                                       params={"i": self.wp},
-                                       expect="json")
+        try:
+            res = self.geocaching._request(self._urls["tiles_server"],
+                                           params={"i": self._wp},
+                                           expect="json")
 
-        if res["status"] == "failed" or len(res["data"]) != 1:
-            msg = res["msg"] if "msg" in res else "Unknown error (probably not existing cache)"
-            raise errors.LoadError("Cache {} cannot be loaded: {}".format(self, msg))
+            if res["status"] == "failed" or len(res["data"]) != 1:
+                msg = res["msg"] if "msg" in res else "Unknown error (probably not existing cache)"
+                raise errors.LoadError(msg)
+
+        except errors.Error as e:
+            raise errors.LoadError("Error in loading cache") from e
 
         data = res["data"][0]
 
@@ -705,37 +736,49 @@ class Cache(object):
         self.pm_only = data["subrOnly"]
         self.guid = res["data"][0]["g"]
 
-        logging.debug("Cache loaded: {}".format(self))
+        logging.debug("Cache loaded (quick): {}".format(self))
 
-    def load_by_guid(self):
-        """Load cache details using the GUID to request and parse the caches
-        'print-page'. Loading as many properties as possible except the
-        following ones, since they are not present on the 'print-page':
+    def load_print(self):
+        """Load most of the cache details.
 
-          + original_location
-          + state
-          + found
-          + pm_only
+        Uses a cache print page. This is significantly faster, but requires a GUID to be set. If
+        the GUID is missing, it calls :meth:`.Cache.load_quick` to get it by a WP, which is both
+        still faster than :meth:`.Cache.load_normal`!
 
-        :raise .PMOnlyException: If the PM only warning is shown on the page
+        However, not all properties are presented on the print page, so the following ones are not
+        loaded:
+
+          + `original_location`
+          + `state`
+          + `found`
+          + `pm_only`
+
+        Also, in comparison to :meth:`.Cache.load_normal` – if the cache is PM-only, this method
+        doesn't load anything.
+
+        :raise .PMOnlyException: If the cache is PM only.
+        :raise .LoadError: If cache loading fails (probably because of not existing cache).
         """
-        # If GUID has not yet been set, load it using the "tiles_server"
-        # utilizing `load_quick()`
-        if not self.guid:
+        # if GUID has not yet been set, load it using the `load_quick()`
+        # the getattr() will prevent lazy-loading of GUID
+        if not getattr(self, "_guid", None):
             self.load_quick()
 
-        res = self.geocaching._request(self._urls["print_page"],
-                                       params={"guid": self.guid})
+        try:
+            res = self.geocaching._request(self._urls["print_page"], params={"guid": self._guid})
+        except errors.Error as e:
+            raise errors.LoadError("Error in loading cache") from e
+
         if res.find("p", "Warning") is not None:
             raise errors.PMOnlyException()
+
+        self.wp = res.find(id="Header").find_all("h1")[-1].text
+
         content = res.find(id="Content")
 
         self.name = content.find("h2").text
 
-        self.wp = res.find(id="Header").find_all("h1")[-1].text
-
-        self.location = Point.from_string(
-            content.find("p", "LatLong Meta").text)
+        self.location = Point.from_string(content.find("p", "LatLong Meta").text)
 
         type_img = os.path.basename(content.find("img").get("src"))
         self.type = Type.from_filename(os.path.splitext(type_img)[0])
@@ -764,11 +807,9 @@ class Cache(object):
             in attributes_raw if not appendix.startswith("blank")
         }
 
-        self.summary = content.find(
-            "h2", text="Short Description").find_next("div").text
+        self.summary = content.find("h2", text="Short Description").find_next("div").text
 
-        self.description = content.find(
-            "h2", text="Long Description").find_next("div").text
+        self.description = content.find("h2", text="Long Description").find_next("div").text
 
         self.hint = content.find(id="uxEncryptedHint").text
 
@@ -776,6 +817,8 @@ class Cache(object):
         self.favorites = 0 if favorites is None else int(favorites.parent.text.split()[-1])
 
         self.waypoints = Waypoint.from_html(content, "Waypoints")
+
+        logging.debug("Cache loaded (print): {}".format(self))
 
     def _logbook_get_page(self, page=0, per_page=25):
         """Load one page from logbook.
