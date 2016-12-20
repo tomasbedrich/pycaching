@@ -9,8 +9,7 @@ import json
 from subprocess import CalledProcessError
 from unittest.mock import patch
 from tempfile import NamedTemporaryFile
-from geopy.distance import great_circle
-from pycaching import Geocaching, Point, Rectangle
+from pycaching import Geocaching, Point, Rectangle, Cache
 from pycaching.errors import NotLoggedInException, LoginFailedException, PMOnlyException
 
 
@@ -246,24 +245,34 @@ class TestShortcuts(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.g = Geocaching()
-        cls.g.login(_username, _password)
+        cls.gc = Geocaching()
 
     def test_login(self):
-        pycaching.login(_username, _password)
+        with patch.object(Geocaching, "login") as login:
+            pycaching.login(_username, _password)
+            self.assertTrue(login.called)
 
     def test_geocode(self):
-        ref_point = Point(49.74774, 13.37752)
-        self.assertLess(great_circle(self.g.geocode("Pilsen"), ref_point).miles, 10)
+        with patch.object(Point, "from_location") as from_location:
+            self.gc.geocode("Pilsen")
+            self.assertTrue(from_location.called)
 
     def test_get_cache(self):
-        c = self.g.get_cache("GC4808G")
-        self.assertEqual("Nekonecne ticho", c.name)
+        with patch("pycaching.cache.Cache.__init__", return_value=None) as Cache:
+            self.gc.get_cache("GC4808G")
+            self.assertTrue(Cache.called)
 
     def test_get_trackable(self):
-        t = self.g.get_trackable("TB1KEZ9")
-        self.assertEqual("Lilagul #2: SwedenHawk Geocoin", t.name)
+        with patch("pycaching.trackable.Trackable.__init__", return_value=None) as Trackable:
+            self.gc.get_trackable("TB1KEZ9")
+            self.assertTrue(Trackable.called)
 
-    def test_post_log(self):
-        # I refuse to write 30 lines of tests (mocking etc.) because of 4 simple lines of code.
-        pass
+    @patch.object(Geocaching, "get_cache")
+    @patch.object(Cache, "post_log")
+    def test_post_log(self, mock_post_log, mock_get_cache):
+        mock_get_cache.return_value = Cache(self.gc)
+
+        self.gc.post_log("GC4808G", "Found it, thank you!")
+
+        self.assertTrue(mock_post_log.called)
+        self.assertTrue(mock_get_cache.called)
