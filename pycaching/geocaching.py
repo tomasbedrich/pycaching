@@ -234,7 +234,7 @@ class Geocaching(object):
                 c = Cache(self, wp)
                 c.type = Type.from_string(cache_details[0].strip())
                 c.name = row.find("span", "cache-name").text
-                c.found = row.find("img", title="Found It!") is not None
+                c.found = str(row.find("svg", class_="badge")).find('found') >= 0
                 c.favorites = int(row.find(attrs={"data-column": "FavoritePoint"}).text)
                 c.state = not (row.get("class") and "disabled" in row.get("class"))
                 c.pm_only = row.find("td", "pm-upsell") is not None
