@@ -236,7 +236,6 @@ class Geocaching(object):
                 c.name = row.find("span", "cache-name").text
                 badge = row.find("svg", class_="badge")
                 c.found = "found" in str(badge) if badge is not None else False
-                # c.found = str(badge).find('found') >= 0
                 c.favorites = int(row.find(attrs={"data-column": "FavoritePoint"}).text)
                 c.state = not (row.get("class") and "disabled" in row.get("class"))
                 c.pm_only = row.find("td", "pm-upsell") is not None
