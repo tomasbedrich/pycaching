@@ -122,7 +122,7 @@ class Cache(object):
         if wp is not None:
             self.wp = wp
 
-        known_kwargs = {"name", "type", "location", "lat", "lon", "original_location", "state", "found", "size",
+        known_kwargs = {"name", "type", "location", "lat", "lon", "country", "stateprovince", "original_location", "state", "found", "size",
                         "difficulty", "terrain", "author", "hidden", "attributes", "summary",
                         "description", "hint", "favorites", "pm_only", "url", "waypoints", "_logbook_token",
                         "_trackable_page_url", "guid", "id"}
@@ -466,6 +466,20 @@ class Cache(object):
 
     @property
     @lazy_loaded
+    def lon(self):
+        """The cache longitude in DMS.
+
+        :type: :class:`str`
+        """
+        return self._lon
+
+    @lon.setter
+    def lon(self, lon):
+        lon = str(lon).strip()
+        self._lon = lon
+
+    @property
+    @lazy_loaded
     def id(self):
         """The cache ID.
 
@@ -480,17 +494,32 @@ class Cache(object):
 
     @property
     @lazy_loaded
-    def lon(self):
-        """The cache longitude in DMS.
+    def country(self):
+        """The country the cache is in.
 
         :type: :class:`str`
         """
-        return self._lon
+        return self._country
 
-    @lon.setter
-    def lon(self, lon):
-        lon = str(lon).strip()
-        self._lon = lon
+    @country.setter
+    def country(self, country):
+        country = str(country).strip()
+        self._country = country
+
+    @property
+    @lazy_loaded
+    def stateprovince(self):
+        """The State/Province the cache is in.
+
+        :type: :class:`str`
+        """
+        return self._stateprovince
+
+    @stateprovince.setter
+    def stateprovince(self, stateprovince):
+        stateprovince = str(stateprovince).strip()
+        self._stateprovince = stateprovince
+
 
     @property
     @lazy_loaded
@@ -672,6 +701,10 @@ class Cache(object):
 
         self.id = str(root.find(id="ctl00_ContentBody_GeoNav_logButton")).split("=")[3].split("&")[0]
 
+        self.stateprovince = str(root.find(id="ctl00_ContentBody_Location").text.split(",")[0].split(" ")[1])
+
+        self.country = str(root.find(id="ctl00_ContentBody_Location").text.split(",")[1])
+
         self.state = root.find("ul", "OldWarning") is None
 
         found = root.find("div", "FoundStatus")
@@ -782,6 +815,10 @@ class Cache(object):
         self.lon = str(content.find(id="ctl00_ContentBody_Location").find("a").find("a")).split("=")[3].split("&")[0]
 
         self.id = str(root.find(id="ctl00_ContentBody_GeoNav_logButton")).split("=")[3].split("&")[0]
+
+        self.stateprovince = str(root.find(id="ctl00_ContentBody_Location").text.split(",")[0].split(" ")[1])
+
+        self.country = str(root.find(id="ctl00_ContentBody_Location").text.split(",")[1])
 
         type_img = os.path.basename(content.find("img").get("src"))
         self.type = Type.from_filename(os.path.splitext(type_img)[0])
