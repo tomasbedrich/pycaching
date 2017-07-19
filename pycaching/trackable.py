@@ -195,7 +195,7 @@ class Trackable(object):
         self._log_page_url = "/track/" + root.find(id="ctl00_ContentBody_LogLink")["href"]
 
         location_raw = root.find(id="ctl00_ContentBody_BugDetails_BugLocation")
-        location_url = location_raw.get("href")
+        location_url = location_raw.get("href", "")
         if "cache_details" in location_url:
             self.location = location_url
         else:
@@ -215,7 +215,7 @@ class Trackable(object):
         valid_types = {o["value"] for o in log_page.find_all("option") if o["value"] != "-1"}
 
         # find all static data fields needed for log
-        hidden_inputs = log_page.find_all("input", type=["hidden", "submit"])
+        hidden_inputs = log_page.find_all("input", type=["hidden"])
         hidden_inputs = {i["name"]: i.get("value", "") for i in hidden_inputs}
 
         # get user date format
