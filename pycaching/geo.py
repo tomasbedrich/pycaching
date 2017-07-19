@@ -72,8 +72,10 @@ class Point(geopy.Point):
 
             if "S" in string:
                 latDeg *= -1
+                latMin *= -1
             if "W" in string:
                 lonDeg *= -1
+                lonMin *= -1
 
             return cls(to_decimal(latDeg, latMin), to_decimal(lonDeg, lonMin))
 
