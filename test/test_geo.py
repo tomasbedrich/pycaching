@@ -32,7 +32,7 @@ class TestPoint(unittest.TestCase):
 
         with self.subTest("south and west"):
             self.assertEqual(Point.from_string("S 49 45.123 W 013 22.123"),
-                             Point(-48.24795, -12.63128))
+                             Point(-49.75205, -13.36872))
 
         with self.subTest("letter together"):
             self.assertEqual(Point.from_string("N49 45.123 E013 22.123"), Point(49.75205, 13.36872))
@@ -42,9 +42,9 @@ class TestPoint(unittest.TestCase):
 
         with self.subTest("south and west letter after"):
             self.assertEqual(Point.from_string("49S 45.123 013W 22.123"),
-                             Point(-48.24795, -12.63128))
+                             Point(-49.75205, -13.36872))
 
-        with self.subTest("decimal separator: coma"):
+        with self.subTest("decimal separator: comma"):
             self.assertEqual(Point.from_string("N 49 45,123 E 013 22,123"),
                              Point(49.75205, 13.36872))
 
