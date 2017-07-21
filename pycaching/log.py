@@ -106,7 +106,7 @@ class Type(enum.Enum):
     owner_maintenance = "46"
     placed_it = "14"
     post_reviewer_note = "18"
-    publish_listing = "23"
+    publish_listing = "24"
     retract = "25"
     retrieved_it = "13"
     submit_for_review = "76"
