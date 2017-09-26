@@ -13,7 +13,7 @@ Features
 -  **search** caches
 
    - normal search (unlimited number of caches from any point)
-   - quick search (all caches inside some area)
+   - quick search (all caches inside some area) - currently not working, see bellow
 
 -  **get cache** and its details
 
@@ -175,6 +175,12 @@ Geocode adress and search around
 
 Find caches with their approximate locations in some area
 ---------------------------------------------------------------------------------------------------
+
+.. warning::
+
+    This is currently not working because of
+    `this issue <https://github.com/tomasbedrich/pycaching/issues/75>`__. Contributions are
+    very welcome!
 
 .. code-block:: python
 

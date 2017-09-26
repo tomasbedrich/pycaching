@@ -6,6 +6,7 @@ import requests
 import bs4
 import json
 import subprocess
+import warnings
 from urllib.parse import urljoin
 from os import path
 from pycaching.cache import Cache, Type, Size
@@ -301,19 +302,26 @@ class Geocaching(object):
             automatically determined for whole :class:`.Area` to fit into one :class:`.Tile`. Higher
             zoom level is more precise, but requires more tiles to be loaded.
         """
-        logging.info("Searching quick in {}".format(area))
+        # FIXME
+        warnings.warn("Quick search is temporary disabled because of Groundspeak breaking change. "
+            "If you would like to use it, please consider helping with this issue:"
+            "https://github.com/tomasbedrich/pycaching/issues/75"
+        )
+        raise NotImplementedError()
 
-        tiles = area.to_tiles(self, zoom)
-        # TODO process tiles by multiple workers
-        for tile in tiles:
-            for block in tile.blocks:
-                cache = Cache.from_block(block)
-                if strict and cache.location not in area:
-                    # if strict mode is on and cache is not in area
-                    continue
-                else:
-                    # can yield more caches (which are not exactly in desired area)
-                    yield cache
+        # logging.info("Searching quick in {}".format(area))
+        #
+        # tiles = area.to_tiles(self, zoom)
+        # # TODO process tiles by multiple workers
+        # for tile in tiles:
+        #     for block in tile.blocks:
+        #         cache = Cache.from_block(block)
+        #         if strict and cache.location not in area:
+        #             # if strict mode is on and cache is not in area
+        #             continue
+        #         else:
+        #             # can yield more caches (which are not exactly in desired area)
+        #             yield cache
 
     # add some shortcuts ------------------------------------------------------
 

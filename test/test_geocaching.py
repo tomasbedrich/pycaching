@@ -36,6 +36,7 @@ class TestMethods(unittest.TestCase):
             caches = list(self.g.search(Point(49.733867, 13.397091), 100))
             self.assertNotEqual(caches[0], caches[50])
 
+    @unittest.expectedFailure
     def test_search_quick(self):
         """Perform quick search and check found caches"""
         # at time of writing, there were exactly 16 caches in this area + one PM only
@@ -65,6 +66,7 @@ class TestMethods(unittest.TestCase):
             for c1, c2 in itertools.product(res1, res2):
                 self.assertLess(c1.location.precision, c2.location.precision)
 
+    @unittest.expectedFailure
     def test_search_quick_match_load(self):
         """Test if quick search results matches exact cache locations."""
         rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.39))
