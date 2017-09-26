@@ -229,7 +229,6 @@ class TestMethods(unittest.TestCase):
             self.assertDictEqual(cache.attributes, {
                 "bicycles": True,
                 "available": True,
-                "firstaid": True,
                 "parking": True,
                 "onehour": True,
                 "kids": True,
@@ -238,7 +237,7 @@ class TestMethods(unittest.TestCase):
             self.assertEqual(cache.summary, "Gibt es das Luftschloss wirklich?")
             self.assertIn("Seit dem 16.", cache.description)
             self.assertEqual(cache.hint, "Das ist nicht nötig")
-            self.assertGreater(cache.favorites, 380)
+            self.assertGreater(cache.favorites, 350)
             self.assertEqual(len(cache.waypoints), 2)
 
         with self.subTest("PM-only"):
