@@ -637,7 +637,7 @@ class Cache(object):
 
         user_content = root.find_all("div", "UserSuppliedContent")
         self.summary = user_content[0].text
-        self.description = str(user_content[1])
+        self.description = str(user_content[1].text)
 
         self.hint = rot13(root.find(id="div_hint").text.strip())
 

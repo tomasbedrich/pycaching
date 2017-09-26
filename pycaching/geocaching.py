@@ -304,7 +304,7 @@ class Geocaching(object):
         """
         # FIXME
         warnings.warn("Quick search is temporary disabled because of Groundspeak breaking change. "
-                      "If you would like to use it, please consider helping with this issue:"
+                      "If you would like to use it, please consider helping with this issue: "
                       "https://github.com/tomasbedrich/pycaching/issues/75")
         raise NotImplementedError()
 
