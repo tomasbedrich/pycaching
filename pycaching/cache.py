@@ -9,7 +9,7 @@ from pycaching import errors
 from pycaching.geo import Point
 from pycaching.trackable import Trackable
 from pycaching.log import Log, Type as LogType
-from pycaching.util import parse_date, format_date, rot13, lazy_loaded
+from pycaching.util import parse_date, rot13, lazy_loaded
 
 # prefix _type() function to avoid colisions with cache type
 _type = type
@@ -106,6 +106,7 @@ class Cache(object):
         "logbook": "seek/geocache.logbook",
         "cache_details": "seek/cache_details.aspx",
         "print_page": "seek/cdpf.aspx",
+        "log_page": "play/geocache/{wp}/log",
     }
 
     def __init__(self, geocaching, wp, **kwargs):
@@ -118,7 +119,6 @@ class Cache(object):
         """
 
         self.geocaching = geocaching
-        self._log_page_url = None
         if wp is not None:
             self.wp = wp
 
@@ -644,8 +644,6 @@ class Cache(object):
         favorites = root.find("span", "favorite-value")
         self.favorites = 0 if favorites is None else int(favorites.text)
 
-        self._log_page_url = root.find(id="ctl00_ContentBody_GeoNav_logButton")["href"]
-
         js_content = "\n".join(map(lambda i: i.text, root.find_all("script")))
         self._logbook_token = re.findall("userToken\\s*=\\s*'([^']+)'", js_content)[0]
         # find original location if any
@@ -863,28 +861,25 @@ class Cache(object):
             self.trackables.append(t)
             yield t
 
+    def _get_log_page_url(self):
+        return self._urls["log_page"].format(wp=self.wp.lower())
+
     def _load_log_page(self):
         """Load a logging page for this cache.
 
         :return: Tuple of data nescessary to log the cache.
         :rtype: :class:`tuple` of (:class:`set`:, :class:`dict`, class:`str`)
         """
-        if not self._log_page_url:
-            self.load()  # fills self._log_page_url
-        log_page = self.geocaching._request(self._log_page_url)
+        log_page = self.geocaching._request(self._get_log_page_url())
 
-        # find all valid log types for the cache (-1 removes "- select type of log -")
-        valid_types = {o["value"] for o in log_page.find_all("option") if o["value"] != "-1"}
+        # find all valid log types for the cache
+        valid_types = {o["value"] for o in log_page.find("select", attrs={"name": "LogTypeId"}).find_all("option")}
 
         # find all static data fields needed for log
         hidden_inputs = log_page.find_all("input", type=["hidden", "submit"])
         hidden_inputs = {i["name"]: i.get("value", "") for i in hidden_inputs}
 
-        # get user date format
-        date_format = log_page.find(
-            id="ctl00_ContentBody_LogBookPanel1_uxDateFormatHint").text.strip("()")
-
-        return valid_types, hidden_inputs, date_format
+        return valid_types, hidden_inputs
 
     def post_log(self, log):
         """Post a log for this cache.
@@ -894,19 +889,17 @@ class Cache(object):
         if not log.text:
             raise errors.ValueError("Log text is empty")
 
-        valid_types, hidden_inputs, date_format = self._load_log_page()
+        valid_types, hidden_inputs = self._load_log_page()
         if log.type.value not in valid_types:
             raise errors.ValueError("The cache does not accept this type of log")
 
         # assemble post data
         post = hidden_inputs
-        formatted_date = format_date(log.visited, date_format)
-        post["ctl00$ContentBody$LogBookPanel1$btnSubmitLog"] = "Submit Log Entry"
-        post["ctl00$ContentBody$LogBookPanel1$ddLogType"] = log.type.value
-        post["ctl00$ContentBody$LogBookPanel1$uxDateVisited"] = formatted_date
-        post["ctl00$ContentBody$LogBookPanel1$uxLogInfo"] = log.text
+        post["LogTypeId"] = log.type.value
+        post["LogDate"] = log.visited.strftime("%Y-%m-%d")
+        post["LogText"] = log.text
 
-        self.geocaching._request(self._log_page_url, method="POST", data=post)
+        self.geocaching._request(self._get_log_page_url(), method="POST", data=post)
 
 
 class Waypoint():

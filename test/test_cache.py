@@ -22,7 +22,6 @@ class TestProperties(unittest.TestCase):
                        attributes={"onehour": True, "kids": False, "available": True}, summary="text",
                        description="long text", hint="rot13", favorites=0, pm_only=False,
                        original_location=Point(), waypoints={}, guid="53d34c4d-12b5-4771-86d3-89318f71efb1")
-        self.c._log_page_url = "/seek/log.aspx?ID=1234567&lcn=1"
 
     def test___str__(self):
         self.assertEqual(str(self.c), "GC12345")
@@ -166,9 +165,6 @@ class TestProperties(unittest.TestCase):
     def test_pm_only(self):
         self.assertEqual(self.c.pm_only, False)
 
-    def test_log_page_url(self):
-        self.assertEqual(self.c._log_page_url, "/seek/log.aspx?ID=1234567&lcn=1")
-
 
 class TestMethods(unittest.TestCase):
 
@@ -268,16 +264,12 @@ class TestMethods(unittest.TestCase):
 
     def test_load_log_page(self):
         expected_types = {t.value for t in (LogType.found_it, LogType.didnt_find_it, LogType.note)}
-        expected_inputs = "__EVENTTARGET", "__VIEWSTATE"  # and more ...
-        expected_date_format = "d.M.yyyy"
 
         # make request
-        valid_types, hidden_inputs, user_date_format = self.c._load_log_page()
+        valid_types, hidden_inputs = self.c._load_log_page()
 
         self.assertSequenceEqual(expected_types, valid_types)
-        for i in expected_inputs:
-            self.assertIn(i, hidden_inputs.keys())
-        self.assertEqual(expected_date_format, user_date_format)
+        self.assertIn("__RequestVerificationToken", hidden_inputs.keys())
 
     @mock.patch.object(Cache, "_load_log_page")
     @mock.patch.object(Geocaching, "_request")
@@ -289,7 +281,7 @@ class TestMethods(unittest.TestCase):
             "4",  # write note
             "3",  # didn't find it
         }
-        mock_load_log_page.return_value = (valid_log_types, {}, "mm/dd/YYYY")
+        mock_load_log_page.return_value = (valid_log_types, {})
         test_log_text = "Test log."
 
         with self.subTest("empty log text"):
@@ -308,12 +300,11 @@ class TestMethods(unittest.TestCase):
 
             # test call to _request mock
             expected_post_data = {
-                "ctl00$ContentBody$LogBookPanel1$btnSubmitLog": "Submit Log Entry",
-                "ctl00$ContentBody$LogBookPanel1$ddLogType": "3",  # DNF - see valid_log_types
-                "ctl00$ContentBody$LogBookPanel1$uxDateVisited": date.today().strftime("%m/%d/%Y"),
-                "ctl00$ContentBody$LogBookPanel1$uxLogInfo": test_log_text,
+                "LogTypeId": "3",  # DNF - see valid_log_types
+                "LogDate": date.today().strftime("%Y-%m-%d"),
+                "LogText": test_log_text,
             }
-            mock_request.assert_called_with(self.c._log_page_url, method="POST", data=expected_post_data)
+            mock_request.assert_called_with(self.c._get_log_page_url(), method="POST", data=expected_post_data)
 
 
 class TestWaypointProperties(unittest.TestCase):
