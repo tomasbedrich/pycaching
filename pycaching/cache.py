@@ -237,9 +237,9 @@ class Cache(object):
 
     @location.setter
     def location(self, location):
-        if _type(location) is str:
+        if isinstance(location, str):
             location = Point.from_string(location)
-        elif _type(location) is not Point:
+        elif not isinstance(location, Point):
             raise errors.ValueError(
                 "Passed object is not Point instance nor string containing coordinates.")
         self._location = location
@@ -257,9 +257,9 @@ class Cache(object):
 
     @original_location.setter
     def original_location(self, original_location):
-        if _type(original_location) is str:
+        if isinstance(original_location, str):
             original_location = Point.from_string(original_location)
-        elif _type(original_location) is not Point and original_location is not None:
+        elif not isinstance(original_location, Point) and original_location is not None:
             raise errors.ValueError(
                 "Passed object is not Point instance nor string containing coordinates.")
         self._original_location = original_location
@@ -291,8 +291,8 @@ class Cache(object):
 
     @type.setter
     def type(self, type):
-        if _type(type) is not Type:
-            type = Type.from_string(type)
+        if not isinstance(type, Type):
+            type = Type.from_string(type.strip())
         self._type = type
 
     @property
@@ -319,11 +319,18 @@ class Cache(object):
 
         :type: :class:`bool`
         """
-        return self._found
+        if self._found_status:
+            return self._found_status.type in (LogType.found_it, LogType.attended)
+        else:
+            return False
 
     @found.setter
-    def found(self, found):
-        self._found = bool(found)
+    def found(self, found_status):
+        if bool(found_status):
+            # TODO set found_it / attended based on cache type
+            self._found_status = Log(type=LogType.found_it)
+        else:
+            self._found_status = None
 
     @property
     @lazy_loaded
@@ -338,7 +345,7 @@ class Cache(object):
 
     @size.setter
     def size(self, size):
-        if _type(size) is not Size:
+        if not isinstance(size, Size):
             size = Size.from_string(size)
         self._size = size
 
@@ -354,6 +361,8 @@ class Cache(object):
 
     @difficulty.setter
     def difficulty(self, difficulty):
+        if isinstance(difficulty, str):
+            difficulty = difficulty.strip().replace(",", ".")
         difficulty = float(difficulty)
         if difficulty < 1 or difficulty > 5 or difficulty * 10 % 5 != 0:  # X.0 or X.5
             raise errors.ValueError("Difficulty must be from 1 to 5 and divisible by 0.5.")
@@ -371,6 +380,8 @@ class Cache(object):
 
     @terrain.setter
     def terrain(self, terrain):
+        if isinstance(terrain, str):
+            terrain = terrain.strip().replace(",", ".")
         terrain = float(terrain)
         if terrain < 1 or terrain > 5 or terrain * 10 % 5 != 0:  # X.0 or X.5
             raise errors.ValueError("Terrain must be from 1 to 5 and divisible by 0.5.")
@@ -403,9 +414,9 @@ class Cache(object):
 
     @hidden.setter
     def hidden(self, hidden):
-        if _type(hidden) is str:
+        if isinstance(hidden, str):
             hidden = parse_date(hidden)
-        elif _type(hidden) is not datetime.date:
+        elif not isinstance(hidden, datetime.date):
             raise errors.ValueError(
                 "Passed object is not datetime.date instance nor string containing a date.")
         self._hidden = hidden
@@ -425,7 +436,7 @@ class Cache(object):
 
     @attributes.setter
     def attributes(self, attributes):
-        if _type(attributes) is not dict:
+        if not isinstance(attributes, dict):
             raise errors.ValueError("Attribues is not dict.")
 
         self._attributes = {}
@@ -626,8 +637,12 @@ class Cache(object):
 
         self.state = root.find("ul", "OldWarning") is None
 
-        found = root.find("div", "FoundStatus")
-        self.found = found and ("Found It!" or "Attended" in found.text) or False
+        log_image = root.find(id="ctl00_ContentBody_GeoNav_logTypeImage")
+        if log_image:
+            log_image_filename = log_image.get("src").split("/")[-1].rsplit(".", 1)[0]  # filename w/o extension
+            self._found_status = Log(type=LogType.from_filename(log_image_filename))
+        else:
+            self._found_status = None
 
         attributes_raw = attributes_widget.find_all("img")
         attributes_raw = [_.get("src").split("/")[-1].rsplit("-", 1) for _ in attributes_raw]
@@ -642,7 +657,10 @@ class Cache(object):
         self.hint = rot13(root.find(id="div_hint").text.strip())
 
         favorites = root.find("span", "favorite-value")
-        self.favorites = 0 if favorites is None else int(favorites.text)
+        if favorites:
+            self.favorites = int(favorites.text)
+        else:
+            self.favorites = 0
 
         js_content = "\n".join(map(lambda i: i.text, root.find_all("script")))
         self._logbook_token = re.findall("userToken\\s*=\\s*'([^']+)'", js_content)[0]
@@ -901,8 +919,10 @@ class Cache(object):
 
         self.geocaching._request(self._get_log_page_url(), method="POST", data=post)
 
+        self.found_status = log
 
-class Waypoint():
+
+class Waypoint(object):
     """Waypoint represents a waypoint related to the cache. This may be a
        Parking spot, a stage in a multi-cache or similar.
 
@@ -982,9 +1002,9 @@ class Waypoint():
 
     @location.setter
     def location(self, location):
-        if _type(location) is str:
+        if isinstance(location, str):
             location = Point.from_string(location)
-        elif _type(location) is not Point:
+        elif not isinstance(location, Point):
             raise errors.ValueError(
                 "Passed object is not Point instance nor string containing coordinates.")
         self._location = location
@@ -1013,7 +1033,7 @@ class Type(enum.Enum):
     mystery = unknown = "8"
     letterbox = "5"
     event = "6"
-    mega_event = "mega"
+    mega_event = "453"
     giga_event = "giga"
     earthcache = "137"
     cito = cache_in_trash_out_event = "13"
@@ -1030,9 +1050,11 @@ class Type(enum.Enum):
     @classmethod
     def from_filename(cls, filename):
         """Return a cache type from its image filename."""
+        # fuck Groundspeak, they sometimes use 2 exactly same icons with 2 different names
         if filename == "earthcache":
-            # fuck Groundspeak, they use 2 exactly same icons with 2 different names
             filename = "137"
+        if filename == "mega":
+            filename = "453"
         return cls(filename)
 
     @classmethod
@@ -1105,3 +1127,24 @@ class Size(enum.Enum):
             return cls(name)
         except ValueError as e:
             raise errors.ValueError("Unknown cache size '{}'.".format(name)) from e
+
+    @classmethod
+    def from_number(cls, number):
+        """Return a cache size from its numeric id.
+
+        :raise .ValueError: If cache size cannot be determined.
+        """
+        number = int(number)
+
+        number_mapping = {
+            2: cls.micro,
+            8: cls.small,
+            3: cls.regular,
+            4: cls.large,
+            6: cls.other
+        }
+
+        try:
+            return number_mapping[number]
+        except KeyError as e:
+            raise errors.ValueError("Unknown cache size numeric id '{}'.".format(number)) from e

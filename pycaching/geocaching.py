@@ -9,12 +9,11 @@ import subprocess
 import warnings
 from urllib.parse import urljoin
 from os import path
-from pycaching.cache import Cache, Type, Size
+from pycaching.cache import Cache, Size
 from pycaching.log import Log, Type as LogType
 from pycaching.geo import Point
 from pycaching.trackable import Trackable
 from pycaching.errors import Error, NotLoggedInException, LoginFailedException
-from pycaching.util import parse_date
 
 
 class Geocaching(object):
@@ -214,14 +213,23 @@ class Geocaching(object):
         start_index = 0
         while True:
             # get one page
-            page = self._search_get_page(point, start_index)
+            geocaches_table, whole_page = self._search_get_page(point, start_index)
 
-            if not page:
+            if not geocaches_table:
                 # result is empty - no more caches
                 raise StopIteration()
 
+            # prepare language-dependant mappings
+            if start_index == 0:
+                cache_sizes_filter_wrapper = whole_page.find("div", class_="cache-sizes-wrapper")
+                localized_size_mapping = {
+                    # key = "Small" (localized), value = Size.small
+                    label.find("span").text.strip(): Size.from_number(label.find("input").get("value"))
+                    for label in cache_sizes_filter_wrapper.find_all("label")
+                }
+
             # parse caches in result
-            for start_index, row in enumerate(page.find_all("tr"), start_index):
+            for start_index, row in enumerate(geocaches_table.find_all("tr"), start_index):
 
                 limit -= 1  # handle limit
                 if limit < 0:
@@ -232,12 +240,13 @@ class Geocaching(object):
                 wp = cache_details[1].strip()
 
                 # create and fill cache object
+                # values are sanitized and converted in Cache setters
                 c = Cache(self, wp)
-                c.type = Type.from_string(cache_details[0].strip())
+                c.type = cache_details[0]
                 c.name = row.find("span", "cache-name").text
                 badge = row.find("svg", class_="badge")
                 c.found = "found" in str(badge) if badge is not None else False
-                c.favorites = int(row.find(attrs={"data-column": "FavoritePoint"}).text)
+                c.favorites = row.find(attrs={"data-column": "FavoritePoint"}).text
                 c.state = not (row.get("class") and "disabled" in row.get("class"))
                 c.pm_only = row.find("td", "pm-upsell") is not None
 
@@ -246,10 +255,10 @@ class Geocaching(object):
                     yield c
                     continue
 
-                c.size = Size.from_string(row.find(attrs={"data-column": "ContainerSize"}).text)
-                c.difficulty = float(row.find(attrs={"data-column": "Difficulty"}).text)
-                c.terrain = float(row.find(attrs={"data-column": "Terrain"}).text)
-                c.hidden = parse_date(row.find(attrs={"data-column": "PlaceDate"}).text)
+                c.size = localized_size_mapping[row.find(attrs={"data-column": "ContainerSize"}).text.strip()]
+                c.difficulty = row.find(attrs={"data-column": "Difficulty"}).text
+                c.terrain = row.find(attrs={"data-column": "Terrain"}).text
+                c.hidden = row.find(attrs={"data-column": "PlaceDate"}).text
                 c.author = row.find("span", "owner").text[3:]  # delete "by "
 
                 logging.debug("Cache parsed: {}".format(c))
@@ -275,7 +284,7 @@ class Geocaching(object):
             res = self._request(self._urls["search"], params={
                 "origin": point.format_decimal(),
             })
-            return res.find(id="geocaches")
+            return res.find(id="geocaches"), res
 
         else:
             # other requests can use AJAX endpoint
@@ -289,7 +298,7 @@ class Geocaching(object):
                 "selectAll": "false",
             }, expect="json")
 
-            return bs4.BeautifulSoup(res["HtmlString"].strip(), "html.parser")
+            return bs4.BeautifulSoup(res["HtmlString"].strip(), "html.parser"), None
 
     def search_quick(self, area, *, strict=False, zoom=None):
         """Return a generator of caches in some area.
