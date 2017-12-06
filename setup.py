@@ -45,7 +45,7 @@ with (root / "requirements.txt").open(encoding="utf-8") as f:
 
 info = {
     "name":                "pycaching",
-    "version":             "3.6.1",  # PEP 386
+    "version":             "3.6.2",  # PEP 386
     "author":              "Tomas Bedrich",
     "author_email":        "ja@tbedrich.cz",
     "url":                 "https://github.com/tomasbedrich/pycaching",
