@@ -954,7 +954,7 @@ class Waypoint(object):
                 columns = r1.find_all("td") + r2.find_all("td")
                 identifier = columns[4].text.strip()
                 type = None
-                if columns[2].find("img") != None:
+                if columns[2].find("img") is not None:
                   type = columns[2].find("img").get("title")
                 location_string = columns[6].text.strip()
                 try:
