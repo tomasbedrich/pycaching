@@ -955,7 +955,7 @@ class Waypoint(object):
                 identifier = columns[4].text.strip()
                 type = None
                 if columns[2].find("img") is not None:
-                  type = columns[2].find("img").get("title")
+                    type = columns[2].find("img").get("title")
                 location_string = columns[6].text.strip()
                 try:
                     loc = Point(location_string)
@@ -965,7 +965,7 @@ class Waypoint(object):
                         identifier, location_string))
                 note = None
                 if len(columns) >= 11:
-                  note = columns[10].text.strip()
+                    note = columns[10].text.strip()
                 waypoints_dict[identifier] = cls(identifier, type, loc, note)
         return waypoints_dict
 
