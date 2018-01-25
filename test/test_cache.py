@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
 
 import unittest
-from unittest import mock
 from datetime import date
-from pycaching.errors import ValueError as PycachingValueError, LoadError, PMOnlyException
+from unittest import mock
+
 from pycaching.cache import Cache, Type, Size, Waypoint
-from pycaching.geocaching import Geocaching
+from pycaching.errors import ValueError as PycachingValueError, LoadError, PMOnlyException
 from pycaching.geo import Point
+from pycaching.geocaching import Geocaching
 from pycaching.log import Log, Type as LogType
 from pycaching.util import parse_date
-
-from test.test_geocaching import _username, _password
+from . import recorder, username as _username, password as _password, session
 
 
 class TestProperties(unittest.TestCase):
-
     def setUp(self):
         self.gc = Geocaching()
         self.c = Cache(self.gc, "GC12345", name="Testing", type=Type.traditional, location=Point(), state=True,
@@ -167,57 +166,65 @@ class TestProperties(unittest.TestCase):
 
 
 class TestMethods(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
-        cls.gc = Geocaching()
-        cls.gc.login(_username, _password)
+        cls.gc = Geocaching(_session=session)
         cls.c = Cache(cls.gc, "GC1PAR2")
-        cls.c.load()
+        with recorder.use_cassette('cache_setup'):
+            cls.gc.login(_username, _password)
+            cls.c.load()
 
     def test_load(self):
         with self.subTest("normal (with explicit call of load())"):
-            cache = Cache(self.gc, "GC4808G")
-            cache.load()
+            with recorder.use_cassette('cache_explicit_load'):
+                cache = Cache(self.gc, "GC4808G")
+                cache.load()
             self.assertEqual("Nekonecne ticho", cache.name)
 
         with self.subTest("normal"):
-            cache = Cache(self.gc, "GC4808G")
-            self.assertEqual("Nekonecne ticho", cache.name)
+            with recorder.use_cassette('cache_normal_normal'):
+                cache = Cache(self.gc, "GC4808G")
+                self.assertEqual("Nekonecne ticho", cache.name)
 
         with self.subTest("non-ascii chars"):
-            cache = Cache(self.gc, "GC4FRG5")
-            self.assertEqual("Entre l'arbre et la grille.", cache.hint)
+            with recorder.use_cassette('cache_non-ascii'):
+                cache = Cache(self.gc, "GC5VJ0P")
+                self.assertEqual("budka u paty stromu nedaleko tancící borovice", cache.hint)
 
         with self.subTest("PM only"):
-            with self.assertRaises(PMOnlyException):
-                cache = Cache(self.gc, "GC3AHDM")
-                cache.load()
+            with recorder.use_cassette('cache_PMO'):
+                with self.assertRaises(PMOnlyException):
+                    cache = Cache(self.gc, "GC3AHDM")
+                    cache.load()
 
         with self.subTest("fail"):
-            with self.assertRaises(LoadError):
-                cache = Cache(self.gc, "GC123456")
-                cache.load()
+            with recorder.use_cassette('cache_normal_fail'):
+                with self.assertRaises(LoadError):
+                    cache = Cache(self.gc, "GC123456")
+                    cache.load()
 
     def test_load_quick(self):
         with self.subTest("normal"):
-            cache = Cache(self.gc, "GC4808G")
-            cache.load_quick()
+            with recorder.use_cassette('cache_quick_normal'):
+                cache = Cache(self.gc, "GC4808G")
+                cache.load_quick()
             self.assertEqual(4, cache.terrain)
             self.assertEqual(Size.regular, cache.size)
             self.assertEqual(cache.guid, "15ad3a3d-92c1-4f7c-b273-60937bcc2072")
 
         with self.subTest("fail"):
-            with self.assertRaises(LoadError):
-                cache = Cache(self.gc, "GC123456")
-                cache.load_quick()
+            with recorder.use_cassette('cache_quickload_fail'):
+                with self.assertRaises(LoadError):
+                    cache = Cache(self.gc, "GC123456")
+                    cache.load_quick()
 
     @mock.patch("pycaching.Cache.load")
     @mock.patch("pycaching.Cache.load_quick")
     def test_load_by_guid(self, mock_load_quick, mock_load):
         with self.subTest("normal"):
             cache = Cache(self.gc, "GC2WXPN", guid="5f45114d-1d79-4fdb-93ae-8f49f1d27188")
-            cache.load_by_guid()
+            with recorder.use_cassette('cache_guidload_normal'):
+                cache.load_by_guid()
             self.assertEqual(cache.name, "Der Schatz vom Luftschloss")
             self.assertEqual(cache.location, Point("N 49° 57.895' E 008° 12.988'"))
             self.assertEqual(cache.type, Type.mystery)
@@ -242,30 +249,36 @@ class TestMethods(unittest.TestCase):
 
         with self.subTest("PM-only"):
             cache = Cache(self.gc, "GC6MKEF", guid="53d34c4d-12b5-4771-86d3-89318f71efb1")
-            with self.assertRaises(PMOnlyException):
-                cache.load_by_guid()
+            with recorder.use_cassette('cache_guidload_PMO'):
+                with self.assertRaises(PMOnlyException):
+                    cache.load_by_guid()
 
         with self.subTest("calls load_quick if no guid"):
             cache = Cache(self.gc, "GC2WXPN")
-            with self.assertRaises(Exception):
-                cache.load_by_guid()  # Raises error since we mocked load_quick()
+            with recorder.use_cassette('cache_guidload_fallback'):
+                with self.assertRaises(Exception):
+                    cache.load_by_guid()  # Raises error since we mocked load_quick()
             self.assertTrue(mock_load_quick.called)
 
     def test_load_trackables(self):
         cache = Cache(self.gc, "GC26737")  # TB graveyard - will surelly have some trackables
-        trackable_list = list(cache.load_trackables(limit=10))
+        with recorder.use_cassette('cache_trackables'):
+            trackable_list = list(cache.load_trackables(limit=10))
         self.assertTrue(isinstance(trackable_list, list))
 
     def test_load_logbook(self):
-        log_authors = list(map(lambda log: log.author, self.c.load_logbook(limit=200)))  # limit over 100 tests pagging
+        with recorder.use_cassette('cache_logbook'):
+            # limit over 100 tests pagging
+            log_authors = list(map(lambda log: log.author, self.c.load_logbook(limit=200)))
         for expected_author in ["Dudny-1995", "Sopdet Reviewer", "donovanstangiano83"]:
             self.assertIn(expected_author, log_authors)
 
     def test_load_log_page(self):
         expected_types = {t.value for t in (LogType.found_it, LogType.didnt_find_it, LogType.note)}
 
-        # make request
-        valid_types, hidden_inputs = self.c._load_log_page()
+        with recorder.use_cassette('cache_logpage'):
+            # make request
+            valid_types, hidden_inputs = self.c._load_log_page()
 
         self.assertSequenceEqual(expected_types, valid_types)
         self.assertIn("__RequestVerificationToken", hidden_inputs.keys())
@@ -273,7 +286,6 @@ class TestMethods(unittest.TestCase):
     @mock.patch.object(Cache, "_load_log_page")
     @mock.patch.object(Geocaching, "_request")
     def test_post_log(self, mock_request, mock_load_log_page):
-
         # mock _load_log_page
         valid_log_types = {
             # intentionally missing "found it" to test invalid log type
@@ -307,7 +319,6 @@ class TestMethods(unittest.TestCase):
 
 
 class TestWaypointProperties(unittest.TestCase):
-
     def setUp(self):
         self.w = Waypoint("id", "Parking", Point("N 56° 50.006′ E 13° 56.423′"),
                           "This is a test")

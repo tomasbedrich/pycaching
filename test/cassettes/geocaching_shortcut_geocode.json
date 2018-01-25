@@ -1,0 +1,45 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2018-01-25T01:43:15",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "gzip, deflate",
+          "Connection": "keep-alive",
+          "Cookie": "gspkauth=OBvO_BZ-CrJhnJrwagv0f7muTI1iCj1_dmKVoqlMV_c7h3cAN8LGdfEQd7OZ0ZeRYACcgFrBbEVFhCQkpfisEuN9GSSzH2mDjbi4W2DHPoLhOv4ZWx2FN48ETCBxQ8Q_lAndHUVEogxK6m-rSl2prb-NwL7qhIPJXC3i7Pn8-sA1; __RequestVerificationToken=DPPqjr18eT_iQgXj_N4iZchmqmXvW-8k7vkCKzALffAaLIownm6pindrfvFoS2Hc8hJatOYhG0uM8Xp9mG4UuT43NFI1",
+          "User-Agent": "python-requests/2.18.4"
+        },
+        "method": "GET",
+        "uri": "https://www.geocaching.com/api/geocode?q=Pilsen"
+      },
+      "response": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"status\":\"success\",\"data\":{\"q\":\"Pilsen\",\"lat\":49.74774,\"lng\":13.37752}}"
+        },
+        "headers": {
+          "Cache-Control": "private",
+          "Content-Length": "72",
+          "Content-Type": "application/json; charset=utf-8",
+          "Date": "Thu, 25 Jan 2018 01:43:14 GMT",
+          "Request-Context": "appId=cid-v1:019d82c2-5dd7-44cb-aa94-01e052f0d40c",
+          "Server": "Microsoft-IIS/8.5",
+          "X-AspNet-Version": "4.0.30319",
+          "X-Execution-Time": "00:00:00.0306745",
+          "X-Powered-By": "ASP.NET"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.geocaching.com/api/geocode?q=Pilsen"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}

@@ -53,6 +53,12 @@ Pycaching has following requirements:
     beautifulsoup4>=4.4
     geopy>=1.11
 
+Pycaching tests have the following additional requirements:
+
+.. code::
+
+    betamax >=0.8, <0.9
+    betamax-serializers >=0.2, <0.3
 
 Examples
 ===================================================================================================
@@ -213,6 +219,32 @@ Post a log for trackable
     tracking_code = "ABCDEF"
     trackable.post_log(log, tracking_code)
 
+Testing
+===================================================================================================
+
+Pycaching uses `Betamax <https://betamax.readthedocs.io/en/latest/>`__ for testing, which speeds
+it up by recording network requests so that they can be mocked.
+
+If you haven't written or modified any tests, tests can be run like so:
+
+.. code-block:: bash
+
+    python3 setup.py test
+
+If you have written or modified tests, you must provide a username and password for testing. Don't
+worry, these will not leave your computer. Betamax will insert a placeholder when it records any
+new cassettes. To run new tests, first set up the following environment variables:
+
+.. code-block:: bash
+
+    export pycaching_test_username=yourusername
+    export pycaching_test_password=yourpassword
+    python3 setup.py test
+
+Substitute your username for ``yourusername`` and your password for ``yourpassword``. After you
+have exported the environment variables once, you do not need to export them again, and can run
+tests with just ``python3 setup.py test``.
+
 .. _appendix:
 
 Appendix
@@ -248,10 +280,10 @@ Authors of this project are `all contributors
 |Build Status| |Coverage Status| |PyPI monthly downloads|
 
 .. |Build Status| image:: http://img.shields.io/travis/tomasbedrich/pycaching/master.svg
-   :target: https://travis-ci.org/tomasbedrich/pycaching
+:target: https://travis-ci.org/tomasbedrich/pycaching
 
 .. |Coverage Status| image:: https://img.shields.io/coveralls/tomasbedrich/pycaching.svg
-   :target: https://coveralls.io/r/tomasbedrich/pycaching
+:target: https://coveralls.io/r/tomasbedrich/pycaching
 
 .. |PyPI monthly downloads| image:: http://img.shields.io/pypi/dm/pycaching.svg
-   :target: https://pypi.python.org/pypi/pycaching
+:target: https://pypi.python.org/pypi/pycaching
