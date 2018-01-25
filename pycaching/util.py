@@ -90,15 +90,17 @@ def format_date(date, user_date_format):
     return date.strftime(date_format)
 
 
-def get_possible_attributes():
+def get_possible_attributes(*, _session=None):
     """Return a dict of all possible attributes parsed from Groundspeak's website."""
     # imports are here not to slow down other parts of program which normally doesn't use this method
     from itertools import chain
     import requests
     from bs4 import BeautifulSoup
 
+    session = _session or requests.Session()
+
     try:
-        page = BeautifulSoup(requests.get(_attributes_url).text, "html.parser")
+        page = BeautifulSoup(session.get(_attributes_url).text, "html.parser")
     except requests.exceptions.ConnectionError as e:
         raise errors.Error("Cannot load attributes page.") from e
 
