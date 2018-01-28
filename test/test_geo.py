@@ -66,7 +66,7 @@ class TestPoint(unittest.TestCase):
             Point.from_string("123")
 
     def test_from_location(self):
-        gc = Geocaching(_session=session)
+        gc = Geocaching(session=session)
         with recorder.use_cassette('geo_point_setup'):
             gc.login(_username, _password)
 
@@ -187,7 +187,7 @@ class TestTile(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.gc = Geocaching(_session=session)
+        cls.gc = Geocaching(session=session)
         with recorder.use_cassette('geo_tile_setup'):
             cls.gc.login(_username, _password)
 
@@ -282,7 +282,7 @@ class TestBlock(unittest.TestCase):
                  "still too much points":
                      [(63, 30), (63, 31), (63, 32), (63, 33)],
                  "point missing: 9":
-                     [(1, 1), (1, 3),
+                     [(1, 1),         (1, 3),
                       (2, 1), (2, 2), (2, 3),
                       (3, 1), (3, 2), (3, 3)],
                  "point missing: 6":
@@ -291,7 +291,7 @@ class TestBlock(unittest.TestCase):
                       (3, 0), (3, 1)],
                  "points not aligned":
                      [(1, 1), (1, 2), (1, 3),
-                      (2, 1), (2, 3), (2, 4),
+                      (2, 1),         (2, 3), (2, 4),
                       (3, 1), (3, 2), (3, 3)],
                  }
 

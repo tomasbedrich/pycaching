@@ -51,7 +51,7 @@ class TestProperties(unittest.TestCase):
 class TestMethods(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.gc = Geocaching(_session=session)
+        cls.gc = Geocaching(session=session)
         cls.t = Trackable(cls.gc, "TB1KEZ9")
         with recorder.use_cassette('trackable_setup'):
             cls.gc.login(_username, _password)

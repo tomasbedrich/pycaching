@@ -237,9 +237,7 @@ new cassettes. To run new tests, first set up the following environment variable
 
 .. code-block:: bash
 
-    export pycaching_test_username=yourusername
-    export pycaching_test_password=yourpassword
-    python3 setup.py test
+    PYCACHING_TEST_USERNAME="yourusername" PYCACHING_TEST_PASSWORD="yourpassword" python3 setup.py test
 
 Substitute your username for ``yourusername`` and your password for ``yourpassword``. After you
 have exported the environment variables once, you do not need to export them again, and can run
@@ -280,10 +278,10 @@ Authors of this project are `all contributors
 |Build Status| |Coverage Status| |PyPI monthly downloads|
 
 .. |Build Status| image:: http://img.shields.io/travis/tomasbedrich/pycaching/master.svg
-:target: https://travis-ci.org/tomasbedrich/pycaching
+   :target: https://travis-ci.org/tomasbedrich/pycaching
 
 .. |Coverage Status| image:: https://img.shields.io/coveralls/tomasbedrich/pycaching.svg
-:target: https://coveralls.io/r/tomasbedrich/pycaching
+   :target: https://coveralls.io/r/tomasbedrich/pycaching
 
 .. |PyPI monthly downloads| image:: http://img.shields.io/pypi/dm/pycaching.svg
-:target: https://pypi.python.org/pypi/pycaching
+   :target: https://pypi.python.org/pypi/pycaching

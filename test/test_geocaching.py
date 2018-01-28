@@ -19,7 +19,7 @@ from . import username as _username, password as _password, recorder, session
 class TestMethods(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.g = Geocaching(_session=session)
+        cls.g = Geocaching(session=session)
         with recorder.use_cassette('geocaching_setup1'):
             cls.g.login(_username, _password)
 
@@ -32,7 +32,7 @@ class TestMethods(unittest.TestCase):
             self.assertGreater(len(expected & found), len(expected) - tolerance)
 
         with self.subTest("pagging"):
-            with recorder.use_cassette('geocaching_search_pagging'):  # what's pagging?
+            with recorder.use_cassette('geocaching_search_pagination'):
                 caches = list(self.g.search(Point(49.733867, 13.397091), 100))
             self.assertNotEqual(caches[0], caches[50])
 
@@ -89,7 +89,7 @@ class TestMethods(unittest.TestCase):
 
 class TestLoginOperations(unittest.TestCase):
     def setUp(self):
-        self.g = Geocaching(_session=session)
+        self.g = Geocaching(session=session)
 
     def test_request(self):
         with self.subTest("login needed"):
@@ -266,15 +266,15 @@ class TestLoginOperations(unittest.TestCase):
 class TestShortcuts(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.g = Geocaching(_session=session)
+        cls.g = Geocaching(session=session)
         with recorder.use_cassette('geocaching_setup2'):
             cls.g.login(_username, _password)
 
     def test_login(self):
         real_init = Geocaching.__init__
 
-        def fake_init(self_, _session=None):
-            real_init(self_, _session=session)
+        def fake_init(self_, unused_argument=None):
+            real_init(self_, session=session)
 
         # patching with the fake init method above to insert our session into the Geocaching object for testing
         with patch.object(Geocaching, '__init__', new=fake_init):

@@ -1,22 +1,18 @@
 import os
-import sys
+import pathlib
+from urllib.parse import quote_plus
 
 from betamax import Betamax
 from betamax_serializers.pretty_json import PrettyJSONSerializer
 from requests import Session
 
-if sys.version_info.major == 2:
-    from urllib import quote_plus
-else:
-    from urllib.parse import quote_plus
+username = os.environ.get('PYCACHING_TEST_USERNAME') or 'USERNAMEPLACEHOLDER'
+password = os.environ.get('PYCACHING_TEST_PASSWORD') or 'PASSWORDPLACEHOLDER'
+
+path = pathlib.Path('test', 'cassettes')
 
 with Betamax.configure() as config:
-    config.cassette_library_dir = os.path.join('test', 'cassettes')
-    config.serialize_with = 'prettyjson'
-
-    username = os.environ.get('pycaching_test_username') or 'USERNAMEPLACEHOLDER'
-    password = os.environ.get('pycaching_test_password') or 'PASSWORDPLACEHOLDER'
-
+    config.cassette_library_dir = str(path)
     config.define_cassette_placeholder('<USERNAME>', quote_plus(username))
     config.define_cassette_placeholder('<PASSWORD>', quote_plus(password))
 

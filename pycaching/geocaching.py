@@ -31,10 +31,10 @@ class Geocaching(object):
     }
     _credentials_file = ".gc_credentials"
 
-    def __init__(self, *, _session=None):
+    def __init__(self, *, session=None):
         self._logged_in = False
         self._logged_username = None
-        self._session = _session or requests.Session()
+        self._session = session or requests.Session()
 
     def _request(self, url, *, expect="soup", method="GET", login_check=True, **kwargs):
         """

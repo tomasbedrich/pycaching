@@ -54,7 +54,7 @@ class TestModule(unittest.TestCase):
 
     def test_get_possible_attributes(self):
         with recorder.use_cassette('util_attributes'):
-            attributes = get_possible_attributes(_session=session)
+            attributes = get_possible_attributes(session=session)
 
         with self.subTest("existing attributes"):
             for attr in "dogs", "public", "kids":

@@ -168,7 +168,7 @@ class TestProperties(unittest.TestCase):
 class TestMethods(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.gc = Geocaching(_session=session)
+        cls.gc = Geocaching(session=session)
         cls.c = Cache(cls.gc, "GC1PAR2")
         with recorder.use_cassette('cache_setup'):
             cls.gc.login(_username, _password)
@@ -268,7 +268,7 @@ class TestMethods(unittest.TestCase):
 
     def test_load_logbook(self):
         with recorder.use_cassette('cache_logbook'):
-            # limit over 100 tests pagging
+            # limit over 100 tests pagination
             log_authors = list(map(lambda log: log.author, self.c.load_logbook(limit=200)))
         for expected_author in ["Dudny-1995", "Sopdet Reviewer", "donovanstangiano83"]:
             self.assertIn(expected_author, log_authors)
