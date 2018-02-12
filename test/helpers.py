@@ -1,32 +1,29 @@
 from betamax.cassette.cassette import Placeholder
 
-CLASSIFIED_COOKIES = ('gspkauth',)
+CLASSIFIED_COOKIES = ('gspkauth', '__RequestVerificationToken')
 
 
 def sanitize_cookies(interaction, cassette):
     response = interaction.as_response()
-    response_cookies = response.headers.get('Set-Cookie', None)
-    request = response.request
-    request_cookies = request.headers.get('Cookie', None)
+    response_cookies = response.cookies
+    request_body = response.request.body or ''  # where secret values hide
+    # the or '' is necessary above because sometimes response.request.body
+    # is empty bytes, and that makes the later code complain.
 
-    secret_values = []
-    if request_cookies:
-        secret_values += find_secret_values(request_cookies)
-    if response_cookies:
-        secret_values += find_secret_values(response_cookies)
+    secret_values = set()
+    for name in CLASSIFIED_COOKIES:
+        potential_val = response_cookies.get(name)
+        if potential_val:
+            secret_values.add(potential_val)
+
+        named_parameter_str = '&{}='.format(name)
+        if (named_parameter_str in request_body
+            or request_body.startswith(named_parameter_str[1:])):
+            i = request_body.index(name) + len(name) + 1  # +1 for the = sign
+            val = request_body[i:].split(',')[0]  # after the comma is another cookie
+            secret_values.add(val)
+
     for val in secret_values:
         cassette.placeholders.append(
             Placeholder(placeholder='<AUTH COOKIE>', replace=val)
         )
-
-
-def find_secret_values(cookies):
-    found_values = []
-    cookies = cookies.split('; ')
-    for name in CLASSIFIED_COOKIES:
-        identifier = '{}='.format(name)
-        for c in cookies:
-            if c.startswith(identifier):
-                found_values.append(c[c.index('=') + 1:])
-
-    return found_values
