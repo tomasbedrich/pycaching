@@ -8,11 +8,11 @@ from unittest import mock
 
 from geopy.distance import great_circle
 
-from pycaching import Geocaching, Cache
+from pycaching import Cache
 from pycaching.errors import GeocodeError, BadBlockError
 from pycaching.geo import Point, Polygon, Rectangle, Tile, UTFGridPoint, Block
 from pycaching.geo import to_decimal
-from . import session, recorder, password as _password, username as _username
+from . import recorder, NetworkedTest
 
 _sample_caches_file = path.join(path.dirname(__file__), "sample_caches.csv")
 _sample_utfgrid_file = path.join(path.dirname(__file__), "sample_utfgrid.json")
@@ -24,7 +24,7 @@ def make_tile(x, y, z, a=0, b=0, size=256):
     return t, UTFGridPoint(a, b)
 
 
-class TestPoint(unittest.TestCase):
+class TestPoint(NetworkedTest):
     def test_from_string(self):
         with self.subTest("normal"):
             self.assertEqual(Point.from_string("N 49 45.123 E 013 22.123"),
@@ -66,27 +66,23 @@ class TestPoint(unittest.TestCase):
             Point.from_string("123")
 
     def test_from_location(self):
-        gc = Geocaching(session=session)
-        with recorder.use_cassette('geo_point_setup'):
-            gc.login(_username, _password)
-
         ref_point = Point(49.74774, 13.37752)
 
         with self.subTest("existing location"):
             with recorder.use_cassette('geo_location_existing'):
-                self.assertLess(great_circle(Point.from_location(gc, "Pilsen"), ref_point).miles, 10)
-                self.assertLess(great_circle(Point.from_location(gc, "Plzeň"), ref_point).miles, 10)
-                self.assertLess(great_circle(Point.from_location(gc, "plzen"), ref_point).miles, 10)
+                self.assertLess(great_circle(Point.from_location(self.gc, "Pilsen"), ref_point).miles, 10)
+                self.assertLess(great_circle(Point.from_location(self.gc, "Plzeň"), ref_point).miles, 10)
+                self.assertLess(great_circle(Point.from_location(self.gc, "plzen"), ref_point).miles, 10)
 
         with self.subTest("non-existing location"):
             with recorder.use_cassette('geo_location_nonexisting'):
                 with self.assertRaises(GeocodeError):
-                    Point.from_location(gc, "qwertzuiop")
+                    Point.from_location(self.gc, "qwertzuiop")
 
         with self.subTest("empty request"):
             with recorder.use_cassette('geo_location_empty'):
                 with self.assertRaises(GeocodeError):
-                    Point.from_location(gc, "")
+                    Point.from_location(self.gc, "")
 
     def test_from_tile(self):
         """Test coordinate creation from tile"""
@@ -180,16 +176,10 @@ class TestRectangle(unittest.TestCase):
         self.assertAlmostEqual(self.rect.diagonal, 3411261.6697135763)
 
 
-class TestTile(unittest.TestCase):
+class TestTile(NetworkedTest):
     # see
     # http://gis.stackexchange.com/questions/8650/how-to-measure-the-accuracy-of-latitude-and-longitude
     POSITION_ACCURANCY = 3  # = up to 110 meters
-
-    @classmethod
-    def setUpClass(cls):
-        cls.gc = Geocaching(session=session)
-        with recorder.use_cassette('geo_tile_setup'):
-            cls.gc.login(_username, _password)
 
     def setUp(self):
         self.tile = Tile(self.gc, 8800, 5574, 14)

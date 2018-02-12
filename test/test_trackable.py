@@ -7,7 +7,7 @@ from unittest import mock
 from pycaching import Geocaching, Trackable
 from pycaching.errors import ValueError as PycachingValueError, LoadError
 from pycaching.log import Log, Type as LogType
-from . import session, recorder, username as _username, password as _password
+from . import recorder, NetworkedTest
 
 
 class TestProperties(unittest.TestCase):
@@ -48,13 +48,12 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.t._log_page_url, "/track/details.aspx?id=6359246")
 
 
-class TestMethods(unittest.TestCase):
+class TestMethods(NetworkedTest):
     @classmethod
     def setUpClass(cls):
-        cls.gc = Geocaching(session=session)
+        super().setUpClass()
         cls.t = Trackable(cls.gc, "TB1KEZ9")
         with recorder.use_cassette('trackable_setup'):
-            cls.gc.login(_username, _password)
             cls.t.load()
 
     def test_load(self):

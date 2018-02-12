@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import unittest
 from datetime import date
 from unittest import mock
@@ -10,7 +9,7 @@ from pycaching.geo import Point
 from pycaching.geocaching import Geocaching
 from pycaching.log import Log, Type as LogType
 from pycaching.util import parse_date
-from . import recorder, username as _username, password as _password, session
+from . import recorder, NetworkedTest
 
 
 class TestProperties(unittest.TestCase):
@@ -165,13 +164,12 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.pm_only, False)
 
 
-class TestMethods(unittest.TestCase):
+class TestMethods(NetworkedTest):
     @classmethod
     def setUpClass(cls):
-        cls.gc = Geocaching(session=session)
+        super().setUpClass()
         cls.c = Cache(cls.gc, "GC1PAR2")
         with recorder.use_cassette('cache_setup'):
-            cls.gc.login(_username, _password)
             cls.c.load()
 
     def test_load(self):
