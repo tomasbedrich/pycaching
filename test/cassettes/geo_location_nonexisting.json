@@ -1,0 +1,45 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2018-02-12T06:56:37",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "gzip, deflate",
+          "Connection": "keep-alive",
+          "Cookie": "gspkauth=voC1bj75X7nd44s7jdIyJ3LF64mKM6mKA0C0MgXNRSbSRtwOXs0uLWejllQc73e98l6yYW0t1zIT3ywfQ0Arldej1SA9CTUluCKo4V5fNbpsisnDooAtfhhyIG8bPQzK4Sw-N0ZpJb4luzeMqUrJ4bQlOSWvosMSKdVeDsDCXSA1; Culture=en-US; __RequestVerificationToken=_69oKQiDZbPUB-SaUmaeGTY3hfhsbVVz_QqvrCWo_wlrDMbXXRk8BichV6OJeKwS65-TovLegwpRSICWHDH9IXTQjpw1",
+          "User-Agent": "python-requests/2.18.4"
+        },
+        "method": "GET",
+        "uri": "https://www.geocaching.com/api/geocode?q=qwertzuiop"
+      },
+      "response": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"status\":\"failed\",\"msg\":\"Unable to Geocode\",\"errMessage\":\"\"}"
+        },
+        "headers": {
+          "Cache-Control": "private",
+          "Content-Length": "61",
+          "Content-Type": "application/json; charset=utf-8",
+          "Date": "Mon, 12 Feb 2018 06:56:37 GMT",
+          "Request-Context": "appId=cid-v1:019d82c2-5dd7-44cb-aa94-01e052f0d40c",
+          "Server": "Microsoft-IIS/8.5",
+          "X-AspNet-Version": "4.0.30319",
+          "X-Execution-Time": "00:00:00.1073860",
+          "X-Powered-By": "ASP.NET"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.geocaching.com/api/geocode?q=qwertzuiop"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}
