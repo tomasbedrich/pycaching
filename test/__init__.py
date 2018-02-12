@@ -43,3 +43,4 @@ class NetworkedTest(unittest.TestCase):
             # because if we are recording new cassettes this means we cannot get
             # properly logged in.
             cls.gc._logged_in = True  # we're gonna trick it
+            cls.gc._session = session  # it got redefined; fix it
