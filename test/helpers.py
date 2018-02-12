@@ -17,8 +17,8 @@ def sanitize_cookies(interaction, cassette):
             secret_values.add(potential_val)
 
         named_parameter_str = '&{}='.format(name)
-        if (named_parameter_str in request_body
-            or request_body.startswith(named_parameter_str[1:])):
+        if (named_parameter_str in request_body or
+                request_body.startswith(named_parameter_str[1:])):
             i = request_body.index(name) + len(name) + 1  # +1 for the = sign
             val = request_body[i:].split(',')[0]  # after the comma is another cookie
             secret_values.add(val)
