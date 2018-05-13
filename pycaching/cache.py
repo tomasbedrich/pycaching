@@ -952,16 +952,16 @@ class Waypoint(object):
             waypoints_table = waypoints_table.find_all("tr")
             for r1, r2 in zip(waypoints_table[1::2], waypoints_table[2::2]):
                 columns = r1.find_all("td") + r2.find_all("td")
-                identifier = columns[4].text.strip()
+                identifier = columns[3].text.strip()
                 type = columns[1].find("img").get("title")
-                location_string = columns[6].text.strip()
+                location_string = columns[5].text.strip()
                 try:
                     loc = Point(location_string)
                 except ValueError:
                     loc = None
                     logging.debug("No valid location format in waypoint {}: {}".format(
                         identifier, location_string))
-                note = columns[7].text.strip()
+                note = columns[8].text.strip()
                 waypoints_dict[identifier] = cls(identifier, type, loc, note)
         return waypoints_dict
 
