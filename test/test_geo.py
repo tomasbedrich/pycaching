@@ -173,7 +173,7 @@ class TestRectangle(unittest.TestCase):
             self.assertFalse(p in self.rect)
 
     def test_diagonal(self):
-        self.assertAlmostEqual(self.rect.diagonal, 3411261.6697135763)
+        self.assertAlmostEqual(self.rect.diagonal, 3411261.6697293497)
 
 
 class TestTile(NetworkedTest):
