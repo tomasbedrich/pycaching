@@ -56,6 +56,7 @@ info = {
     "long_description":    long_description,
     "keywords":            ["geocaching", "crawler", "geocache", "cache", "search", "geocode", "travelbug"],
     "install_requires":    requirements,
+    "tests_require":       ["betamax >=0.8, <0.9", "betamax-serializers >=0.2, <0.3"],
     "setup_requires":      ["nose", "flake8<3.0.0", "coverage"],  # flake8 >= 3.0 has incompatible API
     "cmdclass":            {"test": NoseTestCommand, "lint": LintCommand},
 }

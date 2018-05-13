@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 
 import unittest
-from pycaching import Geocaching, Trackable
-from unittest import mock
 from datetime import date
-from pycaching.log import Log, Type as LogType
-from pycaching.errors import ValueError as PycachingValueError, LoadError
+from unittest import mock
 
-from test.test_geocaching import _username, _password
+from pycaching import Geocaching, Trackable
+from pycaching.errors import ValueError as PycachingValueError, LoadError
+from pycaching.log import Log, Type as LogType
+from . import recorder, NetworkedTest
 
 
 class TestProperties(unittest.TestCase):
-
     def setUp(self):
         self.gc = Geocaching()
         self.t = Trackable(self.gc, "TB123AB", name="Testing", type="Travel Bug", location="in the hands of human",
@@ -49,24 +48,25 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.t._log_page_url, "/track/details.aspx?id=6359246")
 
 
-class TestMethods(unittest.TestCase):
-
+class TestMethods(NetworkedTest):
     @classmethod
     def setUpClass(cls):
-        cls.gc = Geocaching()
-        cls.gc.login(_username, _password)
+        super().setUpClass()
         cls.t = Trackable(cls.gc, "TB1KEZ9")
-        cls.t.load()
+        with recorder.use_cassette('trackable_setup'):
+            cls.t.load()
 
     def test_load(self):
         with self.subTest("tid"):
             trackable = Trackable(self.gc, "TB1KEZ9")
-            self.assertEqual("Lilagul #2: SwedenHawk Geocoin", trackable.name)
+            with recorder.use_cassette('trackable_load_tid'):
+                self.assertEqual("Lilagul #2: SwedenHawk Geocoin", trackable.name)
 
         with self.subTest("trackable url"):
             url = "http://www.geocaching.com/track/details.aspx?guid=cff00ac4-f562-486e-b303-32b2d01ed386"
             trackable = Trackable(self.gc, None, url=url)
-            self.assertEqual("Lilagul #2: SwedenHawk Geocoin", trackable.name)
+            with recorder.use_cassette('trackable_load_url'):
+                self.assertEqual("Lilagul #2: SwedenHawk Geocoin", trackable.name)
 
         with self.subTest("fail lazyload"):
             trackable = Trackable(self.gc, None)
@@ -76,20 +76,20 @@ class TestMethods(unittest.TestCase):
     def test_load_log_page(self):
         expected_types = {t.value for t in (LogType.grabbed_it, LogType.note, LogType.discovered_it)}
         expected_inputs = "__EVENTTARGET", "__VIEWSTATE"  # and more ...
-        expected_date_format = "d.M.yyyy"
+        expected_date_format = "M/d/yyyy"  # if test is re-recorded, update for your testing account
 
         # make request
-        valid_types, hidden_inputs, user_date_format = self.t._load_log_page()
+        with recorder.use_cassette('trackable_load_page'):
+            valid_types, hidden_inputs, user_date_format = self.t._load_log_page()
 
         self.assertSequenceEqual(expected_types, valid_types)
         for i in expected_inputs:
             self.assertIn(i, hidden_inputs.keys())
-        self.assertEqual(expected_date_format, user_date_format)
+        self.assertEqual(expected_date_format, user_date_format)  # failure may be due to account switch
 
     @mock.patch.object(Trackable, "_load_log_page")
     @mock.patch.object(Geocaching, "_request")
     def test_post_log(self, mock_request, mock_load_log_page):
-
         # mock _load_log_page
         valid_log_types = {
             # intentionally missing "grabbed it" to test invalid log type
@@ -126,7 +126,8 @@ class TestMethods(unittest.TestCase):
             mock_request.assert_called_with(self.t._log_page_url, method="POST", data=expected_post_data)
 
     def test_get_KML(self):
-        kml = self.t.get_KML()
+        with recorder.use_cassette('trackable_kml'):
+            kml = self.t.get_KML()
         self.assertTrue("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" in kml)
         self.assertTrue("<kml xmlns=\"http://earth.google.com/kml/2.2\">" in kml)
         self.assertTrue("#tbTravelStyle" in kml)

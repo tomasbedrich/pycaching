@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
-import unittest
 import datetime
 import itertools
+import unittest
+
 from pycaching.util import rot13, parse_date, format_date, get_possible_attributes
+from . import session, recorder
 
 
 class TestModule(unittest.TestCase):
-
     def test_rot13(self):
         self.assertEqual(rot13("Text"), "Grkg")
         self.assertEqual(rot13("abc'ř"), "nop'ř")
@@ -52,11 +53,12 @@ class TestModule(unittest.TestCase):
             self.assertEqual(format_date(date, user_format), ref_result)
 
     def test_get_possible_attributes(self):
-        attributes = get_possible_attributes()
+        with recorder.use_cassette('util_attributes'):
+            attributes = get_possible_attributes(session=session)
 
         with self.subTest("existing attributes"):
             for attr in "dogs", "public", "kids":
                 self.assertIn(attr, attributes)
 
         with self.subTest("non-existing attributes"):
-                self.assertNotIn("xxx", attributes)
+            self.assertNotIn("xxx", attributes)

@@ -31,10 +31,10 @@ class Geocaching(object):
     }
     _credentials_file = ".gc_credentials"
 
-    def __init__(self):
+    def __init__(self, *, session=None):
         self._logged_in = False
         self._logged_username = None
-        self._session = requests.Session()
+        self._session = session or requests.Session()
 
     def _request(self, url, *, expect="soup", method="GET", login_check=True, **kwargs):
         """
@@ -48,7 +48,7 @@ class Geocaching(object):
             <http://docs.python-requests.org/en/latest/api/#requests.request>`_ as is.
         """
         # check login unless explicitly turned off
-        if login_check and self._logged_in is False:
+        if login_check and not self._logged_in:
             raise NotLoggedInException("Login is needed.")
 
         url = url if "//" in url else urljoin(self._baseurl, url)

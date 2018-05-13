@@ -1,0 +1,44 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2018-02-12T06:56:34",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "gzip, deflate",
+          "Connection": "keep-alive",
+          "Cookie": "gspkauth=050aDFiVAYeg1xi_5n-HJ3E5G-pDEbGbeoVmy1CJ9HQZ46BlYK0XkYYDWzLnwZ7okcmiGcxq9gFBbhYtwZix-iKkaQPkfDMZE_kDswihL4Muv5VqtSOUHEc2CXz7Okwzu5cIi8_1QXyGrZcxW1ApSVXpo-7NGSJSwZdwweRWKnE1; Culture=en-US; __RequestVerificationToken=_69oKQiDZbPUB-SaUmaeGTY3hfhsbVVz_QqvrCWo_wlrDMbXXRk8BichV6OJeKwS65-TovLegwpRSICWHDH9IXTQjpw1",
+          "User-Agent": "python-requests/2.18.4"
+        },
+        "method": "GET",
+        "uri": "https://www.geocaching.com/seek/cache_details.aspx?wp=GC123456"
+      },
+      "response": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "\n\n<!DOCTYPE html>\n<html>\n<head>\n    <title>DNF</title>\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n    <link href=\"//fonts.googleapis.com/css?family=Noto+Sans:400,700&subset=latin,latin-ext\" rel=\"stylesheet\" type=\"text/css\" />\n    <link rel=\"stylesheet\" href=\"https://www.geocaching.com/app/ui-scss/layout.css\" />\n</head>\n\n\n<body>\n\n    <div class=\"content-slide layout-callout\">\n        <header>\n            <div class=\"wrapper\">\n                <a class=\"logo\" href=\"https://www.geocaching.com/\" title=\"Geocaching\" accesskey=\"0\">\n                    <svg viewBox=\"0 0 196 29\" role=\"img\"><title>Geocaching</title><path d=\"M113.5 6H111l-7.2 17.2h3.6l1.9-4.5h6.1l1.9 4.4h3.5L113.5 6zm-3 9.6l1.8-5.2 1.9 5.2h-3.7zM59.3 9v4h5.8v3.1h-5.8v4h6.1v3.1h-9.3V6h9.3v3.1L59.3 9zm65.7 1.4c-1.1 1.2-1.6 2.6-1.6 4.2 0 1.5.5 2.9 1.6 4.1 1.1 1.2 2.4 1.8 4.1 1.8.8 0 1.5-.1 2.2-.4.7-.3 1.3-.7 1.8-1.3l.3-.3h3.7l-.2.4c-.8 1.5-1.9 2.6-3.3 3.5-1.4.8-2.9 1.3-4.5 1.3-2.4 0-4.5-.9-6.3-2.6-1.7-1.7-2.6-3.9-2.6-6.5s.9-4.7 2.6-6.4c1.7-1.7 3.8-2.6 6.2-2.6 1.6 0 3.1.4 4.5 1.2 1.4.8 2.5 2 3.3 3.4l.3.6h-3.7l-.4-.4c-.5-.6-1.1-1-1.8-1.3-.7-.3-1.4-.4-2.2-.4-1.5 0-2.9.6-4 1.7zm-33.6 0c-1.1 1.2-1.6 2.6-1.6 4.2 0 1.5.5 2.9 1.6 4.1 1.1 1.2 2.4 1.8 4.1 1.8.8 0 1.5-.1 2.2-.4.7-.3 1.3-.7 1.8-1.3l.3-.3h3.7l-.2.4c-.8 1.5-1.9 2.6-3.3 3.5-1.4.9-2.9 1.3-4.5 1.3-2.4 0-4.5-.9-6.3-2.6-1.7-1.7-2.6-3.9-2.6-6.5s.9-4.7 2.6-6.4c1.7-1.7 3.8-2.6 6.2-2.6 1.6 0 3.1.4 4.5 1.2 1.4.8 2.5 2 3.3 3.4l.3.6h-3.7l-.4-.4c-.5-.6-1.1-1-1.8-1.3-.7-.3-1.4-.4-2.2-.4-1.5 0-2.9.6-4 1.7zM148.7 6h3.2v17.2h-3.2v-7.1h-6v7.1h-3.1V6h3.1v7h6V6zM82.4 8.1c-1.7-1.7-3.9-2.6-6.4-2.6-2.5 0-4.7.9-6.4 2.7-1.8 1.8-2.7 3.9-2.7 6.4 0 2.5.9 4.6 2.7 6.4 1.8 1.8 3.9 2.7 6.4 2.7 2.5 0 4.6-.9 6.4-2.7 1.8-1.8 2.6-3.9 2.6-6.4 0-2.6-.9-4.7-2.6-6.5zM80 18.7c-1.1 1.1-2.5 1.7-4.1 1.7-1.6 0-3-.6-4.1-1.7-1.2-1.1-1.7-2.5-1.7-4.1 0-1.6.6-3 1.7-4.1 1.1-1.1 2.5-1.7 4.2-1.7 1.6 0 3 .6 4.1 1.7 1.1 1.2 1.6 2.5 1.6 4.1 0 1.6-.6 2.9-1.7 4.1zM154.9 6h3.1v17.2h-3.1V6zm17 0h3.2v17.2h-3.6l-7.1-12.5v12.5h-3.2V6h3.6l7.1 12.6V6zM53.7 14.4c0 4.1-2.6 9.2-9.2 9.2-6.3 0-9.2-4.8-9.2-9s3.1-9.1 9.2-9.1c4 0 7.1 2 8.4 5.4H49c-1.3-2.2-3.7-2.3-4.5-2.3-4 0-6 3.1-6 5.8 0 2.9 2.2 6 6.1 6 2.1 0 4.1-1 5.1-3.1h-7.2v-3h11.2zm142.2 0c0 4.1-2.6 9.2-9.2 9.2-6.3 0-9.2-4.8-9.2-9s3.1-9.1 9.2-9.1c4 0 7.1 2 8.4 5.4h-3.8c-1.3-2.2-3.7-2.3-4.5-2.3-4 0-6 3.1-6 5.8 0 2.9 2.2 6 6.1 6 2.1 0 4.1-1 5.1-3.1h-7.2v-3h11.1zM30.8 0c.7 0 1.2.5 1.2 1.2s-.5 1.2-1.2 1.2-1.2-.5-1.2-1.2.5-1.2 1.2-1.2zm0 2.2c.6 0 1-.4 1-1s-.4-1-1-1-1 .4-1 1 .4 1 1 1zM30.3.6h.5c.2 0 .4.1.4.4 0 .2-.1.3-.3.4l.3.4v.1h-.3l-.3-.4h-.1v.4h-.3V.6zm.3.3v.3h.3c.1 0 .2-.1.2-.2s-.1-.2-.2-.2h-.3zm-1.7 14.7V29H21l-1.6-6.3c.6-.8 1.3-1.1 2.8-1.3 2.9-.5 3.4-3 3.4-3-1.4.3-2.4 0-3.7-.3-1.3-.3-2.5-.3-3.6.1-.9.3-1.1.6-1.1.6L19.8 29h-4.3V15.6h13.4zM13.4.1v13.4H4.7c0-2.3.9-4.8 2.4-6.3 1.5 1.2 2.5 2.7 2.9 4.6h2.2c-.6-2.7-2.1-4.4-3.9-5.6C10.6 4.5 11 2.7 11 1.8h-.9c-.1.9-.6 2.2-3 3.6C4.6 4 4.2 2.7 4.2 1.8h-.9c0 1 .4 2.9 2.6 4.5-2.2 2.2-3.1 5-3.3 7.3H0V.1h13.4zM8.3 3.2c0-.6-.5-1.1-1.1-1.1-.7 0-1.2.5-1.2 1.1 0 .6.5 1.1 1.1 1.1.7 0 1.2-.5 1.2-1.1zM15.5.1v2.5c2.5.2 4.8 1.2 6.6 2.7l-1.6 1.6c-1.4-1.1-3.1-1.9-5-2v8.7h8.7c-.2-1.9-.9-3.6-2-5L23.7 7c1.5 1.8 2.5 4.1 2.7 6.6h2.5V.1H15.5zM6.9 23.8l1.6-1.6c1.4 1.1 3.1 1.8 5 2v-8.7H4.7c.2 1.9.9 3.6 2 5l-1.6 1.6c-1.5-1.8-2.5-4.1-2.7-6.6H0V29h13.4v-2.5c-2.4-.3-4.7-1.2-6.5-2.7z\" fill=\"#FFF\"/></svg>\n                </a>\n            </div>\n        </header>\n\n        <div class=\"main layout-callout\" id=\"Content\">\n            <div class=\"wrapper\">\n                <div class=\"callout http-error\">\n                    <h1 class=\"http-error-title\">Error 404: DNF</h1>\n                    <p>We didn't find the page you were looking for. Sorry about that! Visit the <a href=\"https://www.geocaching.com/help\">Help Center</a> or follow <a href=\"https://www.twitter.com/GoGeocaching\">Geocaching on Twitter</a> to see any available outage information.</p>\n                    <a href=\"https://www.geocaching.com/\" class=\"btn btn-primary\">Geocaching home</a>\n                </div>\n            </div>\n        </div>\n\n        <footer id=\"gcFooter\">\n            <div class=\"copyright\">\n                <div class=\"wrapper\">\n                    <p>&copy; 2000-2018 Groundspeak Inc. All Rights Reserved. <a href=\"https://www.geocaching.com/account/documents/termsofuse\">Groundspeak Terms of Use</a> | <a href=\"https://www.geocaching.com/account/documents/privacypolicy\">Privacy Policy</a></p>\n                </div>\n            </div>\n        </footer>\n    </div>\n</body>\n</html>\n"
+        },
+        "headers": {
+          "Cache-Control": "private",
+          "Content-Length": "4564",
+          "Content-Type": "text/html; charset=utf-8",
+          "Date": "Mon, 12 Feb 2018 06:56:34 GMT",
+          "Request-Context": "appId=cid-v1:019d82c2-5dd7-44cb-aa94-01e052f0d40c",
+          "Server": "Microsoft-IIS/8.5",
+          "X-AspNet-Version": "4.0.30319",
+          "X-Powered-By": "ASP.NET"
+        },
+        "status": {
+          "code": 404,
+          "message": "Not Found"
+        },
+        "url": "https://www.geocaching.com/seek/cache_details.aspx?wp=GC123456"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}

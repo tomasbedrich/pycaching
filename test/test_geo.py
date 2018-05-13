@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 
-import logging
 import json
+import logging
 import unittest
-from unittest import mock
 from os import path
+from unittest import mock
+
 from geopy.distance import great_circle
-from pycaching import Geocaching, Cache
+
+from pycaching import Cache
+from pycaching.errors import GeocodeError, BadBlockError
 from pycaching.geo import Point, Polygon, Rectangle, Tile, UTFGridPoint, Block
 from pycaching.geo import to_decimal
-from pycaching.errors import GeocodeError, BadBlockError
-
-from test.test_geocaching import _username, _password
+from . import recorder, NetworkedTest
 
 _sample_caches_file = path.join(path.dirname(__file__), "sample_caches.csv")
 _sample_utfgrid_file = path.join(path.dirname(__file__), "sample_utfgrid.json")
@@ -23,8 +24,7 @@ def make_tile(x, y, z, a=0, b=0, size=256):
     return t, UTFGridPoint(a, b)
 
 
-class TestPoint(unittest.TestCase):
-
+class TestPoint(NetworkedTest):
     def test_from_string(self):
         with self.subTest("normal"):
             self.assertEqual(Point.from_string("N 49 45.123 E 013 22.123"),
@@ -66,23 +66,23 @@ class TestPoint(unittest.TestCase):
             Point.from_string("123")
 
     def test_from_location(self):
-        gc = Geocaching()
-        gc.login(_username, _password)
-
         ref_point = Point(49.74774, 13.37752)
 
         with self.subTest("existing location"):
-            self.assertLess(great_circle(Point.from_location(gc, "Pilsen"), ref_point).miles, 10)
-            self.assertLess(great_circle(Point.from_location(gc, "Plzeň"), ref_point).miles, 10)
-            self.assertLess(great_circle(Point.from_location(gc, "plzen"), ref_point).miles, 10)
+            with recorder.use_cassette('geo_location_existing'):
+                self.assertLess(great_circle(Point.from_location(self.gc, "Pilsen"), ref_point).miles, 10)
+                self.assertLess(great_circle(Point.from_location(self.gc, "Plzeň"), ref_point).miles, 10)
+                self.assertLess(great_circle(Point.from_location(self.gc, "plzen"), ref_point).miles, 10)
 
         with self.subTest("non-existing location"):
-            with self.assertRaises(GeocodeError):
-                Point.from_location(gc, "qwertzuiop")
+            with recorder.use_cassette('geo_location_nonexisting'):
+                with self.assertRaises(GeocodeError):
+                    Point.from_location(self.gc, "qwertzuiop")
 
         with self.subTest("empty request"):
-            with self.assertRaises(GeocodeError):
-                Point.from_location(gc, "")
+            with recorder.use_cassette('geo_location_empty'):
+                with self.assertRaises(GeocodeError):
+                    Point.from_location(self.gc, "")
 
     def test_from_tile(self):
         """Test coordinate creation from tile"""
@@ -134,7 +134,6 @@ class TestPoint(unittest.TestCase):
 
 
 class TestPolygon(unittest.TestCase):
-
     def setUp(self):
         self.p = Polygon(*[Point(*i) for i in [
             (10., 20.), (30., -5.), (-10., -170.), (-70., 0.), (0., 40)]])
@@ -160,7 +159,6 @@ class TestPolygon(unittest.TestCase):
 
 
 class TestRectangle(unittest.TestCase):
-
     def setUp(self):
         self.rect = Rectangle(Point(10., 20.), Point(30., -5.))
 
@@ -178,28 +176,22 @@ class TestRectangle(unittest.TestCase):
         self.assertAlmostEqual(self.rect.diagonal, 3411261.6697135763)
 
 
-class TestTile(unittest.TestCase):
-
+class TestTile(NetworkedTest):
     # see
     # http://gis.stackexchange.com/questions/8650/how-to-measure-the-accuracy-of-latitude-and-longitude
     POSITION_ACCURANCY = 3  # = up to 110 meters
-
-    @classmethod
-    def setUpClass(cls):
-        cls.gc = Geocaching()
-        cls.gc.login(_username, _password)
 
     def setUp(self):
         self.tile = Tile(self.gc, 8800, 5574, 14)
 
     def test_download_utfgrid(self):
         """Test if downloading a UTFGrid passes without errors"""
+        with recorder.use_cassette('geo_point_utfgrid'):
+            with self.subTest("not getting .png tile first"):
+                self.tile._download_utfgrid()
 
-        with self.subTest("not getting .png tile first"):
-            self.tile._download_utfgrid()
-
-        with self.subTest("getting .png tile first"):
-            self.tile._download_utfgrid(get_png=True)
+            with self.subTest("getting .png tile first"):
+                self.tile._download_utfgrid(get_png=True)
 
     @mock.patch.object(Tile, '_download_utfgrid')
     def test_blocks(self, mock_utfgrid):
@@ -221,9 +213,9 @@ class TestTile(unittest.TestCase):
             self.assertIn(c.wp, expected_caches)
             if not expected_caches[c.wp][2]:  # if not PM only
                 self.assertAlmostEqual(c.location.latitude, expected_caches[
-                                       c.wp][0], self.POSITION_ACCURANCY)
+                    c.wp][0], self.POSITION_ACCURANCY)
                 self.assertAlmostEqual(c.location.longitude, expected_caches[
-                                       c.wp][1], self.POSITION_ACCURANCY)
+                    c.wp][1], self.POSITION_ACCURANCY)
             expected_caches.pop(c.wp)
         self.assertEqual(len(expected_caches), 0)
 
@@ -247,7 +239,6 @@ class TestTile(unittest.TestCase):
 
 
 class TestBlock(unittest.TestCase):
-
     # {descriptor: [points, midpoint, x_lim, y_lim]}
     good_cases = {9: [[(1, 1), (1, 2), (1, 3),
                        (2, 1), (2, 2), (2, 3),
@@ -406,7 +397,6 @@ class TestBlock(unittest.TestCase):
 
 
 class TestModule(unittest.TestCase):
-
     def test_to_decimal(self):
         self.assertEqual(to_decimal(49, 43.850), 49.73083)
         self.assertEqual(to_decimal(13, 22.905), 13.38175)
