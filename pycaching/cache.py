@@ -755,6 +755,8 @@ class Cache(object):
             float(img.get("alt").split()[0]) for img in D_and_T_img
         ]
 
+        # TODO do NOT use English phrases like "Placed by" to search for attributes
+
         self.author = content.find(
             "p", text=re.compile("Placed by:")).text.split("\r\n")[2].strip()
 
