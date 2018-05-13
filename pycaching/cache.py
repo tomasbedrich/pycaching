@@ -650,9 +650,8 @@ class Cache(object):
         self.attributes = {attribute_name: appendix.startswith("yes") for attribute_name, appendix
                            in attributes_raw if not appendix.startswith("blank")}
 
-        user_content = root.find_all("div", "UserSuppliedContent")
-        self.summary = user_content[0].text
-        self.description = str(user_content[1].text)
+        self.summary = root.find(id="ctl00_ContentBody_ShortDescription").text
+        self.description = root.find(id="ctl00_ContentBody_LongDescription").text
 
         self.hint = rot13(root.find(id="div_hint").text.strip())
 
