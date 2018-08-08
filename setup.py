@@ -40,9 +40,6 @@ root = Path(__file__).parent or "."
 with (root / "README.rst").open(encoding="utf-8") as f:
     long_description = f.read()
 
-with (root / "requirements.txt").open(encoding="utf-8") as f:
-    requirements = list(filter(None, (row.strip() for row in f)))
-
 info = {
     "name":                "pycaching",
     "version":             "3.6.3",  # PEP 386
@@ -55,7 +52,7 @@ info = {
     "description":         "Geocaching.com site crawler. Provides tools for searching, fetching caches and geocoding.",
     "long_description":    long_description,
     "keywords":            ["geocaching", "crawler", "geocache", "cache", "search", "geocode", "travelbug"],
-    "install_requires":    requirements,
+    "install_requires":    ["requests>=2.8", "beautifulsoup4>=4.4", "geopy>=1.11"],
     "tests_require":       ["betamax >=0.8, <0.9", "betamax-serializers >=0.2, <0.3"],
     "setup_requires":      ["nose", "flake8<3.0.0", "coverage"],  # flake8 >= 3.0 has incompatible API
     "cmdclass":            {"test": NoseTestCommand, "lint": LintCommand},
