@@ -25,7 +25,7 @@ class Geocaching(object):
 
     _baseurl = "https://www.geocaching.com"
     _urls = {
-        "login_page":        "account/login",
+        "login_page":        "account/signin",
         "search":            "play/search",
         "search_more":       "play/search/more-results",
     }
