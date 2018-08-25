@@ -270,9 +270,9 @@ class TestShortcuts(NetworkedTest):
                 pycaching.login(_username, _password)
 
     def test_geocode(self):
-        ref_point = Point(49.74774, 13.37752)
+        ref_point = Point(50.08746, 14.42125)
         with recorder.use_cassette('geocaching_shortcut_geocode'):
-            self.assertLess(great_circle(self.gc.geocode("Pilsen"), ref_point).miles, 10)
+            self.assertLess(great_circle(self.gc.geocode("Prague"), ref_point).miles, 10)
 
     def test_get_cache(self):
         with recorder.use_cassette('geocaching_shortcut_getcache'):

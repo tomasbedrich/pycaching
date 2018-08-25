@@ -66,13 +66,13 @@ class TestPoint(NetworkedTest):
             Point.from_string("123")
 
     def test_from_location(self):
-        ref_point = Point(49.74774, 13.37752)
+        ref_point = Point(50.08746, 14.42125)
 
         with self.subTest("existing location"):
             with recorder.use_cassette('geo_location_existing'):
-                self.assertLess(great_circle(Point.from_location(self.gc, "Pilsen"), ref_point).miles, 10)
-                self.assertLess(great_circle(Point.from_location(self.gc, "Plzeň"), ref_point).miles, 10)
-                self.assertLess(great_circle(Point.from_location(self.gc, "plzen"), ref_point).miles, 10)
+                self.assertLess(great_circle(Point.from_location(self.gc, "Prague"), ref_point).miles, 10)
+                self.assertLess(great_circle(Point.from_location(self.gc, "Praha"), ref_point).miles, 10)
+                self.assertLess(great_circle(Point.from_location(self.gc, "praha"), ref_point).miles, 10)
 
         with self.subTest("non-existing location"):
             with recorder.use_cassette('geo_location_nonexisting'):
