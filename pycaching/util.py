@@ -14,7 +14,7 @@ _rot13codeTable = str.maketrans(
     "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM"
 )
 
-_attributes_url = "http://www.geocaching.com/about/icons.aspx"
+_attributes_url = "https://www.geocaching.com/app/src/assets/sprites/attributes.svg"
 
 
 def lazy_loaded(func):
@@ -93,7 +93,6 @@ def format_date(date, user_date_format):
 def get_possible_attributes(*, session=None):
     """Return a dict of all possible attributes parsed from Groundspeak's website."""
     # imports are here not to slow down other parts of program which normally doesn't use this method
-    from itertools import chain
     import requests
     from bs4 import BeautifulSoup
 
@@ -104,9 +103,6 @@ def get_possible_attributes(*, session=None):
     except requests.exceptions.ConnectionError as e:
         raise errors.Error("Cannot load attributes page.") from e
 
-    # get all <img>s containing attributes from all <dl>s with specific class
-    images = chain(*map(lambda i: i.find_all("img"), page.find_all("dl", "AttributesList")))
-    # create dict as {"machine name": "human description"}
-    attributes = {i.get("src").split("/")[-1].rsplit("-", 1)[0]: i.get("alt") for i in images}
-
-    return attributes
+    symbols = page.select("symbol")
+    # {"machine name": "human description"}
+    return {s.get("id"): s.select_one("title").text for s in symbols}
