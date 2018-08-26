@@ -585,6 +585,10 @@ class Cache(object):
 
             self.name = cache_details.find("h1").text.strip()
 
+            type = cache_details.find("img").get("src")  # "/play/Content/images/cache-types/3.png"
+            type = type.split("/")[-1].rsplit(".", 1)[0]  # "3"
+            self.type = Type.from_filename(type)
+
             author = cache_details.find(id="ctl00_ContentBody_uxCacheBy").text
             self.author = author[len("A cache by "):]
 
@@ -603,24 +607,22 @@ class Cache(object):
             try:
                 self.wp = root.title.string.split(" ")[0]
             except:
-                raise errors.LoadError
+                raise errors.LoadError()
             self.name = cache_details.find("h2").text
+
+            type = cache_details.select_one("svg.cache-icon use").get("xlink:href")  # "cache-types.svg#icon-3-disabled"
+            type = type.split("#")[-1].replace("_", "-").split("-")[1]  # "3"
+            self.type = Type.from_filename(type)
 
             self.author = cache_details("a")[1].text
 
-            size = root.find("div", "CacheSize")
-
             D_and_T_img = root.find("div", "CacheStarLabels").find_all("img")
+            self.difficulty, self.terrain = [float(img.get("alt").split()[0]) for img in D_and_T_img]
 
+            size = root.find("div", "CacheSize")
             size = size.find("img").get("src")  # size img src
             size = size.split("/")[-1].rsplit(".", 1)[0]  # filename w/o extension
             self.size = Size.from_filename(size)
-
-            self.difficulty, self.terrain = [float(img.get("alt").split()[0]) for img in D_and_T_img]
-
-        type = cache_details.find("img").get("src")  # type img src
-        type = type.split("/")[-1].rsplit(".", 1)[0]  # filename w/o extension
-        self.type = Type.from_filename(type)
 
         if self.pm_only:
             raise errors.PMOnlyException()
@@ -1030,6 +1032,7 @@ class Type(enum.Enum):
     Values are cache image filenames - http://www.geocaching.com/images/WptTypes/[VALUE].gif
     """
 
+    # TODO cleanup according to https://www.geocaching.com/app/ui-icons/sprites/cache-types.svg
     traditional = "2"
     multicache = "3"
     mystery = unknown = "8"

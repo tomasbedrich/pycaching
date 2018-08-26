@@ -1,17 +1,25 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2018-02-12T06:56:35",
+      "recorded_at": "2018-08-25T09:10:07",
       "request": {
         "body": {
           "encoding": "utf-8",
           "string": ""
         },
         "headers": {
-          "Accept": "*/*",
-          "Accept-Encoding": "gzip, deflate",
-          "Connection": "keep-alive",
-          "User-Agent": "python-requests/2.18.4"
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.18.4"
+          ]
         },
         "method": "GET",
         "uri": "http://tiles01.geocaching.com/map.details?i=GC123456"
@@ -22,10 +30,18 @@
           "string": ""
         },
         "headers": {
-          "Connection": "Keep-Alive",
-          "Content-Length": "0",
-          "Location": "https://tiles01.geocaching.com/map.details?i=GC123456",
-          "Server": "BigIP"
+          "Connection": [
+            "Keep-Alive"
+          ],
+          "Content-Length": [
+            "0"
+          ],
+          "Location": [
+            "https://tiles01.geocaching.com/map.details?i=GC123456"
+          ],
+          "Server": [
+            "BigIP"
+          ]
         },
         "status": {
           "code": 302,
@@ -35,18 +51,28 @@
       }
     },
     {
-      "recorded_at": "2018-02-12T06:56:35",
+      "recorded_at": "2018-08-25T09:10:08",
       "request": {
         "body": {
           "encoding": "utf-8",
           "string": ""
         },
         "headers": {
-          "Accept": "*/*",
-          "Accept-Encoding": "gzip, deflate",
-          "Connection": "keep-alive",
-          "Cookie": "gspkauth=w6_JWX2Dn3aoYmWNLdOjKlF4p9h4-uc3R940GqH0bM8OT6fk8D47CoSLOOFaRu22rXAjA42NR0mZmbdqyhMjHPbqXTb9wwM33IJ4ANC23Lfixe3iT2DuspgNkzpxUaE3-JZLcKLHRtcl3CVl55xempOYamnzljgBiPrRUX3sIM01",
-          "User-Agent": "python-requests/2.18.4"
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "gspkauth=DoBzTSUpO1Un2k5SREw4bXOaTm5nHqcC4L_H9Y5Q9ng53_Baw00bA_Lenw9868Doil_08vk3F4l3mc02cLqDEOXlq2w6YRAOU5pnMXxMClMUymr-Au-rb0O8ByN8YJSGHVS5C1SGcysmCUJ-HF7cRAfpFdKBARwKGDajHgO7Dts1"
+          ],
+          "User-Agent": [
+            "python-requests/2.18.4"
+          ]
         },
         "method": "GET",
         "uri": "https://tiles01.geocaching.com/map.details?i=GC123456"
@@ -57,15 +83,33 @@
           "string": "{\"status\":\"success\",\"data\":[]}"
         },
         "headers": {
-          "Cache-Control": "no-cache",
-          "Content-Length": "30",
-          "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Mon, 12 Feb 2018 06:56:35 GMT",
-          "Expires": "-1",
-          "Pragma": "no-cache",
-          "Server": "Microsoft-IIS/8.5",
-          "X-AspNet-Version": "4.0.30319",
-          "X-Powered-By": "ASP.NET"
+          "Cache-Control": [
+            "no-cache"
+          ],
+          "Content-Length": [
+            "30"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 25 Aug 2018 09:10:07 GMT"
+          ],
+          "Expires": [
+            "-1"
+          ],
+          "Pragma": [
+            "no-cache"
+          ],
+          "Server": [
+            "Microsoft-IIS/8.5"
+          ],
+          "X-AspNet-Version": [
+            "4.0.30319"
+          ],
+          "X-Powered-By": [
+            "ASP.NET"
+          ]
         },
         "status": {
           "code": 200,
@@ -75,5 +119,5 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.0"
+  "recorded_with": "betamax/0.8.1"
 }
