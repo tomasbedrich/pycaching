@@ -187,7 +187,7 @@ class TestMethods(NetworkedTest):
         with self.subTest("non-ascii chars"):
             with recorder.use_cassette('cache_non-ascii'):
                 cache = Cache(self.gc, "GC5VJ0P")
-                self.assertEqual("budka u paty stromu nedaleko tancící borovice", cache.hint)
+                self.assertEqual("u parezové chaloupky", cache.hint)
 
         with self.subTest("PM only"):
             with recorder.use_cassette('cache_PMO'):
