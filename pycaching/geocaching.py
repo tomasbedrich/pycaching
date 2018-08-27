@@ -217,7 +217,7 @@ class Geocaching(object):
 
             if not geocaches_table:
                 # result is empty - no more caches
-                raise StopIteration()
+                return
 
             # prepare language-dependant mappings
             if start_index == 0:
@@ -233,7 +233,7 @@ class Geocaching(object):
 
                 limit -= 1  # handle limit
                 if limit < 0:
-                    raise StopIteration()
+                    return
 
                 # parse raw data
                 cache_details = row.find("span", "cache-details").text.split("|")

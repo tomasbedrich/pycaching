@@ -827,13 +827,13 @@ class Cache(object):
 
             if not logbook_page:
                 # result is empty - no more logs
-                raise StopIteration()
+                return
 
             for log_data in logbook_page:
 
                 limit -= 1  # handle limit
                 if limit < 0:
-                    raise StopIteration()
+                    return
 
                 img_filename = log_data["LogTypeImage"].rsplit(".", 1)[0]  # filename w/o extension
 
@@ -860,7 +860,7 @@ class Cache(object):
         url = self._trackable_page_url  # will trigger lazy_loading if needed
         if not url:
             # no link to all trackables = no trackables in cache
-            raise StopIteration()
+            return
         res = self.geocaching._request(url)
 
         trackable_table = res.find_all("table")[1]
@@ -874,7 +874,7 @@ class Cache(object):
 
             limit -= 1  # handle limit
             if limit < 0:
-                raise StopIteration()
+                return
 
             # create and fill trackable object
             t = Trackable(self.geocaching, None)
