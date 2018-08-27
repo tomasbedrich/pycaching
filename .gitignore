@@ -1,8 +1,5 @@
 # CUSTOM ===========================================================
 
-# script for upload to PyPI
-register.sh
-
 # tmp file for testing some snippets of code
 test.py
 
@@ -57,6 +54,7 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
+.pytest_cache/
 
 # Sphinx documentation
 docs/_build/

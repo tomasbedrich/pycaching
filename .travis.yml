@@ -20,3 +20,12 @@ script:
 
 after_success:
   coveralls
+
+deploy:
+  provider: pypi
+  user: tomasbedrich
+  password:
+    secure: AmAJqaSOJprmoh4l7pLcDcRn2JRyAN6VbrFyezYmdHTd27jECIfm6jDPUo7N+PldUIxas5KonLxeJMF0Xx9vqr/HWwBSZo0e5JWs2+E5luFRF1Evw22VfNpyRQawHB2a47SUUTR82sypGF2v/mgeJJioSuIKo4o0KZ450zUoeM4=
+  on:
+    tags: true
+  distributions: sdist bdist_wheel bdist_egg
