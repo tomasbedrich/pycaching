@@ -114,7 +114,7 @@ class Geocaching(object):
         token_field_name = "__RequestVerificationToken"
         token_value = login_page.find("input", attrs={"name": token_field_name})["value"]
         post = {
-            "Username": username,
+            "UsernameOrEmail": username,
             "Password": password,
             token_field_name: token_value
         }
