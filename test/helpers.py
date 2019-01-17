@@ -6,9 +6,11 @@ CLASSIFIED_COOKIES = ('gspkauth', '__RequestVerificationToken')
 def sanitize_cookies(interaction, cassette):
     response = interaction.as_response()
     response_cookies = response.cookies
-    request_body = response.request.body or ''  # where secret values hide
-    # the or '' is necessary above because sometimes response.request.body
-    # is empty bytes, and that makes the later code complain.
+    request_cookies = dict()
+    for cookie in (interaction.as_response().request.headers.get('Cookie') or '').split('; '):
+        name, sep, val = cookie.partition('=')
+        if sep:
+            request_cookies[name] = val
 
     secret_values = set()
     for name in CLASSIFIED_COOKIES:
@@ -16,12 +18,9 @@ def sanitize_cookies(interaction, cassette):
         if potential_val:
             secret_values.add(potential_val)
 
-        named_parameter_str = '&{}='.format(name)
-        if (named_parameter_str in request_body or
-                request_body.startswith(named_parameter_str[1:])):
-            i = request_body.index(name) + len(name) + 1  # +1 for the = sign
-            val = request_body[i:].split(',')[0]  # after the comma is another cookie
-            secret_values.add(val)
+        potential_val = request_cookies.get(name)
+        if potential_val:
+            secret_values.add(potential_val)
 
     for val in secret_values:
         cassette.placeholders.append(
