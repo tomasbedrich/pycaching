@@ -9,7 +9,7 @@ from pycaching.geo import Point
 from pycaching.geocaching import Geocaching
 from pycaching.log import Log, Type as LogType
 from pycaching.util import parse_date
-from . import recorder, NetworkedTest
+from . import NetworkedTest
 
 
 class TestProperties(unittest.TestCase):
@@ -169,41 +169,41 @@ class TestMethods(NetworkedTest):
     def setUpClass(cls):
         super().setUpClass()
         cls.c = Cache(cls.gc, "GC1PAR2")
-        with recorder.use_cassette('cache_setup'):
+        with cls.recorder.use_cassette('cache_setup'):
             cls.c.load()
 
     def test_load(self):
         with self.subTest("normal (with explicit call of load())"):
-            with recorder.use_cassette('cache_explicit_load'):
+            with self.recorder.use_cassette('cache_explicit_load'):
                 cache = Cache(self.gc, "GC4808G")
                 cache.load()
             self.assertEqual("Nekonecne ticho", cache.name)
 
         with self.subTest("normal"):
-            with recorder.use_cassette('cache_normal_normal'):
+            with self.recorder.use_cassette('cache_normal_normal'):
                 cache = Cache(self.gc, "GC4808G")
                 self.assertEqual("Nekonecne ticho", cache.name)
 
         with self.subTest("non-ascii chars"):
-            with recorder.use_cassette('cache_non-ascii'):
+            with self.recorder.use_cassette('cache_non-ascii'):
                 cache = Cache(self.gc, "GC5VJ0P")
                 self.assertEqual("u parezové chaloupky", cache.hint)
 
         with self.subTest("PM only"):
-            with recorder.use_cassette('cache_PMO'):
+            with self.recorder.use_cassette('cache_PMO'):
                 with self.assertRaises(PMOnlyException):
                     cache = Cache(self.gc, "GC3AHDM")
                     cache.load()
 
         with self.subTest("fail"):
-            with recorder.use_cassette('cache_normal_fail'):
+            with self.recorder.use_cassette('cache_normal_fail'):
                 with self.assertRaises(LoadError):
                     cache = Cache(self.gc, "GC123456")
                     cache.load()
 
     def test_load_quick(self):
         with self.subTest("normal"):
-            with recorder.use_cassette('cache_quick_normal'):
+            with self.recorder.use_cassette('cache_quick_normal'):
                 cache = Cache(self.gc, "GC4808G")
                 cache.load_quick()
             self.assertEqual(4, cache.terrain)
@@ -211,7 +211,7 @@ class TestMethods(NetworkedTest):
             self.assertEqual(cache.guid, "15ad3a3d-92c1-4f7c-b273-60937bcc2072")
 
         with self.subTest("fail"):
-            with recorder.use_cassette('cache_quickload_fail'):
+            with self.recorder.use_cassette('cache_quickload_fail'):
                 with self.assertRaises(LoadError):
                     cache = Cache(self.gc, "GC123456")
                     cache.load_quick()
@@ -221,7 +221,7 @@ class TestMethods(NetworkedTest):
     def test_load_by_guid(self, mock_load_quick, mock_load):
         with self.subTest("normal"):
             cache = Cache(self.gc, "GC2WXPN", guid="5f45114d-1d79-4fdb-93ae-8f49f1d27188")
-            with recorder.use_cassette('cache_guidload_normal'):
+            with self.recorder.use_cassette('cache_guidload_normal'):
                 cache.load_by_guid()
             self.assertEqual(cache.name, "Der Schatz vom Luftschloss")
             self.assertEqual(cache.location, Point("N 49° 57.895' E 008° 12.988'"))
@@ -247,25 +247,25 @@ class TestMethods(NetworkedTest):
 
         with self.subTest("PM-only"):
             cache = Cache(self.gc, "GC6MKEF", guid="53d34c4d-12b5-4771-86d3-89318f71efb1")
-            with recorder.use_cassette('cache_guidload_PMO'):
+            with self.recorder.use_cassette('cache_guidload_PMO'):
                 with self.assertRaises(PMOnlyException):
                     cache.load_by_guid()
 
         with self.subTest("calls load_quick if no guid"):
             cache = Cache(self.gc, "GC2WXPN")
-            with recorder.use_cassette('cache_guidload_fallback'):
+            with self.recorder.use_cassette('cache_guidload_fallback'):
                 with self.assertRaises(Exception):
                     cache.load_by_guid()  # Raises error since we mocked load_quick()
             self.assertTrue(mock_load_quick.called)
 
     def test_load_trackables(self):
         cache = Cache(self.gc, "GC26737")  # TB graveyard - will surelly have some trackables
-        with recorder.use_cassette('cache_trackables'):
+        with self.recorder.use_cassette('cache_trackables'):
             trackable_list = list(cache.load_trackables(limit=10))
         self.assertTrue(isinstance(trackable_list, list))
 
     def test_load_logbook(self):
-        with recorder.use_cassette('cache_logbook'):
+        with self.recorder.use_cassette('cache_logbook'):
             # limit over 100 tests pagination
             log_authors = list(map(lambda log: log.author, self.c.load_logbook(limit=200)))
         for expected_author in ["Dudny-1995", "Sopdet Reviewer", "donovanstangiano83"]:
@@ -274,7 +274,7 @@ class TestMethods(NetworkedTest):
     def test_load_log_page(self):
         expected_types = {t.value for t in (LogType.found_it, LogType.didnt_find_it, LogType.note)}
 
-        with recorder.use_cassette('cache_logpage'):
+        with self.recorder.use_cassette('cache_logpage'):
             # make request
             valid_types, hidden_inputs = self.c._load_log_page()
 
