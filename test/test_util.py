@@ -2,13 +2,12 @@
 
 import datetime
 import itertools
-import unittest
 
 from pycaching.util import rot13, parse_date, format_date, get_possible_attributes
-from . import session, recorder
+from . import NetworkedTest
 
 
-class TestModule(unittest.TestCase):
+class TestModule(NetworkedTest):
     def test_rot13(self):
         self.assertEqual(rot13("Text"), "Grkg")
         self.assertEqual(rot13("abc'ř"), "nop'ř")
@@ -53,8 +52,8 @@ class TestModule(unittest.TestCase):
             self.assertEqual(format_date(date, user_format), ref_result)
 
     def test_get_possible_attributes(self):
-        with recorder.use_cassette('util_attributes'):
-            attributes = get_possible_attributes(session=session)
+        with self.recorder.use_cassette('util_attributes'):
+            attributes = get_possible_attributes(session=self.session)
 
         with self.subTest("existing attributes"):
             for attr in "dogs", "public", "kids":

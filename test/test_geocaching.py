@@ -13,7 +13,7 @@ from geopy.distance import great_circle
 import pycaching
 from pycaching import Geocaching, Point, Rectangle
 from pycaching.errors import NotLoggedInException, LoginFailedException, PMOnlyException
-from . import username as _username, password as _password, recorder, session, NetworkedTest
+from . import username as _username, password as _password, NetworkedTest
 
 
 class TestMethods(NetworkedTest):
@@ -21,12 +21,12 @@ class TestMethods(NetworkedTest):
         with self.subTest("normal"):
             tolerance = 2
             expected = {"GC5VJ0P", "GC41FJC", "GC17E8Y", "GC14AV5", "GC50AQ6", "GC167Y7"}
-            with recorder.use_cassette('geocaching_search'):
+            with self.recorder.use_cassette('geocaching_search'):
                 found = {cache.wp for cache in self.gc.search(Point(49.733867, 13.397091), 20)}
             self.assertGreater(len(expected & found), len(expected) - tolerance)
 
         with self.subTest("pagging"):
-            with recorder.use_cassette('geocaching_search_pagination'):
+            with self.recorder.use_cassette('geocaching_search_pagination'):
                 caches = list(self.gc.search(Point(49.733867, 13.397091), 100))
             self.assertNotEqual(caches[0], caches[50])
 
@@ -39,7 +39,7 @@ class TestMethods(NetworkedTest):
         rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.40))
 
         with self.subTest("normal"):
-            with recorder.use_cassette('geocaching_quick_normal'):
+            with self.recorder.use_cassette('geocaching_quick_normal'):
                 # Once this feature is fixed, the corresponding cassette will have to be deleted
                 # and re-recorded.
                 res = [c.wp for c in self.gc.search_quick(rect)]
@@ -50,13 +50,13 @@ class TestMethods(NetworkedTest):
             self.assertGreater(len(res), 90)
 
         with self.subTest("strict handling of cache coordinates"):
-            with recorder.use_cassette('geocaching_quick_strictness'):
+            with self.recorder.use_cassette('geocaching_quick_strictness'):
                 res = list(self.gc.search_quick(rect, strict=True))
             self.assertLess(len(res), expected_cache_num + tolerance)
             self.assertGreater(len(res), expected_cache_num - tolerance)
 
         with self.subTest("larger zoom - more precise"):
-            with recorder.use_cassette('geocaching_quick_zoom'):
+            with self.recorder.use_cassette('geocaching_quick_zoom'):
                 res1 = list(self.gc.search_quick(rect, strict=True, zoom=15))
                 res2 = list(self.gc.search_quick(rect, strict=True, zoom=14))
             for res in res1, res2:
@@ -69,7 +69,7 @@ class TestMethods(NetworkedTest):
     def test_search_quick_match_load(self):
         """Test if quick search results matches exact cache locations."""
         rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.39))
-        with recorder.use_cassette('geocaching_matchload'):
+        with self.recorder.use_cassette('geocaching_matchload'):
             # at commit time, this test is an allowed failure. Once this feature is fixed, the
             # corresponding cassette will have to be deleted and re-recorded.
             caches = list(self.gc.search_quick(rect, strict=True, zoom=15))
@@ -83,7 +83,8 @@ class TestMethods(NetworkedTest):
 
 class TestLoginOperations(NetworkedTest):
     def setUp(self):
-        self.gc = Geocaching(session=session)
+        super().setUp()
+        self.gc = Geocaching(session=self.session)
 
     def test_request(self):
         with self.subTest("login needed"):
@@ -92,24 +93,24 @@ class TestLoginOperations(NetworkedTest):
 
     def test_login(self):
         with self.subTest("bad credentials"):
-            with recorder.use_cassette('geocaching_badcreds'):
-                session.cookies.clear()
+            with self.recorder.use_cassette('geocaching_badcreds'):
+                self.session.cookies.clear()
                 with self.assertRaises(LoginFailedException):
                     self.gc.login("0", "0")
 
         with self.subTest("good credentials twice"):
             self.gc.logout()
-            session.cookies.clear()
-            self.gc._session = session  # gotta reattach so we can keep listening
-            with recorder.use_cassette('geocaching_2login'):
+            self.session.cookies.clear()
+            self.gc._session = self.session  # gotta reattach so we can keep listening
+            with self.recorder.use_cassette('geocaching_2login'):
                 self.gc.login(_username, _password)
                 self.gc.login(_username, _password)
 
         with self.subTest("bad credentials automatic logout"):
-            with recorder.use_cassette('geocaching_badcreds_logout'):
+            with self.recorder.use_cassette('geocaching_badcreds_logout'):
                 self.gc.logout()
-                session.cookies.clear()
-                self.gc._session = session  # gotta reattach so we can keep listening
+                self.session.cookies.clear()
+                self.gc._session = self.session  # gotta reattach so we can keep listening
                 with self.assertRaises(LoginFailedException):
                     self.gc.login("0", "0")
 
@@ -144,16 +145,16 @@ class TestLoginOperations(NetworkedTest):
                     self.gc.login()
 
     def test_get_logged_user(self):
-        with recorder.use_cassette('geocaching_loggeduser'):
+        with self.recorder.use_cassette('geocaching_loggeduser'):
             self.gc.login(_username, _password)
             self.assertEqual(self.gc.get_logged_user(), _username)
 
     def test_logout(self):
-        with recorder.use_cassette('geocaching_logout'):
+        with self.recorder.use_cassette('geocaching_logout'):
             self.gc.login(_username, _password)
             self.gc.logout()
-            session.cookies.clear()
-            self.gc._session = session  # gotta reattach so we can keep listening
+            self.session.cookies.clear()
+            self.gc._session = self.session  # gotta reattach so we can keep listening
             self.assertIsNone(self.gc.get_logged_user())
 
     def test_load_credentials(self):
@@ -262,25 +263,25 @@ class TestShortcuts(NetworkedTest):
         real_init = Geocaching.__init__
 
         def fake_init(self_, unused_argument=None):
-            real_init(self_, session=session)
+            real_init(self_, session=self.session)
 
         # patching with the fake init method above to insert our session into the Geocaching object for testing
         with patch.object(Geocaching, '__init__', new=fake_init):
-            with recorder.use_cassette('geocaching_shortcut_login'):
+            with self.recorder.use_cassette('geocaching_shortcut_login'):
                 pycaching.login(_username, _password)
 
     def test_geocode(self):
         ref_point = Point(50.08746, 14.42125)
-        with recorder.use_cassette('geocaching_shortcut_geocode'):
+        with self.recorder.use_cassette('geocaching_shortcut_geocode'):
             self.assertLess(great_circle(self.gc.geocode("Prague"), ref_point).miles, 10)
 
     def test_get_cache(self):
-        with recorder.use_cassette('geocaching_shortcut_getcache'):
+        with self.recorder.use_cassette('geocaching_shortcut_getcache'):
             c = self.gc.get_cache("GC4808G")
             self.assertEqual("Nekonecne ticho", c.name)
 
     def test_get_trackable(self):
-        with recorder.use_cassette('geocaching_shortcut_gettrackable'):
+        with self.recorder.use_cassette('geocaching_shortcut_gettrackable'):
             t = self.gc.get_trackable("TB1KEZ9")
             self.assertEqual("Lilagul #2: SwedenHawk Geocoin", t.name)
 

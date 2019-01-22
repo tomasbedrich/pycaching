@@ -23,8 +23,6 @@ with Betamax.configure() as config:
     config.before_record(callback=sanitize_cookies)
 
 Betamax.register_serializer(PrettyJSONSerializer)
-session = Session()
-recorder = Betamax(session, default_cassette_options={'serialize_with': 'prettyjson'})
 
 
 class NetworkedTest(unittest.TestCase):
@@ -32,7 +30,9 @@ class NetworkedTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.gc = Geocaching(session=session)
+        cls.session = Session()
+        cls.recorder = Betamax(cls.session, default_cassette_options={'serialize_with': 'prettyjson'})
+        cls.gc = Geocaching(session=cls.session)
         try:
             cls.gc.login(username, password)
         except Error:
@@ -43,4 +43,4 @@ class NetworkedTest(unittest.TestCase):
             # because if we are recording new cassettes this means we cannot get
             # properly logged in.
             cls.gc._logged_in = True  # we're gonna trick it
-            cls.gc._session = session  # it got redefined; fix it
+            cls.gc._session = cls.session  # it got redefined; fix it

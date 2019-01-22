@@ -12,7 +12,7 @@ from pycaching import Cache
 from pycaching.errors import GeocodeError, BadBlockError
 from pycaching.geo import Point, Polygon, Rectangle, Tile, UTFGridPoint, Block
 from pycaching.geo import to_decimal
-from . import recorder, NetworkedTest
+from . import NetworkedTest
 
 _sample_caches_file = path.join(path.dirname(__file__), "sample_caches.csv")
 _sample_utfgrid_file = path.join(path.dirname(__file__), "sample_utfgrid.json")
@@ -69,18 +69,18 @@ class TestPoint(NetworkedTest):
         ref_point = Point(50.08746, 14.42125)
 
         with self.subTest("existing location"):
-            with recorder.use_cassette('geo_location_existing'):
+            with self.recorder.use_cassette('geo_location_existing'):
                 self.assertLess(great_circle(Point.from_location(self.gc, "Prague"), ref_point).miles, 10)
                 self.assertLess(great_circle(Point.from_location(self.gc, "Praha"), ref_point).miles, 10)
                 self.assertLess(great_circle(Point.from_location(self.gc, "praha"), ref_point).miles, 10)
 
         with self.subTest("non-existing location"):
-            with recorder.use_cassette('geo_location_nonexisting'):
+            with self.recorder.use_cassette('geo_location_nonexisting'):
                 with self.assertRaises(GeocodeError):
                     Point.from_location(self.gc, "qwertzuiop")
 
         with self.subTest("empty request"):
-            with recorder.use_cassette('geo_location_empty'):
+            with self.recorder.use_cassette('geo_location_empty'):
                 with self.assertRaises(GeocodeError):
                     Point.from_location(self.gc, "")
 
@@ -186,7 +186,7 @@ class TestTile(NetworkedTest):
 
     def test_download_utfgrid(self):
         """Test if downloading a UTFGrid passes without errors"""
-        with recorder.use_cassette('geo_point_utfgrid'):
+        with self.recorder.use_cassette('geo_point_utfgrid'):
             with self.subTest("not getting .png tile first"):
                 self.tile._download_utfgrid()
 
