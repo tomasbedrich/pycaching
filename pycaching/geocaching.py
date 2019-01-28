@@ -28,7 +28,7 @@ class Geocaching(object):
         "login_page":        "account/signin",
         "search":            "play/search",
         "search_more":       "play/search/more-results",
-        'my_logs':           'my/logs.aspx?lt={lt}',
+        'my_logs':           'my/logs.aspx',
     }
     _credentials_file = ".gc_credentials"
 
@@ -382,9 +382,18 @@ class Geocaching(object):
         print_page = self._request(Cache._urls["print_page"], params={"guid": guid})
         return Cache._from_print_page(self, guid, print_page)
 
-    def _my_logs(self, log_type, limit):
+    def my_logs(self, log_type=None, limit=float('inf')):
+        """Get an iterable of the logged-in user's logs.
+
+        :param log_type: The log type to search for. Use the ``.value`` attribute of a :class:`~.log.Type` value.
+            If set to ``None``, all logs will be returned (default: ``None``).
+        :param limit: The maximum number of results to return (default: infinity).
+        """
         logging.info("Getting {} of my logs of type {}".format(limit, log_type))
-        cache_table = self._request(self._urls['my_logs'].format(lt=log_type)).find(class_='Table')
+        url = self._urls['my_logs']
+        if log_type is not None:
+            url += '?lt={lt}'.format(lt=log_type)
+        cache_table = self._request(url).find(class_='Table')
         if cache_table is None:  # no finds on the account
             return
         cache_table = cache_table.tbody
@@ -401,9 +410,15 @@ class Geocaching(object):
             yielded += 1
 
     def my_finds(self, limit=float('inf')):
-        """Get an iterable of the logged-in user's finds."""
-        return self._my_logs(LogType.found_it.value, limit)
+        """Get an iterable of the logged-in user's finds.
+
+        :param limit: The maximum number of results to return (default: infinity).
+        """
+        return self.my_logs(LogType.found_it.value, limit)
 
     def my_dnfs(self, limit=float('inf')):
-        """Get an iterable of the logged-in user's DNFs."""
-        return self._my_logs(LogType.didnt_find_it.value, limit)
+        """Get an iterable of the logged-in user's DNFs.
+
+        :param limit: The maximum number of results to return (default: infinity).
+        """
+        return self.my_logs(LogType.didnt_find_it.value, limit)
