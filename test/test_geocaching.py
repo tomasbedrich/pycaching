@@ -11,12 +11,28 @@ from unittest.mock import patch
 from geopy.distance import great_circle
 
 import pycaching
-from pycaching import Geocaching, Point, Rectangle
+from pycaching import Cache, Geocaching, Point, Rectangle
 from pycaching.errors import NotLoggedInException, LoginFailedException, PMOnlyException
 from . import username as _username, password as _password, NetworkedTest
 
 
 class TestMethods(NetworkedTest):
+    def test_my_finds(self):
+        with self.recorder.use_cassette('geocaching_my_finds'):
+            finds = list(self.gc.my_finds(20))
+            self.assertEqual(20, len(finds))
+            for cache in finds:
+                self.assertTrue(cache.name)
+                self.assertTrue(isinstance(cache, Cache))
+
+    def test_my_dnfs(self):
+        with self.recorder.use_cassette('geocaching_my_dnfs'):
+            dnfs = list(self.gc.my_dnfs(20))
+            self.assertEqual(20, len(dnfs))
+            for cache in dnfs:
+                self.assertTrue(cache.name)
+                self.assertTrue(isinstance(cache, Cache))
+
     def test_search(self):
         with self.subTest("normal"):
             tolerance = 2
@@ -279,6 +295,11 @@ class TestShortcuts(NetworkedTest):
         with self.recorder.use_cassette('geocaching_shortcut_getcache'):
             c = self.gc.get_cache("GC4808G")
             self.assertEqual("Nekonecne ticho", c.name)
+
+    def test_get_cache__by_guid(self):
+        with self.recorder.use_cassette('geocaching_shortcut_getcache__by_guid'):
+            cache = self.gc.get_cache(guid='15ad3a3d-92c1-4f7c-b273-60937bcc2072')
+            self.assertEqual("Nekonecne ticho", cache.name)
 
     def test_get_trackable(self):
         with self.recorder.use_cassette('geocaching_shortcut_gettrackable'):

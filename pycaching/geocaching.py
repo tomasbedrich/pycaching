@@ -7,7 +7,7 @@ import bs4
 import json
 import subprocess
 import warnings
-from urllib.parse import urljoin
+from urllib.parse import parse_qs, urljoin, urlparse
 from os import path
 from pycaching.cache import Cache, Size
 from pycaching.log import Log, Type as LogType
@@ -28,6 +28,7 @@ class Geocaching(object):
         "login_page":        "account/signin",
         "search":            "play/search",
         "search_more":       "play/search/more-results",
+        'my_logs':           'my/logs.aspx',
     }
     _credentials_file = ".gc_credentials"
 
@@ -340,12 +341,20 @@ class Geocaching(object):
         """
         return Point.from_location(self, location)
 
-    def get_cache(self, wp):
-        """Return a :class:`.Cache` object by its waypoint.
+    def get_cache(self, wp=None, guid=None):
+        """Return a :class:`.Cache` object by its waypoint or GUID.
 
         :param str wp: Cache waypoint.
+        :param str guid: Cache GUID.
+
+        .. note ::
+           Provide only the GUID or the waypoint, not both.
         """
-        return Cache(self, wp)
+        if (wp is None) == (guid is None):
+            raise TypeError('Please provide exactly one of `wp` or `guid`.')
+        if wp is not None:
+            return Cache(self, wp)
+        return self._cache_from_guid(guid)
 
     def get_trackable(self, tid):
         """Return a :class:`.Trackable` object by its trackable ID.
@@ -367,3 +376,51 @@ class Geocaching(object):
             date = datetime.date.today()
         l = Log(type=type, text=text, visited=date)
         self.get_cache(wp).post_log(l)
+
+    def _cache_from_guid(self, guid):
+        logging.info('Loading cache with GUID {!r}'.format(guid))
+        print_page = self._request(Cache._urls["print_page"], params={"guid": guid})
+        return Cache._from_print_page(self, guid, print_page)
+
+    def my_logs(self, log_type=None, limit=float('inf')):
+        """Get an iterable of the logged-in user's logs.
+
+        :param log_type: The log type to search for. Use a :class:`~.log.Type` value.
+            If set to ``None``, all logs will be returned (default: ``None``).
+        :param limit: The maximum number of results to return (default: infinity).
+        """
+        logging.info("Getting {} of my logs of type {}".format(limit, log_type))
+        url = self._urls['my_logs']
+        if log_type is not None:
+            if isinstance(log_type, LogType):
+                log_type = log_type.value
+            url += '?lt={lt}'.format(lt=log_type)
+        cache_table = self._request(url).find(class_='Table')
+        if cache_table is None:  # no finds on the account
+            return
+        cache_table = cache_table.tbody
+
+        yielded = 0
+        for row in cache_table.find_all('tr'):
+            link = row.find(class_='ImageLink')['href']
+            guid = parse_qs(urlparse(link).query)['guid'][0]
+
+            if yielded >= limit:
+                break
+
+            yield self.get_cache(guid=guid)
+            yielded += 1
+
+    def my_finds(self, limit=float('inf')):
+        """Get an iterable of the logged-in user's finds.
+
+        :param limit: The maximum number of results to return (default: infinity).
+        """
+        return self.my_logs(LogType.found_it, limit)
+
+    def my_dnfs(self, limit=float('inf')):
+        """Get an iterable of the logged-in user's DNFs.
+
+        :param limit: The maximum number of results to return (default: infinity).
+        """
+        return self.my_logs(LogType.didnt_find_it, limit)

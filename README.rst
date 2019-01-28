@@ -219,6 +219,23 @@ Post a log for trackable
     tracking_code = "ABCDEF"
     trackable.post_log(log, tracking_code)
 
+Get geocaches by log type
+---------------------------------------------------------------------------------------------------
+
+.. code-block:: python
+
+    from pycaching.log import Type as LogType
+
+    for find in geocaching.my_finds(limit=5):
+        print(find.name)
+
+    for dnf in geocaching.my_dnfs(limit=2):
+        print(dnf.name)
+
+    for note in geocaching.my_logs(LogType.note, limit=6):
+        print(note.name)
+
+
 Testing
 ===================================================================================================
 

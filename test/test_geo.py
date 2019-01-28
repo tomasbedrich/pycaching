@@ -182,6 +182,7 @@ class TestTile(NetworkedTest):
     POSITION_ACCURANCY = 3  # = up to 110 meters
 
     def setUp(self):
+        super().setUp()
         self.tile = Tile(self.gc, 8800, 5574, 14)
 
     def test_download_utfgrid(self):
