@@ -385,13 +385,15 @@ class Geocaching(object):
     def my_logs(self, log_type=None, limit=float('inf')):
         """Get an iterable of the logged-in user's logs.
 
-        :param log_type: The log type to search for. Use the ``.value`` attribute of a :class:`~.log.Type` value.
+        :param log_type: The log type to search for. Use a :class:`~.log.Type` value.
             If set to ``None``, all logs will be returned (default: ``None``).
         :param limit: The maximum number of results to return (default: infinity).
         """
         logging.info("Getting {} of my logs of type {}".format(limit, log_type))
         url = self._urls['my_logs']
         if log_type is not None:
+            if isinstance(log_type, LogType):
+                log_type = log_type.value
             url += '?lt={lt}'.format(lt=log_type)
         cache_table = self._request(url).find(class_='Table')
         if cache_table is None:  # no finds on the account
@@ -414,11 +416,11 @@ class Geocaching(object):
 
         :param limit: The maximum number of results to return (default: infinity).
         """
-        return self.my_logs(LogType.found_it.value, limit)
+        return self.my_logs(LogType.found_it, limit)
 
     def my_dnfs(self, limit=float('inf')):
         """Get an iterable of the logged-in user's DNFs.
 
         :param limit: The maximum number of results to return (default: infinity).
         """
-        return self.my_logs(LogType.didnt_find_it.value, limit)
+        return self.my_logs(LogType.didnt_find_it, limit)

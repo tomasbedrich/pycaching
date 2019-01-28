@@ -232,7 +232,7 @@ Get geocaches by log type
     for dnf in geocaching.my_dnfs(limit=2):
         print(dnf.name)
 
-    for note in geocaching.my_logs(LogType.note.value, limit=6):
+    for note in geocaching.my_logs(LogType.note, limit=6):
         print(note.name)
 
 
