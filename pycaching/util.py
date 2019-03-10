@@ -60,7 +60,7 @@ def rot13(text):
 def parse_date(raw):
     """Return a parsed date."""
     raw = raw.strip()
-    patterns = ("%Y-%m-%d", "%Y/%m/%d", "%m/%d/%Y", "%d/%m/%Y",
+    patterns = ("%Y-%m-%d", "%Y/%m/%d", "%m/%d/%Y", "%d/%m/%Y", "%d-%m-%Y",
                 "%d.%m.%Y", "%d/%b/%Y", "%d.%b.%Y", "%b/%d/%Y", "%d %b %y")
 
     for pattern in patterns:
