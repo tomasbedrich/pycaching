@@ -13,7 +13,7 @@ from pycaching.cache import Cache, Size
 from pycaching.log import Log, Type as LogType
 from pycaching.geo import Point
 from pycaching.trackable import Trackable
-from pycaching.errors import Error, NotLoggedInException, LoginFailedException
+from pycaching.errors import Error, NotLoggedInException, LoginFailedException, PMOnlyException
 
 
 class Geocaching(object):
@@ -382,6 +382,27 @@ class Geocaching(object):
         print_page = self._request(Cache._urls["print_page"], params={"guid": guid})
         return Cache._from_print_page(self, guid, print_page)
 
+    def _try_getting_cache_from_guid(self, guid):
+        """tries to read a geocache from GUID page
+        if this is not possible (because it's a premium only cache) it reads the cache from the GC code"""
+        try:
+            return self.get_cache(guid=guid)
+        except PMOnlyException:
+            url = "https://www.geocaching.com/seek/cache_details.aspx?guid={}".format(guid)
+            wp = self._get_gccode_from_guidpage(url)
+            return self.get_cache(wp)
+
+    @staticmethod
+    def _get_gccode_from_guidpage(url):
+        data = requests.get(url).text
+        soup = bs4.BeautifulSoup(data, features="html.parser")
+        gc_element = soup.find("li", class_="li__gccode")
+        if gc_element is not None:                        # PMonly caches, this it what this function is for
+            gccode = gc_element.text.strip()
+        else:
+            gccode = soup.find("span", class_="CoordInfoCode").text.strip()
+        return gccode
+
     def my_logs(self, log_type=None, limit=float('inf')):
         """Get an iterable of the logged-in user's logs.
 
@@ -408,7 +429,7 @@ class Geocaching(object):
             if yielded >= limit:
                 break
 
-            yield self.get_cache(guid=guid)
+            yield self._try_getting_cache_from_guid(guid)
             yielded += 1
 
     def my_finds(self, limit=float('inf')):
