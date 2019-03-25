@@ -403,8 +403,18 @@ class Geocaching(object):
             gccode = soup.find("span", class_="CoordInfoCode").text.strip()
         return gccode
 
+    @staticmethod
+    def _get_date_from_string(string):
+        monthstrings = {"Jan":1, "Feb":2, "Mar":3, "Apr":4, "May":5, "Jun":6,
+                        "Jul":7, "Aug":8, "Sep":9, "Oct":10, "Nov":11, "Dec":12}
+        day = int(string[:2])
+        month = monthstrings[string[3:6]]
+        year = int(string[-4:])
+        return datetime.date(year, month, day)
+
     def my_logs(self, log_type=None, limit=float('inf')):
         """Get an iterable of the logged-in user's logs.
+        User log is a tuple of (Cache, Logdate)
 
         :param log_type: The log type to search for. Use a :class:`~.log.Type` value.
             If set to ``None``, all logs will be returned (default: ``None``).
@@ -417,7 +427,7 @@ class Geocaching(object):
                 log_type = log_type.value
             url += '?lt={lt}'.format(lt=log_type)
         cache_table = self._request(url).find(class_='Table')
-        if cache_table is None:  # no finds on the account
+        if cache_table is None:  # no logs on the account
             return
         cache_table = cache_table.tbody
 
@@ -425,15 +435,18 @@ class Geocaching(object):
         for row in cache_table.find_all('tr'):
             link = row.find(class_='ImageLink')['href']
             guid = parse_qs(urlparse(link).query)['guid'][0]
+            date_as_string = row.find_all('td')[2].text.strip()
+            date = self._get_date_from_string(date_as_string)
 
             if yielded >= limit:
                 break
 
-            yield self._try_getting_cache_from_guid(guid)
+            yield (self._try_getting_cache_from_guid(guid), date)
             yielded += 1
 
     def my_finds(self, limit=float('inf')):
         """Get an iterable of the logged-in user's finds.
+        returns a tuple (Cache, logdate)
 
         :param limit: The maximum number of results to return (default: infinity).
         """
@@ -441,6 +454,7 @@ class Geocaching(object):
 
     def my_dnfs(self, limit=float('inf')):
         """Get an iterable of the logged-in user's DNFs.
+        returns a tuple (Cache, logdate)
 
         :param limit: The maximum number of results to return (default: infinity).
         """
