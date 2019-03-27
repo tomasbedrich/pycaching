@@ -383,25 +383,16 @@ class Geocaching(object):
         return Cache._from_print_page(self, guid, print_page)
 
     def _try_getting_cache_from_guid(self, guid):
-        """tries to read a geocache from GUID page
-        if this is not possible (because it's a premium only cache) it reads the cache from the GC code"""
+        """Try to get a cache from guid page if possible, otherwise from gccode.
+
+        :param str guid: guid of the cache that should be read in
+        """
         try:
             return self.get_cache(guid=guid)
         except PMOnlyException:
-            url = "https://www.geocaching.com/seek/cache_details.aspx?guid={}".format(guid)
-            wp = self._get_gccode_from_guidpage(url)
+            url = self._request(Cache._urls["cache_details"], params={"guid": guid}, expect="raw").url
+            wp = url.split("/")[4].split("_")[0]  # get gccode from redirected url
             return self.get_cache(wp)
-
-    @staticmethod
-    def _get_gccode_from_guidpage(url):
-        data = requests.get(url).text
-        soup = bs4.BeautifulSoup(data, features="html.parser")
-        gc_element = soup.find("li", class_="li__gccode")
-        if gc_element is not None:                        # PMonly caches, this it what this function is for
-            gccode = gc_element.text.strip()
-        else:
-            gccode = soup.find("span", class_="CoordInfoCode").text.strip()
-        return gccode
 
     @staticmethod
     def _get_date_from_string(string):
