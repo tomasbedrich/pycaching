@@ -96,19 +96,6 @@ class TestMethods(NetworkedTest):
                 except PMOnlyException:
                     pass
 
-    def test__get_gccode_from_guidpage(self):
-        # for a "normal" cache (not really relevant for program)
-        url_normal = "https://www.geocaching.com/seek/cache_details.aspx?guid={}".format(
-                                            "15ad3a3d-92c1-4f7c-b273-60937bcc2072")
-        wp_normal = self.gc._get_gccode_from_guidpage(url_normal)
-        self.assertEqual(wp_normal, "GC4808G")
-
-        # for PMonly cache
-        url = "https://www.geocaching.com/seek/cache_details.aspx?guid={}".format(
-                                            "328927c1-aa8c-4e0d-bf59-31f1ce44d990")
-        wp = self.gc._get_gccode_from_guidpage(url)
-        self.assertEqual(wp, "GC74HEV")
-
     def test__try_getting_cache_from_guid(self):
         # get "normal" cache from guidpage
         with self.recorder.use_cassette('geocaching_shortcut_getcache__by_guid'):  # is a replacement for login
