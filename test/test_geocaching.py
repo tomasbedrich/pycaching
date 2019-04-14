@@ -187,6 +187,8 @@ class TestLoginOperations(NetworkedTest):
     def test_load_credentials(self):
         filename_backup = self.gc._credentials_file
         credentials = {"username": _username, "password": _password}
+        multi_credentials = [{"username": _username+"1", "password": _password+"1"},
+                             {"username": _username+"2", "password": _password+"2"}]
         empty_valid_json = {}
         nonsense_str = b"ss{}ef"
         password_cmd = "echo {}".format(_password)
@@ -213,6 +215,59 @@ class TestLoginOperations(NetworkedTest):
             finally:
                 os.remove(valid.name)
 
+        with self.subTest("Try to load valid credentials with username from current directory"):
+            try:
+                with NamedTemporaryFile(dir=".", delete=False) as valid:
+                    valid.write(json.dumps(credentials).encode())
+                self.gc._credentials_file = os.path.basename(valid.name)
+                username, password = self.gc._load_credentials(_username)
+                self.assertEqual(_username, username)
+                self.assertEqual(_password, password)
+            finally:
+                os.remove(valid.name)
+
+        with self.subTest("Try to load valid credentials with not existing username from current directory"):
+            try:
+                with NamedTemporaryFile(dir=".", delete=False) as valid:
+                    valid.write(json.dumps(credentials).encode())
+                self.gc._credentials_file = os.path.basename(valid.name)
+                with self.assertRaises(KeyError):
+                    username, password = self.gc._load_credentials(_username+"3")
+            finally:
+                os.remove(valid.name)
+
+        with self.subTest("Try to load valid multi credentials with default user from current directory"):
+            try:
+                with NamedTemporaryFile(dir=".", delete=False) as valid:
+                    valid.write(json.dumps(multi_credentials).encode())
+                self.gc._credentials_file = os.path.basename(valid.name)
+                username, password = self.gc._load_credentials()
+                self.assertEqual(_username+"1", username)
+                self.assertEqual(_password+"1", password)
+            finally:
+                os.remove(valid.name)
+
+        with self.subTest("Try to load valid multi credentials with user from current directory"):
+            try:
+                with NamedTemporaryFile(dir=".", delete=False) as valid:
+                    valid.write(json.dumps(multi_credentials).encode())
+                self.gc._credentials_file = os.path.basename(valid.name)
+                username, password = self.gc._load_credentials(_username+"2")
+                self.assertEqual(_username+"2", username)
+                self.assertEqual(_password+"2", password)
+            finally:
+                os.remove(valid.name)
+
+        with self.subTest("Try to load valid multi credentials with not existing user from current directory"):
+            try:
+                with NamedTemporaryFile(dir=".", delete=False) as valid:
+                    valid.write(json.dumps(multi_credentials).encode())
+                self.gc._credentials_file = os.path.basename(valid.name)
+                with self.assertRaises(KeyError):
+                    username, password = self.gc._load_credentials(_username+"3")
+            finally:
+                os.remove(valid.name)
+
         with self.subTest("Try to load empty file from current directory"):
             try:
                 with NamedTemporaryFile(dir=".", delete=False) as empty:
@@ -222,6 +277,36 @@ class TestLoginOperations(NetworkedTest):
                     self.gc._load_credentials()
             finally:
                 os.remove(empty.name)
+
+        with self.subTest("Try to load very empty multi credential file from current directory"):
+            try:
+                with NamedTemporaryFile(dir=".", delete=False) as valid:
+                    valid.write(json.dumps([]).encode())
+                self.gc._credentials_file = os.path.basename(valid.name)
+                with self.assertRaises(KeyError):
+                    username, password = self.gc._load_credentials()
+            finally:
+                os.remove(valid.name)
+
+        with self.subTest("Try to load empty multi credential file from current directory"):
+            try:
+                with NamedTemporaryFile(dir=".", delete=False) as valid:
+                    valid.write(json.dumps([empty_valid_json]).encode())
+                self.gc._credentials_file = os.path.basename(valid.name)
+                with self.assertRaises(KeyError):
+                    username, password = self.gc._load_credentials()
+            finally:
+                os.remove(valid.name)
+
+        with self.subTest("Try to load multi credential file with invalid format from current directory"):
+            try:
+                with NamedTemporaryFile(dir=".", delete=False) as valid:
+                    valid.write(json.dumps("username").encode())
+                self.gc._credentials_file = os.path.basename(valid.name)
+                with self.assertRaises(KeyError):
+                    username, password = self.gc._load_credentials()
+            finally:
+                os.remove(valid.name)
 
         with self.subTest("Try to load nonsense file from current directory"):
             try:

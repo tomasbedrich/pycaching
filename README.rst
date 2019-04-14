@@ -85,6 +85,18 @@ and ``password`` from that file as login credentials.
    { "username": "myusername", "password": "mypassword" }
 
 
+You can also provide multiple username and password tuples in a file as login credentials.
+The tuple to be used can be chosen by providing its username when calling pycaching.login(),
+e.g. pycaching.login("myusername2"). The first username and password tuple specified will be
+used as default if pycaching.login() is called without providing a username.
+
+.. code-block:: json
+
+   # sample .gc_credentials JSON file with mutiple users
+   [ { "username": "myusername1", "password": "mypassword1" },
+     { "username": "myusername2", "password": "mypassword2" } ]
+
+
 .. code-block:: python
 
     import pycaching

@@ -85,7 +85,7 @@ class Geocaching(object):
 
         if not username or not password:
             try:
-                username, password = self._load_credentials()
+                username, password = self._load_credentials(username=username)
             except FileNotFoundError as e:
                 raise LoginFailedException("Credentials file not found and "
                                            "no username and password is given.") from e
@@ -136,7 +136,7 @@ class Geocaching(object):
             raise LoginFailedException("Cannot login to the site "
                                        "(probably wrong username or password).")
 
-    def _load_credentials(self):
+    def _load_credentials(self, username=None):
         """Load credentials from file.
 
         Find credentials file in either current directory or user's home directory. If exists, load
@@ -164,7 +164,28 @@ class Geocaching(object):
 
         # load contents
         with open(credentials_file, "r") as f:
-            credentials = json.load(f)
+            cred = json.load(f)
+            if isinstance(cred, dict):
+                if username is None:
+                    credentials = cred
+                else:
+                    if "username" in cred and cred["username"] == username:
+                        credentials = cred
+                    else:
+                        raise KeyError("User {} requested but not found in credential.".format(username))
+            elif isinstance(cred, list):
+                if username is None and len(cred) > 0:
+                    credentials = cred[0]
+                else:
+                    for c in cred:
+                        if "username" in c and c["username"] == username:
+                            credentials = c
+                            break
+                    else:
+                        raise KeyError("User {} requested but not found in credentials.".format(username))
+            else:
+                raise KeyError("Credential data type is unexpected {}".format(type(cred)))
+
             if "password" in credentials and "password_cmd" in credentials:
                 raise KeyError("Ambiguous keys. Choose either \"password\" or \"password_cmd\".")
             elif "password" in credentials:
