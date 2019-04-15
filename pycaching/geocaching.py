@@ -396,7 +396,6 @@ class Geocaching(object):
 
     def my_logs(self, log_type=None, limit=float('inf')):
         """Get an iterable of the logged-in user's logs.
-        User log is a tuple of (Cache, Logdate)
 
         :param log_type: The log type to search for. Use a :class:`~.log.Type` value.
             If set to ``None``, all logs will be returned (default: ``None``).
@@ -429,7 +428,6 @@ class Geocaching(object):
 
     def my_finds(self, limit=float('inf')):
         """Get an iterable of the logged-in user's finds.
-        returns a tuple (Cache, logdate)
 
         :param limit: The maximum number of results to return (default: infinity).
         """
@@ -437,7 +435,6 @@ class Geocaching(object):
 
     def my_dnfs(self, limit=float('inf')):
         """Get an iterable of the logged-in user's DNFs.
-        returns a tuple (Cache, logdate)
 
         :param limit: The maximum number of results to return (default: infinity).
         """
