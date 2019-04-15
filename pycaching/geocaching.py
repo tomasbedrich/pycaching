@@ -414,14 +414,14 @@ class Geocaching(object):
 
         yielded = 0
         for row in cache_table.find_all('tr'):
+            if yielded >= limit:
+                break
+
             link = row.find(class_='ImageLink')['href']
             guid = parse_qs(urlparse(link).query)['guid'][0]
             current_cache = self._try_getting_cache_from_guid(guid)
             date = row.find_all('td')[2].text.strip()
             current_cache.visited = date
-
-            if yielded >= limit:
-                break
 
             yield current_cache
             yielded += 1
