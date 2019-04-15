@@ -11,7 +11,7 @@ from pycaching.trackable import Trackable
 from pycaching.log import Log, Type as LogType
 from pycaching.util import parse_date, rot13, lazy_loaded
 
-# prefix _type() function to avoid colisions with cache type
+# prefix _type() function to avoid collisions with cache type
 _type = type
 
 
@@ -167,7 +167,7 @@ class Cache(object):
         known_kwargs = {"name", "type", "location", "original_location", "state", "found", "size",
                         "difficulty", "terrain", "author", "hidden", "attributes", "summary",
                         "description", "hint", "favorites", "pm_only", "url", "waypoints", "_logbook_token",
-                        "_trackable_page_url", "guid"}
+                        "_trackable_page_url", "guid", "visited"}
 
         for name in known_kwargs:
             if name in kwargs:
@@ -462,6 +462,25 @@ class Cache(object):
             raise errors.ValueError(
                 "Passed object is not datetime.date instance nor string containing a date.")
         self._hidden = hidden
+
+    @property
+    def visited(self):
+        """The cache log date (filled by function geocaching.my_logs() if cache is created there)
+
+        :setter: Set a cache log date. If :class:`str` is passed, then :meth:`.util.parse_date`
+            is used and its return value is stored as a date.
+        :type: :class:`datetime.date`
+        """
+        return self._visited
+
+    @visited.setter
+    def visited(self, visited):
+        if isinstance(visited, str):
+            visited = parse_date(visited)
+        elif not isinstance(visited, datetime.date):
+            raise errors.ValueError(
+                "Passed object is not datetime.date instance nor string containing a date.")
+        self._visited = visited
 
     @property
     @lazy_loaded

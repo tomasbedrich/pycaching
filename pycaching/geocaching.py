@@ -394,15 +394,6 @@ class Geocaching(object):
             wp = url.split("/")[4].split("_")[0]  # get gccode from redirected url
             return self.get_cache(wp)
 
-    @staticmethod
-    def _get_date_from_string(string):
-        monthstrings = {"Jan": 1, "Feb": 2, "Mar": 3, "Apr": 4, "May": 5, "Jun": 6,
-                        "Jul": 7, "Aug": 8, "Sep": 9, "Oct": 10, "Nov": 11, "Dec": 12}
-        day = int(string[:2])
-        month = monthstrings[string[3:6]]
-        year = int(string[-4:])
-        return datetime.date(year, month, day)
-
     def my_logs(self, log_type=None, limit=float('inf')):
         """Get an iterable of the logged-in user's logs.
         User log is a tuple of (Cache, Logdate)
@@ -426,13 +417,14 @@ class Geocaching(object):
         for row in cache_table.find_all('tr'):
             link = row.find(class_='ImageLink')['href']
             guid = parse_qs(urlparse(link).query)['guid'][0]
-            date_as_string = row.find_all('td')[2].text.strip()
-            date = self._get_date_from_string(date_as_string)
+            current_cache = self._try_getting_cache_from_guid(guid)
+            date = row.find_all('td')[2].text.strip()
+            current_cache.visited = date
 
             if yielded >= limit:
                 break
 
-            yield (self._try_getting_cache_from_guid(guid), date)
+            yield current_cache
             yielded += 1
 
     def my_finds(self, limit=float('inf')):
