@@ -137,6 +137,16 @@ class TestProperties(unittest.TestCase):
             with self.assertRaises(PycachingValueError):
                 self.c.hidden = None
 
+    def test_visited(self):
+
+        with self.subTest("automatic str conversion"):
+            self.c.visited = "1/30/2000"
+            self.assertEqual(self.c.visited, date(2000, 1, 30))
+
+        with self.subTest("give date object"):
+            self.c.visited = date(2000, 1, 30)
+            self.assertEqual(self.c.visited, date(2000, 1, 30))
+
     def test_attributes(self):
         self.assertEqual(self.c.attributes, {"onehour": True, "kids": False, "available": True})
 
