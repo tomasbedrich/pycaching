@@ -408,19 +408,22 @@ class Geocaching(object):
                 log_type = log_type.value
             url += '?lt={lt}'.format(lt=log_type)
         cache_table = self._request(url).find(class_='Table')
-        if cache_table is None:  # no finds on the account
+        if cache_table is None:  # no logs on the account
             return
         cache_table = cache_table.tbody
 
         yielded = 0
         for row in cache_table.find_all('tr'):
-            link = row.find(class_='ImageLink')['href']
-            guid = parse_qs(urlparse(link).query)['guid'][0]
-
             if yielded >= limit:
                 break
 
-            yield self._try_getting_cache_from_guid(guid)
+            link = row.find(class_='ImageLink')['href']
+            guid = parse_qs(urlparse(link).query)['guid'][0]
+            current_cache = self._try_getting_cache_from_guid(guid)
+            date = row.find_all('td')[2].text.strip()
+            current_cache.visited = date
+
+            yield current_cache
             yielded += 1
 
     def my_finds(self, limit=float('inf')):
