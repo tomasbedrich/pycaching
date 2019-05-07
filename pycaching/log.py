@@ -126,6 +126,9 @@ class Type(enum.Enum):
         elif filename == "1001":
             # 2 different IDs for visit
             return cls.visit
+        elif filename == "68":
+            # 2 different IDs for post_reviewer_note
+            return cls.post_reviewer_note
 
         try:
             return cls(filename)
