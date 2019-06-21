@@ -54,14 +54,15 @@ class Point(geopy.Point):
         This method can handle various malformed formats. Example inputs are:
 
         - :code:`S 36 51.918 E 174 46.725` or
-        - :code:`N 6 52.861  W174   43.327`
+        - :code:`N 6 52.861  w174   43.327`
 
         :param str string: Coordinates to parse.
         :raise .ValueError: If string cannot be parsed as coordinates.
         """
 
         # Make it uppercase for consistency
-        coords = string.upper().replace("N", " ").replace("S", " ") \
+        string = string.upper() # convert to uppercase to simplify hemisphere comparisons
+        coords = string.replace("N", " ").replace("S", " ") \
             .replace("E", " ").replace("W", " ").replace("+", " ")
 
         try:
