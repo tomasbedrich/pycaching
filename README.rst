@@ -48,7 +48,7 @@ Pycaching has following requirements:
 
 .. code::
 
-    Python>=3.4
+    Python>=3.5
     requests>=2.8
     beautifulsoup4>=4.4
     geopy>=1.11
