@@ -60,8 +60,8 @@ class Point(geopy.Point):
         :raise .ValueError: If string cannot be parsed as coordinates.
         """
 
-        # Make it uppercase for consistency
-        string = string.upper() # convert to uppercase to simplify hemisphere comparisons
+        # Convert to uppercase to simplify hemisphere comparisons
+        string = string.upper()
         coords = string.replace("N", " ").replace("S", " ") \
             .replace("E", " ").replace("W", " ").replace("+", " ")
 
