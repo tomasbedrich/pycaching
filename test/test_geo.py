@@ -34,6 +34,10 @@ class TestPoint(NetworkedTest):
             self.assertEqual(Point.from_string("S 49 45.123 W 013 22.123"),
                              Point(-49.75205, -13.36872))
 
+        with self.subTest("lowercase"):
+            self.assertEqual(Point.from_string("s 49 45.123 w 013 22.123"),
+                             Point(-49.75205, -13.36872))
+
         with self.subTest("letter together"):
             self.assertEqual(Point.from_string("N49 45.123 E013 22.123"), Point(49.75205, 13.36872))
 
@@ -52,7 +56,7 @@ class TestPoint(NetworkedTest):
             self.assertEqual(Point.from_string("N 49° 45.123 E 013° 22.123"),
                              Point(49.75205, 13.36872))
 
-        with self.subTest("coma between lat and lon"):
+        with self.subTest("comma between lat and lon"):
             self.assertEqual(Point.from_string("N 49 45.123, E 013 22.123"),
                              Point(49.75205, 13.36872))
 
