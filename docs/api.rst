@@ -2,7 +2,7 @@
 API reference
 ===============================================================================
 
-Here you can find an overview of all avaliable classes and methods.
+Here you can find an overview of all available classes and methods.
 
 .. warning::
    Deprecated methods will be removed in next minor version.

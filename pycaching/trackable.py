@@ -3,7 +3,7 @@
 from pycaching import errors
 from pycaching.util import lazy_loaded, format_date
 
-# prefix _type() function to avoid colisions with trackable type
+# prefix _type() function to avoid collisions with trackable type
 _type = type
 
 
@@ -204,7 +204,7 @@ class Trackable(object):
     def _load_log_page(self):
         """Load a logging page for this trackable.
 
-        :return: Tuple of data nescessary to log the trackable.
+        :return: Tuple of data necessary to log the trackable.
         :rtype: :class:`tuple` of (:class:`set`:, :class:`dict`, class:`str`)
         """
         if not self._log_page_url:
