@@ -112,7 +112,7 @@ class Cache(object):
 
     @classmethod
     def _from_print_page(cls, geocaching, guid, soup):
-        """Create a cache instance from a souped print-page and a GUID"""
+        """Create a cache instance from a souped print-page and a GUID."""
         if soup.find("p", "Warning") is not None:
             raise errors.PMOnlyException()
 

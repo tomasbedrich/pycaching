@@ -13,7 +13,7 @@ Features
 -  **search** caches
 
    - normal search (unlimited number of caches from any point)
-   - quick search (all caches inside some area) - currently not working, see bellow
+   - quick search (all caches inside some area) - currently not working, see below
 
 -  **get cache** and its details
 
@@ -86,9 +86,9 @@ and ``password`` from that file as login credentials.
 
 
 You can also provide multiple username and password tuples in a file as login credentials.
-The tuple to be used can be chosen by providing its username when calling pycaching.login(),
-e.g. pycaching.login("myusername2"). The first username and password tuple specified will be
-used as default if pycaching.login() is called without providing a username.
+The tuple to be used can be chosen by providing its username when calling ``pycaching.login()``,
+e.g. ``pycaching.login("myusername2")``. The first username and password tuple specified will be
+used as default if ``pycaching.login()`` is called without providing a username.
 
 .. code-block:: json
 
@@ -111,7 +111,7 @@ using the ``password_cmd`` key instead of ``password``.
    # sample .gc_credentials JSON file with password command
    { "username": "myusername", "password_cmd": "pass geocaching.com/myUsername" }
 
-Note that the ``password`` and ``password_cmd`` keys are mutually exclusisive.
+Note that the ``password`` and ``password_cmd`` keys are mutually exclusive.
 
 
 
@@ -127,7 +127,7 @@ Load a cache details
 This uses lazy loading, so the `Cache <https://pycaching.readthedocs.io/en/latest/api.html#cache>`__
 object is created immediately and the page is loaded when needed (accessing the name).
 
-You can use different method of loading cache details. It will be much faster, but it will load less
+You can use a different method of loading cache details. It will be much faster, but it will load less
 details:
 
 .. code-block:: python
@@ -158,7 +158,7 @@ Post a log to cache
 
     geocaching.post_log("GC1PAR2", "Found cache in the rain. Nice place, TFTC!")
 
-It is also possible to call post_log on `Cache
+It is also possible to call ``post_log`` on `Cache
 <https://pycaching.readthedocs.io/en/latest/api.html#cache>`__ object, but you would have to create
 `Log <https://pycaching.readthedocs.io/en/latest/api.html#log>`__ object manually and pass it to
 this method.

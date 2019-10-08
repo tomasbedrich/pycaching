@@ -65,11 +65,11 @@ Coding style
 - For code, follow `PEP8 <https://www.python.org/dev/peps/pep-0008/>`_.
 
   - Use **double quotes**.
-  - Try to keep line length below **100 characters** (or 120 if absolutely nescessary).
+  - Try to keep line length below **100 characters** (or 120 if absolutely necessary).
   - Use `.format()` for string formatting.
 
 - For docs, please follow `PEP257 <https://www.python.org/dev/peps/pep-0257/>`_.
-- **Importing modules** is okay for modules from standard library. If you want to include
+- **Importing modules** is okay for modules from standard library. If you want to include a
   third-party module, please consult it on GitHub before.
 - `Please use regular expressions only as a last resort. <http://imgur.com/j3G9xyP>`_ When possible, use string manipulations,
   such as :code:`split()` and then list operations. It is more readable.

@@ -225,7 +225,7 @@ class Geocaching(object):
 
         Search for caches around some point by loading search pages and parsing the data from these
         pages. Yield :class:`.Cache` objects filled with data from search page. You can provide limit
-        as a convinient way to stop generator after certain number of caches.
+        as a convenient way to stop generator after certain number of caches.
 
         :param .geo.Point point: Search center point.
         :param int limit: Maximum number of caches to generate.
@@ -241,7 +241,7 @@ class Geocaching(object):
                 # result is empty - no more caches
                 return
 
-            # prepare language-dependant mappings
+            # prepare language-dependent mappings
             if start_index == 0:
                 cache_sizes_filter_wrapper = whole_page.find("div", class_="cache-sizes-wrapper")
                 localized_size_mapping = {
@@ -406,7 +406,7 @@ class Geocaching(object):
     def _try_getting_cache_from_guid(self, guid):
         """Try to get a cache from guid page if possible, otherwise from gccode.
 
-        :param str guid: guid of the cache that should be read in
+        :param str guid: Guid of the cache that should be read in.
         """
         try:
             return self.get_cache(guid=guid)
