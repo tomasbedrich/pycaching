@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+import platform
 import re
 import warnings
 import inspect
@@ -77,25 +78,20 @@ def format_date(date, user_date_format):
     # parse user format
     date_format = user_date_format.lower()
     date_format = re.split("(\W+)", date_format)
+    # non-zero-padded numbers use different characters depending on different platforms
+    # see https://strftime.org/ for example
+    eat_zero_prefix = "#" if platform.system() == "Windows" else "-"
     formats = {
         "dd": r'%d',
-        "d": r'%-d',
+        "d": r'%{}d'.format(eat_zero_prefix),
         "mmm": r'%b',
         "mm": r'%m',
-        "m": r'%-m',
+        "m": r'%{}m'.format(eat_zero_prefix),
         "yyyy": r'%Y',
         "yy": r'%y',
     }
     date_format = "".join((formats[c] if c in formats else c for c in date_format))
-
-    # use workaround for some systems where the `-` flag is not supported
-    # this is related to https://github.com/tomasbedrich/pycaching/issues/130
-    try:
-        return date.strftime(date_format)
-    except ValueError:
-        date_format = date_format.replace("%-d", str(date.day))
-        date_format = date_format.replace("%-m", str(date.month))
-        return date.strftime(date_format)
+    return date.strftime(date_format)
 
 
 def get_possible_attributes(*, session=None):
