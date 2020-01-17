@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+import platform
 import re
 import warnings
 import inspect
@@ -77,12 +78,15 @@ def format_date(date, user_date_format):
     # parse user format
     date_format = user_date_format.lower()
     date_format = re.split("(\W+)", date_format)
+    # non-zero-padded numbers use different characters depending on different platforms
+    # see https://strftime.org/ for example
+    eat_zero_prefix = "#" if platform.system() == "Windows" else "-"
     formats = {
         "dd": r'%d',
-        "d": r'%-d',
+        "d": r'%{}d'.format(eat_zero_prefix),
         "mmm": r'%b',
         "mm": r'%m',
-        "m": r'%-m',
+        "m": r'%{}m'.format(eat_zero_prefix),
         "yyyy": r'%Y',
         "yy": r'%y',
     }
@@ -92,7 +96,7 @@ def format_date(date, user_date_format):
 
 def get_possible_attributes(*, session=None):
     """Return a dict of all possible attributes parsed from Groundspeak's website."""
-    # imports are here not to slow down other parts of program which normally doesn't use this method
+    # imports are here to not slow down other parts of program which normally don't use this method
     import requests
     from bs4 import BeautifulSoup
 
