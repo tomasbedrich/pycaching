@@ -630,24 +630,20 @@ class Cache(object):
             else:
                 raise errors.LoadError("Cache lacks info for loading")
         except errors.Error as e:
-            # probably 404 during cache loading - cache not exists
+            # probably 404 during cache loading - cache does not exist
             raise errors.LoadError("Error in loading cache") from e
 
         # check for PM only caches if using free account
-        self.pm_only = root.find("section", "pmo-banner") is not None
+        self.pm_only = root.find("section", "premium-upgrade-widget") is not None
 
         cache_details = root.find(id="ctl00_divContentMain") if self.pm_only else root.find(id="cacheDetails")
 
-        # details also avaliable for basic members for PM only caches -----------------------------
+        # details also available for basic members for PM only caches -----------------------------
 
         if self.pm_only:
             self.wp = cache_details.find("li", "li__gccode").text.strip()
 
             self.name = cache_details.find("h1").text.strip()
-
-            type = cache_details.find("img").get("src")  # "/play/Content/images/cache-types/3.png"
-            type = type.split("/")[-1].rsplit(".", 1)[0]  # "3"
-            self.type = Type.from_filename(type)
 
             author = cache_details.find(id="ctl00_ContentBody_uxCacheBy").text
             self.author = author[len("A cache by "):]
@@ -670,10 +666,6 @@ class Cache(object):
                 raise errors.LoadError()
             self.name = cache_details.find("h2").text
 
-            type = cache_details.select_one("svg.cache-icon use").get("xlink:href")  # "cache-types.svg#icon-3-disabled"
-            type = type.split("#")[-1].replace("_", "-").split("-")[1]  # "3"
-            self.type = Type.from_filename(type)
-
             self.author = cache_details("a")[1].text
 
             D_and_T_img = root.find("div", "CacheStarLabels").find_all("img")
@@ -683,6 +675,11 @@ class Cache(object):
             size = size.find("img").get("src")  # size img src
             size = size.split("/")[-1].rsplit(".", 1)[0]  # filename w/o extension
             self.size = Size.from_filename(size)
+
+        # use shared functionality as both cases use the same method
+        type = cache_details.select_one("svg.cache-icon use").get("xlink:href")  # "cache-types.svg#icon-3-disabled"
+        type = type.split("#")[-1].replace("_", "-").split("-")[1]  # "3"
+        self.type = Type.from_filename(type)
 
         if self.pm_only:
             raise errors.PMOnlyException()
