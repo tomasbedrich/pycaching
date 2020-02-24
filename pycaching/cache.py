@@ -167,7 +167,7 @@ class Cache(object):
         known_kwargs = {"name", "type", "location", "original_location", "state", "found", "size",
                         "difficulty", "terrain", "author", "hidden", "attributes", "summary",
                         "description", "hint", "favorites", "pm_only", "url", "waypoints", "_logbook_token",
-                        "_trackable_page_url", "guid", "visited"}
+                        "_trackable_page_url", "guid", "visited", "log_counts"}
 
         for name in known_kwargs:
             if name in kwargs:
@@ -565,6 +565,21 @@ class Cache(object):
         self._favorites = int(favorites)
 
     @property
+    @lazy_loaded
+    def log_counts(self):
+        """The log count for each log type.
+
+        :setter: Store a dictionary of log counts for each type used in the logbook of the current
+                 cache.
+        :type: :class:`dict`
+        """
+        return self._log_counts
+
+    @log_counts.setter
+    def log_counts(self, log_counts):
+        self._log_counts = log_counts
+
+    @property
     def pm_only(self):
         """If the cache is PM only.
 
@@ -740,6 +755,9 @@ class Cache(object):
         # Additional Waypoints
         self.waypoints = Waypoint.from_html(root, "ctl00_ContentBody_Waypoints")
 
+        # Log counts
+        self.log_counts = self._get_log_counts_from_cache_details(root)
+
         logging.debug("Cache loaded: {}".format(self))
 
     def load_quick(self):
@@ -844,6 +862,97 @@ class Cache(object):
             "strong", text=re.compile("Favorites:")).parent.text.split()[-1]
 
         self.waypoints = Waypoint.from_html(content, "Waypoints")
+
+        self.log_counts = self._get_log_counts_from_print_page(res)
+
+    def _get_log_counts_from_cache_details(self, soup):
+        """Return a dictionary of all log counts found in the page
+        representation, based on the cache details page.
+
+        :param bs4.BeautifulSoup soup: Parsed html document of the cache details page.
+        """
+        lbl_find_counts = soup.find("span", {"id": "ctl00_ContentBody_lblFindCounts"})
+        log_totals = lbl_find_counts.find("p", "LogTotals")
+
+        # Text gives numbers separated by a lot of spaces, splitting retrieves the numbers.
+        # The values might contain thousand separators, which we have to remove before converting
+        # them to real numbers.
+        values = log_totals.text.split()
+        values = [int(value.replace(",", "").replace(".", "")) for value in values]
+
+        # Retrieve the list of image sources.
+        images = log_totals.find_all("img")
+        types = []
+        for image in images:
+            type = image["src"]  # "../images/logtypes/2.png"
+            type = type.split("/")[-1].split(".")[0]  # "2"
+            type = LogType.from_filename(type)
+            types.append(type)
+
+        # Prevent possible wrong assignments when the list sizes differ for some unknown reason.
+        if not len(values) == len(types):
+            raise errors.ValueError(
+                "Different list sizes getting log counts: {} types and {} counts.".format(
+                    len(types), len(values)))
+
+        # Finally create the mapping.
+        log_counts = {}
+        for index, value in enumerate(values):
+            log_counts[types[index]] = value
+
+        return log_counts
+
+    def _get_log_counts_from_print_page(self, soup):
+        """Return a dictionary of all log counts found in the page
+        representation, based on the print page.
+
+        :param bs4.BeautifulSoup soup: Parsed html document of the cache print page.
+        """
+        # The print page does not use any IDs, so we use some more complicated approach here and
+        # search for the paragraph containing the log type images.
+        p_meta = soup.find_all("p", "Meta")
+        element = None
+        for entry in p_meta:
+            if "images/logtypes" in str(entry):
+                element = entry
+                break
+
+        if not element:
+            raise errors.ValueError("Log counts could not be found.")
+
+        # Text gives numbers and verbose descriptions of the current values as well as an
+        # introductory text. So we have to peform number checks for each element and only keep
+        # the numbers.
+        # The values might contain thousand separators, which we have to remove before converting
+        # them to real numbers.
+        words = element.text.split()
+        values = []
+        for word in words:
+            word = word.replace(",", "").replace(".", "")
+            if word and word.isdigit():
+                values.append(int(word))
+
+        # Retrieve the list of image sources.
+        images = element.find_all("img")
+        types = []
+        for image in images:
+            type = image["src"]  # "../images/logtypes/2.png"
+            type = type.split("/")[-1].split(".")[0]  # "2"
+            type = LogType.from_filename(type)
+            types.append(type)
+
+        # Prevent possible wrong assignments when the list sizes differ for some unknown reason.
+        if not len(values) == len(types):
+            raise errors.ValueError(
+                "Different list sizes getting log counts: {} types and {} counts.".format(
+                    len(types), len(values)))
+
+        # Finally create the mapping.
+        log_counts = {}
+        for index, value in enumerate(values):
+            log_counts[types[index]] = value
+
+        return log_counts
 
     def _logbook_get_page(self, page=0, per_page=25):
         """Load one page from logbook.
