@@ -117,38 +117,39 @@ class Cache(object):
             raise errors.PMOnlyException()
 
         cache_info = dict()
-        cache_info['guid'] = guid
-        cache_info['wp'] = soup.find(class_='HalfRight').find('h1').text.strip()
+        cache_info["guid"] = guid
+        cache_info["wp"] = soup.find(class_="HalfRight").find("h1").text.strip()
         content = soup.find(id="Content")
-        cache_info['name'] = content.find("h2").text.strip()
-        cache_info['type'] = Type.from_filename(content.h2.img['src'].split('/')[-1].partition('.')[0])
-        cache_info['author'] = content.find(class_='Meta').text.partition(':')[2].strip()
-        diff_terr = content.find(class_='DiffTerr').find_all('img')
+        cache_info["name"] = content.find("h2").text.strip()
+        cache_info["type"] = Type.from_filename(content.h2.img["src"].split("/")[-1].partition(".")[0])
+        cache_info["author"] = content.find(class_="Meta").text.partition(":")[2].strip()
+        diff_terr = content.find(class_="DiffTerr").find_all("img")
         assert len(diff_terr) == 2
-        cache_info['difficulty'] = float(diff_terr[0]['alt'].split()[0])
-        cache_info['terrain'] = float(diff_terr[1]['alt'].split()[0])
-        cache_info['size'] = Size.from_string(content.find(class_='Third AlignCenter').p.img['alt'].partition(':')[2])
-        fav_text = content.find(class_='Third AlignRight').p.contents[2]
+        cache_info["difficulty"] = float(diff_terr[0]["alt"].split()[0])
+        cache_info["terrain"] = float(diff_terr[1]["alt"].split()[0])
+        cache_info["size"] = Size.from_string(content.find(class_="Third AlignCenter").p.img["alt"].partition(":")[2])
+        fav_text = content.find(class_="Third AlignRight").p.contents[2]
         try:
-            cache_info['favorites'] = int(fav_text)
+            cache_info["favorites"] = int(fav_text)
         except ValueError:  # element not present when 0 favorites
-            cache_info['favorites'] = 0
-        cache_info['hidden'] = parse_date(
-            content.find(class_='HalfRight AlignRight').p.text.strip().partition(':')[2].strip())
-        cache_info['location'] = Point.from_string(content.find(class_='LatLong').text.strip())
-        cache_info['state'] = None  # not on the page
-        attributes = [img['src'].split('/')[-1].partition('.')[0].rpartition('-')
-                      for img in content.find(class_='sortables').find_all('img')
-                      if img.get('src') and img['src'].startswith('/images/attributes/')]
-        cache_info['attributes'] = {attr_name: attr_setting == 'yes'
+            cache_info["favorites"] = 0
+        cache_info["hidden"] = parse_date(
+            content.find(class_="HalfRight AlignRight").p.text.strip().partition(":")[2].strip())
+        cache_info["location"] = Point.from_string(content.find(class_="LatLong").text.strip())
+        cache_info["state"] = None  # not on the page
+        attributes = [img["src"].split("/")[-1].partition(".")[0].rpartition("-")
+                      for img in content.find(class_="sortables").find_all("img")
+                      if img.get("src") and img["src"].startswith("/images/attributes/")]
+        cache_info["attributes"] = {attr_name: attr_setting == "yes"
                                     for attr_name, _, attr_setting in attributes}
-        if 'attribute' in cache_info['attributes']:  # 'blank' attribute
-            del cache_info['attributes']['attribute']
-        cache_info['summary'] = content.find("h2", text="Short Description").find_next("div").text
-        cache_info['description'] = content.find("h2", text="Long Description").find_next("div").text
-        hint = content.find(id='uxEncryptedHint')
-        cache_info['hint'] = hint.text.strip() if hint else None
-        cache_info['waypoints'] = Waypoint.from_html(content, table_id="Waypoints")
+        if "attribute" in cache_info["attributes"]:  # 'blank' attribute
+            del cache_info["attributes"]["attribute"]
+        cache_info["summary"] = content.find("h2", text="Short Description").find_next("div").text
+        cache_info["description"] = content.find("h2", text="Long Description").find_next("div").text
+        hint = content.find(id="uxEncryptedHint")
+        cache_info["hint"] = hint.text.strip() if hint else None
+        cache_info["waypoints"] = Waypoint.from_html(content, table_id="Waypoints")
+        cache_info["log_counts"] = Cache._get_log_counts_from_print_page(soup)
         return Cache(geocaching, **cache_info)
 
     def __init__(self, geocaching, wp, **kwargs):
@@ -756,7 +757,7 @@ class Cache(object):
         self.waypoints = Waypoint.from_html(root, "ctl00_ContentBody_Waypoints")
 
         # Log counts
-        self.log_counts = self._get_log_counts_from_cache_details(root)
+        self.log_counts = Cache._get_log_counts_from_cache_details(root)
 
         logging.debug("Cache loaded: {}".format(self))
 
@@ -863,9 +864,10 @@ class Cache(object):
 
         self.waypoints = Waypoint.from_html(content, "Waypoints")
 
-        self.log_counts = self._get_log_counts_from_print_page(res)
+        self.log_counts = Cache._get_log_counts_from_print_page(res)
 
-    def _get_log_counts_from_cache_details(self, soup):
+    @staticmethod
+    def _get_log_counts_from_cache_details(soup):
         """Return a dictionary of all log counts found in the page
         representation, based on the cache details page.
 
@@ -902,7 +904,8 @@ class Cache(object):
 
         return log_counts
 
-    def _get_log_counts_from_print_page(self, soup):
+    @staticmethod
+    def _get_log_counts_from_print_page(soup):
         """Return a dictionary of all log counts found in the page
         representation, based on the print page.
 
