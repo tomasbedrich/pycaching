@@ -254,6 +254,18 @@ class TestMethods(NetworkedTest):
             self.assertEqual(cache.hint, "Das ist nicht nötig")
             self.assertGreater(cache.favorites, 350)
             self.assertEqual(len(cache.waypoints), 2)
+            self.assertDictEqual(cache.log_counts, {
+                LogType.found_it: 800,
+                LogType.note: 35,
+                LogType.archive: 1,
+                LogType.needs_archive: 1,
+                LogType.temp_disable_listing: 5,
+                LogType.enable_listing: 4,
+                LogType.publish_listing: 1,
+                LogType.needs_maintenance: 5,
+                LogType.owner_maintenance: 3,
+                LogType.post_reviewer_note: 2,
+            })
 
         with self.subTest("PM-only"):
             cache = Cache(self.gc, "GC6MKEF", guid="53d34c4d-12b5-4771-86d3-89318f71efb1")

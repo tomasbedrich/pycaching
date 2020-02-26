@@ -117,38 +117,39 @@ class Cache(object):
             raise errors.PMOnlyException()
 
         cache_info = dict()
-        cache_info['guid'] = guid
-        cache_info['wp'] = soup.find(class_='HalfRight').find('h1').text.strip()
+        cache_info["guid"] = guid
+        cache_info["wp"] = soup.find(class_="HalfRight").find("h1").text.strip()
         content = soup.find(id="Content")
-        cache_info['name'] = content.find("h2").text.strip()
-        cache_info['type'] = Type.from_filename(content.h2.img['src'].split('/')[-1].partition('.')[0])
-        cache_info['author'] = content.find(class_='Meta').text.partition(':')[2].strip()
-        diff_terr = content.find(class_='DiffTerr').find_all('img')
+        cache_info["name"] = content.find("h2").text.strip()
+        cache_info["type"] = Type.from_filename(content.h2.img["src"].split("/")[-1].partition(".")[0])
+        cache_info["author"] = content.find(class_="Meta").text.partition(":")[2].strip()
+        diff_terr = content.find(class_="DiffTerr").find_all("img")
         assert len(diff_terr) == 2
-        cache_info['difficulty'] = float(diff_terr[0]['alt'].split()[0])
-        cache_info['terrain'] = float(diff_terr[1]['alt'].split()[0])
-        cache_info['size'] = Size.from_string(content.find(class_='Third AlignCenter').p.img['alt'].partition(':')[2])
-        fav_text = content.find(class_='Third AlignRight').p.contents[2]
+        cache_info["difficulty"] = float(diff_terr[0]["alt"].split()[0])
+        cache_info["terrain"] = float(diff_terr[1]["alt"].split()[0])
+        cache_info["size"] = Size.from_string(content.find(class_="Third AlignCenter").p.img["alt"].partition(":")[2])
+        fav_text = content.find(class_="Third AlignRight").p.contents[2]
         try:
-            cache_info['favorites'] = int(fav_text)
+            cache_info["favorites"] = int(fav_text)
         except ValueError:  # element not present when 0 favorites
-            cache_info['favorites'] = 0
-        cache_info['hidden'] = parse_date(
-            content.find(class_='HalfRight AlignRight').p.text.strip().partition(':')[2].strip())
-        cache_info['location'] = Point.from_string(content.find(class_='LatLong').text.strip())
-        cache_info['state'] = None  # not on the page
-        attributes = [img['src'].split('/')[-1].partition('.')[0].rpartition('-')
-                      for img in content.find(class_='sortables').find_all('img')
-                      if img.get('src') and img['src'].startswith('/images/attributes/')]
-        cache_info['attributes'] = {attr_name: attr_setting == 'yes'
+            cache_info["favorites"] = 0
+        cache_info["hidden"] = parse_date(
+            content.find(class_="HalfRight AlignRight").p.text.strip().partition(":")[2].strip())
+        cache_info["location"] = Point.from_string(content.find(class_="LatLong").text.strip())
+        cache_info["state"] = None  # not on the page
+        attributes = [img["src"].split("/")[-1].partition(".")[0].rpartition("-")
+                      for img in content.find(class_="sortables").find_all("img")
+                      if img.get("src") and img["src"].startswith("/images/attributes/")]
+        cache_info["attributes"] = {attr_name: attr_setting == "yes"
                                     for attr_name, _, attr_setting in attributes}
-        if 'attribute' in cache_info['attributes']:  # 'blank' attribute
-            del cache_info['attributes']['attribute']
-        cache_info['summary'] = content.find("h2", text="Short Description").find_next("div").text
-        cache_info['description'] = content.find("h2", text="Long Description").find_next("div").text
-        hint = content.find(id='uxEncryptedHint')
-        cache_info['hint'] = hint.text.strip() if hint else None
-        cache_info['waypoints'] = Waypoint.from_html(content, table_id="Waypoints")
+        if "attribute" in cache_info["attributes"]:  # 'blank' attribute
+            del cache_info["attributes"]["attribute"]
+        cache_info["summary"] = content.find("h2", text="Short Description").find_next("div").text
+        cache_info["description"] = content.find("h2", text="Long Description").find_next("div").text
+        hint = content.find(id="uxEncryptedHint")
+        cache_info["hint"] = hint.text.strip() if hint else None
+        cache_info["waypoints"] = Waypoint.from_html(content, table_id="Waypoints")
+        cache_info["log_counts"] = Cache._get_log_counts_from_print_page(soup)
         return Cache(geocaching, **cache_info)
 
     def __init__(self, geocaching, wp, **kwargs):
@@ -167,7 +168,7 @@ class Cache(object):
         known_kwargs = {"name", "type", "location", "original_location", "state", "found", "size",
                         "difficulty", "terrain", "author", "hidden", "attributes", "summary",
                         "description", "hint", "favorites", "pm_only", "url", "waypoints", "_logbook_token",
-                        "_trackable_page_url", "guid", "visited"}
+                        "_trackable_page_url", "guid", "visited", "log_counts"}
 
         for name in known_kwargs:
             if name in kwargs:
@@ -565,6 +566,21 @@ class Cache(object):
         self._favorites = int(favorites)
 
     @property
+    @lazy_loaded
+    def log_counts(self):
+        """The log count for each log type.
+
+        :setter: Store a dictionary of log counts for each type used in the logbook of the current
+                 cache.
+        :type: :class:`dict`
+        """
+        return self._log_counts
+
+    @log_counts.setter
+    def log_counts(self, log_counts):
+        self._log_counts = log_counts
+
+    @property
     def pm_only(self):
         """If the cache is PM only.
 
@@ -740,6 +756,9 @@ class Cache(object):
         # Additional Waypoints
         self.waypoints = Waypoint.from_html(root, "ctl00_ContentBody_Waypoints")
 
+        # Log counts
+        self.log_counts = Cache._get_log_counts_from_cache_details(root)
+
         logging.debug("Cache loaded: {}".format(self))
 
     def load_quick(self):
@@ -844,6 +863,95 @@ class Cache(object):
             "strong", text=re.compile("Favorites:")).parent.text.split()[-1]
 
         self.waypoints = Waypoint.from_html(content, "Waypoints")
+
+        self.log_counts = Cache._get_log_counts_from_print_page(res)
+
+    @staticmethod
+    def _get_log_counts_from_cache_details(soup):
+        """Return a dictionary of all log counts found in the page
+        representation, based on the cache details page.
+
+        :param bs4.BeautifulSoup soup: Parsed html document of the cache details page.
+        """
+        lbl_find_counts = soup.find("span", {"id": "ctl00_ContentBody_lblFindCounts"})
+        log_totals = lbl_find_counts.find("p", "LogTotals")
+
+        # Text gives numbers separated by a lot of spaces, splitting retrieves the numbers.
+        # The values might contain thousand separators, which we have to remove before converting
+        # them to real numbers.
+        values = log_totals.text.split()
+        values = [int(value.replace(",", "").replace(".", "")) for value in values]
+
+        # Retrieve the list of image sources.
+        images = log_totals.find_all("img")
+        types = []
+        for image in images:
+            type = image["src"]  # "../images/logtypes/2.png"
+            type = type.split("/")[-1].split(".")[0]  # "2"
+            type = LogType.from_filename(type)
+            types.append(type)
+
+        # Prevent possible wrong assignments when the list sizes differ for some unknown reason.
+        if not len(values) == len(types):
+            raise errors.ValueError(
+                "Different list sizes getting log counts: {} types and {} counts.".format(
+                    len(types), len(values)))
+
+        # Finally create the mapping.
+        log_counts = dict(zip(types, values))
+
+        return log_counts
+
+    @staticmethod
+    def _get_log_counts_from_print_page(soup):
+        """Return a dictionary of all log counts found in the page
+        representation, based on the print page.
+
+        :param bs4.BeautifulSoup soup: Parsed html document of the cache print page.
+        """
+        # The print page does not use any IDs, so we use some more complicated approach here and
+        # search for the paragraph containing the log type images.
+        p_meta = soup.find_all("p", "Meta")
+        element = None
+        for entry in p_meta:
+            if "images/logtypes" in str(entry):
+                element = entry
+                break
+
+        if not element:
+            raise errors.ValueError("Log counts could not be found.")
+
+        # Text gives numbers and verbose descriptions of the current values as well as an
+        # introductory text. So we have to perform number checks for each element and only keep
+        # the numbers.
+        # The values might contain thousand separators, which we have to remove before converting
+        # them to real numbers.
+        words = element.text.split()
+        values = []
+        for word in words:
+            word = word.replace(",", "").replace(".", "")
+            if word and word.isdigit():
+                values.append(int(word))
+
+        # Retrieve the list of image sources.
+        images = element.find_all("img")
+        types = []
+        for image in images:
+            type = image["src"]  # "../images/logtypes/2.png"
+            type = type.split("/")[-1].split(".")[0]  # "2"
+            type = LogType.from_filename(type)
+            types.append(type)
+
+        # Prevent possible wrong assignments when the list sizes differ for some unknown reason.
+        if not len(values) == len(types):
+            raise errors.ValueError(
+                "Different list sizes getting log counts: {} types and {} counts.".format(
+                    len(types), len(values)))
+
+        # Finally create the mapping.
+        log_counts = dict(zip(types, values))
+
+        return log_counts
 
     def _logbook_get_page(self, page=0, per_page=25):
         """Load one page from logbook.
