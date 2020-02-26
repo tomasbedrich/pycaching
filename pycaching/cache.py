@@ -898,9 +898,7 @@ class Cache(object):
                     len(types), len(values)))
 
         # Finally create the mapping.
-        log_counts = {}
-        for index, value in enumerate(values):
-            log_counts[types[index]] = value
+        log_counts = dict(zip(types, values))
 
         return log_counts
 
@@ -924,7 +922,7 @@ class Cache(object):
             raise errors.ValueError("Log counts could not be found.")
 
         # Text gives numbers and verbose descriptions of the current values as well as an
-        # introductory text. So we have to peform number checks for each element and only keep
+        # introductory text. So we have to perform number checks for each element and only keep
         # the numbers.
         # The values might contain thousand separators, which we have to remove before converting
         # them to real numbers.
@@ -951,9 +949,7 @@ class Cache(object):
                     len(types), len(values)))
 
         # Finally create the mapping.
-        log_counts = {}
-        for index, value in enumerate(values):
-            log_counts[types[index]] = value
+        log_counts = dict(zip(types, values))
 
         return log_counts
 
