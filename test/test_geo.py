@@ -203,7 +203,7 @@ class TestTile(NetworkedTest):
         """Parse locally stored grid and compare to expected results"""
 
         # load mock utfgrid from file
-        with open(_sample_utfgrid_file) as f:
+        with open(_sample_utfgrid_file, encoding="utf8") as f:
             mock_utfgrid.return_value = json.load(f)
 
         # load expected caches from file
