@@ -5,6 +5,7 @@ import datetime
 import re
 import enum
 import os
+from bs4.element import Script
 from pycaching import errors
 from pycaching.geo import Point
 from pycaching.trackable import Trackable
@@ -737,7 +738,7 @@ class Cache(object):
         else:
             self.favorites = 0
 
-        js_content = "\n".join(map(lambda i: i.text, root.find_all("script")))
+        js_content = "\n".join(root.find_all(string=lambda i: isinstance(i, Script)))
         self._logbook_token = re.findall("userToken\\s*=\\s*'([^']+)'", js_content)[0]
         # find original location if any
         if "oldLatLng\":" in js_content:

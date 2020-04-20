@@ -50,7 +50,7 @@ Pycaching has following requirements:
 
     Python>=3.5
     requests>=2.8
-    beautifulsoup4>=4.4
+    beautifulsoup4>=4.9
     geopy>=1.11
 
 Pycaching tests have the following additional requirements:
@@ -66,7 +66,7 @@ Examples
 Login
 ---------------------------------------------------------------------------------------------------
 
-Simly call `pycaching.login()
+Simply call `pycaching.login()
 <https://pycaching.readthedocs.io/en/latest/api.html#pycaching.geocaching.Geocaching.login>`__
 method and it will do everything for you.
 
@@ -179,7 +179,7 @@ Search for all traditional caches around
 
 Notice the ``limit`` in the search function. It is because `geocaching.search()
 <https://pycaching.readthedocs.io/en/latest/api.html#pycaching.geocaching.Geocaching.search>`__
-returns a generator object, which would fetch the caches forever in case of simple loop.
+returns a generator object, which would fetch the caches forever in case of a simple loop.
 
 Geocode adress and search around
 ---------------------------------------------------------------------------------------------------
@@ -210,7 +210,7 @@ Find caches with their approximate locations in some area
         print(cache.name, cache.location.precision)
 
 
-Load a trackable details
+Load trackable details
 ---------------------------------------------------------------------------------------------------
 
 .. code-block:: python
@@ -271,6 +271,10 @@ new cassettes. To run new tests, first set up the following environment variable
 Substitute your username for ``yourusername`` and your password for ``yourpassword``. After you
 have exported the environment variables once, you do not need to export them again, and can run
 tests with just ``python3 setup.py test``.
+
+To re-record a specific cassette in case of site changes, delete the corresponding JSON file and
+provide username and password as explained above. The missing cassette will be recorded for future
+usages.
 
 .. _appendix:
 
