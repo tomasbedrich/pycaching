@@ -16,6 +16,7 @@
 import sys
 import sphinx_rtd_theme
 from pathlib import Path
+from datetime import date
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -63,7 +64,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'pycaching'
-copyright = '2015, pycaching contributors'
+copyright = '2015-{}, pycaching contributors'.format(date.today().year)
 author = 'pycaching contributors'
 
 # The version info for the project you're documenting, acts as replacement for
