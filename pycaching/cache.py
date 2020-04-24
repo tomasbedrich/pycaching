@@ -1213,7 +1213,8 @@ class Type(enum.Enum):
     wherigo = "1858"
     lost_and_found_event = "10Years_32"
     project_ape = "ape_32"
-    groundspeak_hq = "HQ_32"
+    geocaching_hq = "3773"
+    groundspeak_hq = geocaching_hq
     gps_adventures_exhibit = "1304"
     groundspeak_block_party = "4738"
     locationless = reverse = "12"
@@ -1226,6 +1227,8 @@ class Type(enum.Enum):
             filename = "137"
         if filename == "mega":
             filename = "453"
+        if filename == "HQ_32":
+            filename = "3773"
         return cls(filename)
 
     @classmethod
@@ -1255,7 +1258,8 @@ class Type(enum.Enum):
             "wherigo": cls.wherigo,
             "lost and found event": cls.lost_and_found_event,
             "project ape": cls.project_ape,
-            "groundspeak hq": cls.groundspeak_hq,
+            "geocaching hq": cls.geocaching_hq,
+            "groundspeak hq": cls.geocaching_hq,
             "gps adventures exhibit": cls.gps_adventures_exhibit,
             "groundspeak block party": cls.groundspeak_block_party,
             "locationless (reverse)": cls.locationless,
