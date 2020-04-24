@@ -1205,30 +1205,34 @@ class Type(enum.Enum):
     letterbox = "5"
     event = "6"
     mega_event = "453"
-    giga_event = "giga"
+    giga_event = "7005"
     earthcache = "137"
     cito = cache_in_trash_out_event = "13"
     webcam = "11"
     virtual = "4"
     wherigo = "1858"
-    lost_and_found_event = "10Years_32"
-    project_ape = "ape_32"
-    geocaching_hq = "3773"
-    groundspeak_hq = geocaching_hq
+    lost_and_found_event = community_celebration = "3653"
+    project_ape = "9"
+    geocaching_hq = groundspeak_hq = "3773"
     gps_adventures_exhibit = "1304"
     groundspeak_block_party = "4738"
     locationless = reverse = "12"
+    hq_celebration = "3774"
 
     @classmethod
     def from_filename(cls, filename):
         """Return a cache type from its image filename."""
         # fuck Groundspeak, they sometimes use 2 exactly same icons with 2 different names
-        if filename == "earthcache":
-            filename = "137"
-        if filename == "mega":
-            filename = "453"
-        if filename == "HQ_32":
-            filename = "3773"
+        name_mapping = {
+            "ape_32": "9",
+            "earthcache": "137",
+            "mega": "453",
+            "10Years_32": "3653",
+            "HQ_32": "3773",
+            "giga": "7005"
+        }
+        if filename in name_mapping:
+            filename = name_mapping[filename]
         return cls(filename)
 
     @classmethod
@@ -1256,13 +1260,15 @@ class Type(enum.Enum):
             "webcam": cls.webcam,
             "virtual": cls.virtual,
             "wherigo": cls.wherigo,
-            "lost and found event": cls.lost_and_found_event,
+            "lost and found event": cls.community_celebration,
             "project ape": cls.project_ape,
             "geocaching hq": cls.geocaching_hq,
             "groundspeak hq": cls.geocaching_hq,
             "gps adventures exhibit": cls.gps_adventures_exhibit,
             "groundspeak block party": cls.groundspeak_block_party,
             "locationless (reverse)": cls.locationless,
+            "geocaching hq celebration": cls.hq_celebration,
+            "community celebration event": cls.community_celebration
         }
 
         try:
