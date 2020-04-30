@@ -237,8 +237,7 @@ class Geocaching(object):
             # get one page
             geocaches_table, whole_page = self._search_get_page(point, start_index)
 
-            if not geocaches_table:
-                # result is empty - no more caches
+            if len(geocaches_table.find_all("tr")) == 0:
                 return
 
             # prepare language-dependent mappings
@@ -249,9 +248,6 @@ class Geocaching(object):
                     label.find("span").text.strip(): Size.from_number(label.find("input").get("value"))
                     for label in cache_sizes_filter_wrapper.find_all("label")
                 }
-
-            if len(geocaches_table.find_all("tr")) == 0:
-                return
 
             # parse caches in result
             for start_index, row in enumerate(geocaches_table.find_all("tr"), start_index):
