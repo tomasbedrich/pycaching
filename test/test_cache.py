@@ -338,11 +338,6 @@ class TestMethods(NetworkedTest):
             mock_request.assert_called_with(self.c._get_log_page_url(), method="POST", data=expected_post_data)
 
     def test_cache_types(self):
-        '''
-        Known problem: Locationless cache have to be called first. If called after
-        Geocaching Headquarters the server answers with 500
-        '''
-
         with self.subTest("Locationless"):
             with self.recorder.use_cassette('cache_type_locationless'):
                 cache = self.gc.get_cache('GC8FR0G')
@@ -379,7 +374,6 @@ class TestMethods(NetworkedTest):
                 cache.load()
                 print(cache.type)
                 self.assertEqual(cache.type, Type.geocaching_hq)
-
 
 
 class TestWaypointProperties(unittest.TestCase):
