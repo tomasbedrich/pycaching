@@ -1195,37 +1195,48 @@ class Waypoint(object):
 class Type(enum.Enum):
     """Enum of possible cache types.
 
-    Values are cache image filenames - http://www.geocaching.com/images/WptTypes/[VALUE].gif
+    according to
+        * https://www.geocaching.com/app/ui-icons/sprites/cache-types.svg
+        * https://www.geocaching.com/about/cache_types.aspx
     """
 
-    # TODO cleanup according to https://www.geocaching.com/app/ui-icons/sprites/cache-types.svg
     traditional = "2"
     multicache = "3"
-    mystery = unknown = "8"
+    mystery = unknown = puzzle = "8"
     letterbox = "5"
     event = "6"
     mega_event = "453"
-    giga_event = "giga"
+    giga_event = "7005"
     earthcache = "137"
     cito = cache_in_trash_out_event = "13"
     webcam = "11"
     virtual = "4"
     wherigo = "1858"
-    lost_and_found_event = "10Years_32"
-    project_ape = "ape_32"
-    groundspeak_hq = "HQ_32"
-    gps_adventures_exhibit = "1304"
+    lost_and_found_event = community_celebration = "3653"
+    project_ape = "9"
+    geocaching_hq = groundspeak_hq = "3773"
+    gps_adventures_exhibit = gps_maze = "1304"
     groundspeak_block_party = "4738"
     locationless = reverse = "12"
+    hq_celebration = "3774"
 
     @classmethod
     def from_filename(cls, filename):
-        """Return a cache type from its image filename."""
+        """Return a cache type from its image filename.
+
+           Values are cache image filenames - http://www.geocaching.com/images/WptTypes/[VALUE].gif
+        """
         # fuck Groundspeak, they sometimes use 2 exactly same icons with 2 different names
-        if filename == "earthcache":
-            filename = "137"
-        if filename == "mega":
-            filename = "453"
+        name_mapping = {
+            "ape_32": "9",
+            "earthcache": "137",
+            "mega": "453",
+            "10Years_32": "3653",
+            "HQ_32": "3773",
+            "giga": "7005"
+        }
+        if filename in name_mapping:
+            filename = name_mapping[filename]
         return cls(filename)
 
     @classmethod
@@ -1253,12 +1264,15 @@ class Type(enum.Enum):
             "webcam": cls.webcam,
             "virtual": cls.virtual,
             "wherigo": cls.wherigo,
-            "lost and found event": cls.lost_and_found_event,
+            "lost and found event": cls.community_celebration,
             "project ape": cls.project_ape,
-            "groundspeak hq": cls.groundspeak_hq,
+            "geocaching hq": cls.geocaching_hq,
+            "groundspeak hq": cls.geocaching_hq,
             "gps adventures exhibit": cls.gps_adventures_exhibit,
             "groundspeak block party": cls.groundspeak_block_party,
             "locationless (reverse)": cls.locationless,
+            "geocaching hq celebration": cls.hq_celebration,
+            "community celebration event": cls.community_celebration
         }
 
         try:

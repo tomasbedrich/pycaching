@@ -337,6 +337,44 @@ class TestMethods(NetworkedTest):
             }
             mock_request.assert_called_with(self.c._get_log_page_url(), method="POST", data=expected_post_data)
 
+    def test_cache_types(self):
+        with self.subTest("Locationless"):
+            with self.recorder.use_cassette('cache_type_locationless'):
+                cache = self.gc.get_cache('GC8FR0G')
+                cache.load()
+                self.assertEqual(cache.type, Type.locationless)
+
+        with self.subTest("Project A.P.E."):
+            with self.recorder.use_cassette('cache_type_projectape'):
+                cache = self.gc.get_cache('GC1169')
+                cache.load()
+                self.assertEqual(cache.type, Type.project_ape)
+
+        with self.subTest("Giga Event"):
+            with self.recorder.use_cassette('cache_type_gigaevent'):
+                cache = self.gc.get_cache('GC7WWWW')
+                cache.load()
+                self.assertEqual(cache.type, Type.giga_event)
+
+        with self.subTest("Geocaching HQ Celebration"):
+            with self.recorder.use_cassette('cache_type_hq_celebration'):
+                cache = self.gc.get_cache('GC896PK')
+                cache.load()
+                self.assertEqual(cache.type, Type.hq_celebration)
+
+        with self.subTest("Community Celebration Event"):
+            with self.recorder.use_cassette('cache_type_community_celebration'):
+                cache = self.gc.get_cache('GC8K09M')
+                cache.load()
+                self.assertEqual(cache.type, Type.community_celebration)
+
+        with self.subTest("Geocaching Headquarters"):
+            with self.recorder.use_cassette('cache_type_headquarters'):
+                cache = self.gc.get_cache('GCK25B')
+                cache.load()
+                print(cache.type)
+                self.assertEqual(cache.type, Type.geocaching_hq)
+
 
 class TestWaypointProperties(unittest.TestCase):
     def setUp(self):
