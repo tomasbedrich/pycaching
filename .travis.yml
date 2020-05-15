@@ -24,7 +24,7 @@ matrix:
 
 install:
   - python3 setup.py build install
-  - pip install python-coveralls
+  - pip install --upgrade coveralls
 
 script:
   python3 setup.py lint test
