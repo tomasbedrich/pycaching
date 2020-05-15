@@ -2,11 +2,19 @@ language: python
 
 matrix:
   include:
+    # Linux runners.
     - python: 3.5
     - python: 3.6
     - python: 3.7
       dist: xenial
-
+    # Windows runners.
+    - name: "Python 3.7 on Windows"
+      os: windows
+      language: shell  # `language: python` is not supported for now.
+      before_install:
+        - choco install python --version 3.7.7
+        - python -m pip install --upgrade pip
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
 install:
   - python3 setup.py build install
