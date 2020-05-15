@@ -17,7 +17,7 @@ matrix:
         - python -m pip install --upgrade pip
       install:
         - python setup.py build install
-        - pip install python-coveralls
+        - pip install --upgrade coveralls
       script:
         - python setup.py lint test
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
