@@ -55,3 +55,14 @@ class ValueError(Error, ValueError):
     Can be raised in various situations, but most commonly when unexpected property value is set.
     """
     pass
+
+
+class TooManyRequests(Error):
+    """Geocaching API rate limit has been reached."""
+    def __init__(self, url, rate_limit_reset):
+        """
+        :param url: Requested url
+        :param rate_limit_reset: Number of seconds to wait before rate limit reset.
+        """
+        self.url = url
+        self.rate_limit_reset = rate_limit_reset
