@@ -9,11 +9,11 @@ import subprocess
 import warnings
 from urllib.parse import parse_qs, urljoin, urlparse
 from os import path
-from pycaching.cache import Cache, Size
+from pycaching.cache import Cache, Size, Type
 from pycaching.log import Log, Type as LogType
-from pycaching.geo import Point
+from pycaching.geo import Point, Rectangle
 from pycaching.trackable import Trackable
-from pycaching.errors import Error, NotLoggedInException, LoginFailedException, PMOnlyException
+from pycaching.errors import Error, NotLoggedInException, LoginFailedException, PMOnlyException, TooManyRequests
 
 
 class Geocaching(object):
@@ -29,6 +29,7 @@ class Geocaching(object):
         "search":            "play/search",
         "search_more":       "play/search/more-results",
         'my_logs':           'my/logs.aspx',
+        'api_search':        'api/proxy/web/search'
     }
     _credentials_file = ".gc_credentials"
 
@@ -67,6 +68,12 @@ class Geocaching(object):
                 return res
 
         except requests.exceptions.RequestException as e:
+            if e.response.status_code == 429:  # Handle rate limiting errors
+                raise TooManyRequests(
+                    url,
+                    rate_limit_reset=int(e.response.headers.get('x-rate-limit-reset', '0'))
+                ) from e
+
             raise Error("Cannot load page: {}".format(url)) from e
 
     def login(self, username=None, password=None):
@@ -355,6 +362,51 @@ class Geocaching(object):
         #             yield cache
 
     # add some shortcuts ------------------------------------------------------
+
+    def search_rect(self, rect: Rectangle, *, per_query: int = 50, sortby: str = 'datelastvisited', origin: Point = None):
+        """
+        Return a generator of caches in given Rectange.
+
+        :param rect: Search area
+        :param per_query: number of caches requested in single query
+        :param orderby: Order cached by given criterion
+        :param origin: ???
+        """
+        assert sortby in {'containersize', 'datelastvisited', 'difficulty', 'distance', 'favoritepoint', 'founddate', 
+            'founddateoffoundbyuser', 'geocachename', 'placedate', 'terrain'}
+
+        params = {
+            'box': "{},{},{},{}".format(
+                rect.corners[0].latitude, rect.corners[0].longitude,
+                rect.corners[1].latitude, rect.corners[1].longitude),
+            'take': per_query,
+            'asc': 'true',
+            'skip': 0,
+            'sort': sortby,
+        }
+
+        if sortby == 'distance':
+            assert isinstance(origin, Point)
+            params['origin'] = '{},{}'.format(origin.latitude, origin.longitude)
+    
+
+        total, offset = None, 0
+        while (total is None) or (offset < total):
+            params['skip'] = offset
+            
+            try:
+                resp = self._request(self._urls['api_search'], params=params, expect='json')
+            except TooManyRequests as e:
+                import time
+                time.sleep(e.rate_limit_reset + 5)
+                continue
+
+            for record in resp['results']:
+                yield Cache._from_api_record(self, record)
+            
+            total = resp['total']
+            offset += per_query
+
 
     def geocode(self, location):
         """Return a :class:`.Point` object from geocoded location.
