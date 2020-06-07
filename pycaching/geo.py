@@ -230,8 +230,11 @@ class Rectangle(Polygon):
         :param .Point point_a: Top left corner.
         :param .Point point_b: Bottom right corner.
         """
-        assert point_a.latitude > point_b.latitude
-        assert point_a.longitude < point_b.longitude
+        if point_a.latitude < point_b.latitude:
+            point_a.latitude, point_b.latitude = point_b.latitude, point_a.latitude
+        if point_a.longitude > point_b.longitude:
+            point_a.longitude, point_b.longitude = point_b.longitude, point_a.longitude
+
         assert point_a != point_b, "Corner points cannot be the same"
         self.corners = [point_a, point_b]
         self.points = [point_a, Point(point_a.latitude, point_b.longitude),
