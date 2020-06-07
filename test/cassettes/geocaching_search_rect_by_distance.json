@@ -1,0 +1,83 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2020-06-07T05:20:56",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "gspkauth=<AUTH COOKIE>; jwt=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYmFkZ2VyX2RldiIsInBnZCI6IjM1MzJjODk1LThmMTgtNDZkZS1iMjI4LWE1YjMzMTNlODYyNyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiMjI0Mjk5MzEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOlsiUHVibGljIiwiQmFzaWMiXSwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy91c2VyZGF0YSI6IjFFOUMwNEY3LTYzMEItNDZGMy04NUM1LUVFMDhDMDk4NkQ2NiIsImxnZCI6IjM2YTcwNjQ5LWQ5ZTktNDM3OS05ZjYxLWNjMDBlOTIwNWU5NCIsInNjb3BlIjpbIndlYiIsIm1hcHRpbGUiLCJnYXJtaW4iXSwibmJmIjoxNTkxNTA3MjUxLCJleHAiOjE1OTE1MTA4NTEsImlzcyI6Imh0dHBzOi8vb2F1dGguZ2VvY2FjaGluZy5jb20vdG9rZW4iLCJhdWQiOiIxZTljMDRmNy02MzBiLTQ2ZjMtODVjNS1lZTA4YzA5ODZkNjYifQ.2azq7wUFTo8gEZnIlXvc88VG6Wwr4n5aYThkQUUXH_Q; Culture=en-US; __RequestVerificationToken=<AUTH COOKIE>"
+          ],
+          "User-Agent": [
+            "python-requests/2.23.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=distance&origin=49.73717%2C13.38097"
+      },
+      "response": {
+        "body": {
+          "base64_string": "H4sIAAAAAAAAA6pWKkotLs0pKVayiq5WykxRsjI1MzE0MNVRykvMTVWyUgrIqUrNK85OVSgpys9JzUoqLa5U0lFKzk8BSbo7GxoGBIUDBQqKUnMzS3P983IqlazSEnOKU3WU0hLL8osyS1ID8jPzQBYADU1PzU9OTM5IDaksAOo3BhmUV5KYmZdaBBEx0lFKyUxLy0wGOglokLEeUE9JalERUImSlSGIV1qcWuSWX5oHdCnUGpCIS2aKX36JWyaSMNie4JLEklKg1QZAF+YXl6SmOOfnF6Vk5iWWpAJFq5VyEksyS0pBfjGx1DM3Njc0M9dRysnPS4eKGhrrGVsYWJqZ1wIdlgp0aU5xaFEO0Of6MJ/oI8IgI7HYPTW/JL+0CO4IoJBPfrpLUWJaCVysICcxOTXFBegEoDlGBgbmugbGukbmIQYGVmAENCm/HBgiIPdBwzkgyNDZINIdKAPyLDRmykpTKpWA7spJLC4BhwjcSCMDkJEGRiGGRlAja3UgkWtoZGFqaQYMDagZ3vl5qcl5iQplxanJGcAoTswtS8zKVNBVKMuvyi/LS0SJ6pBIsBOIiWpgKKJGtQWhqDbWA7qKnlFtYAFMfuhRbWCCN6KhIUBmRFvqGpjpGhnjj2jTwCA/D9SIdvTxyfRWKElNzEWPbojBhpa6hka6RpYhhiZWBhZWJqbw6DYzMzQ2NQeGPSwz+yoom1ooBCQWZBaBcjVK/Jp7BQWZEhm/loTiFyyCHL8mKPFrROv4NTazNETPysD4NQFmcHwxDAsDUmMYGhEWwEyna2SKP4ZNzC0jg1BjOCgzOcQ1AD12IYaCMrMpMD+jZ2agjwwMTQ3NgKkYaop7ZW5mNkqOdQ83NSEyRk0IxSi4uEaOUSO0GAXyaBqjllhj1NzYED1GUfMsNAxIjVFI4BtY6BqCwh9/jBqZOUd6o8aoVyrQQ0WZ+KIUlGHRo9TM0sjcyBAeox75oOBQyAVqBOLMbNSq18zQG5SOiIldQ2DcEYpe9AIZve6ldfSaY41eUwtjvNELDQQyoxdY9wILTwsC0WvhFW6GGr0pqVlp5qByFnfsote+4OLY2MjSAFH7gopjE1MFX2DoKHyY39OJUhp7u4S7EopdWN4FphhCsYtWHKNWt6bomZfasWtsYIJe3YJi19DcFD1yUUpjaBiQGrmQeACVxsa6hob4I9fFPcDLBTVyq1JSMxKz8EYuetYFBg6wygFmXWAShpricmR2SXH24ZUKGUdnZh5dWHJktoJvYkpieiKw2i1CjmkLF2MDYyJjGhjaqBENzLTo2Rg1osEZFz0b0zKigeUxekQDs7GJMXo2RolpWBiQGdPAlhUQGeGPaQ8XC7cI1Jg+ujc1pyxRwRh3XJsBEVJcx+ooleSXJOYoWZnXAgIAAP//0ysJHTsNAAA=",
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Cache-Control": [
+            "max-age=60, private"
+          ],
+          "Connection": [
+            "Keep-Alive"
+          ],
+          "Content-Encoding": [
+            "gzip"
+          ],
+          "Content-Length": [
+            "1064"
+          ],
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ],
+          "CorrelationGuid": [
+            "1d1afc82-f18c-4138-b91f-f3b4b7ec562d"
+          ],
+          "Date": [
+            "Sun, 07 Jun 2020 05:20:51 GMT"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubDomains"
+          ],
+          "Vary": [
+            "Accept-Encoding"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=distance&origin=49.73717%2C13.38097"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}

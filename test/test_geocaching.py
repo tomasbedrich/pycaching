@@ -96,6 +96,35 @@ class TestMethods(NetworkedTest):
                 except PMOnlyException:
                     pass
 
+    def test_search_rect(self):
+        """Perform search by rect and check found caches"""
+        rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.39))
+
+        with self.subTest("default use"):
+            with self.recorder.use_cassette('geocaching_search_rect'):
+                gc = Geocaching(session=self.session)
+                gc.login(_username, _password)
+                caches = self.gc.search_rect(rect)
+                expected = {cache.wp for cache in caches}
+
+                self.assertEqual(expected, {'GC1TYYG', 'GC11PRW', 'GC7JRR5', 'GC161KR', 'GC1GW54', 'GC7KDWE', 'GC8D303'})
+
+        with self.subTest("sort by distance"):
+            with self.recorder.use_cassette('geocaching_search_rect_by_distance'):
+                with self.assertRaises(AssertionError):
+                    caches = list(self.gc.search_rect(rect, sortby='distance'))
+
+                origin = Point.from_string('N 49° 44.230 E 013° 22.858')
+
+                caches = list(self.gc.search_rect(rect, sortby='distance', origin=origin))
+
+                expected = [cache.wp for cache in caches]
+                self.assertEqual(expected, ['GC11PRW', 'GC1TYYG', 'GC7JRR5', 'GC1GW54', 'GC161KR', 'GC7KDWE', 'GC8D303'])
+
+                # Check if caches are sorted by distance to origin
+                distances = [great_circle(cache.location, origin).meters for cache in caches]
+                self.assertEqual(distances, sorted(distances))
+
     def test__try_getting_cache_from_guid(self):
         # get "normal" cache from guidpage
         with self.recorder.use_cassette('geocaching_shortcut_getcache__by_guid'):  # is a replacement for login
