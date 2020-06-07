@@ -4,7 +4,6 @@ import itertools
 import json
 import os
 import unittest
-import time
 from subprocess import CalledProcessError
 from tempfile import NamedTemporaryFile
 from unittest.mock import patch, Mock
@@ -132,7 +131,7 @@ class TestMethods(NetworkedTest):
 
     def test_api_rate_limit(self):
         """Test recovering from API rate limit exception."""
-        # WARNING: casset for that test has been manualy edited!
+        # WARNING: casset for this test has been manualy edited!
         with self.recorder.use_cassette('geocaching_api_rate_limit'):
             gc = Geocaching(session=self.session)
             gc.login(_username, _password)
@@ -141,7 +140,7 @@ class TestMethods(NetworkedTest):
             mock = Mock()
 
             with patch('time.sleep', mock.sleep):
-                for i, cache in enumerate(gc.search_rect(rect, per_query=200)):
+                for cache in gc.search_rect(rect, per_query=200):
                     if mock.sleep.called:
                         assert True
                         break
