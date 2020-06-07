@@ -9,7 +9,7 @@ import subprocess
 import warnings
 from urllib.parse import parse_qs, urljoin, urlparse
 from os import path
-from pycaching.cache import Cache, Size, Type
+from pycaching.cache import Cache, Size
 from pycaching.log import Log, Type as LogType
 from pycaching.geo import Point, Rectangle
 from pycaching.trackable import Trackable
@@ -363,17 +363,19 @@ class Geocaching(object):
 
     # add some shortcuts ------------------------------------------------------
 
-    def search_rect(self, rect: Rectangle, *, per_query: int = 50, sortby: str = 'datelastvisited', origin: Point = None):
+    def search_rect(self, rect: Rectangle, *, per_query: int = 50, sortby: str = 'datelastvisited', origin=None):
         """
-        Return a generator of caches in given Rectange.
+        Return a generator of caches in given Rectange area.
 
-        :param rect: Search area
-        :param per_query: number of caches requested in single query
-        :param orderby: Order cached by given criterion
-        :param origin: ???
+        :param rect: Search area.
+        :param per_query: Number of caches requested in single query.
+        :param sortby: Order cached by given criterion.
+        :param origin: Origin point for search by distance.
         """
-        assert sortby in {'containersize', 'datelastvisited', 'difficulty', 'distance', 'favoritepoint', 'founddate', 
-            'founddateoffoundbyuser', 'geocachename', 'placedate', 'terrain'}
+        assert sortby in {
+            'containersize', 'datelastvisited', 'difficulty', 'distance', 'favoritepoint',
+            'founddate', 'founddateoffoundbyuser', 'geocachename', 'placedate', 'terrain'
+        }
 
         params = {
             'box': "{},{},{},{}".format(
@@ -388,12 +390,11 @@ class Geocaching(object):
         if sortby == 'distance':
             assert isinstance(origin, Point)
             params['origin'] = '{},{}'.format(origin.latitude, origin.longitude)
-    
 
         total, offset = None, 0
         while (total is None) or (offset < total):
             params['skip'] = offset
-            
+
             try:
                 resp = self._request(self._urls['api_search'], params=params, expect='json')
             except TooManyRequests as e:
@@ -403,10 +404,9 @@ class Geocaching(object):
 
             for record in resp['results']:
                 yield Cache._from_api_record(self, record)
-            
+
             total = resp['total']
             offset += per_query
-
 
     def geocode(self, location):
         """Return a :class:`.Point` object from geocoded location.
@@ -448,8 +448,8 @@ class Geocaching(object):
         """
         if not date:
             date = datetime.date.today()
-        l = Log(type=type, text=text, visited=date)
-        self.get_cache(wp).post_log(l)
+        log = Log(type=type, text=text, visited=date)
+        self.get_cache(wp).post_log(log)
 
     def _cache_from_guid(self, guid):
         logging.info('Loading cache with GUID {!r}'.format(guid))

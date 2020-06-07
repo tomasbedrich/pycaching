@@ -158,7 +158,9 @@ class Cache(object):
         """Create a cache instance from a JSON record returned by API."""
         assert record['cacheStatus'] in {0, 1}
 
-        cache =  Cache(geocaching, record['code'],
+        cache = Cache(
+            geocaching,
+            wp=record['code'],
             name=record['name'],
             type=Type.from_number(record['geocacheType']),
             state=(record['cacheStatus'] == 0),
@@ -166,7 +168,7 @@ class Cache(object):
             size=Size.from_number(record['containerType']),
             difficulty=record['difficulty'],
             terrain=record['terrain'],
-            author=record['owner']['username'], 
+            author=record['owner']['username'],
             hidden=record['placedDate'].split('T')[0],
             favorites=record['favoritePoints'],
             pm_only=record['premiumOnly'],
@@ -180,15 +182,15 @@ class Cache(object):
             # owner.code
             # userDidNotFind
         )
-        
+
         # NOTE: postedCoordinates is not available for pm_only
-        if 'postedCoordinates' in record:  
-            cache.location=Point(
+        if 'postedCoordinates' in record:
+            cache.location = Point(
                 record['postedCoordinates']['latitude'],
                 record['postedCoordinates']['longitude']
             )
 
-        return cache 
+        return cache
 
     def __init__(self, geocaching, wp, **kwargs):
         """Create a cache instance.
@@ -1041,12 +1043,12 @@ class Cache(object):
                 img_filename = log_data["LogTypeImage"].rsplit(".", 1)[0]  # filename w/o extension
 
                 # create and fill log object
-                l = Log()
-                l.type = LogType.from_filename(img_filename)
-                l.text = log_data["LogText"]
-                l.visited = log_data["Visited"]
-                l.author = log_data["UserName"]
-                yield l
+                log = Log()
+                log.type = LogType.from_filename(img_filename)
+                log.text = log_data["LogText"]
+                log.visited = log_data["Visited"]
+                log.author = log_data["UserName"]
+                yield log
 
     # TODO: trackable list can have multiple pages - handle it in similar way as _logbook_get_page
     # for example see: http://www.geocaching.com/geocache/GC26737_geocaching-jinak-tb-gc-hrbitov
