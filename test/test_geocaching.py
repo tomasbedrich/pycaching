@@ -4,9 +4,10 @@ import itertools
 import json
 import os
 import unittest
+import time
 from subprocess import CalledProcessError
 from tempfile import NamedTemporaryFile
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 from geopy.distance import great_circle
 
@@ -128,6 +129,25 @@ class TestMethods(NetworkedTest):
                 # Check if caches are sorted by distance to origin
                 distances = [great_circle(cache.location, origin).meters for cache in caches]
                 self.assertEqual(distances, sorted(distances))
+
+    def test_api_rate_limit(self):
+        """Test recovering from API rate limit exception."""
+        # WARNING: casset for that test has been manualy edited!
+        with self.recorder.use_cassette('geocaching_api_rate_limit'):
+            gc = Geocaching(session=self.session)
+            gc.login(_username, _password)
+            rect = Rectangle(Point(50.74, 13.38), Point(49.73, 14.40))
+
+            mock = Mock()
+
+            with patch('time.sleep', mock.sleep):
+                last_time = time.time()
+                for i, cache in enumerate(gc.search_rect(rect, per_query=200)):
+                    if mock.sleep.called:
+                        assert True
+                        break
+                else:
+                    assert False
 
     def test__try_getting_cache_from_guid(self):
         # get "normal" cache from guidpage
