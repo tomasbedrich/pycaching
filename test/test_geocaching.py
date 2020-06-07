@@ -141,7 +141,6 @@ class TestMethods(NetworkedTest):
             mock = Mock()
 
             with patch('time.sleep', mock.sleep):
-                last_time = time.time()
                 for i, cache in enumerate(gc.search_rect(rect, per_query=200)):
                     if mock.sleep.called:
                         assert True
