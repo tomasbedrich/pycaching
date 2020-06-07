@@ -1,6 +1,10 @@
 from betamax.cassette.cassette import Placeholder
 
-CLASSIFIED_COOKIES = ('gspkauth', '__RequestVerificationToken')
+CLASSIFIED_COOKIES = (
+    'gspkauth',
+    '__RequestVerificationToken',
+    'jwt'  # NOTE: JWT token, contains user related informations: username, ids, oauth token
+)
 
 
 def sanitize_cookies(interaction, cassette):
