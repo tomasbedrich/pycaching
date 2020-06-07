@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2020-06-07T05:20:56",
+      "recorded_at": "2020-06-07T09:14:02",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -18,7 +18,7 @@
             "keep-alive"
           ],
           "Cookie": [
-            "gspkauth=<AUTH COOKIE>; jwt=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYmFkZ2VyX2RldiIsInBnZCI6IjM1MzJjODk1LThmMTgtNDZkZS1iMjI4LWE1YjMzMTNlODYyNyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiMjI0Mjk5MzEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOlsiUHVibGljIiwiQmFzaWMiXSwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy91c2VyZGF0YSI6IjFFOUMwNEY3LTYzMEItNDZGMy04NUM1LUVFMDhDMDk4NkQ2NiIsImxnZCI6IjM2YTcwNjQ5LWQ5ZTktNDM3OS05ZjYxLWNjMDBlOTIwNWU5NCIsInNjb3BlIjpbIndlYiIsIm1hcHRpbGUiLCJnYXJtaW4iXSwibmJmIjoxNTkxNTA3MjUxLCJleHAiOjE1OTE1MTA4NTEsImlzcyI6Imh0dHBzOi8vb2F1dGguZ2VvY2FjaGluZy5jb20vdG9rZW4iLCJhdWQiOiIxZTljMDRmNy02MzBiLTQ2ZjMtODVjNS1lZTA4YzA5ODZkNjYifQ.2azq7wUFTo8gEZnIlXvc88VG6Wwr4n5aYThkQUUXH_Q; Culture=en-US; __RequestVerificationToken=<AUTH COOKIE>"
+            "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; Culture=en-US; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
             "python-requests/2.23.0"
@@ -50,10 +50,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "1d1afc82-f18c-4138-b91f-f3b4b7ec562d"
+            "92c4fb77-411d-4494-964e-dec2977e4876"
           ],
           "Date": [
-            "Sun, 07 Jun 2020 05:20:51 GMT"
+            "Sun, 07 Jun 2020 09:13:57 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
