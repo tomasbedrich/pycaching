@@ -107,7 +107,9 @@ class TestMethods(NetworkedTest):
                 caches = self.gc.search_rect(rect)
                 expected = {cache.wp for cache in caches}
 
-                self.assertEqual(expected, {'GC1TYYG', 'GC11PRW', 'GC7JRR5', 'GC161KR', 'GC1GW54', 'GC7KDWE', 'GC8D303'})
+                self.assertEqual(expected, {
+                    'GC1TYYG', 'GC11PRW', 'GC7JRR5', 'GC161KR', 'GC1GW54', 'GC7KDWE', 'GC8D303'
+                })
 
         with self.subTest("sort by distance"):
             with self.recorder.use_cassette('geocaching_search_rect_by_distance'):
@@ -119,7 +121,9 @@ class TestMethods(NetworkedTest):
                 caches = list(self.gc.search_rect(rect, sortby='distance', origin=origin))
 
                 expected = [cache.wp for cache in caches]
-                self.assertEqual(expected, ['GC11PRW', 'GC1TYYG', 'GC7JRR5', 'GC1GW54', 'GC161KR', 'GC7KDWE', 'GC8D303'])
+                self.assertEqual(expected, [
+                    'GC11PRW', 'GC1TYYG', 'GC7JRR5', 'GC1GW54', 'GC161KR', 'GC7KDWE', 'GC8D303'
+                ])
 
                 # Check if caches are sorted by distance to origin
                 distances = [great_circle(cache.location, origin).meters for cache in caches]
