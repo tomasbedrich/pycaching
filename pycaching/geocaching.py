@@ -384,7 +384,7 @@ class Geocaching(object):
         self,
         rect: Rectangle,
         *,
-        per_query: int = 50,
+        per_query: int = 200,
         sort_by: Union[str, SortOrder] = SortOrder.date_last_visited,
         origin: Optional[Point] = None,
         wait_sleep: bool = True

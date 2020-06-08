@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2020-06-08T19:46:56",
+      "recorded_at": "2020-06-08T20:06:08",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -25,7 +25,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=datelastvisited"
       },
       "response": {
         "body": {
@@ -50,13 +50,13 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "d9f4551a-1846-45bc-8a8e-6a71cb6f0d7b"
+            "27886143-47d6-414a-9cbc-458a4116227f"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:46:50 GMT"
+            "Mon, 08 Jun 2020 20:06:03 GMT"
           ],
           "Set-Cookie": [
-            "jwt=<AUTH COOKIE>; domain=.geocaching.com; path=/; expires=Mon, 08-Jun-2020 20:45:50 GMT; secure; HttpOnly"
+            "jwt=<AUTH COOKIE>; domain=.geocaching.com; path=/; expires=Mon, 08-Jun-2020 21:05:02 GMT; secure; HttpOnly"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -78,11 +78,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=datelastvisited"
       }
     },
     {
-      "recorded_at": "2020-06-08T19:46:56",
+      "recorded_at": "2020-06-08T20:06:09",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -106,7 +106,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=distance&origin=49.73717%2C13.38097"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=distance&origin=49.73717%2C13.38097"
       },
       "response": {
         "body": {
@@ -131,10 +131,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "e991d5e6-f134-449f-b3b7-e40206fff03d"
+            "bbe95a21-f7cf-40b3-ae56-e4428116bb74"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:46:51 GMT"
+            "Mon, 08 Jun 2020 20:06:04 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -156,11 +156,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=distance&origin=49.73717%2C13.38097"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=distance&origin=49.73717%2C13.38097"
       }
     },
     {
-      "recorded_at": "2020-06-08T19:46:57",
+      "recorded_at": "2020-06-08T20:06:10",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -184,7 +184,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=containersize"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=containersize"
       },
       "response": {
         "body": {
@@ -209,10 +209,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "95a29e70-c95f-477c-a514-efb9cecfe8f8"
+            "b03c5c3c-ebb2-4e21-8b14-466a41683d70"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:46:51 GMT"
+            "Mon, 08 Jun 2020 20:06:04 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -234,11 +234,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=containersize"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=containersize"
       }
     },
     {
-      "recorded_at": "2020-06-08T19:46:57",
+      "recorded_at": "2020-06-08T20:06:10",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -262,7 +262,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=datelastvisited"
       },
       "response": {
         "body": {
@@ -287,10 +287,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "9f18a418-8ef4-4721-b41d-f5ef6aa30fe5"
+            "5f385301-bf2b-49e6-9f46-ea33fcc84290"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:46:52 GMT"
+            "Mon, 08 Jun 2020 20:06:05 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -312,11 +312,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=datelastvisited"
       }
     },
     {
-      "recorded_at": "2020-06-08T19:46:58",
+      "recorded_at": "2020-06-08T20:06:10",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -340,7 +340,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=difficulty"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=difficulty"
       },
       "response": {
         "body": {
@@ -365,10 +365,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "9d7454f2-1bb7-42b5-82e3-ce13b7fc4e7f"
+            "10c54e0a-ad78-4eb9-a39d-9818f1631585"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:46:53 GMT"
+            "Mon, 08 Jun 2020 20:06:05 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -390,11 +390,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=difficulty"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=difficulty"
       }
     },
     {
-      "recorded_at": "2020-06-08T19:46:58",
+      "recorded_at": "2020-06-08T20:06:11",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -418,7 +418,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=favoritepoint"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=favoritepoint"
       },
       "response": {
         "body": {
@@ -443,10 +443,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "afbef40a-36ab-403b-a9e2-12884e0d9c0f"
+            "7f5cc0dd-67d0-4aef-8879-4bc1a77d7e80"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:46:53 GMT"
+            "Mon, 08 Jun 2020 20:06:06 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -468,11 +468,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=favoritepoint"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=favoritepoint"
       }
     },
     {
-      "recorded_at": "2020-06-08T19:46:59",
+      "recorded_at": "2020-06-08T20:06:12",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -496,7 +496,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=founddate"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddate"
       },
       "response": {
         "body": {
@@ -521,10 +521,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "07f0dbbd-6491-4b39-ba60-a2c27bf0254a"
+            "a477d4a8-4b46-48d0-83a2-ac4b9a061d6f"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:46:54 GMT"
+            "Mon, 08 Jun 2020 20:06:06 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -546,11 +546,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=founddate"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddate"
       }
     },
     {
-      "recorded_at": "2020-06-08T19:46:59",
+      "recorded_at": "2020-06-08T20:06:12",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -574,7 +574,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=founddateoffoundbyuser"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddateoffoundbyuser"
       },
       "response": {
         "body": {
@@ -599,10 +599,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "d82c99bf-3a1e-4750-87d9-28e5b619c193"
+            "bf707d32-c097-4083-85ab-2ac4f4f74156"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:46:54 GMT"
+            "Mon, 08 Jun 2020 20:06:07 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -624,11 +624,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=founddateoffoundbyuser"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddateoffoundbyuser"
       }
     },
     {
-      "recorded_at": "2020-06-08T19:47:00",
+      "recorded_at": "2020-06-08T20:06:13",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -652,7 +652,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=geocachename"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=geocachename"
       },
       "response": {
         "body": {
@@ -677,10 +677,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "8ba0eb1b-8ff0-4f5a-8bf3-cf54882eda94"
+            "5ca2c5a2-97ad-456c-b4a6-4809beb696c4"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:46:54 GMT"
+            "Mon, 08 Jun 2020 20:06:08 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -702,11 +702,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=geocachename"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=geocachename"
       }
     },
     {
-      "recorded_at": "2020-06-08T19:47:00",
+      "recorded_at": "2020-06-08T20:06:13",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -730,7 +730,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=placedate"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=placedate"
       },
       "response": {
         "body": {
@@ -755,10 +755,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "7defc922-7869-4894-80e6-7cc508f949d9"
+            "c8fc7611-2b5e-45d9-b131-c846c67a5712"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:46:55 GMT"
+            "Mon, 08 Jun 2020 20:06:08 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -780,11 +780,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=placedate"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=placedate"
       }
     },
     {
-      "recorded_at": "2020-06-08T19:47:01",
+      "recorded_at": "2020-06-08T20:06:13",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -808,7 +808,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=terrain"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=terrain"
       },
       "response": {
         "body": {
@@ -826,10 +826,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "46a48c80-a20b-496f-bf4b-bc9e662f73c6"
+            "f70d0dad-a6d4-46a8-87af-31c831f8ddac"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:46:55 GMT"
+            "Mon, 08 Jun 2020 20:06:08 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -847,18 +847,18 @@
             "1"
           ],
           "x-rate-limit-reset": [
-            "4"
+            "52"
           ]
         },
         "status": {
           "code": 429,
           "message": ""
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=terrain"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=terrain"
       }
     },
     {
-      "recorded_at": "2020-06-08T19:47:10",
+      "recorded_at": "2020-06-08T20:07:11",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -882,7 +882,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=terrain"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=terrain"
       },
       "response": {
         "body": {
@@ -907,10 +907,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "77634d7b-ec3e-43a5-a7e6-3bca589b3600"
+            "9bc984ed-4e41-4093-a955-6d68d61c9fff"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:47:04 GMT"
+            "Mon, 08 Jun 2020 20:07:05 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -932,7 +932,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=50&asc=true&skip=0&sort=terrain"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=terrain"
       }
     }
   ],
