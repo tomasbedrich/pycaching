@@ -156,14 +156,12 @@ class Cache(object):
     @classmethod
     def _from_api_record(cls, geocaching, record):
         """Create a cache instance from a JSON record returned by API."""
-        assert record['cacheStatus'] in {0, 1}
-
         cache = Cache(
             geocaching,
             wp=record['code'],
             name=record['name'],
             type=Type.from_number(record['geocacheType']),
-            state=(record['cacheStatus'] == 0),
+            state=Status(record['cacheStatus']) == Status.enabled,
             found=record['userFound'],
             size=Size.from_number(record['containerType']),
             difficulty=record['difficulty'],
@@ -1378,3 +1376,12 @@ class Size(enum.Enum):
             return number_mapping[number]
         except KeyError as e:
             raise errors.ValueError("Unknown cache size numeric id '{}'.".format(number)) from e
+
+
+class Status(enum.IntEnum):
+    """Enum of possible cache statuses."""
+    # NOTE: extracted from https://www.geocaching.com/play/map/public/main.2b28b0dc1c9c10aaba66.js
+    enabled = 0
+    disabled = 1
+    archived = 2
+    unpublished = 3
