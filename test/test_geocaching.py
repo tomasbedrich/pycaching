@@ -129,12 +129,26 @@ class TestMethods(NetworkedTest):
                 distances = [great_circle(cache.location, origin).meters for cache in caches]
                 self.assertEqual(distances, sorted(distances))
 
-    def test_api_rate_limit(self):
+    def test__try_getting_cache_from_guid(self):
+        # get "normal" cache from guidpage
+        with self.recorder.use_cassette('geocaching_shortcut_getcache__by_guid'):  # is a replacement for login
+            cache = self.gc._try_getting_cache_from_guid('15ad3a3d-92c1-4f7c-b273-60937bcc2072')
+            self.assertEqual("Nekonecne ticho", cache.name)
+
+        # get PMonly cache from GC code (doesn't load any information)
+        cache_pm = self.gc._try_getting_cache_from_guid('328927c1-aa8c-4e0d-bf59-31f1ce44d990')
+        cache_pm.load_quick()  # necessary to get name for PMonly cache
+        self.assertEqual("Nidda: jenseits der Rennstrecke Reloaded", cache_pm.name)
+
+
+class TestAPIRateLimiting(NetworkedTest):
+    def test_recover_from_exceeding_rate_limit(self):
         """Test recovering from API rate limit exception."""
-        # WARNING: casset for this test has been manualy edited!
+        # WARNING: recording this test require performing a lot of requests!
         with self.recorder.use_cassette('geocaching_api_rate_limit'):
             gc = Geocaching(session=self.session)
             gc.login(_username, _password)
+
             rect = Rectangle(Point(50.74, 13.38), Point(49.73, 14.40))
 
             mock = Mock()
@@ -146,17 +160,6 @@ class TestMethods(NetworkedTest):
                         break
                 else:
                     assert False
-
-    def test__try_getting_cache_from_guid(self):
-        # get "normal" cache from guidpage
-        with self.recorder.use_cassette('geocaching_shortcut_getcache__by_guid'):  # is a replacement for login
-            cache = self.gc._try_getting_cache_from_guid('15ad3a3d-92c1-4f7c-b273-60937bcc2072')
-            self.assertEqual("Nekonecne ticho", cache.name)
-
-        # get PMonly cache from GC code (doesn't load any information)
-        cache_pm = self.gc._try_getting_cache_from_guid('328927c1-aa8c-4e0d-bf59-31f1ce44d990')
-        cache_pm.load_quick()  # necessary to get name for PMonly cache
-        self.assertEqual("Nidda: jenseits der Rennstrecke Reloaded", cache_pm.name)
 
 
 class TestLoginOperations(NetworkedTest):
