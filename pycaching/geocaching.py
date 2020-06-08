@@ -7,6 +7,7 @@ import bs4
 import json
 import subprocess
 import warnings
+import enum
 from urllib.parse import parse_qs, urljoin, urlparse
 from os import path
 from pycaching.cache import Cache, Size
@@ -372,10 +373,8 @@ class Geocaching(object):
         :param sort_by: Order cached by given criterion.
         :param origin: Origin point for search by distance.
         """
-        assert sort_by in {
-            'containersize', 'datelastvisited', 'difficulty', 'distance', 'favoritepoint',
-            'founddate', 'founddateoffoundbyuser', 'geocachename', 'placedate', 'terrain'
-        }
+        if not isinstance(sort_by, SortOrder):
+            sort_by = SortOrder(sort_by)
 
         params = {
             'box': "{},{},{},{}".format(
@@ -384,10 +383,10 @@ class Geocaching(object):
             'take': per_query,
             'asc': 'true',
             'skip': 0,
-            'sort': sort_by,
+            'sort': sort_by.value,
         }
 
-        if sort_by == 'distance':
+        if sort_by == SortOrder.distance:
             assert isinstance(origin, Point)
             params['origin'] = '{},{}'.format(origin.latitude, origin.longitude)
 
@@ -513,3 +512,18 @@ class Geocaching(object):
         :param limit: The maximum number of results to return (default: infinity).
         """
         return self.my_logs(LogType.didnt_find_it, limit)
+
+
+class SortOrder(enum.Enum):
+    """Enum of possible cache sort orderings returned in Groundspeak API."""
+    # NOTE: extracted from https://www.geocaching.com/play/map/public/main.2b28b0dc1c9c10aaba66.js
+    containersize = "containersize"
+    datelastvisited = "datelastvisited"
+    difficulty = "difficulty"
+    distance = "distance"
+    favoritepoint = "favoritepoint",
+    founddate = "founddate"
+    founddateoffoundbyuser = "founddateoffoundbyuser"
+    geocachename = "geocachename"
+    placedate = "placedate"
+    terrain = "terrain"
