@@ -13,6 +13,7 @@ from geopy.distance import great_circle
 import pycaching
 from pycaching import Cache, Geocaching, Point, Rectangle
 from pycaching.errors import NotLoggedInException, LoginFailedException, PMOnlyException
+from pycaching.geocaching import SortOrder
 from . import username as _username, password as _password, NetworkedTest
 
 
@@ -100,16 +101,16 @@ class TestMethods(NetworkedTest):
         """Perform search by rect and check found caches"""
         rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.39))
 
+        expected = {'GC1TYYG', 'GC11PRW', 'GC7JRR5', 'GC161KR', 'GC1GW54', 'GC7KDWE', 'GC8D303'}
+
         with self.subTest("default use"):
             with self.recorder.use_cassette('geocaching_search_rect'):
                 gc = Geocaching(session=self.session)
                 gc.login(_username, _password)
                 caches = self.gc.search_rect(rect)
-                expected = {cache.wp for cache in caches}
+                waypoints = {cache.wp for cache in caches}
 
-                self.assertEqual(expected, {
-                    'GC1TYYG', 'GC11PRW', 'GC7JRR5', 'GC161KR', 'GC1GW54', 'GC7KDWE', 'GC8D303'
-                })
+                self.assertSetEqual(waypoints, expected)
 
         with self.subTest("sort by distance"):
             with self.recorder.use_cassette('geocaching_search_rect_by_distance'):
@@ -118,16 +119,25 @@ class TestMethods(NetworkedTest):
 
                 origin = Point.from_string('N 49° 44.230 E 013° 22.858')
 
-                caches = list(self.gc.search_rect(rect, sort_by='distance', origin=origin))
+                caches = list(self.gc.search_rect(rect, sort_by=SortOrder.distance, origin=origin))
 
-                expected = [cache.wp for cache in caches]
-                self.assertEqual(expected, [
+                waypoints = [cache.wp for cache in caches]
+                self.assertEqual(waypoints,  [
                     'GC11PRW', 'GC1TYYG', 'GC7JRR5', 'GC1GW54', 'GC161KR', 'GC7KDWE', 'GC8D303'
                 ])
 
                 # Check if caches are sorted by distance to origin
                 distances = [great_circle(cache.location, origin).meters for cache in caches]
                 self.assertEqual(distances, sorted(distances))
+
+        with self.subTest("sort by different criteria"):
+            with self.recorder.use_cassette('geocaching_search_rect_by_different_criteria'):
+                for sort_by in SortOrder:
+                    if sort_by is SortOrder.distance:
+                        continue
+                    caches = self.gc.search_rect(rect, sort_by=sort_by)
+                    waypoints = {cache.wp for cache in caches}
+                    self.assertSetEqual(waypoints, expected)
 
     def test__try_getting_cache_from_guid(self):
         # get "normal" cache from guidpage
@@ -154,7 +164,7 @@ class TestAPIRateLimiting(NetworkedTest):
             mock = Mock()
 
             with patch('time.sleep', mock.sleep):
-                for cache in gc.search_rect(rect, per_query=200):
+                for _cache in gc.search_rect(rect, per_query=200):
                     if mock.sleep.called:
                         assert True
                         break
