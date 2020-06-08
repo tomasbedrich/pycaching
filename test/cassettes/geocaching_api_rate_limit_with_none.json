@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2020-06-08T19:26:41",
+      "recorded_at": "2020-06-08T19:30:38",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -43,13 +43,13 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "8842fad8-90ff-47c5-bde2-889d8022bca2"
+            "7e19a115-b714-493a-841a-a246b868ebfa"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:35 GMT"
+            "Mon, 08 Jun 2020 19:30:32 GMT"
           ],
           "Set-Cookie": [
-            "jwt=<AUTH COOKIE>; domain=.geocaching.com; path=/; expires=Mon, 08-Jun-2020 20:25:34 GMT; secure; HttpOnly"
+            "jwt=<AUTH COOKIE>; domain=.geocaching.com; path=/; expires=Mon, 08-Jun-2020 20:29:32 GMT; secure; HttpOnly"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -75,7 +75,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:41",
+      "recorded_at": "2020-06-08T19:30:38",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -117,10 +117,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "6012160e-bd5b-4cf4-99c2-c63fa4ff6466"
+            "ac89ee89-781e-4825-ae8e-28748a26ffc4"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:36 GMT"
+            "Mon, 08 Jun 2020 19:30:33 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -146,7 +146,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:41",
+      "recorded_at": "2020-06-08T19:30:39",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -188,10 +188,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "614e367f-0bc9-4247-8439-2bcb24b81850"
+            "c5ac4a2c-c7ee-4a36-ac45-e6f829332c77"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:36 GMT"
+            "Mon, 08 Jun 2020 19:30:33 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -217,7 +217,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:42",
+      "recorded_at": "2020-06-08T19:30:39",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -259,10 +259,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "1ba1d746-c702-4581-9274-d5345e885bef"
+            "a40c1aad-e901-42ab-9b73-22e30536a393"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:36 GMT"
+            "Mon, 08 Jun 2020 19:30:33 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -288,7 +288,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:42",
+      "recorded_at": "2020-06-08T19:30:39",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -330,10 +330,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "4215ff61-59cd-4ddb-a0f7-c13b8767a05f"
+            "32fa900c-4891-431a-a46c-06536a333684"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:37 GMT"
+            "Mon, 08 Jun 2020 19:30:34 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -359,7 +359,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:43",
+      "recorded_at": "2020-06-08T19:30:40",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -401,10 +401,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "ff2a3c7c-1a56-4299-bf12-95d966eb15bb"
+            "9b586dd3-b779-4685-a0e0-ad1245f738dd"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:37 GMT"
+            "Mon, 08 Jun 2020 19:30:34 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -430,7 +430,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:44",
+      "recorded_at": "2020-06-08T19:30:40",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -472,10 +472,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "c5b071d8-aa9f-4b65-a200-e08c93622b3f"
+            "7d9c454f-1c26-4157-8821-e66c17507c01"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:38 GMT"
+            "Mon, 08 Jun 2020 19:30:35 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -501,7 +501,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:44",
+      "recorded_at": "2020-06-08T19:30:41",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -543,10 +543,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "5519009e-245c-4398-857e-3a3b666ef6bf"
+            "1ac8d3ed-0c41-445a-bab8-9280171f521f"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:39 GMT"
+            "Mon, 08 Jun 2020 19:30:35 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -572,7 +572,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:45",
+      "recorded_at": "2020-06-08T19:30:41",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -614,10 +614,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "8f6b3bdc-0e96-4a4b-85e4-f7761c53876d"
+            "d4360c9e-fb20-4638-98b7-b80aed13cc88"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:39 GMT"
+            "Mon, 08 Jun 2020 19:30:36 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -643,7 +643,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:45",
+      "recorded_at": "2020-06-08T19:30:42",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -685,10 +685,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "e2da2b48-9066-433c-ae11-70ea90b97a87"
+            "a12fcee1-c603-4be5-b821-7d52465a2ed6"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:40 GMT"
+            "Mon, 08 Jun 2020 19:30:36 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -714,7 +714,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:45",
+      "recorded_at": "2020-06-08T19:30:42",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -756,10 +756,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "57ea9077-342d-40e2-8961-766b3c2afb06"
+            "a24662aa-ffa9-4bf3-a5be-01ed25bcb8ef"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:40 GMT"
+            "Mon, 08 Jun 2020 19:30:36 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -777,7 +777,7 @@
             "1"
           ],
           "x-rate-limit-reset": [
-            "20"
+            "23"
           ]
         },
         "status": {
@@ -788,7 +788,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:27:10",
+      "recorded_at": "2020-06-08T19:30:52",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -817,23 +817,171 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7453712,\"name\":\"CITO podle pranostik - sv. Jan K\u0159titel\",\"code\":\"GC8G008\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":13,\"containerType\":6,\"difficulty\":1.0,\"terrain\":3.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.071967,\"longitude\":14.392633},\"detailsUrl\":\"/geocache/GC8G008\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2020-06-24T17:30:00\",\"owner\":{\"code\":\"PR24GA1\",\"username\":\"taxoft\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":8657}"
+          "string": "{\"statusCode\":429,\"statusMessage\":\"Too many requests\"}"
+        },
+        "headers": {
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Length": [
+            "54"
+          ],
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ],
+          "CorrelationGuid": [
+            "da652c6e-57a8-49f8-8a25-e9b065360f14"
+          ],
+          "Date": [
+            "Mon, 08 Jun 2020 19:30:47 GMT"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubDomains"
+          ],
+          "Vary": [
+            "Accept-Encoding"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1"
+          ],
+          "x-rate-limit-reset": [
+            "13"
+          ]
+        },
+        "status": {
+          "code": 429,
+          "message": ""
+        },
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=10&sort=datelastvisited"
+      }
+    },
+    {
+      "recorded_at": "2020-06-08T19:31:03",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
+          ],
+          "User-Agent": [
+            "python-requests/2.23.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=10&sort=datelastvisited"
+      },
+      "response": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"statusCode\":429,\"statusMessage\":\"Too many requests\"}"
+        },
+        "headers": {
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Length": [
+            "54"
+          ],
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ],
+          "CorrelationGuid": [
+            "f7ffbe6a-7279-4df1-966f-8db40c68ac6f"
+          ],
+          "Date": [
+            "Mon, 08 Jun 2020 19:30:57 GMT"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubDomains"
+          ],
+          "Vary": [
+            "Accept-Encoding"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1"
+          ],
+          "x-rate-limit-reset": [
+            "2"
+          ]
+        },
+        "status": {
+          "code": 429,
+          "message": ""
+        },
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=10&sort=datelastvisited"
+      }
+    },
+    {
+      "recorded_at": "2020-06-08T19:31:13",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
+          ],
+          "User-Agent": [
+            "python-requests/2.23.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=10&sort=datelastvisited"
+      },
+      "response": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"results\":[{\"id\":7696741,\"name\":\"Upiri event, aneb daruj krev posedme\",\"code\":\"GC8R4WX\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":49.8406,\"longitude\":13.914717},\"detailsUrl\":\"/geocache/GC8R4WX\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2020-06-26T07:00:00\",\"owner\":{\"code\":\"PRBJY85\",\"username\":\"mik.ves75\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":8657}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "527"
+            "524"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "696a75de-9363-4b10-9dc3-1979580e83ac"
+            "15f5d480-55bd-4247-86cb-a1e673bbd2de"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:27:05 GMT"
+            "Mon, 08 Jun 2020 19:31:07 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"

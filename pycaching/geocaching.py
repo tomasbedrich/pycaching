@@ -15,7 +15,7 @@ from pycaching.cache import Cache, Size
 from pycaching.log import Log, Type as LogType
 from pycaching.geo import Point, Rectangle
 from pycaching.trackable import Trackable
-from pycaching.errors import Error, NotLoggedInException, LoginFailedException, PMOnlyException, TooManyRequests
+from pycaching.errors import Error, NotLoggedInException, LoginFailedException, PMOnlyException, TooManyRequestsError
 
 
 class SortOrder(enum.Enum):
@@ -86,7 +86,7 @@ class Geocaching(object):
 
         except requests.exceptions.RequestException as e:
             if e.response.status_code == 429:  # Handle rate limiting errors
-                raise TooManyRequests(
+                raise TooManyRequestsError(
                     url,
                     rate_limit_reset=int(e.response.headers.get('x-rate-limit-reset', '0'))
                 ) from e
@@ -386,7 +386,8 @@ class Geocaching(object):
         *,
         per_query: int = 50,
         sort_by: Union[str, SortOrder] = SortOrder.date_last_visited,
-        origin: Optional[Point] = None
+        origin: Optional[Point] = None,
+        wait_sleep: bool = True
     ):
         """
         Return a generator of caches in given Rectange area.
@@ -395,6 +396,8 @@ class Geocaching(object):
         :param int per_query: Number of caches requested in single query.
         :param sort_by: Order cached by given criterion.
         :param origin: Origin point for search by distance
+        :param wait_sleep: In case of rate limits exceeding, wait appropriate time if set True,
+            otherwise just yield None
         """
         if not isinstance(sort_by, SortOrder):
             sort_by = SortOrder(sort_by)
@@ -422,10 +425,11 @@ class Geocaching(object):
 
             try:
                 resp = self._request(self._urls["api_search"], params=params, expect="json")
-            except TooManyRequests as e:
-                import time
-
-                time.sleep(e.rate_limit_reset + 5)
+            except TooManyRequestsError as e:
+                if wait_sleep:
+                    e.wait_for()
+                else:
+                    yield None
                 continue
 
             for record in resp["results"]:
