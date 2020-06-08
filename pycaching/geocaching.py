@@ -8,6 +8,7 @@ import json
 import subprocess
 import warnings
 import enum
+from typing import Optional, Union
 from urllib.parse import parse_qs, urljoin, urlparse
 from os import path
 from pycaching.cache import Cache, Size
@@ -15,6 +16,21 @@ from pycaching.log import Log, Type as LogType
 from pycaching.geo import Point, Rectangle
 from pycaching.trackable import Trackable
 from pycaching.errors import Error, NotLoggedInException, LoginFailedException, PMOnlyException, TooManyRequests
+
+
+class SortOrder(enum.Enum):
+    """Enum of possible cache sort orderings returned in Groundspeak API."""
+    # NOTE: extracted from https://www.geocaching.com/play/map/public/main.2b28b0dc1c9c10aaba66.js
+    container_size = "containersize"
+    date_last_visited = "datelastvisited"
+    difficulty = "difficulty"
+    distance = "distance"
+    favorite_point = "favoritepoint"
+    found_date = "founddate"
+    found_date_of_found_by_user = "founddateoffoundbyuser"
+    geocache_name = "geocachename"
+    place_date = "placedate"
+    terrain = "terrain"
 
 
 class Geocaching(object):
@@ -364,47 +380,58 @@ class Geocaching(object):
 
     # add some shortcuts ------------------------------------------------------
 
-    def search_rect(self, rect: Rectangle, *, per_query: int = 50, sort_by: str = 'datelastvisited', origin=None):
+    def search_rect(
+        self,
+        rect: Rectangle,
+        *,
+        per_query: int = 50,
+        sort_by: Union[str, SortOrder] = SortOrder.date_last_visited,
+        origin: Optional[Point] = None
+    ):
         """
         Return a generator of caches in given Rectange area.
 
         :param rect: Search area.
-        :param per_query: Number of caches requested in single query.
+        :param int per_query: Number of caches requested in single query.
         :param sort_by: Order cached by given criterion.
-        :param origin: Origin point for search by distance.
+        :param origin: Origin point for search by distance
         """
         if not isinstance(sort_by, SortOrder):
             sort_by = SortOrder(sort_by)
 
         params = {
-            'box': "{},{},{},{}".format(
-                rect.corners[0].latitude, rect.corners[0].longitude,
-                rect.corners[1].latitude, rect.corners[1].longitude),
-            'take': per_query,
-            'asc': 'true',
-            'skip': 0,
-            'sort': sort_by.value,
+            "box": "{},{},{},{}".format(
+                rect.corners[0].latitude,
+                rect.corners[0].longitude,
+                rect.corners[1].latitude,
+                rect.corners[1].longitude,
+            ),
+            "take": per_query,
+            "asc": "true",
+            "skip": 0,
+            "sort": sort_by.value,
         }
 
-        if sort_by == SortOrder.distance:
+        if sort_by is SortOrder.distance:
             assert isinstance(origin, Point)
-            params['origin'] = '{},{}'.format(origin.latitude, origin.longitude)
+            params["origin"] = "{},{}".format(origin.latitude, origin.longitude)
 
         total, offset = None, 0
         while (total is None) or (offset < total):
-            params['skip'] = offset
+            params["skip"] = offset
 
             try:
-                resp = self._request(self._urls['api_search'], params=params, expect='json')
+                resp = self._request(self._urls["api_search"], params=params, expect="json")
             except TooManyRequests as e:
                 import time
+
                 time.sleep(e.rate_limit_reset + 5)
                 continue
 
-            for record in resp['results']:
+            for record in resp["results"]:
                 yield Cache._from_api_record(self, record)
 
-            total = resp['total']
+            total = resp["total"]
             offset += per_query
 
     def geocode(self, location):
@@ -512,18 +539,3 @@ class Geocaching(object):
         :param limit: The maximum number of results to return (default: infinity).
         """
         return self.my_logs(LogType.didnt_find_it, limit)
-
-
-class SortOrder(enum.Enum):
-    """Enum of possible cache sort orderings returned in Groundspeak API."""
-    # NOTE: extracted from https://www.geocaching.com/play/map/public/main.2b28b0dc1c9c10aaba66.js
-    containersize = "containersize"
-    datelastvisited = "datelastvisited"
-    difficulty = "difficulty"
-    distance = "distance"
-    favoritepoint = "favoritepoint",
-    founddate = "founddate"
-    founddateoffoundbyuser = "founddateoffoundbyuser"
-    geocachename = "geocachename"
-    placedate = "placedate"
-    terrain = "terrain"
