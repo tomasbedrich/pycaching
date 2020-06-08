@@ -363,16 +363,16 @@ class Geocaching(object):
 
     # add some shortcuts ------------------------------------------------------
 
-    def search_rect(self, rect: Rectangle, *, per_query: int = 50, sortby: str = 'datelastvisited', origin=None):
+    def search_rect(self, rect: Rectangle, *, per_query: int = 50, sort_by: str = 'datelastvisited', origin=None):
         """
         Return a generator of caches in given Rectange area.
 
         :param rect: Search area.
         :param per_query: Number of caches requested in single query.
-        :param sortby: Order cached by given criterion.
+        :param sort_by: Order cached by given criterion.
         :param origin: Origin point for search by distance.
         """
-        assert sortby in {
+        assert sort_by in {
             'containersize', 'datelastvisited', 'difficulty', 'distance', 'favoritepoint',
             'founddate', 'founddateoffoundbyuser', 'geocachename', 'placedate', 'terrain'
         }
@@ -384,10 +384,10 @@ class Geocaching(object):
             'take': per_query,
             'asc': 'true',
             'skip': 0,
-            'sort': sortby,
+            'sort': sort_by,
         }
 
-        if sortby == 'distance':
+        if sort_by == 'distance':
             assert isinstance(origin, Point)
             params['origin'] = '{},{}'.format(origin.latitude, origin.longitude)
 

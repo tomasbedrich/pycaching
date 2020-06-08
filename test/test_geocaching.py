@@ -114,11 +114,11 @@ class TestMethods(NetworkedTest):
         with self.subTest("sort by distance"):
             with self.recorder.use_cassette('geocaching_search_rect_by_distance'):
                 with self.assertRaises(AssertionError):
-                    caches = list(self.gc.search_rect(rect, sortby='distance'))
+                    caches = list(self.gc.search_rect(rect, sort_by='distance'))
 
                 origin = Point.from_string('N 49° 44.230 E 013° 22.858')
 
-                caches = list(self.gc.search_rect(rect, sortby='distance', origin=origin))
+                caches = list(self.gc.search_rect(rect, sort_by='distance', origin=origin))
 
                 expected = [cache.wp for cache in caches]
                 self.assertEqual(expected, [
