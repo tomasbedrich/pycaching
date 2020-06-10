@@ -59,15 +59,18 @@ class ValueError(Error, ValueError):
 
 class TooManyRequestsError(Error):
     """Geocaching API rate limit has been reached."""
+
     def __init__(self, url: str, rate_limit_reset: int = 0):
         """
-        :param url: Requested url
+        Initialize TooManyRequestsError.
+
+        :param url: Requested url.
         :param rate_limit_reset: Number of seconds to wait before rate limit reset.
         """
         self.url = url
         self.rate_limit_reset = rate_limit_reset
 
     def wait_for(self):
-        """Wait enought time to release Rate Limits."""
+        """Wait enough time to release Rate Limits."""
         import time
         time.sleep(self.rate_limit_reset + 5)

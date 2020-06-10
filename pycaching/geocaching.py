@@ -395,9 +395,9 @@ class Geocaching(object):
         :param rect: Search area.
         :param int per_query: Number of caches requested in single query.
         :param sort_by: Order cached by given criterion.
-        :param origin: Origin point for search by distance
+        :param origin: Origin point for search by distance.
         :param wait_sleep: In case of rate limits exceeding, wait appropriate time if set True,
-            otherwise just yield None
+            otherwise just yield None.
         """
         if not isinstance(sort_by, SortOrder):
             sort_by = SortOrder(sort_by)

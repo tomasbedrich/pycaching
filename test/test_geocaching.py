@@ -164,7 +164,7 @@ class TestAPIMethods(NetworkedTest):
 
                 for i, _cache in enumerate(self.gc.search_rect(rect, per_query=1)):
                     if wait_for.called:
-                        wait_for.assert_called_once()
+                        self.assertEqual(wait_for.call_count, 1)
                         break
 
                     if i > 20:  # rate limit should be released after ~10 requests
@@ -190,7 +190,7 @@ class TestAPIMethods(NetworkedTest):
                     if i > 20:
                         self.fail("API Rate Limit not released")
 
-                wait_for.assert_not_called()
+                self.assertEqual(wait_for.call_count, 0)
 
 
 class TestLoginOperations(NetworkedTest):
