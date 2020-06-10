@@ -181,7 +181,7 @@ class Cache(object):
             # userDidNotFind
         )
 
-        # NOTE: Basic Members has no access to postedCoordinates of Premium-only caches
+        # NOTE: Basic Members have no access to postedCoordinates of Premium-only caches
         if 'postedCoordinates' in record:
             cache.location = Point(
                 record['postedCoordinates']['latitude'],
