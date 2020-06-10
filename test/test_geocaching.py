@@ -111,7 +111,7 @@ class TestMethods(NetworkedTest):
 
 class TestAPIMethods(NetworkedTest):
     def test_search_rect(self):
-        """Perform search by rect and check found caches"""
+        """Perform search by rect and check found caches."""
         rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.39))
 
         expected = {'GC1TYYG', 'GC11PRW', 'GC7JRR5', 'GC161KR', 'GC1GW54', 'GC7KDWE', 'GC8D303'}
