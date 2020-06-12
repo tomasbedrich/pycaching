@@ -77,7 +77,7 @@ def format_date(date, user_date_format):
     """Format a date according to user_date_format."""
     # parse user format
     date_format = user_date_format.lower()
-    date_format = re.split("(\W+)", date_format)
+    date_format = re.split(r"(\W+)", date_format)
     # non-zero-padded numbers use different characters depending on different platforms
     # see https://strftime.org/ for example
     eat_zero_prefix = "#" if platform.system() == "Windows" else "-"

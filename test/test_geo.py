@@ -144,15 +144,15 @@ class TestPolygon(unittest.TestCase):
 
     def test_bounding_box(self):
         bb = self.p.bounding_box
-        sw, ne = bb.corners
+        nw, se = bb.corners
         with self.subTest("Minimum latitude"):
-            self.assertEqual(sw.latitude, -70.)
+            self.assertEqual(se.latitude, -70.)
         with self.subTest("Minimum longitude"):
-            self.assertEqual(sw.longitude, -170.)
+            self.assertEqual(nw.longitude, -170.)
         with self.subTest("Maximum latitude"):
-            self.assertEqual(ne.latitude, 30.)
+            self.assertEqual(nw.latitude, 30.)
         with self.subTest("Maximum longitude"):
-            self.assertEqual(ne.longitude, 40.)
+            self.assertEqual(se.longitude, 40.)
 
     def test_mean_point(self):
         mp = self.p.mean_point

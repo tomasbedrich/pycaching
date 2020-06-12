@@ -12,7 +12,8 @@ from geopy.distance import great_circle
 
 import pycaching
 from pycaching import Cache, Geocaching, Point, Rectangle
-from pycaching.errors import NotLoggedInException, LoginFailedException, PMOnlyException
+from pycaching.errors import NotLoggedInException, LoginFailedException, PMOnlyException, TooManyRequestsError
+from pycaching.geocaching import SortOrder
 from . import username as _username, password as _password, NetworkedTest
 
 
@@ -106,6 +107,90 @@ class TestMethods(NetworkedTest):
         cache_pm = self.gc._try_getting_cache_from_guid('328927c1-aa8c-4e0d-bf59-31f1ce44d990')
         cache_pm.load_quick()  # necessary to get name for PMonly cache
         self.assertEqual("Nidda: jenseits der Rennstrecke Reloaded", cache_pm.name)
+
+
+class TestAPIMethods(NetworkedTest):
+    def test_search_rect(self):
+        """Perform search by rect and check found caches."""
+        rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.39))
+
+        expected = {'GC1TYYG', 'GC11PRW', 'GC7JRR5', 'GC161KR', 'GC1GW54', 'GC7KDWE', 'GC8D303'}
+
+        orig_wait_for = TooManyRequestsError.wait_for
+        with self.recorder.use_cassette('geocaching_search_rect') as vcr:
+            with patch.object(TooManyRequestsError, 'wait_for', autospec=True) as wait_for:
+                wait_for.side_effect = orig_wait_for if vcr.current_cassette.is_recording() else None
+                with self.subTest("default use"):
+                    caches = self.gc.search_rect(rect)
+                    waypoints = {cache.wp for cache in caches}
+
+                    self.assertSetEqual(waypoints, expected)
+
+                with self.subTest("sort by distance"):
+                    with self.assertRaises(AssertionError):
+                        caches = list(self.gc.search_rect(rect, sort_by='distance'))
+
+                    origin = Point.from_string('N 49° 44.230 E 013° 22.858')
+
+                    caches = list(self.gc.search_rect(rect, sort_by=SortOrder.distance, origin=origin))
+
+                    waypoints = [cache.wp for cache in caches]
+                    self.assertEqual(waypoints,  [
+                        'GC11PRW', 'GC1TYYG', 'GC7JRR5', 'GC1GW54', 'GC161KR', 'GC7KDWE', 'GC8D303'
+                    ])
+
+                    # Check if caches are sorted by distance to origin
+                    distances = [great_circle(cache.location, origin).meters for cache in caches]
+                    self.assertEqual(distances, sorted(distances))
+
+                with self.subTest("sort by different criteria"):
+                    for sort_by in SortOrder:
+                        if sort_by is SortOrder.distance:
+                            continue
+                        caches = self.gc.search_rect(rect, sort_by=sort_by)
+                        waypoints = {cache.wp for cache in caches}
+                        self.assertSetEqual(waypoints, expected)
+
+    def test_recover_from_rate_limit(self):
+        """Test recovering from API rate limit exception."""
+        rect = Rectangle(Point(50.74, 13.38), Point(49.73, 14.40))  # large rectangle
+
+        with self.recorder.use_cassette('geocaching_api_rate_limit') as vcr:
+            orig_wait_for = TooManyRequestsError.wait_for
+
+            with patch.object(TooManyRequestsError, 'wait_for', autospec=True) as wait_for:
+                # If we are recording, we must perform real wait, otherwise we skip waiting
+                wait_for.side_effect = orig_wait_for if vcr.current_cassette.is_recording() else None
+
+                for i, _cache in enumerate(self.gc.search_rect(rect, per_query=1)):
+                    if wait_for.called:
+                        self.assertEqual(wait_for.call_count, 1)
+                        break
+
+                    if i > 20:  # rate limit should be released after ~10 requests
+                        self.fail("API Rate Limit not released")
+
+    def test_recover_from_rate_limit_without_sleep(self):
+        """Test recovering from API rate limit exception without sleep."""
+        rect = Rectangle(Point(50.74, 13.38), Point(49.73, 14.40))
+
+        with self.recorder.use_cassette('geocaching_api_rate_limit_with_none') as vcr:
+            with patch.object(TooManyRequestsError, 'wait_for', autospec=True) as wait_for:
+                caches = self.gc.search_rect(rect, per_query=1, wait_sleep=False)
+                for i, cache in enumerate(caches):
+                    if cache is None:
+                        import time
+                        while cache is None:
+                            if vcr.current_cassette.is_recording():
+                                time.sleep(10)
+                            cache = next(caches)
+                        self.assertIsInstance(cache, Cache)
+                        break
+
+                    if i > 20:
+                        self.fail("API Rate Limit not released")
+
+                self.assertEqual(wait_for.call_count, 0)
 
 
 class TestLoginOperations(NetworkedTest):

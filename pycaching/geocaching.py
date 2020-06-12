@@ -7,13 +7,30 @@ import bs4
 import json
 import subprocess
 import warnings
+import enum
+from typing import Optional, Union
 from urllib.parse import parse_qs, urljoin, urlparse
 from os import path
 from pycaching.cache import Cache, Size
 from pycaching.log import Log, Type as LogType
-from pycaching.geo import Point
+from pycaching.geo import Point, Rectangle
 from pycaching.trackable import Trackable
-from pycaching.errors import Error, NotLoggedInException, LoginFailedException, PMOnlyException
+from pycaching.errors import Error, NotLoggedInException, LoginFailedException, PMOnlyException, TooManyRequestsError
+
+
+class SortOrder(enum.Enum):
+    """Enum of possible cache sort orderings returned in Groundspeak API."""
+    # NOTE: extracted from https://www.geocaching.com/play/map/public/main.2b28b0dc1c9c10aaba66.js
+    container_size = "containersize"
+    date_last_visited = "datelastvisited"
+    difficulty = "difficulty"
+    distance = "distance"
+    favorite_point = "favoritepoint"
+    found_date = "founddate"
+    found_date_of_found_by_user = "founddateoffoundbyuser"
+    geocache_name = "geocachename"
+    place_date = "placedate"
+    terrain = "terrain"
 
 
 class Geocaching(object):
@@ -29,6 +46,7 @@ class Geocaching(object):
         "search":            "play/search",
         "search_more":       "play/search/more-results",
         'my_logs':           'my/logs.aspx',
+        'api_search':        'api/proxy/web/search'
     }
     _credentials_file = ".gc_credentials"
 
@@ -67,6 +85,12 @@ class Geocaching(object):
                 return res
 
         except requests.exceptions.RequestException as e:
+            if e.response.status_code == 429:  # Handle rate limiting errors
+                raise TooManyRequestsError(
+                    url,
+                    rate_limit_reset=int(e.response.headers.get('x-rate-limit-reset', '0'))
+                ) from e
+
             raise Error("Cannot load page: {}".format(url)) from e
 
     def login(self, username=None, password=None):
@@ -356,6 +380,64 @@ class Geocaching(object):
 
     # add some shortcuts ------------------------------------------------------
 
+    def search_rect(
+        self,
+        rect: Rectangle,
+        *,
+        per_query: int = 200,
+        sort_by: Union[str, SortOrder] = SortOrder.date_last_visited,
+        origin: Optional[Point] = None,
+        wait_sleep: bool = True
+    ):
+        """
+        Return a generator of caches in given Rectange area.
+
+        :param rect: Search area.
+        :param int per_query: Number of caches requested in single query.
+        :param sort_by: Order cached by given criterion.
+        :param origin: Origin point for search by distance.
+        :param wait_sleep: In case of rate limits exceeding, wait appropriate time if set True,
+            otherwise just yield None.
+        """
+        if not isinstance(sort_by, SortOrder):
+            sort_by = SortOrder(sort_by)
+
+        params = {
+            "box": "{},{},{},{}".format(
+                rect.corners[0].latitude,
+                rect.corners[0].longitude,
+                rect.corners[1].latitude,
+                rect.corners[1].longitude,
+            ),
+            "take": per_query,
+            "asc": "true",
+            "skip": 0,
+            "sort": sort_by.value,
+        }
+
+        if sort_by is SortOrder.distance:
+            assert isinstance(origin, Point)
+            params["origin"] = "{},{}".format(origin.latitude, origin.longitude)
+
+        total, offset = None, 0
+        while (total is None) or (offset < total):
+            params["skip"] = offset
+
+            try:
+                resp = self._request(self._urls["api_search"], params=params, expect="json")
+            except TooManyRequestsError as e:
+                if wait_sleep:
+                    e.wait_for()
+                else:
+                    yield None
+                continue
+
+            for record in resp["results"]:
+                yield Cache._from_api_record(self, record)
+
+            total = resp["total"]
+            offset += per_query
+
     def geocode(self, location):
         """Return a :class:`.Point` object from geocoded location.
 
@@ -396,8 +478,8 @@ class Geocaching(object):
         """
         if not date:
             date = datetime.date.today()
-        l = Log(type=type, text=text, visited=date)
-        self.get_cache(wp).post_log(l)
+        log = Log(type=type, text=text, visited=date)
+        self.get_cache(wp).post_log(log)
 
     def _cache_from_guid(self, guid):
         logging.info('Loading cache with GUID {!r}'.format(guid))

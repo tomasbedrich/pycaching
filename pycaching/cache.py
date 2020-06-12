@@ -153,6 +153,43 @@ class Cache(object):
         cache_info["log_counts"] = Cache._get_log_counts_from_print_page(soup)
         return Cache(geocaching, **cache_info)
 
+    @classmethod
+    def _from_api_record(cls, geocaching, record):
+        """Create a cache instance from a JSON record returned by API."""
+        cache = Cache(
+            geocaching,
+            wp=record['code'],
+            name=record['name'],
+            type=Type.from_number(record['geocacheType']),
+            state=Status(record['cacheStatus']) == Status.enabled,
+            found=record['userFound'],
+            size=Size.from_number(record['containerType']),
+            difficulty=record['difficulty'],
+            terrain=record['terrain'],
+            author=record['owner']['username'],
+            hidden=record['placedDate'].split('T')[0],
+            favorites=record['favoritePoints'],
+            pm_only=record['premiumOnly'],
+
+            # Not consumed attributes:
+            # detailsUrl
+            # hasGeotour
+            # hasLogDraft
+            # id
+            # lastFoundDate
+            # owner.code
+            # userDidNotFind
+        )
+
+        # NOTE: Basic Members have no access to postedCoordinates of Premium-only caches
+        if 'postedCoordinates' in record:
+            cache.location = Point(
+                record['postedCoordinates']['latitude'],
+                record['postedCoordinates']['longitude']
+            )
+
+        return cache
+
     def __init__(self, geocaching, wp, **kwargs):
         """Create a cache instance.
 
@@ -827,7 +864,7 @@ class Cache(object):
         type_img = os.path.basename(content.find("img").get("src"))
         self.type = Type.from_filename(os.path.splitext(type_img)[0])
 
-        size_img = content.find("img", src=re.compile("\/icons\/container\/"))
+        size_img = content.find("img", src=re.compile(r"\/icons\/container\/"))
         self.size = Size.from_string(size_img.get("alt").split(": ")[1])
 
         D_and_T_img = content.find("p", "Meta DiffTerr").find_all("img")
@@ -843,7 +880,7 @@ class Cache(object):
         hidden_p = content.find("p", text=re.compile("Placed Date:"))
         self.hidden = hidden_p.text.replace("Placed Date:", "").strip()
 
-        attr_img = content.find_all("img", src=re.compile("\/attributes\/"))
+        attr_img = content.find_all("img", src=re.compile(r"\/attributes\/"))
         attributes_raw = [
             os.path.basename(_.get("src")).rsplit("-", 1) for _ in attr_img
         ]
@@ -1004,12 +1041,12 @@ class Cache(object):
                 img_filename = log_data["LogTypeImage"].rsplit(".", 1)[0]  # filename w/o extension
 
                 # create and fill log object
-                l = Log()
-                l.type = LogType.from_filename(img_filename)
-                l.text = log_data["LogText"]
-                l.visited = log_data["Visited"]
-                l.author = log_data["UserName"]
-                yield l
+                log = Log()
+                log.type = LogType.from_filename(img_filename)
+                log.text = log_data["LogText"]
+                log.visited = log_data["Visited"]
+                log.author = log_data["UserName"]
+                yield log
 
     # TODO: trackable list can have multiple pages - handle it in similar way as _logbook_get_page
     # for example see: http://www.geocaching.com/geocache/GC26737_geocaching-jinak-tb-gc-hrbitov
@@ -1034,7 +1071,7 @@ class Cache(object):
         # filter out all urls for trackables
         urls = [link.get("href") for link in links if "track" in link.get("href")]
         # find the names matching the trackble urls
-        names = [re.split("[\<\>]", str(link))[2] for link in links if "track" in link.get("href")]
+        names = [re.split(r"[\<\>]", str(link))[2] for link in links if "track" in link.get("href")]
 
         for name, url in zip(names, urls):
 
@@ -1280,6 +1317,10 @@ class Type(enum.Enum):
         except KeyError as e:
             raise errors.ValueError("Unknown cache type '{}'.".format(name)) from e
 
+    @classmethod
+    def from_number(cls, number: int):
+        return Type(str(number))
+
 
 class Size(enum.Enum):
     """Enum of possible cache sizes.
@@ -1322,14 +1363,25 @@ class Size(enum.Enum):
         number = int(number)
 
         number_mapping = {
+            1: cls.not_chosen,
             2: cls.micro,
-            8: cls.small,
             3: cls.regular,
             4: cls.large,
-            6: cls.other
+            5: cls.virtual,
+            6: cls.other,
+            8: cls.small,
         }
 
         try:
             return number_mapping[number]
         except KeyError as e:
             raise errors.ValueError("Unknown cache size numeric id '{}'.".format(number)) from e
+
+
+class Status(enum.IntEnum):
+    """Enum of possible cache statuses."""
+    # NOTE: extracted from https://www.geocaching.com/play/map/public/main.2b28b0dc1c9c10aaba66.js
+    enabled = 0
+    disabled = 1
+    archived = 2
+    unpublished = 3
