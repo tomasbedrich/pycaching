@@ -30,6 +30,10 @@ class Log(object):
 
     @property
     def uuid(self):
+        """The log unique identifier.
+
+        :type: :class:`str`
+        """
         return self._uuid
 
     @uuid.setter
