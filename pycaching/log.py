@@ -12,7 +12,9 @@ _type = type
 class Log(object):
     """Represents a log record with its properties."""
 
-    def __init__(self, *, type=None, text=None, visited=None, author=None):
+    def __init__(self, *, uuid=None, type=None, text=None, visited=None, author=None):
+        if uuid is not None:
+            self.uuid = uuid
         if type is not None:
             self.type = type
         if text is not None:
@@ -25,6 +27,18 @@ class Log(object):
     def __str__(self):
         """Return log text."""
         return self.text
+
+    @property
+    def uuid(self):
+        """The log unique identifier.
+
+        :type: :class:`str`
+        """
+        return self._uuid
+
+    @uuid.setter
+    def uuid(self, uuid):
+        self._uuid = uuid
 
     @property
     def type(self):

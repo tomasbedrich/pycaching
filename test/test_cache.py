@@ -288,10 +288,24 @@ class TestMethods(NetworkedTest):
 
     def test_load_logbook(self):
         with self.recorder.use_cassette('cache_logbook'):
-            # limit over 100 tests pagination
-            log_authors = list(map(lambda log: log.author, self.c.load_logbook(limit=200)))
-        for expected_author in ["Dudny-1995", "Sopdet Reviewer", "donovanstangiano83"]:
-            self.assertIn(expected_author, log_authors)
+            # limit over 200 tests pagination
+            logs = [
+                (log.uuid, log.author, log.type)
+                for log in self.c.load_logbook(limit=200)
+            ]
+
+            expected_logs = [
+                ('9767f72f-ba69-43ee-affc-44edc0ac8516', 'Dudny-1995', LogType.note),
+                ('a4ea42f1-7020-4503-b704-b8aa7b92d02c', 'Sopdet Reviewer', LogType.archive),
+                ('3f3d3383-adc6-415f-a18a-2c9a96e83238', 'donovanstangiano83', LogType.needs_archive),
+                ('51fbf641-f497-4522-9cdb-2ccd17223567', 'tunklt', LogType.didnt_find_it),
+                ('d4b29fa7-65d5-4fbe-a2f5-aeb4d9a7ee3b', 'ricoo', LogType.temp_disable_listing),
+                ('61607c93-3bec-4314-947f-0fd4bf8939e1', 'showpa', LogType.found_it),
+                ('9d052a22-d615-4bdc-bf25-018e537fda0a', 'Tomasook', LogType.needs_maintenance)
+            ]
+
+            for expected_log in expected_logs:
+                self.assertIn(expected_log, logs)
 
     def test_load_log_page(self):
         expected_types = {t.value for t in (LogType.found_it, LogType.didnt_find_it, LogType.note)}

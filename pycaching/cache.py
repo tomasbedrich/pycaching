@@ -1041,12 +1041,13 @@ class Cache(object):
                 img_filename = log_data["LogTypeImage"].rsplit(".", 1)[0]  # filename w/o extension
 
                 # create and fill log object
-                log = Log()
-                log.type = LogType.from_filename(img_filename)
-                log.text = log_data["LogText"]
-                log.visited = log_data["Visited"]
-                log.author = log_data["UserName"]
-                yield log
+                yield Log(
+                    uuid=log_data['LogGuid'],
+                    type=LogType.from_filename(img_filename),
+                    text=log_data["LogText"],
+                    visited=log_data["Visited"],
+                    author=log_data["UserName"]
+                )
 
     # TODO: trackable list can have multiple pages - handle it in similar way as _logbook_get_page
     # for example see: http://www.geocaching.com/geocache/GC26737_geocaching-jinak-tb-gc-hrbitov
