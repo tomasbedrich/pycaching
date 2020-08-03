@@ -181,7 +181,7 @@ Notice the ``limit`` in the search function. It is because `geocaching.search()
 <https://pycaching.readthedocs.io/en/latest/api.html#pycaching.geocaching.Geocaching.search>`__
 returns a generator object, which would fetch the caches forever in case of a simple loop.
 
-Geocode adress and search around
+Geocode address and search around
 ---------------------------------------------------------------------------------------------------
 
 .. code-block:: python
