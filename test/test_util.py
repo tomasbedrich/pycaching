@@ -47,6 +47,7 @@ class TestModule(NetworkedTest):
             "yyyy.MM.dd.": "2015.01.30.",
             "yyyy/MM/dd": "2015/01/30",
             "yyyy-MM-dd": "2015-01-30",
+            "d.MM.yy": "30.01.15",
         }
         for user_format, ref_result in cases.items():
             self.assertEqual(format_date(date, user_format), ref_result)
