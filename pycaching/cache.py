@@ -38,8 +38,10 @@ class Cache(object):
         "available": "Available at all times",
         "bicycles": "Bicycles",
         "boat": "Boat",
+        "bonuscache": "Bonus cache",  # id = 69
         "campfires": "Campfires",
         "camping": "Camping available",
+        "challengecache": "Challenge cache",  # id = 71
         "cliff": "Cliff / falling rocks",
         "climbing": "Difficult climbing",
         "cow": "Watch for livestock",
@@ -59,6 +61,7 @@ class Cache(object):
         "hike_short": "Short hike (less than 1km)",
         "hiking": "Significant hike",
         "horses": "Horses",
+        "hqsolutionchecker": "HQ solution checker",  # id = 72
         "hunting": "Hunting",
         "jeeps": "Off-road vehicles",
         "kids": "Recommended for kids",
@@ -74,6 +77,7 @@ class Cache(object):
         "phone": "Telephone nearby",
         "picnic": "Picnic tables nearby",
         "poisonoak": "Poison plants",
+        "powertrail": "Power trail",  # id = 70
         "public": "Public transportation",
         "quads": "Quads",
         "rappelling": "Climbing gear",
