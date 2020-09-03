@@ -61,7 +61,7 @@ class Cache(object):
         "hike_short": "Short hike (less than 1km)",
         "hiking": "Significant hike",
         "horses": "Horses",
-        "hqsolutionchecker": "Geocaching.com solution checker",  # id = 72
+        "hqsolutionchecker": "HQ solution checker",  # id = 72
         "hunting": "Hunting",
         "jeeps": "Off-road vehicles",
         "kids": "Recommended for kids",
