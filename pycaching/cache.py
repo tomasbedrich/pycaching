@@ -155,6 +155,7 @@ class Cache(object):
         cache_info["hint"] = hint.text.strip() if hint else None
         cache_info["waypoints"] = Waypoint.from_html(content, table_id="Waypoints")
         cache_info["log_counts"] = Cache._get_log_counts_from_print_page(soup)
+        cache_info["personal_note"] = content.find("h2", text="Cache Note").find_next("div").text
         return Cache(geocaching, **cache_info)
 
     @classmethod
@@ -210,7 +211,7 @@ class Cache(object):
         known_kwargs = {"name", "type", "location", "original_location", "state", "found", "size",
                         "difficulty", "terrain", "author", "hidden", "attributes", "summary",
                         "description", "hint", "favorites", "pm_only", "url", "waypoints", "_logbook_token",
-                        "_trackable_page_url", "guid", "visited", "log_counts"}
+                        "_trackable_page_url", "guid", "visited", "log_counts", "personal_note"}
 
         for name in known_kwargs:
             if name in kwargs:
@@ -636,6 +637,19 @@ class Cache(object):
 
     @property
     @lazy_loaded
+    def personal_note(self):
+        """Personal note in the cache.
+
+        :type: :class:`str`
+        """
+        return self._personal_note
+
+    @personal_note.setter
+    def personal_note(self, note):
+        self._personal_note = note
+
+    @property
+    @lazy_loaded
     def _logbook_token(self):
         """The token used to load logbook pages for cache.
 
@@ -778,6 +792,12 @@ class Cache(object):
             self.favorites = int(favorites.text)
         else:
             self.favorites = 0
+
+        personal_note_node = root.find(id="viewCacheNote")
+        if personal_note_node is not None:
+            self.personal_note = personal_note_node.text
+        else:
+            self.personal_note = ""
 
         js_content = "\n".join(root.find_all(string=lambda i: isinstance(i, Script)))
         self._logbook_token = re.findall("userToken\\s*=\\s*'([^']+)'", js_content)[0]

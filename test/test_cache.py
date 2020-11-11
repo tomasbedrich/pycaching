@@ -19,7 +19,8 @@ class TestProperties(unittest.TestCase):
                        found=False, size=Size.micro, difficulty=1.5, terrain=5, author="human", hidden=date(2000, 1, 1),
                        attributes={"onehour": True, "kids": False, "available": True}, summary="text",
                        description="long text", hint="rot13", favorites=0, pm_only=False,
-                       original_location=Point(), waypoints={}, guid="53d34c4d-12b5-4771-86d3-89318f71efb1")
+                       original_location=Point(), waypoints={}, guid="53d34c4d-12b5-4771-86d3-89318f71efb1",
+                       personal_note='You will find the final at N47 12.345 E015 54.321')
 
     def test___str__(self):
         self.assertEqual(str(self.c), "GC12345")
@@ -173,6 +174,9 @@ class TestProperties(unittest.TestCase):
     def test_pm_only(self):
         self.assertEqual(self.c.pm_only, False)
 
+    def test_personal_note(self):
+        self.assertEqual(self.c.personal_note, 'You will find the final at N47 12.345 E015 54.321')
+
 
 class TestMethods(NetworkedTest):
     @classmethod
@@ -204,6 +208,11 @@ class TestMethods(NetworkedTest):
                 with self.assertRaises(PMOnlyException):
                     cache = Cache(self.gc, "GC3AHDM")
                     cache.load()
+
+        with self.subTest("Personal Note"):
+            with self.recorder.use_cassette('cache_personal_note'):
+                cache = Cache(self.gc, "GC1FPN1")  # a location less cache
+                self.assertEqual("Wandern, Wandern, Wandern, ...", cache.personal_note)
 
         with self.subTest("fail"):
             with self.recorder.use_cassette('cache_normal_fail'):
