@@ -1,0 +1,18 @@
+version: 2
+registries:
+  python-index-pypi-python-org-simple:
+    type: python-index
+    url: https://pypi.python.org/simple/
+    replaces-base: true
+    username: "${{secrets.PYTHON_INDEX_PYPI_PYTHON_ORG_SIMPLE_USERNAME}}"
+    password: "${{secrets.PYTHON_INDEX_PYPI_PYTHON_ORG_SIMPLE_PASSWORD}}"
+
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "04:00"
+  open-pull-requests-limit: 10
+  registries:
+  - python-index-pypi-python-org-simple
