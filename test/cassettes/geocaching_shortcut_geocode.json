@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2018-10-14T08:35:58",
+      "recorded_at": "2021-05-01T23:32:10",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -18,10 +18,10 @@
             "keep-alive"
           ],
           "Cookie": [
-            "gspkauth=iBUzvTwEaeKSMJWKNgQb3Bwjr1kKkYrJM0ytV82GzYvJILiZDmO2bWLrfqyAsiXRmhUpHyYy7KgK2Qbi63haaY5Z2c7PTLF1itB_yGCXlHiglIOt-XVjd8S6ONBucfHp5ULZkuteVcF7VtK4vrcbcK-bq20tZZAO1VzB7MzKXs01; __RequestVerificationToken=n_WFSyamt4WiqGmDRHeLKBIzY9eSF-2zm0NNbgLY54rQb0UOWWv96wN3iTPgbrbOdurwsmIVJxyWWCRr29sdRTtheSE1"
+            "gspkauth=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.18.4"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -30,7 +30,7 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"status\":\"success\",\"data\":{\"q\":\"Prague\",\"lat\":50.08746,\"lng\":14.42125}}"
+          "string": "{\"status\":\"success\",\"data\":{\"q\":\"Prague\",\"lat\":50.06694,\"lng\":14.46025}}"
         },
         "headers": {
           "Cache-Control": [
@@ -43,22 +43,34 @@
             "application/json; charset=utf-8"
           ],
           "Date": [
-            "Sun, 14 Oct 2018 08:35:59 GMT"
+            "Sat, 01 May 2021 23:32:09 GMT"
           ],
           "Request-Context": [
             "appId=cid-v1:019d82c2-5dd7-44cb-aa94-01e052f0d40c"
           ],
           "Server": [
-            "Microsoft-IIS/8.5"
+            "Microsoft-IIS/10.0"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubDomains"
+          ],
+          "Vary": [
+            "Accept-Encoding"
           ],
           "X-AspNet-Version": [
             "4.0.30319"
           ],
-          "X-Execution-Time": [
-            "00:00:00.4074385"
+          "X-Content-Type-Options": [
+            "nosniff"
           ],
-          "X-Powered-By": [
-            "ASP.NET"
+          "X-Execution-Time": [
+            "00:00:00.0231572"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1"
           ]
         },
         "status": {

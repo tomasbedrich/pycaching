@@ -238,7 +238,7 @@ class Geocaching(object):
         :rtype: :class:`str` or :code:`None`
         """
         login_page = login_page or self._request(self._urls["login_page"], login_check=False)
-        assert hasattr(login_page, "find") and callable(login_page.find)
+        assert hasattr(login_page, "find_all") and callable(login_page.find_all)
 
         logging.debug("Checking for already logged user.")
         js_content = "\n".join(login_page.find_all(string=lambda i: isinstance(i, Script)))

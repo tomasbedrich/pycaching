@@ -9,7 +9,7 @@ from pycaching.geo import Point
 from pycaching.geocaching import Geocaching
 from pycaching.log import Log, Type as LogType
 from pycaching.util import parse_date
-from . import NetworkedTest
+from . import LoggedInTest
 
 
 class TestProperties(unittest.TestCase):
@@ -174,7 +174,7 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.pm_only, False)
 
 
-class TestMethods(NetworkedTest):
+class TestMethods(LoggedInTest):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -255,7 +255,7 @@ class TestMethods(NetworkedTest):
             self.assertGreater(cache.favorites, 350)
             self.assertEqual(len(cache.waypoints), 2)
             self.assertDictEqual(cache.log_counts, {
-                LogType.found_it: 800,
+                LogType.found_it: 806,
                 LogType.note: 35,
                 LogType.archive: 1,
                 LogType.needs_archive: 1,
@@ -308,13 +308,13 @@ class TestMethods(NetworkedTest):
                 self.assertIn(expected_log, logs)
 
     def test_load_log_page(self):
-        expected_types = {t.value for t in (LogType.found_it, LogType.didnt_find_it, LogType.note)}
-
         with self.recorder.use_cassette('cache_logpage'):
             # make request
             valid_types, hidden_inputs = self.c._load_log_page()
 
-        self.assertSequenceEqual(expected_types, valid_types)
+        for logtype in valid_types:
+            LogType(logtype)
+
         self.assertIn("__RequestVerificationToken", hidden_inputs.keys())
 
     @mock.patch.object(Cache, "_load_log_page")
@@ -375,12 +375,6 @@ class TestMethods(NetworkedTest):
                 cache = self.gc.get_cache('GC896PK')
                 cache.load()
                 self.assertEqual(cache.type, Type.hq_celebration)
-
-        with self.subTest("Community Celebration Event"):
-            with self.recorder.use_cassette('cache_type_community_celebration'):
-                cache = self.gc.get_cache('GC8K09M')
-                cache.load()
-                self.assertEqual(cache.type, Type.community_celebration)
 
         with self.subTest("Geocaching Headquarters"):
             with self.recorder.use_cassette('cache_type_headquarters'):

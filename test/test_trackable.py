@@ -7,7 +7,8 @@ from unittest import mock
 from pycaching import Geocaching, Trackable
 from pycaching.errors import ValueError as PycachingValueError, LoadError
 from pycaching.log import Log, Type as LogType
-from . import NetworkedTest
+from pycaching.util import format_date
+from . import LoggedInTest
 
 
 class TestProperties(unittest.TestCase):
@@ -48,7 +49,7 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.t._log_page_url, "/track/details.aspx?id=6359246")
 
 
-class TestMethods(NetworkedTest):
+class TestMethods(LoggedInTest):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -85,7 +86,9 @@ class TestMethods(NetworkedTest):
         self.assertSequenceEqual(expected_types, valid_types)
         for i in expected_inputs:
             self.assertIn(i, hidden_inputs.keys())
-        self.assertEqual(expected_date_format, user_date_format)  # failure may be due to account switch
+
+        # user_date_format should not raise an exception when further processed
+        format_date(date(2020, 12, 31), user_date_format)
 
     @mock.patch.object(Trackable, "_load_log_page")
     @mock.patch.object(Geocaching, "_request")

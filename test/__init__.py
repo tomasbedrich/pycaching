@@ -26,13 +26,21 @@ Betamax.register_serializer(PrettyJSONSerializer)
 
 
 class NetworkedTest(unittest.TestCase):
-    """Class to represent tests that perform network requests"""
+    """Class to represent tests that perform network requests."""
 
     @classmethod
     def setUpClass(cls):
         cls.session = Session()
         cls.recorder = Betamax(cls.session, default_cassette_options={'serialize_with': 'prettyjson'})
         cls.gc = Geocaching(session=cls.session)
+
+
+class LoggedInTest(NetworkedTest):
+    """Class to represent tests that work as logged-in to geocaching.com."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
         try:
             cls.gc.login(username, password)
         except Error:

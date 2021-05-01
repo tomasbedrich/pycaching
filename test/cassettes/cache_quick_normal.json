@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2018-10-14T08:35:11",
+      "recorded_at": "2021-05-01T23:28:32",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -18,7 +18,7 @@
             "keep-alive"
           ],
           "User-Agent": [
-            "python-requests/2.18.4"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -45,13 +45,13 @@
         },
         "status": {
           "code": 302,
-          "message": "Found"
+          "message": "Moved Temporarily"
         },
         "url": "http://tiles01.geocaching.com/map.details?i=GC4808G"
       }
     },
     {
-      "recorded_at": "2018-10-14T08:35:13",
+      "recorded_at": "2021-05-01T23:28:33",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -68,10 +68,10 @@
             "keep-alive"
           ],
           "Cookie": [
-            "gspkauth=fWq6Th_CMKc2pxfsrVeKCaJOaKvYdSrmP6qU6Q1pdXs2ilH0eNZglqVaNQUJaYmTHPoIa-H5edmBF8Ky3tLelf8TXjivv6CDp7yq_jAFg8qMO3ObmoY3iuLDKqKyM2b7kEzelNRLREdfKkmu5mjosnjnag_QEb-eVyjXguAAtbw1"
+            "gspkauth=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.18.4"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -80,7 +80,7 @@
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\"status\":\"success\",\"data\":[{\"name\":\"Nekonecne ticho\",\"gc\":\"GC4808G\",\"g\":\"15ad3a3d-92c1-4f7c-b273-60937bcc2072\",\"available\":false,\"archived\":true,\"subrOnly\":false,\"li\":false,\"fp\":\"23\",\"difficulty\":{\"text\":4.0,\"value\":\"4\"},\"terrain\":{\"text\":4.0,\"value\":\"4\"},\"hidden\":\"3/16/2013\",\"container\":{\"text\":\"Regular\",\"value\":\"regular.gif\"},\"type\":{\"text\":\"Unknown Cache\",\"value\":8},\"owner\":{\"text\":\"Bifurka\u010dn\u00ed t\u00fdm\",\"value\":\"82328e69-b837-42f5-b424-ae9a84152c77\"}}]}"
+          "string": "{\"status\":\"success\",\"data\":[{\"name\":\"Nekonecne ticho\",\"gc\":\"GC4808G\",\"g\":\"15ad3a3d-92c1-4f7c-b273-60937bcc2072\",\"available\":false,\"archived\":true,\"subrOnly\":false,\"li\":false,\"fp\":\"22\",\"difficulty\":{\"text\":4.0,\"value\":\"4\"},\"terrain\":{\"text\":4.0,\"value\":\"4\"},\"hidden\":\"3/16/2013\",\"container\":{\"text\":\"Regular\",\"value\":\"regular.gif\"},\"type\":{\"text\":\"Unknown Cache\",\"value\":8},\"owner\":{\"text\":\"Bifurka\u010dn\u00ed t\u00fdm\",\"value\":\"82328e69-b837-42f5-b424-ae9a84152c77\"}}]}"
         },
         "headers": {
           "Cache-Control": [
@@ -93,7 +93,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Sun, 14 Oct 2018 08:35:14 GMT"
+            "Sat, 01 May 2021 23:28:32 GMT"
           ],
           "Expires": [
             "-1"
@@ -104,11 +104,23 @@
           "Server": [
             "Microsoft-IIS/8.5"
           ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubDomains"
+          ],
+          "Vary": [
+            "Accept-Encoding"
+          ],
           "X-AspNet-Version": [
             "4.0.30319"
           ],
-          "X-Powered-By": [
-            "ASP.NET"
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1"
           ]
         },
         "status": {
