@@ -243,7 +243,7 @@ class Geocaching(object):
         logging.debug("Checking for already logged user.")
         js_content = "\n".join(login_page.find_all(string=lambda i: isinstance(i, Script)))
         m = re.search(r'"username":\s*"(.*)"', js_content)
-        return m[1] if m else None
+        return m.group(1) if m else None
 
     def search(self, point, limit=float("inf")):
         """Return a generator of caches around some point.
