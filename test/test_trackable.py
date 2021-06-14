@@ -77,7 +77,7 @@ class TestMethods(LoggedInTest):
     def test_load_log_page(self):
         expected_types = {t.value for t in (LogType.grabbed_it, LogType.note, LogType.discovered_it)}
         expected_inputs = "__EVENTTARGET", "__VIEWSTATE"  # and more ...
-        expected_date_format = "M/d/yyyy"  # if test is re-recorded, update for your testing account
+        # expected_date_format = "M/d/yyyy"  # if test is re-recorded, update for your testing account
 
         # make request
         with self.recorder.use_cassette('trackable_load_page'):
