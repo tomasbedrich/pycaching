@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2021-05-01T23:29:33",
+      "recorded_at": "2021-11-14T01:37:19",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -21,7 +21,7 @@
             "gspkauth=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.25.1"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -30,26 +30,26 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8202256,\"name\":\"Polyporus\",\"code\":\"GC9A3XV\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":2,\"containerType\":8,\"difficulty\":1.5,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":1,\"postedCoordinates\":{\"latitude\":50.10475,\"longitude\":14.3678333333333},\"detailsUrl\":\"/geocache/GC9A3XV\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-04-25T00:00:00\",\"owner\":{\"code\":\"PRCJ9GJ\",\"username\":\"LudvikK\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9011}"
+          "string": "{\"results\":[{\"id\":8398196,\"name\":\"Zem\u011b Kelt\u016f 1\",\"code\":\"GC9GNTF\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":2,\"difficulty\":5.0,\"terrain\":5.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.7063,\"longitude\":13.859133},\"detailsUrl\":\"/geocache/GC9GNTF\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-09-24T00:00:00\",\"owner\":{\"code\":\"PR33HRK\",\"username\":\"oblac\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "503"
+            "498"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "17336a61-fe83-41a6-9dcb-50e77540e510"
+            "8ac2d76e-8166-4b49-893f-8f96be64c160"
           ],
           "Date": [
-            "Sat, 01 May 2021 23:29:33 GMT"
+            "Sun, 14 Nov 2021 01:37:18 GMT"
           ],
           "Set-Cookie": [
-            "jwt=<AUTH COOKIE>; domain=.geocaching.com; path=/; expires=Sun, 02-May-2021 00:28:32 GMT; secure; HttpOnly"
+            "jwt=<AUTH COOKIE>; domain=.geocaching.com; path=/; expires=Sun, 14-Nov-2021 02:36:17 GMT; secure; HttpOnly"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -75,7 +75,7 @@
       }
     },
     {
-      "recorded_at": "2021-05-01T23:29:34",
+      "recorded_at": "2021-11-14T01:37:20",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -95,7 +95,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.25.1"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -104,23 +104,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7936233,\"name\":\"CITO na z\u00e1mku Veltrusy XXIII\",\"code\":\"GC9163E\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":13,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.276245,\"longitude\":14.330932},\"detailsUrl\":\"/geocache/GC9163E\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-05-09T09:00:00\",\"owner\":{\"code\":\"PR4FQRZ\",\"username\":\"eMichalek\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9011}"
+          "string": "{\"results\":[{\"id\":8119425,\"name\":\"Terezin Games 2022\",\"code\":\"GC97APW\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":453,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.5071,\"longitude\":14.15145},\"detailsUrl\":\"/geocache/GC97APW\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-06-25T08:00:00\",\"owner\":{\"code\":\"PR671V8\",\"username\":\"evenTeam\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "520"
+            "506"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "b7dbc886-ba8e-46a2-83cf-9e5dffca3133"
+            "940e91c2-80b2-4c62-bd98-29c912b61147"
           ],
           "Date": [
-            "Sat, 01 May 2021 23:29:33 GMT"
+            "Sun, 14 Nov 2021 01:37:20 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -146,7 +146,7 @@
       }
     },
     {
-      "recorded_at": "2021-05-01T23:29:34",
+      "recorded_at": "2021-11-14T01:37:20",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -166,7 +166,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.25.1"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -175,23 +175,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8170597,\"name\":\"Lesn\u00ed Rekreace-01\",\"code\":\"GC991ZJ\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":2,\"containerType\":8,\"difficulty\":2.0,\"terrain\":2.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":1,\"postedCoordinates\":{\"latitude\":50.047801,\"longitude\":13.925669},\"detailsUrl\":\"/geocache/GC991ZJ\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-04-09T00:00:00\",\"owner\":{\"code\":\"PR131PX2\",\"username\":\"matysulc\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9011}"
+          "string": "{\"results\":[{\"id\":8119425,\"name\":\"Terezin Games 2022\",\"code\":\"GC97APW\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":453,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.5071,\"longitude\":14.15145},\"detailsUrl\":\"/geocache/GC97APW\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-06-25T08:00:00\",\"owner\":{\"code\":\"PR671V8\",\"username\":\"evenTeam\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "508"
+            "506"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "a501c2e0-78c8-4819-9d92-f6c631ace4cb"
+            "756b1434-99c5-42ea-aaf2-ac83f3e3b493"
           ],
           "Date": [
-            "Sat, 01 May 2021 23:29:34 GMT"
+            "Sun, 14 Nov 2021 01:37:20 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -217,7 +217,7 @@
       }
     },
     {
-      "recorded_at": "2021-05-01T23:29:35",
+      "recorded_at": "2021-11-14T01:37:21",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -237,7 +237,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.25.1"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -246,23 +246,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8161589,\"name\":\"Ztracen\u00e1 nad\u011bje\",\"code\":\"GC98QK0\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":2,\"difficulty\":5.0,\"terrain\":4.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.659583,\"longitude\":14.164317},\"detailsUrl\":\"/geocache/GC98QK0\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-04-04T00:00:00\",\"owner\":{\"code\":\"PR33HRK\",\"username\":\"oblac\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9011}"
+          "string": "{\"results\":[{\"id\":8437941,\"name\":\"S KA\u010cEREM NA CEST\u00c1CH-\u0158\u00cdP VII.\",\"code\":\"GC9J15J\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":3.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.386333,\"longitude\":14.289533},\"detailsUrl\":\"/geocache/GC9J15J\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-01-01T10:00:00\",\"owner\":{\"code\":\"PR6VPEQ\",\"username\":\"Fiobaba\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "503"
+            "521"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "f8c1ee8c-2838-4e45-82b9-a5d3442960d5"
+            "3de488b5-c1f0-4a66-9f64-0168522e209c"
           ],
           "Date": [
-            "Sat, 01 May 2021 23:29:34 GMT"
+            "Sun, 14 Nov 2021 01:37:21 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -288,7 +288,7 @@
       }
     },
     {
-      "recorded_at": "2021-05-01T23:29:35",
+      "recorded_at": "2021-11-14T01:37:21",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -308,7 +308,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.25.1"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -317,23 +317,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8121012,\"name\":\"U k\u0159\u00ed\u017eku\",\"code\":\"GC97CC2\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":2,\"difficulty\":5.0,\"terrain\":4.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.621533,\"longitude\":14.087617},\"detailsUrl\":\"/geocache/GC97CC2\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-03-10T00:00:00\",\"owner\":{\"code\":\"PR33HRK\",\"username\":\"oblac\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9011}"
+          "string": "{\"results\":[{\"id\":8411350,\"name\":\"CITO na z\u00e1mku Veltrusy XXVIII\",\"code\":\"GC9H4FT\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":13,\"containerType\":6,\"difficulty\":1.0,\"terrain\":2.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.277526,\"longitude\":14.331086},\"detailsUrl\":\"/geocache/GC9H4FT\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-21T09:00:00\",\"owner\":{\"code\":\"PR4FQRZ\",\"username\":\"eMichalek\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "497"
+            "521"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "870333ad-d5f7-4f76-b161-e8c0dd5f3a16"
+            "2e29ddf0-8b4e-4ec6-8309-917c4bb9caa5"
           ],
           "Date": [
-            "Sat, 01 May 2021 23:29:35 GMT"
+            "Sun, 14 Nov 2021 01:37:21 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -359,7 +359,7 @@
       }
     },
     {
-      "recorded_at": "2021-05-01T23:29:36",
+      "recorded_at": "2021-11-14T01:37:22",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -379,7 +379,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.25.1"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -388,23 +388,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8161589,\"name\":\"Ztracen\u00e1 nad\u011bje\",\"code\":\"GC98QK0\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":2,\"difficulty\":5.0,\"terrain\":4.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.659583,\"longitude\":14.164317},\"detailsUrl\":\"/geocache/GC98QK0\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-04-04T00:00:00\",\"owner\":{\"code\":\"PR33HRK\",\"username\":\"oblac\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9011}"
+          "string": "{\"results\":[{\"id\":8445093,\"name\":\"Krovi, uhni s cesty 4 - Na Piskach\",\"code\":\"GC9J8K9\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":13,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.183367,\"longitude\":14.16075},\"detailsUrl\":\"/geocache/GC9J8K9\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-30T14:30:00\",\"owner\":{\"code\":\"PRFD28\",\"username\":\"Toniczech\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "503"
+            "523"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "d3d32292-c7c1-454a-bd7b-b6f133903b0e"
+            "7096608d-f28b-43ef-b1cd-dc4de18e591e"
           ],
           "Date": [
-            "Sat, 01 May 2021 23:29:36 GMT"
+            "Sun, 14 Nov 2021 01:37:22 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -430,7 +430,7 @@
       }
     },
     {
-      "recorded_at": "2021-05-01T23:29:36",
+      "recorded_at": "2021-11-14T01:37:22",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -450,7 +450,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.25.1"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -459,23 +459,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8153625,\"name\":\"Hynkova krabice\",\"code\":\"GC98FA3\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":8,\"difficulty\":5.0,\"terrain\":5.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.60915,\"longitude\":14.075483},\"detailsUrl\":\"/geocache/GC98FA3\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-03-31T00:00:00\",\"owner\":{\"code\":\"PR33HRK\",\"username\":\"oblac\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9011}"
+          "string": "{\"results\":[{\"id\":8440054,\"name\":\"Zoopark Chomutov - bonus LAB\",\"code\":\"GC9J3BQ\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":2,\"difficulty\":2.0,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":1,\"postedCoordinates\":{\"latitude\":50.4741666666667,\"longitude\":13.42},\"detailsUrl\":\"/geocache/GC9J3BQ\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-05T00:00:00\",\"owner\":{\"code\":\"PRZGD8Z\",\"username\":\"Aaanguaaa\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "500"
+            "521"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "81057754-635f-4665-856e-7ce575e2ff57"
+            "d2d3671c-2e40-408d-bfea-e22a991a65d3"
           ],
           "Date": [
-            "Sat, 01 May 2021 23:29:36 GMT"
+            "Sun, 14 Nov 2021 01:37:22 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -501,7 +501,7 @@
       }
     },
     {
-      "recorded_at": "2021-05-01T23:29:37",
+      "recorded_at": "2021-11-14T01:37:23",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -521,7 +521,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.25.1"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -530,23 +530,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7582416,\"name\":\"CCE:S KA\u010cEREM NA CEST\u00c1CH-\u0158\u00cdP VI\",\"code\":\"GC8M9Y0\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":3653,\"containerType\":6,\"difficulty\":1.0,\"terrain\":3.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.386333,\"longitude\":14.289533},\"detailsUrl\":\"/geocache/GC8M9Y0\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-07-03T10:00:00\",\"owner\":{\"code\":\"PR6VPEQ\",\"username\":\"Fiobaba\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9011}"
+          "string": "{\"results\":[{\"id\":8433962,\"name\":\"Ja tam budu. A co vy?\",\"code\":\"GC9HX17\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.337862,\"longitude\":13.488493},\"detailsUrl\":\"/geocache/GC9HX17\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-17T03:30:00\",\"owner\":{\"code\":\"PR1TNKG\",\"username\":\"Etigo\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "526"
+            "507"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "f79fa364-a0b9-4a7a-b0d9-f8aa3b71a2a9"
+            "3fe44f6b-7285-4317-991c-7d164c5170fe"
           ],
           "Date": [
-            "Sat, 01 May 2021 23:29:36 GMT"
+            "Sun, 14 Nov 2021 01:37:23 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -572,7 +572,7 @@
       }
     },
     {
-      "recorded_at": "2021-05-01T23:29:38",
+      "recorded_at": "2021-11-14T01:37:24",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -592,7 +592,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.25.1"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -601,23 +601,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7585011,\"name\":\"20 let geocachingu v \u010cR \u2013 Praha 2022\",\"code\":\"GC8MCKP\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":453,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":1,\"postedCoordinates\":{\"latitude\":50.097967,\"longitude\":14.3345},\"detailsUrl\":\"/geocache/GC8MCKP\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-05-14T08:00:00\",\"owner\":{\"code\":\"PRWNRDT\",\"username\":\"GeocachingPragueTeam\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9011}"
+          "string": "{\"results\":[{\"id\":8433962,\"name\":\"Ja tam budu. A co vy?\",\"code\":\"GC9HX17\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.337862,\"longitude\":13.488493},\"detailsUrl\":\"/geocache/GC9HX17\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-17T03:30:00\",\"owner\":{\"code\":\"PR1TNKG\",\"username\":\"Etigo\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "540"
+            "507"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "884e0f0c-5e02-49bd-a084-594eecb033bc"
+            "063db750-ef07-4055-9aee-ec03c8e5f6fe"
           ],
           "Date": [
-            "Sat, 01 May 2021 23:29:37 GMT"
+            "Sun, 14 Nov 2021 01:37:24 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -643,7 +643,7 @@
       }
     },
     {
-      "recorded_at": "2021-05-01T23:29:38",
+      "recorded_at": "2021-11-14T01:37:25",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -663,7 +663,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.25.1"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -672,23 +672,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7585011,\"name\":\"20 let geocachingu v \u010cR \u2013 Praha 2022\",\"code\":\"GC8MCKP\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":453,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":1,\"postedCoordinates\":{\"latitude\":50.097967,\"longitude\":14.3345},\"detailsUrl\":\"/geocache/GC8MCKP\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-05-14T08:00:00\",\"owner\":{\"code\":\"PRWNRDT\",\"username\":\"GeocachingPragueTeam\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9011}"
+          "string": "{\"results\":[{\"id\":8446352,\"name\":\"Fa(k)t tlust\u00e1 z\u00e1bava\",\"code\":\"GC9J9XX\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":49.740733,\"longitude\":13.591667},\"detailsUrl\":\"/geocache/GC9J9XX\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-27T09:15:00\",\"owner\":{\"code\":\"PR2JCDN\",\"username\":\"Tesman Pavel\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "540"
+            "515"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "fdfd51b4-f703-4453-b9b5-aaaa29cc2771"
+            "bb82f2c3-3b0a-48f4-b031-5601918151c5"
           ],
           "Date": [
-            "Sat, 01 May 2021 23:29:37 GMT"
+            "Sun, 14 Nov 2021 01:37:24 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -714,7 +714,7 @@
       }
     },
     {
-      "recorded_at": "2021-05-01T23:29:38",
+      "recorded_at": "2021-11-14T01:37:25",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -734,7 +734,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.25.1"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -756,10 +756,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "3a220ab2-2205-4fbf-96a5-01b547f0ca8a"
+            "67069742-ebb6-4aa0-ad0d-b505c6d35e90"
           ],
           "Date": [
-            "Sat, 01 May 2021 23:29:37 GMT"
+            "Sun, 14 Nov 2021 01:37:25 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -777,7 +777,7 @@
             "1"
           ],
           "x-rate-limit-reset": [
-            "22"
+            "35"
           ]
         },
         "status": {
@@ -788,7 +788,7 @@
       }
     },
     {
-      "recorded_at": "2021-05-01T23:30:05",
+      "recorded_at": "2021-11-14T01:38:05",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -808,7 +808,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.25.1"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -817,23 +817,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8045241,\"name\":\"Modlitba za Bowling v Repich II\",\"code\":\"GC94VGV\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.065917,\"longitude\":14.303917},\"detailsUrl\":\"/geocache/GC94VGV\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-05-10T17:15:00\",\"owner\":{\"code\":\"PR3KWJX\",\"username\":\"bosorcicka\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9011}"
+          "string": "{\"results\":[{\"id\":8153625,\"name\":\"Hynkova krabice\",\"code\":\"GC98FA3\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":8,\"difficulty\":5.0,\"terrain\":5.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.60915,\"longitude\":14.075483},\"detailsUrl\":\"/geocache/GC98FA3\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-03-31T00:00:00\",\"owner\":{\"code\":\"PR33HRK\",\"username\":\"oblac\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "522"
+            "500"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "50f33c4e-6b78-45b3-9f67-67dd22d2e587"
+            "3755e6cb-52aa-4e39-856d-372a31283fc8"
           ],
           "Date": [
-            "Sat, 01 May 2021 23:30:04 GMT"
+            "Sun, 14 Nov 2021 01:38:05 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"

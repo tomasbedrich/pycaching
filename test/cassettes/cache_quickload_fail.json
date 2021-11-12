@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2021-05-01T23:28:33",
+      "recorded_at": "2021-11-14T01:36:58",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -18,7 +18,7 @@
             "keep-alive"
           ],
           "User-Agent": [
-            "python-requests/2.25.1"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -51,7 +51,7 @@
       }
     },
     {
-      "recorded_at": "2021-05-01T23:28:33",
+      "recorded_at": "2021-11-14T01:36:59",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -71,7 +71,7 @@
             "gspkauth=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.25.1"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -93,7 +93,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Sat, 01 May 2021 23:28:32 GMT"
+            "Sun, 14 Nov 2021 01:36:58 GMT"
           ],
           "Expires": [
             "-1"
@@ -102,7 +102,7 @@
             "no-cache"
           ],
           "Server": [
-            "Microsoft-IIS/8.5"
+            "Microsoft-IIS/10.0"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"

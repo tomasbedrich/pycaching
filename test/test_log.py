@@ -9,34 +9,34 @@ from pycaching.errors import ValueError as PycachingValueError
 class TestLog(unittest.TestCase):
 
     def setUp(self):
-        self.l = Log(type=Type.found_it, text="text", visited="2012-02-02", author="human")
+        self.log = Log(type=Type.found_it, text="text", visited="2012-02-02", author="human")
 
     def test___str__(self):
-        self.assertEqual(str(self.l), "text")
+        self.assertEqual(str(self.log), "text")
 
     def test_type(self):
-        self.assertEqual(self.l.type, Type.found_it)
+        self.assertEqual(self.log.type, Type.found_it)
 
     def test_text(self):
-        self.assertEqual(self.l.text, "text")
+        self.assertEqual(self.log.text, "text")
 
     def test_visited(self):
-        self.assertEqual(self.l.visited, date(2012, 2, 2))
+        self.assertEqual(self.log.visited, date(2012, 2, 2))
 
         with self.subTest("automatic str conversion"):
-            self.l.visited = "1/30/2000"
-            self.assertEqual(self.l.visited, date(2000, 1, 30))
+            self.log.visited = "1/30/2000"
+            self.assertEqual(self.log.visited, date(2000, 1, 30))
 
         with self.subTest("filter invalid string"):
             with self.assertRaises(PycachingValueError):
-                self.l.visited = "now"
+                self.log.visited = "now"
 
         with self.subTest("filter invalid types"):
             with self.assertRaises(PycachingValueError):
-                self.l.visited = None
+                self.log.visited = None
 
     def test_author(self):
-        self.assertEqual(self.l.author, "human")
+        self.assertEqual(self.log.author, "human")
 
 
 class TestType(unittest.TestCase):

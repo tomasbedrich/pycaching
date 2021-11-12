@@ -720,7 +720,7 @@ class Cache(object):
             # parse from <title> - get first word
             try:
                 self.wp = root.title.string.split(" ")[0]
-            except:
+            except ValueError:
                 raise errors.LoadError()
             self.name = cache_details.find("h2").text
 
