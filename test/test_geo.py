@@ -27,16 +27,13 @@ def make_tile(x, y, z, a=0, b=0, size=256):
 class TestPoint(LoggedInTest):
     def test_from_string(self):
         with self.subTest("normal"):
-            self.assertEqual(Point.from_string("N 49 45.123 E 013 22.123"),
-                             Point(49.75205, 13.36872))
+            self.assertEqual(Point.from_string("N 49 45.123 E 013 22.123"), Point(49.75205, 13.36872))
 
         with self.subTest("south and west"):
-            self.assertEqual(Point.from_string("S 49 45.123 W 013 22.123"),
-                             Point(-49.75205, -13.36872))
+            self.assertEqual(Point.from_string("S 49 45.123 W 013 22.123"), Point(-49.75205, -13.36872))
 
         with self.subTest("lowercase"):
-            self.assertEqual(Point.from_string("s 49 45.123 w 013 22.123"),
-                             Point(-49.75205, -13.36872))
+            self.assertEqual(Point.from_string("s 49 45.123 w 013 22.123"), Point(-49.75205, -13.36872))
 
         with self.subTest("letter together"):
             self.assertEqual(Point.from_string("N49 45.123 E013 22.123"), Point(49.75205, 13.36872))
@@ -45,20 +42,16 @@ class TestPoint(LoggedInTest):
             self.assertEqual(Point.from_string("49N 45.123 013E 22.123"), Point(49.75205, 13.36872))
 
         with self.subTest("south and west letter after"):
-            self.assertEqual(Point.from_string("49S 45.123 013W 22.123"),
-                             Point(-49.75205, -13.36872))
+            self.assertEqual(Point.from_string("49S 45.123 013W 22.123"), Point(-49.75205, -13.36872))
 
         with self.subTest("decimal separator: comma"):
-            self.assertEqual(Point.from_string("N 49 45,123 E 013 22,123"),
-                             Point(49.75205, 13.36872))
+            self.assertEqual(Point.from_string("N 49 45,123 E 013 22,123"), Point(49.75205, 13.36872))
 
         with self.subTest("degree symbol"):
-            self.assertEqual(Point.from_string("N 49° 45.123 E 013° 22.123"),
-                             Point(49.75205, 13.36872))
+            self.assertEqual(Point.from_string("N 49° 45.123 E 013° 22.123"), Point(49.75205, 13.36872))
 
         with self.subTest("comma between lat and lon"):
-            self.assertEqual(Point.from_string("N 49 45.123, E 013 22.123"),
-                             Point(49.75205, 13.36872))
+            self.assertEqual(Point.from_string("N 49 45.123, E 013 22.123"), Point(49.75205, 13.36872))
 
         with self.subTest("marginal values: zeroes"):
             self.assertEqual(Point.from_string("N 49 45.000 E 13 0.0"), Point(49.75, 13.0))
@@ -73,18 +66,18 @@ class TestPoint(LoggedInTest):
         ref_point = Point(50.08746, 14.42125)
 
         with self.subTest("existing location"):
-            with self.recorder.use_cassette('geo_location_existing'):
+            with self.recorder.use_cassette("geo_location_existing"):
                 self.assertLess(great_circle(Point.from_location(self.gc, "Prague"), ref_point).miles, 10)
                 self.assertLess(great_circle(Point.from_location(self.gc, "Praha"), ref_point).miles, 10)
                 self.assertLess(great_circle(Point.from_location(self.gc, "praha"), ref_point).miles, 10)
 
         with self.subTest("non-existing location"):
-            with self.recorder.use_cassette('geo_location_nonexisting'):
+            with self.recorder.use_cassette("geo_location_nonexisting"):
                 with self.assertRaises(GeocodeError):
                     Point.from_location(self.gc, "lkadflkajsfljasflkasf")
 
         with self.subTest("empty request"):
-            with self.recorder.use_cassette('geo_location_empty'):
+            with self.recorder.use_cassette("geo_location_empty"):
                 with self.assertRaises(GeocodeError):
                     Point.from_location(self.gc, "")
 
@@ -97,16 +90,20 @@ class TestPoint(LoggedInTest):
         p_half = Point.from_tile(*make_tile(8800, 5574, 14, 1, 1, 2))
 
         # Check creation
-        for att in ['latitude', 'longitude']:
+        for att in ["latitude", "longitude"]:
             with self.subTest("assumed location: {}".format(att)):
                 self.assertAlmostEqual(getattr(p, att), getattr(p_pos, att))
 
         with self.subTest("fractional tiles: y-axis addition"):
-            self.assertEqual(Point.from_tile(*make_tile(8800, 5574, 14, 0, 32, 32)),
-                             Point.from_tile(*make_tile(x=8800, y=5575, z=14)))
+            self.assertEqual(
+                Point.from_tile(*make_tile(8800, 5574, 14, 0, 32, 32)),
+                Point.from_tile(*make_tile(x=8800, y=5575, z=14)),
+            )
         with self.subTest("fractional tiles: x-axis addition"):
-            self.assertAlmostEqual(Point.from_tile(*make_tile(8800, 5574, 14, 32, 0, 32)),
-                                   Point.from_tile(*make_tile(x=8801, y=5574, z=14)))
+            self.assertAlmostEqual(
+                Point.from_tile(*make_tile(8800, 5574, 14, 32, 0, 32)),
+                Point.from_tile(*make_tile(x=8801, y=5574, z=14)),
+            )
         with self.subTest("fractional tiles: addition on both axes"):
             self.assertEqual(Point.from_tile(*make_tile(8800, 5574, 14, 32, 32, 32)), p2)
 
@@ -126,10 +123,10 @@ class TestPoint(LoggedInTest):
             self.assertEqual(point_in_t.to_tile(None, 14), t)
 
         with self.subTest("increase in latitude: decrease in y value"):
-            self.assertLess(Point(50., 13.36).to_tile(None, 14).y, t.y)
+            self.assertLess(Point(50.0, 13.36).to_tile(None, 14).y, t.y)
 
         with self.subTest("increase in longitude: increase in x value"):
-            self.assertGreater(Point(49.75, 14.).to_tile(None, 14).x, t.x)
+            self.assertGreater(Point(49.75, 14.0).to_tile(None, 14).x, t.x)
 
     def test_format_gc(self):
         """Test Geocaching point formatting."""
@@ -139,20 +136,19 @@ class TestPoint(LoggedInTest):
 
 class TestPolygon(unittest.TestCase):
     def setUp(self):
-        self.p = Polygon(*[Point(*i) for i in [
-            (10., 20.), (30., -5.), (-10., -170.), (-70., 0.), (0., 40)]])
+        self.p = Polygon(*[Point(*i) for i in [(10.0, 20.0), (30.0, -5.0), (-10.0, -170.0), (-70.0, 0.0), (0.0, 40)]])
 
     def test_bounding_box(self):
         bb = self.p.bounding_box
         nw, se = bb.corners
         with self.subTest("Minimum latitude"):
-            self.assertEqual(se.latitude, -70.)
+            self.assertEqual(se.latitude, -70.0)
         with self.subTest("Minimum longitude"):
-            self.assertEqual(nw.longitude, -170.)
+            self.assertEqual(nw.longitude, -170.0)
         with self.subTest("Maximum latitude"):
-            self.assertEqual(nw.latitude, 30.)
+            self.assertEqual(nw.latitude, 30.0)
         with self.subTest("Maximum longitude"):
-            self.assertEqual(se.longitude, 40.)
+            self.assertEqual(se.longitude, 40.0)
 
     def test_mean_point(self):
         mp = self.p.mean_point
@@ -164,13 +160,11 @@ class TestPolygon(unittest.TestCase):
 
 class TestRectangle(unittest.TestCase):
     def setUp(self):
-        self.rect = Rectangle(Point(10., 20.), Point(30., -5.))
+        self.rect = Rectangle(Point(10.0, 20.0), Point(30.0, -5.0))
 
     def test_contains(self):
-        inside_points = [Point(*i)
-                         for i in [(10., 20.), (30., -5.), (18., 15.), (29., -1), (10., -3)]]
-        outside_points = [Point(*i) for i in [(-10., -170.), (-70., 0.),
-                                              (0., 40), (20., -10.), (50., 0.)]]
+        inside_points = [Point(*i) for i in [(10.0, 20.0), (30.0, -5.0), (18.0, 15.0), (29.0, -1), (10.0, -3)]]
+        outside_points = [Point(*i) for i in [(-10.0, -170.0), (-70.0, 0.0), (0.0, 40), (20.0, -10.0), (50.0, 0.0)]]
         for p in inside_points:
             self.assertTrue(p in self.rect)
         for p in outside_points:
@@ -191,14 +185,14 @@ class TestTile(LoggedInTest):
 
     def test_download_utfgrid(self):
         """Test if downloading a UTFGrid passes without errors"""
-        with self.recorder.use_cassette('geo_point_utfgrid'):
+        with self.recorder.use_cassette("geo_point_utfgrid"):
             with self.subTest("not getting .png tile first"):
                 self.tile._download_utfgrid()
 
             with self.subTest("getting .png tile first"):
                 self.tile._download_utfgrid(get_png=True)
 
-    @mock.patch.object(Tile, '_download_utfgrid')
+    @mock.patch.object(Tile, "_download_utfgrid")
     def test_blocks(self, mock_utfgrid):
         """Parse locally stored grid and compare to expected results"""
 
@@ -217,10 +211,8 @@ class TestTile(LoggedInTest):
             c = Cache.from_block(b)
             self.assertIn(c.wp, expected_caches)
             if not expected_caches[c.wp][2]:  # if not PM only
-                self.assertAlmostEqual(c.location.latitude, expected_caches[
-                    c.wp][0], self.POSITION_ACCURANCY)
-                self.assertAlmostEqual(c.location.longitude, expected_caches[
-                    c.wp][1], self.POSITION_ACCURANCY)
+                self.assertAlmostEqual(c.location.latitude, expected_caches[c.wp][0], self.POSITION_ACCURANCY)
+                self.assertAlmostEqual(c.location.longitude, expected_caches[c.wp][1], self.POSITION_ACCURANCY)
             expected_caches.pop(c.wp)
         self.assertEqual(len(expected_caches), 0)
 
@@ -244,6 +236,7 @@ class TestTile(LoggedInTest):
 
 
 class TestBlock(unittest.TestCase):
+    # fmt: off
     # {descriptor: [points, midpoint, x_lim, y_lim]}
     good_cases = {9: [[(1, 1), (1, 2), (1, 3),
                        (2, 1), (2, 2), (2, 3),
@@ -289,6 +282,7 @@ class TestBlock(unittest.TestCase):
                       (2, 1),         (2, 3), (2, 4),
                       (3, 1), (3, 2), (3, 3)],
                  }
+    # fmt: on
 
     def setUp(self):
         self.b = Block()

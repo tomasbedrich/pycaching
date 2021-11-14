@@ -10,8 +10,9 @@ _type = type
 class Trackable(object):
     """Represents a trackable with its properties."""
 
-    def __init__(self, geocaching, tid, *, name=None, location=None, owner=None,
-                 type=None, description=None, goal=None, url=None):
+    def __init__(
+        self, geocaching, tid, *, name=None, location=None, owner=None, type=None, description=None, goal=None, url=None
+    ):
         self.geocaching = geocaching
         if tid is not None:
             self.tid = tid
@@ -66,7 +67,8 @@ class Trackable(object):
     def geocaching(self, geocaching):
         if not hasattr(geocaching, "_request"):
             raise errors.ValueError(
-                "Passed object (type: '{}') doesn't contain '_request' method.".format(_type(geocaching)))
+                "Passed object (type: '{}') doesn't contain '_request' method.".format(_type(geocaching))
+            )
         self._geocaching = geocaching
 
     @property
@@ -219,8 +221,7 @@ class Trackable(object):
         hidden_inputs = {i["name"]: i.get("value", "") for i in hidden_inputs}
 
         # get user date format
-        date_format = log_page.find(
-            id="ctl00_ContentBody_LogBookPanel1_uxDateFormatHint").text.strip("()")
+        date_format = log_page.find(id="ctl00_ContentBody_LogBookPanel1_uxDateFormatHint").text.strip("()")
 
         return valid_types, hidden_inputs, date_format
 

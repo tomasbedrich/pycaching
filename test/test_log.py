@@ -7,7 +7,6 @@ from pycaching.errors import ValueError as PycachingValueError
 
 
 class TestLog(unittest.TestCase):
-
     def setUp(self):
         self.log = Log(type=Type.found_it, text="text", visited="2012-02-02", author="human")
 
@@ -40,7 +39,6 @@ class TestLog(unittest.TestCase):
 
 
 class TestType(unittest.TestCase):
-
     def test_from_filename(self):
         with self.subTest("valid types"):
             self.assertEqual(Type.found_it, Type.from_filename("2"))

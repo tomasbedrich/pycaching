@@ -14,8 +14,16 @@ from . import LoggedInTest
 class TestProperties(unittest.TestCase):
     def setUp(self):
         self.gc = Geocaching()
-        self.t = Trackable(self.gc, "TB123AB", name="Testing", type="Travel Bug", location="in the hands of human",
-                           owner="human", description="long text", goal="short text")
+        self.t = Trackable(
+            self.gc,
+            "TB123AB",
+            name="Testing",
+            type="Travel Bug",
+            location="in the hands of human",
+            owner="human",
+            description="long text",
+            goal="short text",
+        )
         self.t._log_page_url = "/track/details.aspx?id=6359246"
 
     def test___str__(self):
@@ -54,19 +62,19 @@ class TestMethods(LoggedInTest):
     def setUpClass(cls):
         super().setUpClass()
         cls.t = Trackable(cls.gc, "TB1KEZ9")
-        with cls.recorder.use_cassette('trackable_setup'):
+        with cls.recorder.use_cassette("trackable_setup"):
             cls.t.load()
 
     def test_load(self):
         with self.subTest("tid"):
             trackable = Trackable(self.gc, "TB1KEZ9")
-            with self.recorder.use_cassette('trackable_load_tid'):
+            with self.recorder.use_cassette("trackable_load_tid"):
                 self.assertEqual("Lilagul #2: SwedenHawk Geocoin", trackable.name)
 
         with self.subTest("trackable url"):
             url = "http://www.geocaching.com/track/details.aspx?guid=cff00ac4-f562-486e-b303-32b2d01ed386"
             trackable = Trackable(self.gc, None, url=url)
-            with self.recorder.use_cassette('trackable_load_url'):
+            with self.recorder.use_cassette("trackable_load_url"):
                 self.assertEqual("Lilagul #2: SwedenHawk Geocoin", trackable.name)
 
         with self.subTest("fail lazyload"):
@@ -79,7 +87,7 @@ class TestMethods(LoggedInTest):
         expected_inputs = "__EVENTTARGET", "__VIEWSTATE"  # and more ...
 
         # make request
-        with self.recorder.use_cassette('trackable_load_page'):
+        with self.recorder.use_cassette("trackable_load_page"):
             valid_types, hidden_inputs, user_date_format = self.t._load_log_page()
 
         self.assertSequenceEqual(expected_types, valid_types)
@@ -128,10 +136,10 @@ class TestMethods(LoggedInTest):
             mock_request.assert_called_with(self.t._log_page_url, method="POST", data=expected_post_data)
 
     def test_get_KML(self):
-        with self.recorder.use_cassette('trackable_kml'):
+        with self.recorder.use_cassette("trackable_kml"):
             kml = self.t.get_KML()
-        self.assertTrue("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" in kml)
-        self.assertTrue("<kml xmlns=\"http://earth.google.com/kml/2.2\">" in kml)
+        self.assertTrue('<?xml version="1.0" encoding="UTF-8"?>' in kml)
+        self.assertTrue('<kml xmlns="http://earth.google.com/kml/2.2">' in kml)
         self.assertTrue("#tbTravelStyle" in kml)
         self.assertTrue("<visibility>1</visibility>" in kml)
         self.assertTrue("</Placemark></Document></kml>" in kml)

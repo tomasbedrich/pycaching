@@ -22,6 +22,7 @@ from pycaching.errors import Error, NotLoggedInException, LoginFailedException, 
 
 class SortOrder(enum.Enum):
     """Enum of possible cache sort orderings returned in Groundspeak API."""
+
     # NOTE: extracted from https://www.geocaching.com/play/map/public/main.2b28b0dc1c9c10aaba66.js
     container_size = "containersize"
     date_last_visited = "datelastvisited"
@@ -44,11 +45,11 @@ class Geocaching(object):
 
     _baseurl = "https://www.geocaching.com"
     _urls = {
-        "login_page":        "account/signin",
-        "search":            "play/search",
-        "search_more":       "play/search/more-results",
-        'my_logs':           'my/logs.aspx',
-        'api_search':        'api/proxy/web/search'
+        "login_page": "account/signin",
+        "search": "play/search",
+        "search_more": "play/search/more-results",
+        "my_logs": "my/logs.aspx",
+        "api_search": "api/proxy/web/search",
     }
     _credentials_file = ".gc_credentials"
 
@@ -89,8 +90,7 @@ class Geocaching(object):
         except requests.exceptions.RequestException as e:
             if e.response.status_code == 429:  # Handle rate limiting errors
                 raise TooManyRequestsError(
-                    url,
-                    rate_limit_reset=int(e.response.headers.get('x-rate-limit-reset', '0'))
+                    url, rate_limit_reset=int(e.response.headers.get("x-rate-limit-reset", "0"))
                 ) from e
 
             raise Error("Cannot load page: {}".format(url)) from e
@@ -113,13 +113,11 @@ class Geocaching(object):
             try:
                 username, password = self._load_credentials(username=username)
             except FileNotFoundError as e:
-                raise LoginFailedException("Credentials file not found and "
-                                           "no username and password is given.") from e
+                raise LoginFailedException("Credentials file not found and no username and password is given.") from e
             except ValueError as e:
                 raise LoginFailedException("Wrong format of credentials file.") from e
             except KeyError as e:
-                raise LoginFailedException("Credentials file doesn't contain "
-                                           "username or password/password_cmd.") from e
+                raise LoginFailedException("Credentials file doesn't contain username or password/password_cmd.") from e
             except IOError as e:
                 raise LoginFailedException("Credentials file reading error.") from e
             except subprocess.CalledProcessError as e:
@@ -140,16 +138,11 @@ class Geocaching(object):
         logging.debug("Assembling POST data.")
         token_field_name = "__RequestVerificationToken"
         token_value = login_page.find("input", attrs={"name": token_field_name})["value"]
-        post = {
-            "UsernameOrEmail": username,
-            "Password": password,
-            token_field_name: token_value
-        }
+        post = {"UsernameOrEmail": username, "Password": password, token_field_name: token_value}
 
         # login to the site
         logging.debug("Submiting login form.")
-        after_login_page = self._request(self._urls["login_page"], method="POST",
-                                         data=post, login_check=False)
+        after_login_page = self._request(self._urls["login_page"], method="POST", data=post, login_check=False)
 
         logging.debug("Checking the result.")
         if self.get_logged_user(after_login_page):
@@ -159,8 +152,7 @@ class Geocaching(object):
             return
         else:
             self.logout()
-            raise LoginFailedException("Cannot login to the site "
-                                       "(probably wrong username or password).")
+            raise LoginFailedException("Cannot login to the site (probably wrong username or password).")
 
     def _load_credentials(self, username=None):
         """Load credentials from file.
@@ -213,15 +205,14 @@ class Geocaching(object):
                 raise KeyError("Credential data type is unexpected {}".format(type(cred)))
 
             if "password" in credentials and "password_cmd" in credentials:
-                raise KeyError("Ambiguous keys. Choose either \"password\" or \"password_cmd\".")
+                raise KeyError('Ambiguous keys. Choose either "password" or "password_cmd".')
             elif "password" in credentials:
                 return credentials["username"], credentials["password"]
             elif "password_cmd" in credentials:
                 stdout = subprocess.check_output(credentials["password_cmd"], shell=True)
                 return credentials["username"], stdout.decode("utf-8").strip()
             else:
-                raise KeyError("No password was key found. "
-                               "Use either \"password\" or \"password_cmd\".")
+                raise KeyError("No password was key found. " 'Use either "password" or "password_cmd".')
 
     def logout(self):
         """Log out the user for this instance."""
@@ -329,9 +320,12 @@ class Geocaching(object):
             logging.debug("Using normal search endpoint")
 
             # make request
-            res = self._request(self._urls["search"], params={
-                "origin": point.format_decimal(),
-            })
+            res = self._request(
+                self._urls["search"],
+                params={
+                    "origin": point.format_decimal(),
+                },
+            )
             return res.find(id="geocaches"), res
 
         else:
@@ -339,12 +333,16 @@ class Geocaching(object):
             logging.debug("Using AJAX search endpoint")
 
             # make request
-            res = self._request(self._urls["search_more"], params={
-                "origin": point.format_decimal(),
-                "startIndex": start_index,
-                "ssvu": 2,
-                "selectAll": "false",
-            }, expect="json")
+            res = self._request(
+                self._urls["search_more"],
+                params={
+                    "origin": point.format_decimal(),
+                    "startIndex": start_index,
+                    "ssvu": 2,
+                    "selectAll": "false",
+                },
+                expect="json",
+            )
 
             return bs4.BeautifulSoup(res["HtmlString"].strip(), "html.parser"), None
 
@@ -360,9 +358,11 @@ class Geocaching(object):
             zoom level is more precise, but requires more tiles to be loaded.
         """
         # FIXME
-        warnings.warn("Quick search is temporary disabled because of Groundspeak breaking change. "
-                      "If you would like to use it, please consider helping with this issue: "
-                      "https://github.com/tomasbedrich/pycaching/issues/75")
+        warnings.warn(
+            "Quick search is temporary disabled because of Groundspeak breaking change. "
+            "If you would like to use it, please consider helping with this issue: "
+            "https://github.com/tomasbedrich/pycaching/issues/75"
+        )
         raise NotImplementedError()
 
         # logging.info("Searching quick in {}".format(area))
@@ -456,7 +456,7 @@ class Geocaching(object):
            Provide only the GUID or the waypoint, not both.
         """
         if (wp is None) == (guid is None):
-            raise TypeError('Please provide exactly one of `wp` or `guid`.')
+            raise TypeError("Please provide exactly one of `wp` or `guid`.")
         if wp is not None:
             return Cache(self, wp)
         return self._cache_from_guid(guid)
@@ -483,7 +483,7 @@ class Geocaching(object):
         self.get_cache(wp).post_log(log)
 
     def _cache_from_guid(self, guid):
-        logging.info('Loading cache with GUID {!r}'.format(guid))
+        logging.info("Loading cache with GUID {!r}".format(guid))
         print_page = self._request(Cache._urls["print_page"], params={"guid": guid})
         return Cache._from_print_page(self, guid, print_page)
 
@@ -499,7 +499,7 @@ class Geocaching(object):
             wp = url.split("/")[4].split("_")[0]  # get gccode from redirected url
             return self.get_cache(wp)
 
-    def my_logs(self, log_type=None, limit=float('inf')):
+    def my_logs(self, log_type=None, limit=float("inf")):
         """Get an iterable of the logged-in user's logs.
 
         :param log_type: The log type to search for. Use a :class:`~.log.Type` value.
@@ -507,38 +507,38 @@ class Geocaching(object):
         :param limit: The maximum number of results to return (default: infinity).
         """
         logging.info("Getting {} of my logs of type {}".format(limit, log_type))
-        url = self._urls['my_logs']
+        url = self._urls["my_logs"]
         if log_type is not None:
             if isinstance(log_type, LogType):
                 log_type = log_type.value
-            url += '?lt={lt}'.format(lt=log_type)
-        cache_table = self._request(url).find(class_='Table')
+            url += "?lt={lt}".format(lt=log_type)
+        cache_table = self._request(url).find(class_="Table")
         if cache_table is None:  # no logs on the account
             return
         cache_table = cache_table.tbody
 
         yielded = 0
-        for row in cache_table.find_all('tr'):
+        for row in cache_table.find_all("tr"):
             if yielded >= limit:
                 break
 
-            link = row.find(class_='ImageLink')['href']
-            guid = parse_qs(urlparse(link).query)['guid'][0]
+            link = row.find(class_="ImageLink")["href"]
+            guid = parse_qs(urlparse(link).query)["guid"][0]
             current_cache = self._try_getting_cache_from_guid(guid)
-            date = row.find_all('td')[2].text.strip()
+            date = row.find_all("td")[2].text.strip()
             current_cache.visited = date
 
             yield current_cache
             yielded += 1
 
-    def my_finds(self, limit=float('inf')):
+    def my_finds(self, limit=float("inf")):
         """Get an iterable of the logged-in user's finds.
 
         :param limit: The maximum number of results to return (default: infinity).
         """
         return self.my_logs(LogType.found_it, limit)
 
-    def my_dnfs(self, limit=float('inf')):
+    def my_dnfs(self, limit=float("inf")):
         """Get an iterable of the logged-in user's DNFs.
 
         :param limit: The maximum number of results to return (default: infinity).

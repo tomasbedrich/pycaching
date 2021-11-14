@@ -103,7 +103,7 @@ class Cache(object):
         "water": "Drinking water nearby",
         "wheelchair": "Wheelchair accessible",
         "winter": "Available during winter",
-        "wirelessbeacon": "Wireless Beacon"
+        "wirelessbeacon": "Wireless Beacon",
     }
 
     # collection of urls used within the Cache class
@@ -139,14 +139,16 @@ class Cache(object):
         except ValueError:  # element not present when 0 favorites
             cache_info["favorites"] = 0
         cache_info["hidden"] = parse_date(
-            content.find(class_="HalfRight AlignRight").p.text.strip().partition(":")[2].strip())
+            content.find(class_="HalfRight AlignRight").p.text.strip().partition(":")[2].strip()
+        )
         cache_info["location"] = Point.from_string(content.find(class_="LatLong").text.strip())
         cache_info["state"] = None  # not on the page
-        attributes = [img["src"].split("/")[-1].partition(".")[0].rpartition("-")
-                      for img in content.find(class_="sortables").find_all("img")
-                      if img.get("src") and img["src"].startswith("/images/attributes/")]
-        cache_info["attributes"] = {attr_name: attr_setting == "yes"
-                                    for attr_name, _, attr_setting in attributes}
+        attributes = [
+            img["src"].split("/")[-1].partition(".")[0].rpartition("-")
+            for img in content.find(class_="sortables").find_all("img")
+            if img.get("src") and img["src"].startswith("/images/attributes/")
+        ]
+        cache_info["attributes"] = {attr_name: attr_setting == "yes" for attr_name, _, attr_setting in attributes}
         if "attribute" in cache_info["attributes"]:  # 'blank' attribute
             del cache_info["attributes"]["attribute"]
         cache_info["summary"] = content.find("h2", text="Short Description").find_next("div").text
@@ -162,19 +164,18 @@ class Cache(object):
         """Create a cache instance from a JSON record returned by API."""
         cache = Cache(
             geocaching,
-            wp=record['code'],
-            name=record['name'],
-            type=Type.from_number(record['geocacheType']),
-            state=Status(record['cacheStatus']) == Status.enabled,
-            found=record['userFound'],
-            size=Size.from_number(record['containerType']),
-            difficulty=record['difficulty'],
-            terrain=record['terrain'],
-            author=record['owner']['username'],
-            hidden=record['placedDate'].split('T')[0],
-            favorites=record['favoritePoints'],
-            pm_only=record['premiumOnly'],
-
+            wp=record["code"],
+            name=record["name"],
+            type=Type.from_number(record["geocacheType"]),
+            state=Status(record["cacheStatus"]) == Status.enabled,
+            found=record["userFound"],
+            size=Size.from_number(record["containerType"]),
+            difficulty=record["difficulty"],
+            terrain=record["terrain"],
+            author=record["owner"]["username"],
+            hidden=record["placedDate"].split("T")[0],
+            favorites=record["favoritePoints"],
+            pm_only=record["premiumOnly"],
             # Not consumed attributes:
             # detailsUrl
             # hasGeotour
@@ -186,11 +187,8 @@ class Cache(object):
         )
 
         # NOTE: Basic Members have no access to postedCoordinates of Premium-only caches
-        if 'postedCoordinates' in record:
-            cache.location = Point(
-                record['postedCoordinates']['latitude'],
-                record['postedCoordinates']['longitude']
-            )
+        if "postedCoordinates" in record:
+            cache.location = Point(record["postedCoordinates"]["latitude"], record["postedCoordinates"]["longitude"])
 
         return cache
 
@@ -207,10 +205,32 @@ class Cache(object):
         if wp is not None:
             self.wp = wp
 
-        known_kwargs = {"name", "type", "location", "original_location", "state", "found", "size",
-                        "difficulty", "terrain", "author", "hidden", "attributes", "summary",
-                        "description", "hint", "favorites", "pm_only", "url", "waypoints", "_logbook_token",
-                        "_trackable_page_url", "guid", "visited", "log_counts"}
+        known_kwargs = {
+            "name",
+            "type",
+            "location",
+            "original_location",
+            "state",
+            "found",
+            "size",
+            "difficulty",
+            "terrain",
+            "author",
+            "hidden",
+            "attributes",
+            "summary",
+            "description",
+            "hint",
+            "favorites",
+            "pm_only",
+            "url",
+            "waypoints",
+            "_logbook_token",
+            "_trackable_page_url",
+            "guid",
+            "visited",
+            "log_counts",
+        }
 
         for name in known_kwargs:
             if name in kwargs:
@@ -291,8 +311,9 @@ class Cache(object):
     @geocaching.setter
     def geocaching(self, geocaching):
         if not hasattr(geocaching, "_request"):
-            raise errors.ValueError("Passed object (type: '{}')"
-                                    "doesn't contain '_request' method.".format(_type(geocaching)))
+            raise errors.ValueError(
+                "Passed object (type: '{}')" "doesn't contain '_request' method.".format(_type(geocaching))
+            )
         self._geocaching = geocaching
 
     @property
@@ -325,8 +346,7 @@ class Cache(object):
         if isinstance(location, str):
             location = Point.from_string(location)
         elif not isinstance(location, Point):
-            raise errors.ValueError(
-                "Passed object is not Point instance nor string containing coordinates.")
+            raise errors.ValueError("Passed object is not Point instance nor string containing coordinates.")
         self._location = location
 
     @property
@@ -345,8 +365,7 @@ class Cache(object):
         if isinstance(original_location, str):
             original_location = Point.from_string(original_location)
         elif not isinstance(original_location, Point) and original_location is not None:
-            raise errors.ValueError(
-                "Passed object is not Point instance nor string containing coordinates.")
+            raise errors.ValueError("Passed object is not Point instance nor string containing coordinates.")
         self._original_location = original_location
 
     @property
@@ -502,8 +521,7 @@ class Cache(object):
         if isinstance(hidden, str):
             hidden = parse_date(hidden)
         elif not isinstance(hidden, datetime.date):
-            raise errors.ValueError(
-                "Passed object is not datetime.date instance nor string containing a date.")
+            raise errors.ValueError("Passed object is not datetime.date instance nor string containing a date.")
         self._hidden = hidden
 
     @property
@@ -521,8 +539,7 @@ class Cache(object):
         if isinstance(visited, str):
             visited = parse_date(visited)
         elif not isinstance(visited, datetime.date):
-            raise errors.ValueError(
-                "Passed object is not datetime.date instance nor string containing a date.")
+            raise errors.ValueError("Passed object is not datetime.date instance nor string containing a date.")
         self._visited = visited
 
     @property
@@ -683,8 +700,7 @@ class Cache(object):
             if hasattr(self, "url"):
                 root = self.geocaching._request(self.url)
             elif hasattr(self, "_wp"):
-                root = self.geocaching._request(self._urls["cache_details"],
-                                                params={"wp": self._wp})
+                root = self.geocaching._request(self._urls["cache_details"], params={"wp": self._wp})
             else:
                 raise errors.LoadError("Cache lacks info for loading")
         except errors.Error as e:
@@ -704,7 +720,7 @@ class Cache(object):
             self.name = cache_details.find("h1").text.strip()
 
             author = cache_details.find(id="ctl00_ContentBody_uxCacheBy").text
-            self.author = author[len("A cache by "):]
+            self.author = author[len("A cache by ") :]
 
             # parse cache detail list into a python list
             details = cache_details.find("ul", "ul__hide-details").text.split("\n")
@@ -765,8 +781,11 @@ class Cache(object):
         attributes_raw = attributes_widget.find_all("img")
         attributes_raw = [_.get("src").split("/")[-1].rsplit("-", 1) for _ in attributes_raw]
 
-        self.attributes = {attribute_name: appendix.startswith("yes") for attribute_name, appendix
-                           in attributes_raw if not appendix.startswith("blank")}
+        self.attributes = {
+            attribute_name: appendix.startswith("yes")
+            for attribute_name, appendix in attributes_raw
+            if not appendix.startswith("blank")
+        }
 
         self.summary = root.find(id="ctl00_ContentBody_ShortDescription").text
         self.description = root.find(id="ctl00_ContentBody_LongDescription").text
@@ -782,8 +801,8 @@ class Cache(object):
         js_content = "\n".join(root.find_all(string=lambda i: isinstance(i, Script)))
         self._logbook_token = re.findall("userToken\\s*=\\s*'([^']+)'", js_content)[0]
         # find original location if any
-        if "oldLatLng\":" in js_content:
-            old_lat_long = js_content.split("oldLatLng\":")[1].split(']')[0].split('[')[1]
+        if 'oldLatLng":' in js_content:
+            old_lat_long = js_content.split('oldLatLng":')[1].split("]")[0].split("[")[1]
             self.original_location = Point(old_lat_long)
         else:
             self.original_location = None
@@ -812,9 +831,7 @@ class Cache(object):
 
         :raise .LoadError: If cache loading fails (probably because of not existing cache).
         """
-        res = self.geocaching._request(self._urls["tiles_server"],
-                                       params={"i": self.wp},
-                                       expect="json")
+        res = self.geocaching._request(self._urls["tiles_server"], params={"i": self.wp}, expect="json")
 
         if res["status"] == "failed" or len(res["data"]) != 1:
             msg = res["msg"] if "msg" in res else "Unknown error (probably not existing cache)"
@@ -854,16 +871,14 @@ class Cache(object):
         if not self.guid:
             self.load_quick()
 
-        res = self.geocaching._request(self._urls["print_page"],
-                                       params={"guid": self.guid})
+        res = self.geocaching._request(self._urls["print_page"], params={"guid": self.guid})
         if res.find("p", "Warning") is not None:
             raise errors.PMOnlyException()
         content = res.find(id="Content")
 
         self.name = content.find("h2").text
 
-        self.location = Point.from_string(
-            content.find("p", "LatLong Meta").text)
+        self.location = Point.from_string(content.find("p", "LatLong Meta").text)
 
         type_img = os.path.basename(content.find("img").get("src"))
         self.type = Type.from_filename(os.path.splitext(type_img)[0])
@@ -872,37 +887,28 @@ class Cache(object):
         self.size = Size.from_string(size_img.get("alt").split(": ")[1])
 
         D_and_T_img = content.find("p", "Meta DiffTerr").find_all("img")
-        self.difficulty, self.terrain = [
-            float(img.get("alt").split()[0]) for img in D_and_T_img
-        ]
+        self.difficulty, self.terrain = [float(img.get("alt").split()[0]) for img in D_and_T_img]
 
         # TODO do NOT use English phrases like "Placed by" to search for attributes
 
-        self.author = content.find(
-            "p", text=re.compile("Placed by:")).text.split("\r\n")[2].strip()
+        self.author = content.find("p", text=re.compile("Placed by:")).text.split("\r\n")[2].strip()
 
         hidden_p = content.find("p", text=re.compile("Placed Date:"))
         self.hidden = hidden_p.text.replace("Placed Date:", "").strip()
 
         attr_img = content.find_all("img", src=re.compile(r"\/attributes\/"))
-        attributes_raw = [
-            os.path.basename(_.get("src")).rsplit("-", 1) for _ in attr_img
-        ]
+        attributes_raw = [os.path.basename(_.get("src")).rsplit("-", 1) for _ in attr_img]
         self.attributes = {
-            name: appendix.startswith("yes") for name, appendix
-            in attributes_raw if not appendix.startswith("blank")
+            name: appendix.startswith("yes") for name, appendix in attributes_raw if not appendix.startswith("blank")
         }
 
-        self.summary = content.find(
-            "h2", text="Short Description").find_next("div").text
+        self.summary = content.find("h2", text="Short Description").find_next("div").text
 
-        self.description = content.find(
-            "h2", text="Long Description").find_next("div").text
+        self.description = content.find("h2", text="Long Description").find_next("div").text
 
         self.hint = content.find(id="uxEncryptedHint").text
 
-        self.favorites = content.find(
-            "strong", text=re.compile("Favorites:")).parent.text.split()[-1]
+        self.favorites = content.find("strong", text=re.compile("Favorites:")).parent.text.split()[-1]
 
         self.waypoints = Waypoint.from_html(content, "Waypoints")
 
@@ -936,8 +942,8 @@ class Cache(object):
         # Prevent possible wrong assignments when the list sizes differ for some unknown reason.
         if not len(values) == len(types):
             raise errors.ValueError(
-                "Different list sizes getting log counts: {} types and {} counts.".format(
-                    len(types), len(values)))
+                "Different list sizes getting log counts: {} types and {} counts.".format(len(types), len(values))
+            )
 
         # Finally create the mapping.
         log_counts = dict(zip(types, values))
@@ -987,8 +993,8 @@ class Cache(object):
         # Prevent possible wrong assignments when the list sizes differ for some unknown reason.
         if not len(values) == len(types):
             raise errors.ValueError(
-                "Different list sizes getting log counts: {} types and {} counts.".format(
-                    len(types), len(values)))
+                "Different list sizes getting log counts: {} types and {} counts.".format(len(types), len(values))
+            )
 
         # Finally create the mapping.
         log_counts = dict(zip(types, values))
@@ -1002,12 +1008,16 @@ class Cache(object):
         :param int per_page: Logs per page (used to calculate start index).
         :raise .LoadError: If loading fails.
         """
-        res = self.geocaching._request(self._urls["logbook"], params={
-            "tkn": self._logbook_token,  # will trigger lazy_loading if needed
-            "idx": int(page) + 1,  # Groundspeak indexes this from 1 (OMG..)
-            "num": int(per_page),
-            "decrypt": "true"
-        }, expect="json")
+        res = self.geocaching._request(
+            self._urls["logbook"],
+            params={
+                "tkn": self._logbook_token,  # will trigger lazy_loading if needed
+                "idx": int(page) + 1,  # Groundspeak indexes this from 1 (OMG..)
+                "num": int(per_page),
+                "decrypt": "true",
+            },
+            expect="json",
+        )
 
         if res["status"] != "success":
             error_msg = res["msg"] if "msg" in res else "Unknown error"
@@ -1046,11 +1056,11 @@ class Cache(object):
 
                 # create and fill log object
                 yield Log(
-                    uuid=log_data['LogGuid'],
+                    uuid=log_data["LogGuid"],
                     type=LogType.from_filename(img_filename),
                     text=log_data["LogText"],
                     visited=log_data["Visited"],
-                    author=log_data["UserName"]
+                    author=log_data["UserName"],
                 )
 
     # TODO: trackable list can have multiple pages - handle it in similar way as _logbook_get_page
@@ -1136,13 +1146,14 @@ class Cache(object):
 
 class Waypoint(object):
     """Waypoint represents a waypoint related to the cache. This may be a
-       Parking spot, a stage in a multi-cache or similar.
+    Parking spot, a stage in a multi-cache or similar.
 
-       :param str identifier: the unique identifier of the location
-       :param str type: type of waypoint
-       :param Point location: waypoint coordinates
-       :param str note: Information about the waypoint
+    :param str identifier: the unique identifier of the location
+    :param str type: type of waypoint
+    :param Point location: waypoint coordinates
+    :param str note: Information about the waypoint
     """
+
     def __init__(self, id=None, type=None, location=None, note=None):
         self._identifier = id
         self._type = type
@@ -1159,7 +1170,7 @@ class Waypoint(object):
         :param str table_id: html id of the waypoints table
         """
         waypoints_dict = {}
-        waypoints_table = soup.find('table', id=table_id)
+        waypoints_table = soup.find("table", id=table_id)
         if waypoints_table:
             waypoints_table = waypoints_table.find_all("tr")
             for r1, r2 in zip(waypoints_table[1::2], waypoints_table[2::2]):
@@ -1171,8 +1182,7 @@ class Waypoint(object):
                     loc = Point(location_string)
                 except ValueError:
                     loc = None
-                    logging.debug("No valid location format in waypoint {}: {}".format(
-                        identifier, location_string))
+                    logging.debug("No valid location format in waypoint {}: {}".format(identifier, location_string))
                 note = columns[8].text.strip()
                 waypoints_dict[identifier] = cls(identifier, type, loc, note)
         return waypoints_dict
@@ -1217,8 +1227,7 @@ class Waypoint(object):
         if isinstance(location, str):
             location = Point.from_string(location)
         elif not isinstance(location, Point):
-            raise errors.ValueError(
-                "Passed object is not Point instance nor string containing coordinates.")
+            raise errors.ValueError("Passed object is not Point instance nor string containing coordinates.")
         self._location = location
 
     @property
@@ -1266,7 +1275,7 @@ class Type(enum.Enum):
     def from_filename(cls, filename):
         """Return a cache type from its image filename.
 
-           Values are cache image filenames - http://www.geocaching.com/images/WptTypes/[VALUE].gif
+        Values are cache image filenames - http://www.geocaching.com/images/WptTypes/[VALUE].gif
         """
         # fuck Groundspeak, they sometimes use 2 exactly same icons with 2 different names
         name_mapping = {
@@ -1275,7 +1284,7 @@ class Type(enum.Enum):
             "mega": "453",
             "10Years_32": "3653",
             "HQ_32": "3773",
-            "giga": "7005"
+            "giga": "7005",
         }
         if filename in name_mapping:
             filename = name_mapping[filename]
@@ -1314,7 +1323,7 @@ class Type(enum.Enum):
             "groundspeak block party": cls.groundspeak_block_party,
             "locationless (reverse)": cls.locationless,
             "geocaching hq celebration": cls.hq_celebration,
-            "community celebration event": cls.community_celebration
+            "community celebration event": cls.community_celebration,
         }
 
         try:
@@ -1385,6 +1394,7 @@ class Size(enum.Enum):
 
 class Status(enum.IntEnum):
     """Enum of possible cache statuses."""
+
     # NOTE: extracted from https://www.geocaching.com/play/map/public/main.2b28b0dc1c9c10aaba66.js
     enabled = 0
     disabled = 1

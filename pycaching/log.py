@@ -80,8 +80,7 @@ class Log(object):
         if _type(visited) is str:
             visited = parse_date(visited)
         elif _type(visited) is not datetime.date:
-            raise errors.ValueError(
-                "Passed object is not datetime.date instance nor string containing a date.")
+            raise errors.ValueError("Passed object is not datetime.date instance nor string containing a date.")
         self._visited = visited
 
     @property

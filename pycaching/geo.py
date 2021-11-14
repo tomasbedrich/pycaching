@@ -62,14 +62,12 @@ class Point(geopy.Point):
 
         # Convert to uppercase to simplify hemisphere comparisons
         string = string.upper()
-        coords = string.replace("N", " ").replace("S", " ") \
-            .replace("E", " ").replace("W", " ").replace("+", " ")
+        coords = string.replace("N", " ").replace("S", " ").replace("E", " ").replace("W", " ").replace("+", " ")
 
         try:
             m = re.match(r"\s*(-?\s*\d+)\D+(\d+[\.,]\d+)\D?\s*(-?\s*\d+)\D+(\d+[\.,]\d+)", coords)
 
-            latDeg, latMin, lonDeg, lonMin = [
-                float(part.replace(" ", "").replace(",", ".")) for part in m.groups()]
+            latDeg, latMin, lonDeg, lonMin = [float(part.replace(" ", "").replace(",", ".")) for part in m.groups()]
 
             if "S" in string:
                 latDeg *= -1
@@ -159,7 +157,6 @@ class Point(geopy.Point):
 
 class Area:
     """Geometrical area."""
-    pass
 
 
 class Polygon(Area):
@@ -178,8 +175,7 @@ class Polygon(Area):
         """Get area's bounding box (:class:`.Rectangle` computed from min and max coordinates)."""
         lats = sorted([p.latitude for p in self.points])
         lons = sorted([p.longitude for p in self.points])
-        return Rectangle(Point(min(lats), min(lons)),
-                         Point(max(lats), max(lons)))
+        return Rectangle(Point(min(lats), min(lons)), Point(max(lats), max(lons)))
 
     @property
     def mean_point(self):
@@ -210,8 +206,7 @@ class Polygon(Area):
         x1, x2 = sorted((nw_tile.x, se_tile.x))
         y1, y2 = sorted((nw_tile.y, se_tile.y))
 
-        logging.debug("Area converted to {} tiles, zoom level {}".format(
-            (x2 - x1) * (y2 - y1), zoom))
+        logging.debug("Area converted to {} tiles, zoom level {}".format((x2 - x1) * (y2 - y1), zoom))
 
         # for each tile between corners
         for x, y in itertools.product(range(x1, x2 + 1), range(y1, y2 + 1)):
@@ -237,8 +232,12 @@ class Rectangle(Polygon):
 
         assert point_a != point_b, "Corner points cannot be the same"
         self.corners = [point_a, point_b]
-        self.points = [point_a, Point(point_a.latitude, point_b.longitude),
-                       point_b, Point(point_b.latitude, point_a.longitude)]
+        self.points = [
+            point_a,
+            Point(point_a.latitude, point_b.longitude),
+            point_b,
+            Point(point_b.latitude, point_a.longitude),
+        ]
 
     def __contains__(self, p):
         """Return if the rectangle contains a point.
@@ -262,13 +261,14 @@ class Tile(object):
     tile map server. These can be used as information sources to get approximate locations
     of geocaches in a given area.
     """
+
     max_zoom = 18  # geocaching.com restriction
-    size = 64      # UTFGrid implementation (will be checked)
+    size = 64  # UTFGrid implementation (will be checked)
 
     _baseurl = "http://tiles01.geocaching.com/"
     _urls = {
-        "tile":              _baseurl + "map.png",
-        "grid":              _baseurl + "map.info",
+        "tile": _baseurl + "map.png",
+        "grid": _baseurl + "map.info",
     }
 
     def __init__(self, geocaching, x, y, z):
@@ -316,11 +316,7 @@ class Tile(object):
 
         logging.debug("Downloading UTFGrid for {}".format(self))
 
-        params = {
-            "x": self.x,
-            "y": self.y,
-            "z": self.z
-        }
+        params = {"x": self.x, "y": self.y, "z": self.z}
 
         if get_png:
             logging.debug("Getting .png file")
@@ -375,7 +371,7 @@ class Tile(object):
             logging.warning("UTFGrid has unexpected size.")
             self.size = size
 
-        self._blocks = {}   # format: { waypoint: <Block> }
+        self._blocks = {}  # format: { waypoint: <Block> }
 
         # for all non-empty in coords
         for coordinate_key in utfgrid["data"]:
@@ -411,7 +407,7 @@ class Tile(object):
 
     def __eq__(self, other):
         """Compare tiles by their coordinates and contained :class:`.Geocaching` reference."""
-        for attr in ['geocaching', 'x', 'y', 'z']:
+        for attr in ["geocaching", "x", "y", "z"]:
             if getattr(self, attr) != getattr(other, attr):
                 return False
         return True

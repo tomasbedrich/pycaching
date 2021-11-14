@@ -15,14 +15,33 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 description = "Geocaching.com site crawler. Provides tools for searching, fetching caches and geocoding."
-keywords = ["geocaching", "crawler", "geocache", "cache", "search", "geocode", "travelbug"]
+keywords = [
+    "geocaching",
+    "crawler",
+    "geocache",
+    "cache",
+    "search",
+    "geocode",
+    "travelbug",
+]
 
 requires-python = ">=3.5"
-dependencies = ["requests >= 2.8", "beautifulsoup4 >= 4.9", "geopy >= 1.11"]
+dependencies = [
+    "requests >= 2.8",
+    "beautifulsoup4 >= 4.9",
+    "geopy >= 1.11",
+]
 
 
 [project.optional-dependencies]
-dev = ["pytest >=6.2, <7.0", "pytest-cov", "betamax >=0.8, <0.9", "betamax-serializers >=0.2, <0.3", "black", "flake8"]
+dev = [
+    "pytest >=6.2, <7.0",
+    "pytest-cov",
+    "betamax >=0.8, <0.9",
+    "betamax-serializers >=0.2, <0.3",
+    "black",
+    "flake8",
+]
 
 
 [project.urls]

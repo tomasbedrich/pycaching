@@ -14,8 +14,17 @@ class TestModule(LoggedInTest):
 
     def test_parse_date(self):
         dates = datetime.date(2014, 1, 30), datetime.date(2000, 1, 1), datetime.date(2020, 12, 13)
-        patterns = ("%Y-%m-%d", "%Y/%m/%d", "%m/%d/%Y", "%d/%m/%Y",
-                    "%d.%m.%Y", "%d/%b/%Y", "%d.%b.%Y", "%b/%d/%Y", "%d %b %y")
+        patterns = (
+            "%Y-%m-%d",
+            "%Y/%m/%d",
+            "%m/%d/%Y",
+            "%d/%m/%Y",
+            "%d.%m.%Y",
+            "%d/%b/%Y",
+            "%d.%b.%Y",
+            "%b/%d/%Y",
+            "%d %b %y",
+        )
 
         # generate all possible formats for all dates and test equality
         for date, pattern in itertools.product(dates, patterns):
@@ -52,7 +61,7 @@ class TestModule(LoggedInTest):
             self.assertEqual(format_date(date, user_format), ref_result)
 
     def test_get_possible_attributes(self):
-        with self.recorder.use_cassette('util_attributes'):
+        with self.recorder.use_cassette("util_attributes"):
             attributes = get_possible_attributes(session=self.session)
 
         with self.subTest("existing attributes"):

@@ -11,18 +11,18 @@ from pycaching.errors import Error
 from pycaching.geocaching import Geocaching
 from .helpers import sanitize_cookies
 
-username = os.environ.get('PYCACHING_TEST_USERNAME') or 'USERNAMEPLACEHOLDER'
-password = os.environ.get('PYCACHING_TEST_PASSWORD') or 'PASSWORDPLACEHOLDER'
+username = os.environ.get("PYCACHING_TEST_USERNAME") or "USERNAMEPLACEHOLDER"
+password = os.environ.get("PYCACHING_TEST_PASSWORD") or "PASSWORDPLACEHOLDER"
 
 
-cassette_dir = Path('test/cassettes')
+cassette_dir = Path("test/cassettes")
 cassette_dir.mkdir(exist_ok=True)
 
 # Betamax config is global
 config = Betamax.configure()
 config.cassette_library_dir = str(cassette_dir)
-config.define_cassette_placeholder('<USERNAME>', quote_plus(username))
-config.define_cassette_placeholder('<PASSWORD>', quote_plus(password))
+config.define_cassette_placeholder("<USERNAME>", quote_plus(username))
+config.define_cassette_placeholder("<PASSWORD>", quote_plus(password))
 config.before_record(callback=sanitize_cookies)
 Betamax.register_serializer(PrettyJSONSerializer)
 
@@ -33,7 +33,7 @@ class NetworkedTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.session = Session()
-        cls.recorder = Betamax(cls.session, default_cassette_options={'serialize_with': 'prettyjson'})
+        cls.recorder = Betamax(cls.session, default_cassette_options={"serialize_with": "prettyjson"})
         cls.gc = Geocaching(session=cls.session)
 
 

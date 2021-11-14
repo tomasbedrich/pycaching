@@ -9,25 +9,26 @@ import functools
 from datetime import datetime
 from pycaching import errors
 
-
+# fmt: off
 _rot13codeTable = str.maketrans(
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
     "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM"
 )
+# fmt: on
 
 _attributes_url = "https://www.geocaching.com/app/src/assets/sprites/attributes.svg"
 
 
 def lazy_loaded(func):
     """Decorator providing lazy loading."""
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         self = args[0]
         try:
             return func(*args, **kwargs)
         except AttributeError:
-            logging.debug("Lazy loading {} into <object {} id {}>".format(
-                func.__name__, type(self), id(self)))
+            logging.debug("Lazy loading {} into <object {} id {}>".format(func.__name__, type(self), id(self)))
             self.load()
             return func(*args, **kwargs)  # try to return it again
 
@@ -41,15 +42,17 @@ def deprecated(func):
 
     It will result in a warning being emitted when the function is used.
     """
+
     @functools.wraps(func)
     def new_func(*args, **kwargs):
         warnings.warn_explicit(
             "Call to deprecated function {}.".format(func.__name__),
             category=FutureWarning,
             filename=inspect.getfile(func),
-            lineno=inspect.getsourcelines(func)[1] + 1
+            lineno=inspect.getsourcelines(func)[1] + 1,
         )
         return func(*args, **kwargs)
+
     return new_func
 
 
@@ -61,8 +64,18 @@ def rot13(text):
 def parse_date(raw):
     """Return a parsed date."""
     raw = raw.strip()
-    patterns = ("%Y-%m-%d", "%Y/%m/%d", "%m/%d/%Y", "%d/%m/%Y", "%d-%m-%Y",
-                "%d.%m.%Y", "%d/%b/%Y", "%d.%b.%Y", "%b/%d/%Y", "%d %b %y")
+    patterns = (
+        "%Y-%m-%d",
+        "%Y/%m/%d",
+        "%m/%d/%Y",
+        "%d/%m/%Y",
+        "%d-%m-%Y",
+        "%d.%m.%Y",
+        "%d/%b/%Y",
+        "%d.%b.%Y",
+        "%b/%d/%Y",
+        "%d %b %y",
+    )
 
     for pattern in patterns:
         try:
@@ -82,13 +95,13 @@ def format_date(date, user_date_format):
     # see https://strftime.org/ for example
     eat_zero_prefix = "#" if platform.system() == "Windows" else "-"
     formats = {
-        "dd": r'%d',
-        "d": r'%{}d'.format(eat_zero_prefix),
-        "mmm": r'%b',
-        "mm": r'%m',
-        "m": r'%{}m'.format(eat_zero_prefix),
-        "yyyy": r'%Y',
-        "yy": r'%y',
+        "dd": r"%d",
+        "d": r"%{}d".format(eat_zero_prefix),
+        "mmm": r"%b",
+        "mm": r"%m",
+        "m": r"%{}m".format(eat_zero_prefix),
+        "yyyy": r"%Y",
+        "yy": r"%y",
     }
     date_format = "".join((formats[c] if c in formats else c for c in date_format))
     return date.strftime(date_format)

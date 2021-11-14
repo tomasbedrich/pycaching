@@ -8,12 +8,10 @@ class Error(Exception):
        This class is a superclass of all errors produced by pycaching module, so you can use it to
        catch all pycaching related errors.
     """
-    pass
 
 
 class NotLoggedInException(Error):
     """Tried to perform an operation which requires logging in first."""
-    pass
 
 
 class LoginFailedException(Error, ValueError):
@@ -21,7 +19,6 @@ class LoginFailedException(Error, ValueError):
 
     The provided credentials probably doesn't work to log in.
     """
-    pass
 
 
 class GeocodeError(Error, ValueError):
@@ -29,7 +26,6 @@ class GeocodeError(Error, ValueError):
 
     Probably because of non-existing location.
     """
-    pass
 
 
 class LoadError(Error, OSError):
@@ -37,12 +33,10 @@ class LoadError(Error, OSError):
 
     Probably because of non-existing object or missing informations required to load it.
     """
-    pass
 
 
 class PMOnlyException(Error):
     """Requested cache is PM only."""
-    pass
 
 
 class BadBlockError(Error):
@@ -54,7 +48,6 @@ class ValueError(Error, ValueError):
 
     Can be raised in various situations, but most commonly when unexpected property value is set.
     """
-    pass
 
 
 class TooManyRequestsError(Error):
@@ -73,4 +66,5 @@ class TooManyRequestsError(Error):
     def wait_for(self):
         """Wait enough time to release Rate Limits."""
         import time
+
         time.sleep(self.rate_limit_reset + 5)
