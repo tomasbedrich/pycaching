@@ -25,11 +25,13 @@ keywords = [
     "travelbug",
 ]
 
-requires-python = ">=3.5"
+# https://endoflife.date/python
+# TODO migrate to f-string as soon as we bump to 3.6
+requires-python = ">= 3.5"
 dependencies = [
-    "requests >= 2.8",
-    "beautifulsoup4 >= 4.9",
-    "geopy >= 1.11",
+    "requests ~= 2.8",
+    "beautifulsoup4 ~= 4.9",
+    "geopy ~= 1.11",
 ]
 
 
@@ -59,9 +61,18 @@ filterwarnings = [
     # FutureWarning: betamax_recorder and betamax_session currently don't include parameters in the cassette name. Use betamax_parametrized_recorder/_session to include parameters. This behavior will be the default in betamax 1.0
     "ignore:.*betamax_recorder.*:FutureWarning",
 ]
-# TODO enable coverage??
-addopts = "--strict-markers -r sxX --cov-report=html --cov-report=term-missing:skip-covered --no-cov-on-fail"
+addopts = "--strict-markers -r sxX --cov=pycaching --cov-report=term-missing:skip-covered --no-cov-on-fail --cov-fail-under=90"
 cache_dir = ".cache"
+
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "except requests.exceptions.ConnectionError",
+    "if __name__ == .__main__.:",
+]
 
 
 [tool.black]

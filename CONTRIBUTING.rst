@@ -67,7 +67,7 @@ Typical workflow
 
    - there are no lint errors,
    - all tests are passing,
-   - the coverage is above 95%.
+   - the coverage is above 90%.
 
 6. Push your work and create a **pull request**. Yay!
 
