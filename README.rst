@@ -280,13 +280,7 @@ Authors of this project are `all contributors
 
 .. _build_status:
 
-|Build Status| |Coverage Status| |PyPI monthly downloads|
-
-.. |Build Status| image:: http://img.shields.io/travis/tomasbedrich/pycaching/master.svg
-   :target: https://travis-ci.org/tomasbedrich/pycaching
-
-.. |Coverage Status| image:: https://img.shields.io/coveralls/tomasbedrich/pycaching.svg
-   :target: https://coveralls.io/r/tomasbedrich/pycaching
+|PyPI monthly downloads|
 
 .. |PyPI monthly downloads| image:: http://img.shields.io/pypi/dm/pycaching.svg
    :target: https://pypi.python.org/pypi/pycaching
