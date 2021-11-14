@@ -1,0 +1,48 @@
+[build-system]
+requires = ["flit_core >= 3.4, <4.0"]
+build-backend = "flit_core.buildapi"
+
+
+[project]
+name = "pycaching"
+version = "4.2.1"  # PEP 386
+authors = [
+    { name = "Tomas Bedrich", email = "ja@tbedrich.cz" },
+]
+readme = "README.rst"
+classifiers = [
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Programming Language :: Python :: 3",
+]
+description = "Geocaching.com site crawler. Provides tools for searching, fetching caches and geocoding."
+keywords = ["geocaching", "crawler", "geocache", "cache", "search", "geocode", "travelbug"]
+
+requires-python = ">=3.5"
+dependencies = ["requests >= 2.8", "beautifulsoup4 >= 4.9", "geopy >= 1.11"]
+
+
+[project.optional-dependencies]
+dev = ["pytest >=6.2, <7.0", "pytest-cov", "betamax >=0.8, <0.9", "betamax-serializers >=0.2, <0.3", "black", "flake8"]
+
+
+[project.urls]
+Documentation = "https://pycaching.readthedocs.io/"
+Source = "https://github.com/tomasbedrich/pycaching"
+
+
+[tool.pytest.ini_options]
+testpaths = [
+    "test",
+    "tests_new",
+]
+filterwarnings = [
+    # FutureWarning: betamax_recorder and betamax_session currently don't include parameters in the cassette name. Use betamax_parametrized_recorder/_session to include parameters. This behavior will be the default in betamax 1.0
+    "ignore:.*betamax_recorder.*:FutureWarning",
+]
+# TODO enable coverage??
+addopts = "--strict-markers -r sxX --cov-report=html --cov-report=term-missing:skip-covered --no-cov-on-fail"
+cache_dir = ".cache"
+
+
+[tool.black]
+line-length = 120

@@ -248,34 +248,6 @@ Get geocaches by log type
         print(note.name)
 
 
-Testing
-===================================================================================================
-
-Pycaching uses `Betamax <https://betamax.readthedocs.io/en/latest/>`__ for testing, which speeds
-it up by recording network requests so that they can be mocked.
-
-If you haven't written or modified any tests, tests can be run like so:
-
-.. code-block:: bash
-
-    python3 setup.py test
-
-If you have written or modified tests, you must provide a username and password for testing. Don't
-worry, these will not leave your computer. Betamax will insert a placeholder when it records any
-new cassettes. To run new tests, first set up the following environment variables:
-
-.. code-block:: bash
-
-    PYCACHING_TEST_USERNAME="yourusername" PYCACHING_TEST_PASSWORD="yourpassword" python3 setup.py test
-
-Substitute your username for ``yourusername`` and your password for ``yourpassword``. After you
-have exported the environment variables once, you do not need to export them again, and can run
-tests with just ``python3 setup.py test``.
-
-To re-record a specific cassette in case of site changes, delete the corresponding JSON file and
-provide username and password as explained above. The missing cassette will be recorded for future
-usages.
-
 .. _appendix:
 
 Appendix

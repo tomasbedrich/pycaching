@@ -330,18 +330,18 @@ class TestMethods(LoggedInTest):
         test_log_text = "Test log."
 
         with self.subTest("empty log text"):
-            l = Log(text="", visited=date.today(), type=LogType.note)
+            log = Log(text="", visited=date.today(), type=LogType.note)
             with self.assertRaises(PycachingValueError):
-                self.c.post_log(l)
+                self.c.post_log(log)
 
         with self.subTest("invalid log type"):
-            l = Log(text=test_log_text, visited=date.today(), type=LogType.found_it)
+            log = Log(text=test_log_text, visited=date.today(), type=LogType.found_it)
             with self.assertRaises(PycachingValueError):
-                self.c.post_log(l)
+                self.c.post_log(log)
 
         with self.subTest("valid log"):
-            l = Log(text=test_log_text, visited=date.today(), type=LogType.didnt_find_it)
-            self.c.post_log(l)
+            log = Log(text=test_log_text, visited=date.today(), type=LogType.didnt_find_it)
+            self.c.post_log(log)
 
             # test call to _request mock
             expected_post_data = {

@@ -228,7 +228,7 @@ class Geocaching(object):
         logging.info("Logging out.")
         self._logged_in = False
         self._logged_username = None
-        self._session = requests.Session()
+        self._session.cookies.clear()
 
     def get_logged_user(self, login_page=None):
         """Return the name of currently logged user.

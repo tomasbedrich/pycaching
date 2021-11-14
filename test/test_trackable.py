@@ -77,7 +77,6 @@ class TestMethods(LoggedInTest):
     def test_load_log_page(self):
         expected_types = {t.value for t in (LogType.grabbed_it, LogType.note, LogType.discovered_it)}
         expected_inputs = "__EVENTTARGET", "__VIEWSTATE"  # and more ...
-        # expected_date_format = "M/d/yyyy"  # if test is re-recorded, update for your testing account
 
         # make request
         with self.recorder.use_cassette('trackable_load_page'):
@@ -105,18 +104,18 @@ class TestMethods(LoggedInTest):
         test_tracking_code = "ABCDEF"
 
         with self.subTest("empty log text"):
-            l = Log(text="", visited=test_log_date, type=LogType.note)
+            log = Log(text="", visited=test_log_date, type=LogType.note)
             with self.assertRaises(PycachingValueError):
-                self.t.post_log(l, test_tracking_code)
+                self.t.post_log(log, test_tracking_code)
 
         with self.subTest("invalid log type"):
-            l = Log(text=test_log_text, visited=test_log_date, type=LogType.grabbed_it)
+            log = Log(text=test_log_text, visited=test_log_date, type=LogType.grabbed_it)
             with self.assertRaises(PycachingValueError):
-                self.t.post_log(l, test_tracking_code)
+                self.t.post_log(log, test_tracking_code)
 
         with self.subTest("valid log"):
-            l = Log(text=test_log_text, visited=test_log_date, type=LogType.discovered_it)
-            self.t.post_log(l, test_tracking_code)
+            log = Log(text=test_log_text, visited=test_log_date, type=LogType.discovered_it)
+            self.t.post_log(log, test_tracking_code)
 
             # test call to _request mock
             expected_post_data = {
