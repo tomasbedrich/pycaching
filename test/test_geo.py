@@ -9,9 +9,9 @@ from unittest import mock
 from geopy.distance import great_circle
 
 from pycaching import Cache
-from pycaching.errors import GeocodeError, BadBlockError
-from pycaching.geo import Point, Polygon, Rectangle, Tile, UTFGridPoint, Block
-from pycaching.geo import to_decimal
+from pycaching.errors import BadBlockError, GeocodeError
+from pycaching.geo import Block, Point, Polygon, Rectangle, Tile, UTFGridPoint, to_decimal
+
 from . import LoggedInTest
 
 _sample_caches_file = path.join(path.dirname(__file__), "sample_caches.csv")

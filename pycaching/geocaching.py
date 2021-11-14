@@ -1,23 +1,26 @@
 #!/usr/bin/env python3
 
-import logging
 import datetime
-import requests
-import bs4
+import enum
 import json
+import logging
+import re
 import subprocess
 import warnings
-import enum
-import re
+from os import path
 from typing import Optional, Union
 from urllib.parse import parse_qs, urljoin, urlparse
-from os import path
+
+import bs4
+import requests
 from bs4.element import Script
+
 from pycaching.cache import Cache, Size
-from pycaching.log import Log, Type as LogType
+from pycaching.errors import Error, LoginFailedException, NotLoggedInException, PMOnlyException, TooManyRequestsError
 from pycaching.geo import Point, Rectangle
+from pycaching.log import Log
+from pycaching.log import Type as LogType
 from pycaching.trackable import Trackable
-from pycaching.errors import Error, NotLoggedInException, LoginFailedException, PMOnlyException, TooManyRequestsError
 
 
 class SortOrder(enum.Enum):

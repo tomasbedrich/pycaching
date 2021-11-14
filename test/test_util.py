@@ -3,7 +3,8 @@
 import datetime
 import itertools
 
-from pycaching.util import rot13, parse_date, format_date, get_possible_attributes
+from pycaching.util import format_date, get_possible_attributes, parse_date, rot13
+
 from . import LoggedInTest
 
 

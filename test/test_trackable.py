@@ -5,9 +5,12 @@ from datetime import date
 from unittest import mock
 
 from pycaching import Geocaching, Trackable
-from pycaching.errors import ValueError as PycachingValueError, LoadError
-from pycaching.log import Log, Type as LogType
+from pycaching.errors import LoadError
+from pycaching.errors import ValueError as PycachingValueError
+from pycaching.log import Log
+from pycaching.log import Type as LogType
 from pycaching.util import format_date
+
 from . import LoggedInTest
 
 

@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 
-import logging
 import datetime
-import re
 import enum
+import logging
 import os
+import re
+
 from bs4.element import Script
+
 from pycaching import errors
 from pycaching.geo import Point
+from pycaching.log import Log
+from pycaching.log import Type as LogType
 from pycaching.trackable import Trackable
-from pycaching.log import Log, Type as LogType
-from pycaching.util import parse_date, rot13, lazy_loaded
+from pycaching.util import lazy_loaded, parse_date, rot13
 
 # prefix _type() function to avoid collisions with cache type
 _type = type
@@ -720,7 +723,7 @@ class Cache(object):
             self.name = cache_details.find("h1").text.strip()
 
             author = cache_details.find(id="ctl00_ContentBody_uxCacheBy").text
-            self.author = author[len("A cache by ") :]
+            self.author = author[11:]  # 11 = len("A cache by ")
 
             # parse cache detail list into a python list
             details = cache_details.find("ul", "ul__hide-details").text.split("\n")

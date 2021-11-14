@@ -1,16 +1,17 @@
-#!/usr/bin/env python3
-
+import itertools
+import logging
 import math
 import re
-import logging
 import weakref
-import itertools
+from collections import namedtuple
+from statistics import mean
+
 import geopy
 import geopy.distance
 import geopy.format
-from statistics import mean
-from collections import namedtuple
-from pycaching.errors import ValueError as PycachingValueError, GeocodeError, BadBlockError, Error
+
+from pycaching.errors import BadBlockError, Error, GeocodeError
+from pycaching.errors import ValueError as PycachingValueError
 from pycaching.util import lazy_loaded
 
 

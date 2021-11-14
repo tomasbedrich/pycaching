@@ -51,13 +51,15 @@ Typical workflow
 
 3. Write some **code and tests**. After that, don't forget to update the **docs**. See coding style below.
 
-4. Format the code using `Black <https://black.readthedocs.io/en/stable/>`_,
+4. Sort imports using `isort <https://pycqa.github.io/isort/>`_,
+   format the code using `Black <https://black.readthedocs.io/en/stable/>`_,
    lint it using `Flake <https://flake8.pycqa.org/>`_ and
    run the tests using `pytest <https://docs.pytest.org/>`_:
 
    .. code-block:: bash
 
-       black
+       isort .
+       black .
        flake8
        pytest
 
@@ -100,12 +102,7 @@ usages.
 Coding style
 -------------------------------------------------------------------------------
 
-- For code, follow `PEP8 <https://www.python.org/dev/peps/pep-0008/>`_.
-
-  - Use **double quotes**.
-  - Keep line length below 120 characters.
-  - Use `.format()` for string formatting.
-
+- Use `.format()` for string formatting. Black will guide you with the rest. :)
 - For docs, please follow `PEP257 <https://www.python.org/dev/peps/pep-0257/>`_.
 - **Importing modules** is okay for modules from standard library. If you want to include a
   third-party module, please consult it on GitHub before.

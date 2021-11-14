@@ -9,6 +9,7 @@ from requests import Session
 
 from pycaching.errors import Error
 from pycaching.geocaching import Geocaching
+
 from .helpers import sanitize_cookies
 
 username = os.environ.get("PYCACHING_TEST_USERNAME") or "USERNAMEPLACEHOLDER"

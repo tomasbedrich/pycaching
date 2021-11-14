@@ -1,9 +1,10 @@
 from unittest.mock import patch
 
-import pycaching
 import requests
+
+import pycaching
 from pycaching import Geocaching
-from tests_new.conftest import USERNAME, PASSWORD
+from tests_new.conftest import PASSWORD, USERNAME
 
 
 def test_login(betamax_session: requests.Session):

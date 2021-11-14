@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from pycaching import errors
-from pycaching.util import lazy_loaded, format_date
+from pycaching.util import format_date, lazy_loaded
 
 # prefix _type() function to avoid collisions with trackable type
 _type = type

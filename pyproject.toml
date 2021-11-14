@@ -35,12 +35,13 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest >=6.2, <7.0",
-    "pytest-cov",
-    "betamax >=0.8, <0.9",
-    "betamax-serializers >=0.2, <0.3",
-    "black",
-    "flake8",
+    "pytest ~= 6.2",
+    "pytest-cov ~= 3.0",
+    "betamax ~= 0.8",
+    "betamax-serializers ~= 0.2",
+    "black ~= 21.0",
+    "flake8 ~= 4.0",
+    "isort ~= 5.10"
 ]
 
 
@@ -65,3 +66,8 @@ cache_dir = ".cache"
 
 [tool.black]
 line-length = 120
+
+
+[tool.isort]
+profile = "black"
+line_length = 120

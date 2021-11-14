@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
+import functools
+import inspect
 import logging
 import platform
 import re
 import warnings
-import inspect
-import functools
 from datetime import datetime
+
 from pycaching import errors
 
 # fmt: off

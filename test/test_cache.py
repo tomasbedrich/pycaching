@@ -3,12 +3,15 @@ import unittest
 from datetime import date
 from unittest import mock
 
-from pycaching.cache import Cache, Type, Size, Waypoint
-from pycaching.errors import ValueError as PycachingValueError, LoadError, PMOnlyException
+from pycaching.cache import Cache, Size, Type, Waypoint
+from pycaching.errors import LoadError, PMOnlyException
+from pycaching.errors import ValueError as PycachingValueError
 from pycaching.geo import Point
 from pycaching.geocaching import Geocaching
-from pycaching.log import Log, Type as LogType
+from pycaching.log import Log
+from pycaching.log import Type as LogType
 from pycaching.util import parse_date
+
 from . import LoggedInTest
 
 

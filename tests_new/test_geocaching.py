@@ -8,8 +8,8 @@ from unittest.mock import patch
 import pytest
 
 from pycaching import Geocaching
-from pycaching.errors import NotLoggedInException, LoginFailedException
-from tests_new.conftest import USERNAME, PASSWORD
+from pycaching.errors import LoginFailedException, NotLoggedInException
+from tests_new.conftest import PASSWORD, USERNAME
 
 
 def test_unauthorized_request(geocaching):

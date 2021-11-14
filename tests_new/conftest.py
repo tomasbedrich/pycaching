@@ -7,6 +7,7 @@ import requests
 from betamax import Betamax
 from betamax.cassette.cassette import Placeholder
 from betamax_serializers.pretty_json import PrettyJSONSerializer
+
 from pycaching.geocaching import Geocaching
 
 USERNAME = os.environ.get("PYCACHING_TEST_USERNAME") or "USERNAMEPLACEHOLDER"

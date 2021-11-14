@@ -7,6 +7,7 @@ from geopy.distance import great_circle
 from pycaching import Cache, Point, Rectangle
 from pycaching.errors import PMOnlyException, TooManyRequestsError
 from pycaching.geocaching import SortOrder
+
 from . import LoggedInTest
 
 

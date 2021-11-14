@@ -18,6 +18,8 @@ jobs:
       run: |
         pip install --upgrade pip setuptools flit
         flit install --symlink
+    - name: isort
+      run: isort --check --diff .
     - name: black
       run: black --check .
     - name: flake8

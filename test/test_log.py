@@ -2,8 +2,9 @@
 
 import unittest
 from datetime import date
-from pycaching.log import Log, Type
+
 from pycaching.errors import ValueError as PycachingValueError
+from pycaching.log import Log, Type
 
 
 class TestLog(unittest.TestCase):
