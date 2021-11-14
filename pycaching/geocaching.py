@@ -8,9 +8,11 @@ import json
 import subprocess
 import warnings
 import enum
+import re
 from typing import Optional, Union
 from urllib.parse import parse_qs, urljoin, urlparse
 from os import path
+from bs4.element import Script
 from pycaching.cache import Cache, Size
 from pycaching.log import Log, Type as LogType
 from pycaching.geo import Point, Rectangle
@@ -226,7 +228,7 @@ class Geocaching(object):
         logging.info("Logging out.")
         self._logged_in = False
         self._logged_username = None
-        self._session = requests.Session()
+        self._session.cookies.clear()
 
     def get_logged_user(self, login_page=None):
         """Return the name of currently logged user.
@@ -236,13 +238,12 @@ class Geocaching(object):
         :rtype: :class:`str` or :code:`None`
         """
         login_page = login_page or self._request(self._urls["login_page"], login_check=False)
-        assert hasattr(login_page, "find") and callable(login_page.find)
+        assert hasattr(login_page, "find_all") and callable(login_page.find_all)
 
         logging.debug("Checking for already logged user.")
-        try:
-            return login_page.find("a", "li-user-info").find_all("span")[1].text
-        except AttributeError:
-            return None
+        js_content = "\n".join(login_page.find_all(string=lambda i: isinstance(i, Script)))
+        m = re.search(r'"username":\s*"(.*)"', js_content)
+        return m.group(1) if m else None
 
     def search(self, point, limit=float("inf")):
         """Return a generator of caches around some point.

@@ -4,10 +4,10 @@ import datetime
 import itertools
 
 from pycaching.util import rot13, parse_date, format_date, get_possible_attributes
-from . import NetworkedTest
+from . import LoggedInTest
 
 
-class TestModule(NetworkedTest):
+class TestModule(LoggedInTest):
     def test_rot13(self):
         self.assertEqual(rot13("Text"), "Grkg")
         self.assertEqual(rot13("abc'ř"), "nop'ř")

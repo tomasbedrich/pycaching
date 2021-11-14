@@ -1,0 +1,388 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2021-11-14T01:37:10",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "gspkauth=<AUTH COOKIE>; Culture=en-US; __RequestVerificationToken=<AUTH COOKIE>"
+          ],
+          "User-Agent": [
+            "python-requests/2.26.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://www.geocaching.com/seek/cdpf.aspx?guid=328927c1-aa8c-4e0d-bf59-31f1ce44d990"
+      },
+      "response": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "\r\n<!DOCTYPE html>\r\n<html>\r\n<head>\r\n    <title id=\"pageTitle\">(GC74HEV) Nidda: jenseits der Rennstrecke Reloaded by tdrex_</title>\r\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\r\n    <link rel=\"shortcut icon\" href=\"../favicon.ico\" />\r\n    <link rel=\"stylesheet\" href=\"/js/vendor/jquery-ui-1.12.1/jquery-ui.min.css\" type=\"text/css\" media=\"screen\" />\r\n        \r\n    <style type=\"text/css\" media=\"all\">\r\n        html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, blockquote, pre,\r\n        a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small,\r\n        strike, strong, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {\r\n            margin: 0;\r\n            padding: 0;\r\n            font-weight: inherit;\r\n            font-style: inherit;\r\n            font-size: 100%;\r\n            font-family: inherit;\r\n            vertical-align: baseline;\r\n        }\r\n\r\n        html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre,\r\n        a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small,\r\n        strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend {\r\n            border: 0;\r\n            outline: 0;\r\n        }\r\n\r\n        sub, sup {\r\n            margin: 0;\r\n            padding: 0;\r\n            font-weight: inherit;\r\n            font-style: inherit;\r\n            font-size: 77%;\r\n            font-family: inherit;\r\n        }\r\n\r\n        body {\r\n            line-height: 1;\r\n            color: black;\r\n            background: white;\r\n        }\r\n\r\n        ol, ul {\r\n            list-style: none;\r\n        }\r\n\r\n        table {\r\n            border-collapse: separate;\r\n            border-spacing: 0;\r\n        }\r\n\r\n        caption, th, td {\r\n            text-align: left;\r\n            font-weight: normal;\r\n        }\r\n\r\n        blockquote:before, blockquote:after, q:before, q:after {\r\n            content: \"\";\r\n        }\r\n\r\n        blockquote, q {\r\n            quotes: \"\" \"\";\r\n        }\r\n\r\n        body {\r\n            width: 90%;\r\n            padding: 1.5em;\r\n            font: 13px/1.231 arial,helvetica,clean,sans-serif;\r\n            *font-size: small;\r\n            *font: x-small;\r\n        }\r\n\r\n        .HalfLeft, .HalfRight {\r\n            width: 48%;\r\n        }\r\n\r\n        .HalfLeft, .Third {\r\n            float: left;\r\n        }\r\n\r\n        .HalfRight {\r\n            float: right;\r\n        }\r\n\r\n        .Third {\r\n            width: 32%;\r\n        }\r\n\r\n        .Clear {\r\n            clear: both;\r\n        }\r\n\r\n        #Header {\r\n            margin-bottom: 1.5em;\r\n            padding-bottom: 1em;\r\n            border-bottom: 1px solid #000;\r\n        }\r\n\r\n        #Footer {\r\n            margin-top: 1.5em;\r\n            padding-top: 1em;\r\n            border-top: 1px solid #000;\r\n            font-size: 77%;\r\n        }\r\n\r\n        h1 {\r\n            font-size: 197%;\r\n        }\r\n\r\n        h2 {\r\n            font-size: 138.5%;\r\n        }\r\n\r\n            h2 img {\r\n                position: relative;\r\n                top: 4px;\r\n            }\r\n\r\n        strong, h1, h2, .handle {\r\n            font-weight: bold;\r\n        }\r\n\r\n        .handle {\r\n            font-size: 108%;\r\n            cursor: n-resize;\r\n        }\r\n\r\n        .AlignCenter {\r\n            text-align: center;\r\n        }\r\n\r\n        .AlignRight {\r\n            text-align: right;\r\n        }\r\n\r\n        .Warning {\r\n            font-weight: bold;\r\n            color: #8c0b0b;\r\n        }\r\n\r\n        .Meta {\r\n            margin-top: .5em;\r\n        }\r\n\r\n        .DiffTerr strong {\r\n            display: inline-block;\r\n            width: 6em;\r\n        }\r\n\r\n        .LatLong, .UTM {\r\n            font-family: \"Courier New\",Courier,mono;\r\n        }\r\n\r\n        .LatLong {\r\n            font-size: 123.1%;\r\n            font-weight: bold;\r\n        }\r\n\r\n        .TermsWidget {\r\n            margin: 1.5em 0;\r\n            padding: 1em;\r\n            border: 1px solid #8c0b0b;\r\n            background-color: #f2dddd;\r\n        }\r\n\r\n            .TermsWidget p {\r\n                margin-top: 0;\r\n            }\r\n\r\n            .TermsWidget img {\r\n                float: left;\r\n                padding-right: 1em;\r\n            }\r\n\r\n            .TermsWidget span {\r\n                position: relative;\r\n                top: .5em;\r\n                *padding-left: 1em;\r\n            }\r\n\r\n        .Arrow {\r\n            cursor: pointer;\r\n            cursor: hand;\r\n            text-decoration: none;\r\n        }\r\n\r\n        .Section {\r\n            margin-bottom: 2em;\r\n        }\r\n\r\n            .Section div {\r\n                padding-top: .5em;\r\n            }\r\n\r\n        .EncryptionKey {\r\n            font-family: \"Courier New\",Courier,mono;\r\n        }\r\n\r\n        dt img {\r\n            position: relative;\r\n            top: 4px;\r\n        }\r\n\r\n        dd {\r\n            margin-bottom: 1.5em;\r\n        }\r\n\r\n        #div_ld p, #div_hint p {\r\n            margin-bottom: 1.5em;\r\n            line-height: 1.5em;\r\n        }\r\n\r\n        .ui-state-highlight {\r\n            height: 1.5em;\r\n            line-height: 1.2em;\r\n        }\r\n\r\n        .sortables h2 {\r\n            cursor: n-resize;\r\n        }\r\n\r\n        .ui-icon {\r\n            cursor: pointer;\r\n        }\r\n\r\n        .item {\r\n            margin: 0 1em 1em 0;\r\n        }\r\n\r\n        .item-header {\r\n            margin: 0.3em;\r\n            padding-bottom: 4px;\r\n            padding-left: 0.2em;\r\n        }\r\n\r\n            .item-header .ui-icon {\r\n                float: left;\r\n            }\r\n\r\n        .item-content {\r\n            padding: 0.4em;\r\n        }\r\n\r\n        #Waypoints {\r\n            clear: both;\r\n            width: 100%;\r\n        }\r\n    </style>\r\n    <style type=\"text/css\" media=\"print\">\r\n        .TermsWidget {\r\n            padding: 1em 0 !important;\r\n            border: none !important;\r\n            min-height: 1 !important;\r\n            background-color: #fff !important;\r\n        }\r\n\r\n            .TermsWidget img {\r\n                display: none !important;\r\n            }\r\n\r\n            .TermsWidget span {\r\n                position: static !important;\r\n                top: 0 !important;\r\n                padding-left: 0 !important;\r\n                display: block !important;\r\n                padding: 1em 0 !important;\r\n                border-top: 1px solid #8c0b0b !important;\r\n                border-bottom: 1px solid #8c0b0b !important;\r\n                line-height: 1em !important;\r\n                color: #8c0b0b !important;\r\n            }\r\n\r\n        .no-print {\r\n            display: none !important;\r\n        }\r\n    </style>\r\n</head>\r\n<body>\r\n    <form method=\"post\" action=\"./cdpf.aspx?guid=328927c1-aa8c-4e0d-bf59-31f1ce44d990\" id=\"Form1\">\r\n<input type=\"hidden\" name=\"__VIEWSTATE\" id=\"__VIEWSTATE\" value=\"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\" />\r\n\r\n<input type=\"hidden\" name=\"__VIEWSTATEGENERATOR\" id=\"__VIEWSTATEGENERATOR\" value=\"9B31040E\" />\r\n        <div id=\"pnlErrorMessage\">\r\n\t<p class=\"Warning\">You must be a Premium Member to view this page.</p>\r\n</div>\r\n        \r\n        \r\n        \r\n        \r\n        \n\n\n<script \n    src='https://code.jquery.com/jquery-3.5.1.min.js' \n    integrity='sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=' \n    crossorigin='anonymous'></script>\n\n<script>window.jQuery || document.write('<script src=\"/app/dist/jquery.min.js\"><\\/script>')</script>\n\n\n\n<script\n  src=\"https://code.jquery.com/ui/1.12.1/jquery-ui.min.js\"\n  integrity=\"sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=\"\n  crossorigin=\"anonymous\"></script>\r\n        <script src=\"/js/vendor/jquery-ui-1.12.1/jquery-ui.min.js\" type=\"text/javascript\"></script>\r\n        <script src=\"/js/jquery_plugins/jquery.cookie.js\" type=\"text/javascript\"></script>\r\n        <script type=\"text/javascript\" src=\"/js/utilities.js\"></script>\r\n        <script type=\"text/javascript\" src=\"/js/rot13.js\"></script>\r\n        <script src=\"/controls/GpxWptListControl.ascx.js\"></script>\r\n        <script type=\"text/javascript\">\r\n\r\n            $(function () {\r\n\r\n                $(\".sortables\").sortable({\r\n                    handle: 'h2',\r\n                    axis: 'y'\r\n                });\r\n\r\n                $(\".sortables\").disableSelection();\r\n\r\n\r\n                $(\".item\").each(function (x, y) {\r\n                    if ($(this).find(\"img\").length > 0) {\r\n                        //found an image add the \"Hide Image\" link\r\n                        $(this).find(\".item-header\")                       \r\n                            .prepend($('<a href=\"#\" class=\"no-print\">Hide/Show Image(s)</a>').css(\"float\", \"right\").on('click', function (e) {\r\n                                e.preventDefault();\r\n                                $(this).closest(\".item\").find(\"img\").toggle();\r\n                            }))\r\n                            .end();\r\n                    }\r\n                });\r\n\r\n                $(\".item\").addClass(\"ui-widget ui-widget-content ui-helper-clearfix\")\r\n                            .find(\".item-header\")\r\n                                .prepend('<span class=\"ui-icon ui-icon-minusthick\"></span>')\r\n                                .end()\r\n                            .find(\".item-content\").each(function (x, y) {\r\n                                if ($.trim($(y).html()) == 0) {\r\n                                    $(y).closest(\".item\").hide();\r\n                                }\r\n                            });\r\n\r\n                $(\".item-header .ui-icon\").on('click', function () {\r\n                    $(this).toggleClass(\"ui-icon-minusthick\").toggleClass(\"ui-icon-plusthick\");\r\n                    $(this).parents(\".item:first\").toggleClass(\"no-print\").find(\".item-content\").toggle();\r\n                });\r\n\r\n                $(\"#lnkDH\").on('click', function (e) {\r\n                    e.preventDefault();\r\n                    if ($(this).text() == \"Decrypt\") {\r\n                        $(this).text(\"Encrypt\");\r\n                    } else {\r\n                        $(this).text(\"Decrypt\");\r\n                    }\r\n                    $(\".hint-encrypted, .hint-decrypted\").toggle();\r\n                });\r\n\r\n                imageResize(\"large\");\r\n\r\n                $(\"a.<USERNAME>-link\").on(\"click\", function(e) {\r\n                    e.preventDefault();\r\n                    var size = $(this).data(\"size\");\r\n                    imageResize(size);\r\n                    return false;\r\n                });\r\n\r\n            });\r\n\r\n            function imageResize(size) {\r\n                if (size == \"small\") {\r\n                    $(\"#map\").attr(\"src\", cacheMapImageUrls.small);\r\n                } else {\r\n                    $(\"#map\").attr(\"src\", cacheMapImageUrls.large);\r\n                }\r\n\r\n            }\r\n        </script>\r\n    \r\n\r\n<script type=\"text/javascript\">\r\n//<![CDATA[\r\nvar lat=50.1444, lng=8.615267, wptid=2, g='2';var cacheMapImageUrls = {\"large\":\"https://maps.googleapis.com/maps/api/staticmap?sensor=false&size=640x480&maptype=roadmap&style=element:labels.icon%7Cvisibility:off&style=feature:road.highway%7Celement:labels.icon%7Cvisibility:on&markers=icon:http%3A%2F%2Fwww.geocaching.com%2Fimages%2FWptTypes%2Fpins%2F2.png%7C50.1444,8.61527&zoom=14&client=gme-groundspeak&signature=SEyIxlLhg125VVMuKhTkY9VVAkw=\",\"small\":\"https://maps.googleapis.com/maps/api/staticmap?sensor=false&size=320x240&maptype=roadmap&style=element:labels.icon%7Cvisibility:off&style=feature:road.highway%7Celement:labels.icon%7Cvisibility:on&markers=icon:http%3A%2F%2Fwww.geocaching.com%2Fimages%2FWptTypes%2Fpins%2F2.png%7C50.1444,8.61527&zoom=14&client=gme-groundspeak&signature=tBbOYwdiVHfiU0WQzV4J8Y_mSSE=\"};//]]>\r\n</script>\r\n</form>\r\n    <script type=\"text/javascript\">\r\n            (function (i, s, o, g, r, a, m) {\r\n                i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {\r\n                    (i[r].q = i[r].q || []).push(arguments)\r\n                }, i[r].l = 1 * new Date(); a = s.createElement(o),\r\n                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)\r\n            })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');\r\n\r\n        ga('create', 'UA-2020240-1', 'auto');\r\n        ga('send', 'pageview');\r\n    </script>\r\n</body>\r\n</html>\r\n"
+        },
+        "headers": {
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Length": [
+            "15875"
+          ],
+          "Content-Type": [
+            "text/html; charset=utf-8"
+          ],
+          "Date": [
+            "Sun, 14 Nov 2021 01:37:09 GMT"
+          ],
+          "Request-Context": [
+            "appId=cid-v1:019d82c2-5dd7-44cb-aa94-01e052f0d40c"
+          ],
+          "Server": [
+            "Microsoft-IIS/10.0"
+          ],
+          "Set-Cookie": [
+            "gspkauth=<AUTH COOKIE>; domain=.geocaching.com; expires=Tue, 14-Dec-2021 01:37:10 GMT; path=/; secure; HttpOnly",
+            "Culture=en-US; path=/; secure; HttpOnly"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubDomains"
+          ],
+          "X-AspNet-Version": [
+            "4.0.30319"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.geocaching.com/seek/cdpf.aspx?guid=328927c1-aa8c-4e0d-bf59-31f1ce44d990"
+      }
+    },
+    {
+      "recorded_at": "2021-11-14T01:37:10",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "gspkauth=<AUTH COOKIE>; Culture=en-US; __RequestVerificationToken=<AUTH COOKIE>"
+          ],
+          "User-Agent": [
+            "python-requests/2.26.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://www.geocaching.com/seek/cache_details.aspx?guid=328927c1-aa8c-4e0d-bf59-31f1ce44d990"
+      },
+      "response": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "<html><head><title>Object moved</title></head><body>\r\n<h2>Object moved to <a href=\"https://www.geocaching.com/geocache/GC74HEV_nidda-jenseits-der-rennstrecke-reloaded?guid=328927c1-aa8c-4e0d-bf59-31f1ce44d990\">here</a>.</h2>\r\n</body></html>\r\n"
+        },
+        "headers": {
+          "Cache-Control": [
+            "no-cache"
+          ],
+          "Content-Length": [
+            "242"
+          ],
+          "Content-Type": [
+            "text/html; charset=utf-8"
+          ],
+          "Date": [
+            "Sun, 14 Nov 2021 01:37:09 GMT"
+          ],
+          "Expires": [
+            "-1"
+          ],
+          "Location": [
+            "https://www.geocaching.com/geocache/GC74HEV_nidda-jenseits-der-rennstrecke-reloaded?guid=328927c1-aa8c-4e0d-bf59-31f1ce44d990"
+          ],
+          "Pragma": [
+            "no-cache"
+          ],
+          "Request-Context": [
+            "appId=cid-v1:019d82c2-5dd7-44cb-aa94-01e052f0d40c"
+          ],
+          "Server": [
+            "Microsoft-IIS/10.0"
+          ],
+          "Set-Cookie": [
+            "gspkauth=<AUTH COOKIE>; domain=.geocaching.com; expires=Tue, 14-Dec-2021 01:37:10 GMT; path=/; secure; HttpOnly",
+            "Culture=en-US; path=/; secure; HttpOnly"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubDomains"
+          ],
+          "Vary": [
+            "Accept-Encoding"
+          ],
+          "X-AspNet-Version": [
+            "4.0.30319"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1"
+          ]
+        },
+        "status": {
+          "code": 301,
+          "message": "Moved Permanently"
+        },
+        "url": "https://www.geocaching.com/seek/cache_details.aspx?guid=328927c1-aa8c-4e0d-bf59-31f1ce44d990"
+      }
+    },
+    {
+      "recorded_at": "2021-11-14T01:37:10",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "gspkauth=<AUTH COOKIE>; Culture=en-US; __RequestVerificationToken=<AUTH COOKIE>"
+          ],
+          "User-Agent": [
+            "python-requests/2.26.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://www.geocaching.com/geocache/GC74HEV_nidda-jenseits-der-rennstrecke-reloaded?guid=328927c1-aa8c-4e0d-bf59-31f1ce44d990"
+      },
+      "response": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "\n\n<!DOCTYPE html>\n<html lang=\"en\" class=\"no-js\">\n<head id=\"ctl00_Head1\">\n    <script id=\"Cookiebot\" src=\"https://consent.cookiebot.com/uc.js\" data-cbid=\"1abe029a-a5e6-4587-acc9-7ef16e95bfa1\" data-blockingmode=\"auto\" type=\"text/javascript\"></script>\n    <meta charset=\"utf-8\" /><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\" /><title>\r\n\tGeocaching > Hide and Seek a Geocache > Premium Member Only Cache\r\n</title><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" /><meta name=\"DC.title\" content=\"Geocaching&#32;-&#32;The&#32;Official&#32;Global&#32;GPS&#32;Cache&#32;Hunt&#32;Site\" /><meta name=\"twitter:card\" content=\"summary_large_image\" /><meta name=\"twitter:title\" content=\"Geocaching:&#32;Join&#32;the&#32;world&#39;s&#32;largest&#32;treasure&#32;hunt.\" /><meta name=\"twitter:description\" content=\"There&#32;are&#32;millions&#32;of&#32;geocaches&#32;worldwide&#32;and&#32;probably&#32;even&#32;some&#32;near&#32;you&#32;right&#32;now.&#32;Visit&#32;Geocaching.com&#32;to&#32;see&#32;just&#32;how&#32;many&#32;geocaches&#32;are&#32;nearby&#32;and&#32;to&#32;get&#32;the&#32;free&#32;Official&#32;Geocaching&#32;app.\" /><meta name=\"twitter:image:src\" content=\"https://www.geocaching.com/play/Content/images/preview-lg.jpg\" /><link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/apple-touch-icon.png\" /><link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon-32x32.png\" /><link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon-16x16.png\" /><link rel=\"manifest\" href=\"/manifest.json\" /><link rel=\"mask-icon\" href=\"/safari-pinned-tab.svg\" color=\"#02874D\" /><link rel=\"shortcut&#32;icon\" href=\"/favicon.ico\" /><meta name=\"msapplication-config\" content=\"/browserconfig.xml\" /><meta name=\"theme-color\" content=\"#ffffff\" /><meta id=\"ctl00_ogUrl\" property=\"og:url\" content=\"http://www.geocaching.com/\" /><meta name=\"author\" content=\"Geocaching\" /><meta name=\"DC.creator\" content=\"Geocaching\" /><meta name=\"Copyright\" content=\"Copyright (c) 2000-2021 Groundspeak, Inc. All Rights Reserved.\" /><!-- Copyright (c) 2000-2021 Groundspeak, Inc. All Rights Reserved. --><meta name=\"description\" content=\"Geocaching&#32;is&#32;a&#32;treasure&#32;hunting&#32;game&#32;where&#32;you&#32;use&#32;a&#32;GPS&#32;to&#32;hide&#32;and&#32;seek&#32;containers&#32;with&#32;other&#32;participants&#32;in&#32;the&#32;activity.&#32;Geocaching.com&#32;is&#32;the&#32;listing&#32;service&#32;for&#32;geocaches&#32;around&#32;the&#32;world.\" /><meta name=\"DC.subject\" content=\"Geocaching&#32;is&#32;a&#32;treasure&#32;hunting&#32;game&#32;where&#32;you&#32;use&#32;a&#32;GPS&#32;to&#32;hide&#32;and&#32;seek&#32;containers&#32;with&#32;other&#32;participants&#32;in&#32;the&#32;activity.&#32;Geocaching.com&#32;is&#32;the&#32;listing&#32;service&#32;for&#32;geocaches&#32;around&#32;the&#32;world.\" /><meta http-equiv=\"imagetoolbar\" content=\"no\" /><meta name=\"distribution\" content=\"global\" /><meta name=\"MSSmartTagsPreventParsing\" content=\"true\" /><meta name=\"rating\" content=\"general\" /><meta name=\"revisit-after\" content=\"1&#32;days\" /><meta name=\"robots\" content=\"all\" /><meta name=\"p:domain_verify\" content=\"107f8f596a30ff1ea307df82db696a5e\" /><meta name=\"apple-itunes-app\" content=\"app-id=329541503\" /><meta name=\"page_path\" content=\"seek/cache_details.aspx\" />\n    <meta name=\"page_name\" content=\"PMO Cache Upsell\" />\n<link href=\"https://fonts.googleapis.com/css?family=Noto+Sans:400,700&amp;subset=latin,latin-ext\" rel=\"stylesheet\" type=\"text/css\" /><link href=\"/content/coreResponsiveCSS?v=iaynC8s9yhyBIcftrbWRFH7OdHZU6PRw-_EP1tfbMrw1\" rel=\"stylesheet\"/>\r\n<script src=\"/bundle/modernizer?v=HfmUMlIbhuybNYbtsV4gvygQU2XxNXFZuOsLOTe8PBo1\"></script>\r\n\n        \n        <script type=\"text/javascript\" src=\"/play/dataparameters/datalayer\"></script>\n\n        \n        \n            <script>(function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;\n            h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};\n            (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;})(window,document.documentElement,'async-hide','dataLayer',4000,\n            {'GTM-PZRX5BC':true});</script>\n        \n\n        <script type=\"text/javascript\">\n\n            var googletag = googletag || {};\n            googletag.cmd = googletag.cmd || [];\n\n            (function () {\n                var gads = document.createElement('script');\n                gads.async = true;\n                gads.type = 'text/javascript';\n                var useSSL = 'https:' == document.location.protocol;\n                gads.src = (useSSL ? 'https:' : 'http:') + '//www.googletagservices.com/tag/js/gpt.js';\n                var node = document.getElementsByTagName('script')[0];\n                node.parentNode.insertBefore(gads, node);\n            })();\n\n            (function (i, s, o, g, r, a, m) {\n                i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {\n                    (i[r].q = i[r].q || []).push(arguments)\n                }, i[r].l = 1 * new Date(); a = s.createElement(o),\n                    m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)\n            })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');\n\n            \n                ga('create', 'UA-2020240-1', 'auto', {userId: 7766546});\n            \n            ga('require', 'GTM-PZRX5BC');\n            \n\n            ga('require', 'linkid');\n        </script>\n        \n        <!-- Google Tag Manager -->\n        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\n        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\n        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=\n        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\n        })(window,document,'script','dataLayer','GTM-N3KS8V2');</script>\n        <!-- End Google Tag Manager -->\n            \n    \n\n    <script type=\"text/javascript\">\n        ga('send', 'pageview');\n    </script>\n\n    <script type=\"text/javascript\" src=\"/play/serverparameters/params\"></script>\n\n    \n    <style>        \n        .heading-3 {\n            margin-bottom: 0;\n        }\n        /* Cache Details | type, GC code, placed by */\n        .ul__cache-details {\n            margin: 1rem auto;\n        }\n        .li__cache-icon {\n\n            float: left;\n            margin-right: 1em;           \n        }\n        .li__cache-icon svg {\n            height: 48px;\n            width: 48px;\n        }\n        .li__cache-type,.li__gccode {\n            display: inline-block;\n        }\n        .li__cache-type::after {\n            content:'|';\n            display: inline-block;\n            padding: 0 .25em;\n        }\n\n        /* Hide Details | difficulty, terrain, size, favorite points */\n        .ul__hide-details {\n            font-size: .875rem; /* 14px */\n        }\n        .ul__hide-details li {\n            display: inline-block;\n            overflow: hidden;\n            width: 46.5%;\n        }\n        .ul__hide-details li:nth-child(odd) {\n            margin-right: 5%;\n        }\n        .ul__hide-details span:first-child::after {\n            content:':';\n        }\n\n        .ul__hide-details span {  \n            display: inline-block;          \n            vertical-align: middle;\n        }\n        .ul__hide-details .span__title {     \n            color: #9b9b9b;                 \n            margin-right: .25em;\n            max-width: 80%;\n            overflow: hidden;\n            text-overflow: ellipsis;\n            white-space: nowrap;\n        }\n\n        .btn-pmo {\n            margin-top: 0;\n        }\n\n        @media screen and (min-width: 600px) {        \n            /* Cache Details | type, GC code, placed by */\n            .ul__hide-details .span__title {\n                max-width: 150px;\n            }\n            .ul__hide-details li {\n                width: auto;\n            }\n            .ul__hide-details li:nth-child(odd) {\n                margin-right: 0;\n            }\n\n            /* Hide Details | difficulty, terrain, size, favorite points */\n            .flexbox .ul__hide-details {\n                display: -ms-flexbox;\n                display: -webkit-flex;\n                display: flex;\n                -webkit-flex-wrap: wrap;\n                -ms-flex-wrap: wrap;\n                flex-wrap: wrap;\n            }\n            .flexbox .ul__hide-details li {\n                -webkit-align-items: center;\n                -ms-flex-align: center;\n                align-items: center;\n                display: -ms-flexbox;\n                display: -webkit-flex;\n                display: flex;\n                position: relative;\n                width: auto;\n            }\n            .ul__hide-details li {\n                line-height: 1.86em; /* 26px */\n            }\n            .ul__hide-details li + li {\n                border-left: 1px solid #9B9B9B;\n                margin-left: 1em;\n                padding-left: 1em;\n            }\n            .ul__hide-details .span_title {\n                margin-right: .25em;\n                width: auto;\n            }\n        }\n\n        @media screen and (min-width: 1140px) {\n            .flexbox .div__cache-info {\n                display: -ms-flexbox;\n                display: -webkit-flex;\n                display: flex;\n            }\n            .ul__cache-details {\n                -webkit-flex: 1 1 auto;\n                -ms-flex: 1 1 auto;\n                flex: 1 1 auto;\n                margin-right: 4em;\n            }\n            .flexbox .ul__hide-details {\n                -webkit-align-items: flex-start;\n                -ms-flex-align: start;\n                align-items: flex-start;\n                display: -ms-flexbox;\n                display: -webkit-flex;\n                display: flex;\n                -webkit-flex: 1 1 auto;\n                -ms-flex: 1 1 auto;\n                flex: 1 1 auto;\n                -webkit-justify-content: flex-end; /* Safari */\n                -ms-flex-pack: center;\n                justify-content: flex-end;\n                margin-top: .9rem;\n            }\n            \n        }\n\n        .premium-upgrade-widget {\n            max-width: 450px;\n            border: 1px solid #e4e4e4;\n            border-radius: 3px;\n            margin: 25px auto 44px;\n        }\n\n        .premium-upgrade-widget header {\n            display: block;\n            border-bottom: 1px solid #e4e4e4;\n            padding: 24px 16px;\n            background: #f5f5f5;\n            text-align: center;\n            min-width: 0;\n            margin-bottom: 0;\n        }\n\n        .premium-upgrade-widget h2 {\n            margin: 0;\n        }\n\n        .premium-upgrade-widget .smaller-title-option {\n            font-size: 16px;\n            font-weight: 400;\n        }\n\n        .premium-upgrade-widget .main-content {\n            text-align: center;\n            padding: 24px 16px 48px;\n        }\n\n        .premium-upgrade-widget .illustration {\n            display: block;\n            margin: 0 auto 24px;\n            height: 90px;\n            width: auto;\n        }\n\n        .premium-upgrade-widget .premium-features-list {\n            padding: 0;\n            margin: 0 0 24px;\n        }\n\n        .premium-upgrade-widget .premium-features-list li{\n            display: block; \n            margin-bottom: 16px;\n            font-size: 16px;\n        }\n\n        .premium-upgrade-widget .premium-features-list li:last-child{\n            margin-bottom: 0; \n        }\n\n        .premium-upgrade-widget .btn-primary {\n            display: inline-block;\n        }\n\n        /* Tablet Styles - 600 */\n        @media only screen and (min-width: 600px) {\n            .premium-upgrade-widget header {\n                padding: 24px 32px;\n            }\n\n            .premium-upgrade-widget .main-content {\n                text-align: center;\n                padding: 24px 32px 48px;\n            }\n        }\n\n\n        /* Desktop Styles - 1024 */\n        @media only screen and (min-width: 1024px) {\n            .premium-upgrade-widget .smaller-title-option{\n                font-size: 14px;\n            }\n\n            .premium-upgrade-widget .premium-features-list li{\n                font-size: 14px;\n            }\n        }\n    </style>\n<meta name=\"og:type\" content=\"article\" property=\"og:type\" /><meta name=\"fb:app_id\" content=\"251051881589204\" property=\"fb:app_id\" /><meta name=\"og:description\" content=\"Use&#32;a&#32;GPS-enabled&#32;device&#32;to&#32;navigate&#32;to&#32;the&#32;provided&#32;coordinates.&#32;Look&#32;for&#32;a&#32;micro&#32;hidden&#32;container.&#32;When&#32;you&#32;find&#32;it,&#32;write&#32;your&#32;name&#32;and&#32;date&#32;in&#32;the&#32;logbook.&#32;If&#32;you&#32;take&#32;something&#32;from&#32;the&#32;container,&#32;leave&#32;something&#32;in&#32;exchange.&#32;The&#32;terrain&#32;is&#32;2&#32;and&#32;difficulty&#32;is&#32;1.5&#32;(out&#32;of&#32;5).\" property=\"og:description\" /><meta name=\"og:image\" content=\"https://www.geocaching.com/images/facebook/wpttypes/2.png\" property=\"og:image\" /><meta name=\"og:title\" content=\"Nidda:&#32;jenseits&#32;der&#32;Rennstrecke&#32;Reloaded\" property=\"og:title\" /></head>\n\n<body >\n    <script src=\"/bundle/vendor?v=WiI8q8veO30Dlvfez-HjE8Nl0mzPV46bW-lEVyRlu5g1\"></script>\r\n\n    <form method=\"post\" action=\"../seek/cache_pmo.aspx?wp=GC74HEV&amp;title=nidda-jenseits-der-rennstrecke-reloaded&amp;guid=328927c1-aa8c-4e0d-bf59-31f1ce44d990\" id=\"aspnetForm\">\r\n<div class=\"aspNetHidden\">\r\n<input type=\"hidden\" name=\"__EVENTTARGET\" id=\"__EVENTTARGET\" value=\"\" />\r\n<input type=\"hidden\" name=\"__EVENTARGUMENT\" id=\"__EVENTARGUMENT\" value=\"\" />\r\n<input type=\"hidden\" name=\"__VIEWSTATE\" id=\"__VIEWSTATE\" value=\"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\" />\r\n</div>\r\n\r\n<script type=\"text/javascript\">\r\n//<![CDATA[\r\nvar theForm = document.forms['aspnetForm'];\r\nif (!theForm) {\r\n    theForm = document.aspnetForm;\r\n}\r\nfunction __doPostBack(eventTarget, eventArgument) {\r\n    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {\r\n        theForm.__EVENTTARGET.value = eventTarget;\r\n        theForm.__EVENTARGUMENT.value = eventArgument;\r\n        theForm.submit();\r\n    }\r\n}\r\n//]]>\r\n</script>\r\n\r\n\r\n<script src=\"/WebResource.axd?d=pynGkmcFUV13He1Qd6_TZETFLbdR8wwRMdub1eDU5ILCHE7OhotblLUuaNwx3HQ7rYen0g2&amp;t=637460693481343508\" type=\"text/javascript\"></script>\r\n\r\n\r\n<script type=\"text/javascript\">\r\n//<![CDATA[\r\nwindow['headerSettings'] = {\r\n  \"isAuthenticated\": true,\r\n  \"paymentUrl\": \"https://payments.geocaching.com\",\r\n  \"planUrl\": \"\",\r\n  \"gameplayUrl\": \"\",\r\n  \"mainElementId\": \"Content\",\r\n  \"mapUrl\": \"\",\r\n  \"locale\": \"en-US\",\r\n  \"inlinePostfix\": \"--inline\",\r\n  \"publicUrl\": \"https://www.geocaching.com\",\r\n  \"hostname\": \"https://www.geocaching.com\",\r\n  \"avatarUrl\": \"https://www.geocaching.com/images/default_avatar.png\",\r\n  \"findCount\": 0,\r\n  \"isBasic\": true,\r\n  \"showDoNotSell\": true,\r\n  \"showRenew\": true,\r\n  \"username\": \"<USERNAME>\",\r\n  \"userPublicGuid\": \"ea1eccb8-d6a0-42ca-a674-3a1faf7fee6f\"\r\n}; window['userRef'] = 'PR8VFGN';//]]>\r\n</script>\r\n\r\n<script src=\"/ScriptResource.axd?d=uHIkleVeDJf4xS50Krz-yEJRbXY2x1dOBEdM7W-QkNpgaumdwaefPzMErSeG_W29-lHX6vl5G7uDafHaYWCx8Z9aLlo8tZwVtV42ISp6LhT6LbxuVUWMo5GyApWAyPOqkSkf1vCyntgT-PmPv-C6FWxsbWo1&amp;t=2fe674eb\" type=\"text/javascript\"></script>\r\n<script src=\"/ScriptResource.axd?d=Jw6tUGWnA15YEa3ai3FadDbNvwkajNGIHz7aGm4w_MLRMuZ5hwlk3bfOsTs3E4cZZ4ktnTFE_MzciTx4exD15JXabrPKGazf6xj6fW1A8vXJoc3OCqf4cg_BDlVl8fQEsQiziDh4kHnJRWZEQotwuLoezlg1&amp;t=2fe674eb\" type=\"text/javascript\"></script>\r\n<div class=\"aspNetHidden\">\r\n\r\n\t<input type=\"hidden\" name=\"__VIEWSTATEGENERATOR\" id=\"__VIEWSTATEGENERATOR\" value=\"BA1BDC2C\" />\r\n</div>  \n        <script type=\"text/javascript\">\r\n//<![CDATA[\r\nSys.WebForms.PageRequestManager._initialize('ctl00$uxMainScriptManager', 'aspnetForm', [], [], [], 90, 'ctl00');\r\n//]]>\r\n</script>\r\n\n        \n        <!-- Google Tag Manager (noscript) -->\n        <noscript><iframe src=\"https://www.googletagmanager.com/ns.html?id=GTM-N3KS8V2\"\n        height=\"0\" width=\"0\" style=\"display:none;visibility:hidden\"></iframe></noscript>\n        <!-- End Google Tag Manager (noscript) -->\n        <a id=\"ctl00_hlSkipLinksContent\" class=\"visually-hidden\" href=\"#Content\">Skip to content</a>\n        <div class=\"print-only\">\n            <svg viewBox=\"0 0 196 29\" height=\"29\" width=\"196\" role=\"img\" aria-label=\"Geocaching\">\n                <use xlink:href=\"/images/branding/logo-geocaching.svg#gcLogo\"></use>\n            </svg>\n            <hr />\n        </div>\n        \n            <div id=\"gc-header-root\" style=\"background-color: #02874D; min-height: 80px;\"></div>\n        \n\n        <div class=\"content-slide\">\n            \n\n\n            <main id=\"Content\" class=\"main\">\n                \n                \n\n                <div class=\"wrapper\">\n\n                    \n\n                    <div id=\"ctl00_divContentMain\" class=\"content-body\">\n                        \n    \n    <h1 class=\"heading-3\">Nidda: jenseits der Rennstrecke Reloaded</h1>\n\n    <div class=\"div__cache-info\">\n        <ul class=\"ul__cache-details unstyled\">\n            <li class=\"li__cache-icon\">\n                <svg class=\"icon cache-icon\" role=\"presentation\">\n                    <use xlink:href=\"/app/ui-icons/sprites/cache-types.svg#icon-2-disabled\" />\n                </svg>\n            </li>\n            <li class=\"li__cache-type\">                \n                Traditional\n            </li>\n            <li class=\"li__gccode\">\n                GC74HEV\n            </li>\n            <li>\n                <span id=\"ctl00_ContentBody_uxCacheBy\">A cache by tdrex_</span>\n            </li>\n        </ul>\n         \n        <ul class=\"ul__hide-details\">             \n            <li><span id=\"ctl00_ContentBody_lblDifficulty\" class=\"span__title\">Difficulty</span>\n                <span>1.5</span>\n            </li>\n        \n            <li><span id=\"ctl00_ContentBody_lblTerrain\" class=\"span__title\">Terrain</span>\n                <span>2</span>\n            </li>\n\n            <li><span id=\"ctl00_ContentBody_lblSize\" class=\"span__title\">Size</span>\n                <span>Micro</span>    \n            </li>\n\n            <li><span id=\"ctl00_ContentBody_lblFavoritePoints\" class=\"span__title\">Favorite Points</span>\n                <span>0</span>\n            </li>\n       \n        </ul>\n    </div>\n\n    <section class=\"premium-upgrade-widget\">\n        <header>\n            <h2 class=\"larger-title-option\">\n                Geocaching Premium\n            </h2>\n        </header>\n        <div class=\"main-content\">\n            <img class=\"illustration lock-icon\" src=\"/play/Content/images/padlockHero.svg\" />\n            <ul class=\"premium-features-list\">\n                <li>Access all geocaches</li>\n                <li>Search and sort with advanced filters</li>\n                <li>Create lists and download maps for offline use</li>\n                <li>Send to Garmin, pocket queries, and more!</li>\n            </ul>\n        \n            <a href=\"https://payments.geocaching.com/?upgrade=true\" class=\"btn btn-primary\" data-ga-category=\"Cache details\" data-ga-action=\"Upgrade Button\" data-ga-label=\"Upgrade\">\n                Upgrade\n            </a>\n        </div>\n    </section>\n\n\n                    </div>\n\n                    <article id=\"ctl00_divContentSide\" class=\"sidebar\">\n                        <div id=\"ctl00_uxBanManWidget\" class=\"sidebar-ad\" style=\"width:160px;\">\r\n\t\n                            <div id=\"gBannerAd\" data-width=\"160\" data-height=\"600\" data-unitname=\"/1011121/all_other_pgs_160x600\"></div>\n                            <p>\n                                <a id=\"ctl00_hlAdvertiseWithUs\" href=\"../about/advertising.aspx\">Advertising with Us</a>\n                            </p>\n                        \r\n</div>\n                    </article>\n                </div>\n            </main>\n\n            \n                <div id=\"gc-footer-root\"></div>\n            \n        </div>\n\n        \n\n\n<script \n    src='https://code.jquery.com/jquery-3.5.1.min.js' \n    integrity='sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=' \n    crossorigin='anonymous'></script>\n\n<script>window.jQuery || document.write('<script src=\"/app/dist/jquery.min.js\"><\\/script>')</script>\n\n\n\n<script\n  src=\"https://code.jquery.com/ui/1.12.1/jquery-ui.min.js\"\n  integrity=\"sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=\"\n  crossorigin=\"anonymous\"></script>\n  \n              \n            <script src=\"/account/scripts/custom/message-center-header-widget.js\" defer></script>\n            <script src=\"/bundle/layoutResponsiveJS?v=yf-PPTYJYrcbqCdTwdbt_yj8P0LCIiVbhutGLumMByI1\"></script>\r\n\n\n         \n    <script>\n        $('.btn-pmo, .premium-upgrade-widget .btn-primary').on('click', function () {\n            var $self = $(this),\n                hasFired = false;\n\n            var hitCallback = function () {\n                if (!hasFired) {\n                    hasFired = true;\n                    document.location = $self.attr('href');\n                }\n            }\n\n            ga('send', 'event', 'Cache details', 'Upgrade Button', 'Upgrade', { 'hitCallback': hitCallback });\n\n            // just in case google analytics is having issues.\n            window.setTimeout(hitCallback, 3000);\n\n            return false;\n        });\n    </script>\n\n\n    \r\n\r\n<script type=\"text/javascript\">\r\n//<![CDATA[\r\nvar gaToken = 'UA-2020240-1';//]]>\r\n</script>\r\n</form>\n    <form action=\"/account/logout\" method=\"post\" id=\"form-logout\">\n        <input type=\"hidden\" name=\"returnUrl\" />\n    </form>\n\n    <script type=\"text/javascript\">\n        $(function () {\n            $('a[target=\"_blank\"]').attr('rel', 'noopener noreferrer');\n        });\n            $('#gcNavigation a, #gcNavigation button').on('click', function (Event) {\n                const target = Event.currentTarget\n                if (target.dataset.eventAction) {\n                    let tracker\n                    if ('ga' in window) {\n                        tracker = ga.getAll()[0]\n                    }\n                    const eventAction = target.dataset.eventAction\n                    const eventCategory = target.dataset.eventCategory\n                    const eventLabel = target.dataset.eventLabel\n                    if (tracker && eventAction && eventCategory && eventLabel) {\n                        tracker.send({\n                            eventAction: eventAction,\n                            eventCategory: eventCategory,\n                            eventLabel: eventLabel,\n                            hitType: 'event'\n                        })\n                    }\n                }\n            });\n    </script>\n    \n        <script src=\"/bundle/reactChrome?v=v1PyvyfEQpeFmMPwFeFjdVx6G3Jsnn_JKhKW3GLYrxE1\" defer></script>\n        <style>\n            #gc-header {\n                margin-bottom: 0 !important;\n            }\n        </style>\n    \n    <!-- Server: WEB04; Build: release-20211026.3.Release_5747 \r\n -->\n</body>\n</html>\n"
+        },
+        "headers": {
+          "Cache-Control": [
+            "no-cache"
+          ],
+          "Content-Length": [
+            "26689"
+          ],
+          "Content-Type": [
+            "text/html; charset=utf-8"
+          ],
+          "Date": [
+            "Sun, 14 Nov 2021 01:37:09 GMT"
+          ],
+          "Expires": [
+            "-1"
+          ],
+          "Pragma": [
+            "no-cache"
+          ],
+          "Request-Context": [
+            "appId=cid-v1:019d82c2-5dd7-44cb-aa94-01e052f0d40c"
+          ],
+          "Server": [
+            "Microsoft-IIS/10.0"
+          ],
+          "Set-Cookie": [
+            "gspkauth=fyPytiuFo7zEB0QKWLn_woFCTEDpBRkSUdfIpcMdxB6IbJmsK9tAO7BZIzQyTYNRKGEmPijKH-LPoTSTjv8oa6Bcb6lfuBoJjTMaYrBIi-uc57omB6dkezkXVcthg_U4Cqf3mf-3ZLcTjqhbj4rytYwTIWTnn_9JUjHXW03u9YI1; domain=.geocaching.com; expires=Tue, 14-Dec-2021 01:37:10 GMT; path=/; secure; HttpOnly",
+            "Culture=en-US; path=/; secure; HttpOnly",
+            "gspkauth=<AUTH COOKIE>; domain=.geocaching.com; expires=Tue, 14-Dec-2021 01:37:10 GMT; path=/; secure; HttpOnly"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubDomains"
+          ],
+          "X-AspNet-Version": [
+            "4.0.30319"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.geocaching.com/geocache/GC74HEV_nidda-jenseits-der-rennstrecke-reloaded?guid=328927c1-aa8c-4e0d-bf59-31f1ce44d990"
+      }
+    },
+    {
+      "recorded_at": "2021-11-14T01:37:11",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.26.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "http://tiles01.geocaching.com/map.details?i=GC74HEV"
+      },
+      "response": {
+        "body": {
+          "encoding": null,
+          "string": ""
+        },
+        "headers": {
+          "Connection": [
+            "Keep-Alive"
+          ],
+          "Content-Length": [
+            "0"
+          ],
+          "Location": [
+            "https://tiles01.geocaching.com/map.details?i=GC74HEV"
+          ],
+          "Server": [
+            "BigIP"
+          ]
+        },
+        "status": {
+          "code": 302,
+          "message": "Moved Temporarily"
+        },
+        "url": "http://tiles01.geocaching.com/map.details?i=GC74HEV"
+      }
+    },
+    {
+      "recorded_at": "2021-11-14T01:37:11",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "gspkauth=<AUTH COOKIE>"
+          ],
+          "User-Agent": [
+            "python-requests/2.26.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://tiles01.geocaching.com/map.details?i=GC74HEV"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"status\":\"success\",\"data\":[{\"name\":\"Nidda: jenseits der Rennstrecke Reloaded\",\"gc\":\"GC74HEV\",\"g\":\"328927c1-aa8c-4e0d-bf59-31f1ce44d990\",\"available\":false,\"archived\":true,\"subrOnly\":true,\"li\":false,\"fp\":\"0\",\"difficulty\":{\"text\":1.5,\"value\":\"1_5\"},\"terrain\":{\"text\":2.0,\"value\":\"2\"},\"hidden\":\"4/25/2017\",\"container\":{\"text\":\"Micro\",\"value\":\"micro.gif\"},\"type\":{\"text\":\"Traditional Cache\",\"value\":2},\"owner\":{\"text\":\"tdrex_\",\"value\":\"4139550c-5877-4516-a851-4f37538b8e39\"}}]}"
+        },
+        "headers": {
+          "Cache-Control": [
+            "no-cache"
+          ],
+          "Content-Length": [
+            "473"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sun, 14 Nov 2021 01:37:11 GMT"
+          ],
+          "Expires": [
+            "-1"
+          ],
+          "Pragma": [
+            "no-cache"
+          ],
+          "Server": [
+            "Microsoft-IIS/10.0"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubDomains"
+          ],
+          "Vary": [
+            "Accept-Encoding"
+          ],
+          "X-AspNet-Version": [
+            "4.0.30319"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://tiles01.geocaching.com/map.details?i=GC74HEV"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}

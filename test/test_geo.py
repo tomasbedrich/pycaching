@@ -12,7 +12,7 @@ from pycaching import Cache
 from pycaching.errors import GeocodeError, BadBlockError
 from pycaching.geo import Point, Polygon, Rectangle, Tile, UTFGridPoint, Block
 from pycaching.geo import to_decimal
-from . import NetworkedTest
+from . import LoggedInTest
 
 _sample_caches_file = path.join(path.dirname(__file__), "sample_caches.csv")
 _sample_utfgrid_file = path.join(path.dirname(__file__), "sample_utfgrid.json")
@@ -24,7 +24,7 @@ def make_tile(x, y, z, a=0, b=0, size=256):
     return t, UTFGridPoint(a, b)
 
 
-class TestPoint(NetworkedTest):
+class TestPoint(LoggedInTest):
     def test_from_string(self):
         with self.subTest("normal"):
             self.assertEqual(Point.from_string("N 49 45.123 E 013 22.123"),
@@ -81,7 +81,7 @@ class TestPoint(NetworkedTest):
         with self.subTest("non-existing location"):
             with self.recorder.use_cassette('geo_location_nonexisting'):
                 with self.assertRaises(GeocodeError):
-                    Point.from_location(self.gc, "qwertzuiop")
+                    Point.from_location(self.gc, "lkadflkajsfljasflkasf")
 
         with self.subTest("empty request"):
             with self.recorder.use_cassette('geo_location_empty'):
@@ -180,7 +180,7 @@ class TestRectangle(unittest.TestCase):
         self.assertAlmostEqual(self.rect.diagonal, 3411261.6697293497)
 
 
-class TestTile(NetworkedTest):
+class TestTile(LoggedInTest):
     # see
     # http://gis.stackexchange.com/questions/8650/how-to-measure-the-accuracy-of-latitude-and-longitude
     POSITION_ACCURANCY = 3  # = up to 110 meters

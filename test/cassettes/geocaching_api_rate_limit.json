@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2020-06-08T19:26:41",
+      "recorded_at": "2021-11-14T01:37:19",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -21,7 +21,7 @@
             "gspkauth=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.23.0"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -30,26 +30,26 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7453707,\"name\":\"CITO podle pranostik - Maxim\",\"code\":\"GC8G003\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":13,\"containerType\":6,\"difficulty\":1.0,\"terrain\":3.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.071967,\"longitude\":14.392633},\"detailsUrl\":\"/geocache/GC8G003\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2020-06-10T17:30:00\",\"owner\":{\"code\":\"PR24GA1\",\"username\":\"taxoft\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":8657}"
+          "string": "{\"results\":[{\"id\":8398196,\"name\":\"Zem\u011b Kelt\u016f 1\",\"code\":\"GC9GNTF\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":2,\"difficulty\":5.0,\"terrain\":5.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.7063,\"longitude\":13.859133},\"detailsUrl\":\"/geocache/GC9GNTF\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-09-24T00:00:00\",\"owner\":{\"code\":\"PR33HRK\",\"username\":\"oblac\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "516"
+            "498"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "8842fad8-90ff-47c5-bde2-889d8022bca2"
+            "8ac2d76e-8166-4b49-893f-8f96be64c160"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:35 GMT"
+            "Sun, 14 Nov 2021 01:37:18 GMT"
           ],
           "Set-Cookie": [
-            "jwt=<AUTH COOKIE>; domain=.geocaching.com; path=/; expires=Mon, 08-Jun-2020 20:25:34 GMT; secure; HttpOnly"
+            "jwt=<AUTH COOKIE>; domain=.geocaching.com; path=/; expires=Sun, 14-Nov-2021 02:36:17 GMT; secure; HttpOnly"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -75,7 +75,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:41",
+      "recorded_at": "2021-11-14T01:37:20",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -95,7 +95,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.23.0"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -104,23 +104,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7624537,\"name\":\"4 roky jsme tu s V\u00e1mi\",\"code\":\"GC8NPQQ\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":3653,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.187433,\"longitude\":14.15545},\"detailsUrl\":\"/geocache/GC8NPQQ\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2020-06-27T15:00:00\",\"owner\":{\"code\":\"PRCMVK0\",\"username\":\"cvr\u010dkov\u00e9\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":8657}"
+          "string": "{\"results\":[{\"id\":8119425,\"name\":\"Terezin Games 2022\",\"code\":\"GC97APW\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":453,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.5071,\"longitude\":14.15145},\"detailsUrl\":\"/geocache/GC97APW\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-06-25T08:00:00\",\"owner\":{\"code\":\"PR671V8\",\"username\":\"evenTeam\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "515"
+            "506"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "6012160e-bd5b-4cf4-99c2-c63fa4ff6466"
+            "940e91c2-80b2-4c62-bd98-29c912b61147"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:36 GMT"
+            "Sun, 14 Nov 2021 01:37:20 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -146,7 +146,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:41",
+      "recorded_at": "2021-11-14T01:37:20",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -166,7 +166,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.23.0"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -175,23 +175,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7737235,\"name\":\"V jedn\u00e9 stop\u011b\",\"code\":\"GC8TG15\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.67815,\"longitude\":14.03695},\"detailsUrl\":\"/geocache/GC8TG15\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2020-08-29T08:30:00\",\"owner\":{\"code\":\"PR22HRH\",\"username\":\"Ajfel66\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":8657}"
+          "string": "{\"results\":[{\"id\":8119425,\"name\":\"Terezin Games 2022\",\"code\":\"GC97APW\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":453,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.5071,\"longitude\":14.15145},\"detailsUrl\":\"/geocache/GC97APW\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-06-25T08:00:00\",\"owner\":{\"code\":\"PR671V8\",\"username\":\"evenTeam\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "501"
+            "506"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "614e367f-0bc9-4247-8439-2bcb24b81850"
+            "756b1434-99c5-42ea-aaf2-ac83f3e3b493"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:36 GMT"
+            "Sun, 14 Nov 2021 01:37:20 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -217,7 +217,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:42",
+      "recorded_at": "2021-11-14T01:37:21",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -237,7 +237,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.23.0"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -246,23 +246,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7503565,\"name\":\"Community Celebration Event - Terezin Games 2020\",\"code\":\"GC8HMWD\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":3653,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.506667,\"longitude\":14.152},\"detailsUrl\":\"/geocache/GC8HMWD\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2020-08-15T16:00:00\",\"owner\":{\"code\":\"PR671V8\",\"username\":\"evenTeam\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":8657}"
+          "string": "{\"results\":[{\"id\":8437941,\"name\":\"S KA\u010cEREM NA CEST\u00c1CH-\u0158\u00cdP VII.\",\"code\":\"GC9J15J\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":3.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.386333,\"longitude\":14.289533},\"detailsUrl\":\"/geocache/GC9J15J\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-01-01T10:00:00\",\"owner\":{\"code\":\"PR6VPEQ\",\"username\":\"Fiobaba\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "537"
+            "521"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "1ba1d746-c702-4581-9274-d5345e885bef"
+            "3de488b5-c1f0-4a66-9f64-0168522e209c"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:36 GMT"
+            "Sun, 14 Nov 2021 01:37:21 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -288,7 +288,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:42",
+      "recorded_at": "2021-11-14T01:37:21",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -308,7 +308,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.23.0"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -317,23 +317,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7572415,\"name\":\"Bowling v Repich II/?\",\"code\":\"GC8KZGC\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.065917,\"longitude\":14.304117},\"detailsUrl\":\"/geocache/GC8KZGC\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2020-06-22T20:15:00\",\"owner\":{\"code\":\"PR3KWJX\",\"username\":\"bosorcicka\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":8657}"
+          "string": "{\"results\":[{\"id\":8411350,\"name\":\"CITO na z\u00e1mku Veltrusy XXVIII\",\"code\":\"GC9H4FT\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":13,\"containerType\":6,\"difficulty\":1.0,\"terrain\":2.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.277526,\"longitude\":14.331086},\"detailsUrl\":\"/geocache/GC9H4FT\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-21T09:00:00\",\"owner\":{\"code\":\"PR4FQRZ\",\"username\":\"eMichalek\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "512"
+            "521"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "4215ff61-59cd-4ddb-a0f7-c13b8767a05f"
+            "2e29ddf0-8b4e-4ec6-8309-917c4bb9caa5"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:37 GMT"
+            "Sun, 14 Nov 2021 01:37:21 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -359,7 +359,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:43",
+      "recorded_at": "2021-11-14T01:37:22",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -379,7 +379,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.23.0"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -388,23 +388,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7501312,\"name\":\"\\\"CESTOVATEL\u00c9\\\" na Lou\u0161t\u00edn\u011b\",\"code\":\"GC8HJGQ\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":3653,\"containerType\":6,\"difficulty\":1.0,\"terrain\":2.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.163783,\"longitude\":13.793783},\"detailsUrl\":\"/geocache/GC8HJGQ\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2020-06-20T13:00:00\",\"owner\":{\"code\":\"PR2X9QM\",\"username\":\"GeoCule\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":8657}"
+          "string": "{\"results\":[{\"id\":8445093,\"name\":\"Krovi, uhni s cesty 4 - Na Piskach\",\"code\":\"GC9J8K9\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":13,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.183367,\"longitude\":14.16075},\"detailsUrl\":\"/geocache/GC9J8K9\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-30T14:30:00\",\"owner\":{\"code\":\"PRFD28\",\"username\":\"Toniczech\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "522"
+            "523"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "ff2a3c7c-1a56-4299-bf12-95d966eb15bb"
+            "7096608d-f28b-43ef-b1cd-dc4de18e591e"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:37 GMT"
+            "Sun, 14 Nov 2021 01:37:22 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -430,7 +430,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:44",
+      "recorded_at": "2021-11-14T01:37:22",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -450,7 +450,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.23.0"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -459,23 +459,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7710650,\"name\":\"5.peceni burtu v udoli\",\"code\":\"GC8RKBJ\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.138883,\"longitude\":14.1024},\"detailsUrl\":\"/geocache/GC8RKBJ\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2020-06-12T18:00:00\",\"owner\":{\"code\":\"PR45R40\",\"username\":\"kstavk\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":8657}"
+          "string": "{\"results\":[{\"id\":8440054,\"name\":\"Zoopark Chomutov - bonus LAB\",\"code\":\"GC9J3BQ\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":2,\"difficulty\":2.0,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":1,\"postedCoordinates\":{\"latitude\":50.4741666666667,\"longitude\":13.42},\"detailsUrl\":\"/geocache/GC9J3BQ\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-05T00:00:00\",\"owner\":{\"code\":\"PRZGD8Z\",\"username\":\"Aaanguaaa\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "507"
+            "521"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "c5b071d8-aa9f-4b65-a200-e08c93622b3f"
+            "d2d3671c-2e40-408d-bfea-e22a991a65d3"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:38 GMT"
+            "Sun, 14 Nov 2021 01:37:22 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -501,7 +501,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:44",
+      "recorded_at": "2021-11-14T01:37:23",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -521,7 +521,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.23.0"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -530,23 +530,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7453710,\"name\":\"CITO podle pranostik - Adina\",\"code\":\"GC8G006\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":13,\"containerType\":6,\"difficulty\":1.0,\"terrain\":3.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.071967,\"longitude\":14.392633},\"detailsUrl\":\"/geocache/GC8G006\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2020-06-17T17:30:00\",\"owner\":{\"code\":\"PR24GA1\",\"username\":\"taxoft\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":8657}"
+          "string": "{\"results\":[{\"id\":8433962,\"name\":\"Ja tam budu. A co vy?\",\"code\":\"GC9HX17\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.337862,\"longitude\":13.488493},\"detailsUrl\":\"/geocache/GC9HX17\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-17T03:30:00\",\"owner\":{\"code\":\"PR1TNKG\",\"username\":\"Etigo\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "516"
+            "507"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "5519009e-245c-4398-857e-3a3b666ef6bf"
+            "3fe44f6b-7285-4317-991c-7d164c5170fe"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:39 GMT"
+            "Sun, 14 Nov 2021 01:37:23 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -572,7 +572,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:45",
+      "recorded_at": "2021-11-14T01:37:24",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -592,7 +592,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.23.0"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -601,23 +601,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7453714,\"name\":\"CITO podle pranostik - Jaroslava\",\"code\":\"GC8G00A\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":13,\"containerType\":6,\"difficulty\":1.0,\"terrain\":3.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.071967,\"longitude\":14.392633},\"detailsUrl\":\"/geocache/GC8G00A\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2020-07-01T17:30:00\",\"owner\":{\"code\":\"PR24GA1\",\"username\":\"taxoft\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":8657}"
+          "string": "{\"results\":[{\"id\":8433962,\"name\":\"Ja tam budu. A co vy?\",\"code\":\"GC9HX17\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.337862,\"longitude\":13.488493},\"detailsUrl\":\"/geocache/GC9HX17\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-17T03:30:00\",\"owner\":{\"code\":\"PR1TNKG\",\"username\":\"Etigo\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "520"
+            "507"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "8f6b3bdc-0e96-4a4b-85e4-f7761c53876d"
+            "063db750-ef07-4055-9aee-ec03c8e5f6fe"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:39 GMT"
+            "Sun, 14 Nov 2021 01:37:24 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -643,7 +643,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:45",
+      "recorded_at": "2021-11-14T01:37:25",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -663,7 +663,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.23.0"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -672,23 +672,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7453712,\"name\":\"CITO podle pranostik - sv. Jan K\u0159titel\",\"code\":\"GC8G008\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":13,\"containerType\":6,\"difficulty\":1.0,\"terrain\":3.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.071967,\"longitude\":14.392633},\"detailsUrl\":\"/geocache/GC8G008\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2020-06-24T17:30:00\",\"owner\":{\"code\":\"PR24GA1\",\"username\":\"taxoft\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":8657}"
+          "string": "{\"results\":[{\"id\":8446352,\"name\":\"Fa(k)t tlust\u00e1 z\u00e1bava\",\"code\":\"GC9J9XX\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":49.740733,\"longitude\":13.591667},\"detailsUrl\":\"/geocache/GC9J9XX\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-27T09:15:00\",\"owner\":{\"code\":\"PR2JCDN\",\"username\":\"Tesman Pavel\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "527"
+            "515"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "e2da2b48-9066-433c-ae11-70ea90b97a87"
+            "bb82f2c3-3b0a-48f4-b031-5601918151c5"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:40 GMT"
+            "Sun, 14 Nov 2021 01:37:24 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -714,7 +714,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:26:45",
+      "recorded_at": "2021-11-14T01:37:25",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -734,7 +734,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.23.0"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -756,10 +756,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "57ea9077-342d-40e2-8961-766b3c2afb06"
+            "67069742-ebb6-4aa0-ad0d-b505c6d35e90"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:26:40 GMT"
+            "Sun, 14 Nov 2021 01:37:25 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -777,7 +777,7 @@
             "1"
           ],
           "x-rate-limit-reset": [
-            "20"
+            "35"
           ]
         },
         "status": {
@@ -788,7 +788,7 @@
       }
     },
     {
-      "recorded_at": "2020-06-08T19:27:10",
+      "recorded_at": "2021-11-14T01:38:05",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -808,7 +808,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.23.0"
+            "python-requests/2.26.0"
           ]
         },
         "method": "GET",
@@ -817,23 +817,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":7453712,\"name\":\"CITO podle pranostik - sv. Jan K\u0159titel\",\"code\":\"GC8G008\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":13,\"containerType\":6,\"difficulty\":1.0,\"terrain\":3.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.071967,\"longitude\":14.392633},\"detailsUrl\":\"/geocache/GC8G008\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2020-06-24T17:30:00\",\"owner\":{\"code\":\"PR24GA1\",\"username\":\"taxoft\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":8657}"
+          "string": "{\"results\":[{\"id\":8153625,\"name\":\"Hynkova krabice\",\"code\":\"GC98FA3\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":8,\"difficulty\":5.0,\"terrain\":5.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.60915,\"longitude\":14.075483},\"detailsUrl\":\"/geocache/GC98FA3\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-03-31T00:00:00\",\"owner\":{\"code\":\"PR33HRK\",\"username\":\"oblac\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "527"
+            "500"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "696a75de-9363-4b10-9dc3-1979580e83ac"
+            "3755e6cb-52aa-4e39-856d-372a31283fc8"
           ],
           "Date": [
-            "Mon, 08 Jun 2020 19:27:05 GMT"
+            "Sun, 14 Nov 2021 01:38:05 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"

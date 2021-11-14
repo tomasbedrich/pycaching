@@ -7,7 +7,8 @@ from unittest import mock
 from pycaching import Geocaching, Trackable
 from pycaching.errors import ValueError as PycachingValueError, LoadError
 from pycaching.log import Log, Type as LogType
-from . import NetworkedTest
+from pycaching.util import format_date
+from . import LoggedInTest
 
 
 class TestProperties(unittest.TestCase):
@@ -48,7 +49,7 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.t._log_page_url, "/track/details.aspx?id=6359246")
 
 
-class TestMethods(NetworkedTest):
+class TestMethods(LoggedInTest):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -76,7 +77,6 @@ class TestMethods(NetworkedTest):
     def test_load_log_page(self):
         expected_types = {t.value for t in (LogType.grabbed_it, LogType.note, LogType.discovered_it)}
         expected_inputs = "__EVENTTARGET", "__VIEWSTATE"  # and more ...
-        expected_date_format = "M/d/yyyy"  # if test is re-recorded, update for your testing account
 
         # make request
         with self.recorder.use_cassette('trackable_load_page'):
@@ -85,7 +85,9 @@ class TestMethods(NetworkedTest):
         self.assertSequenceEqual(expected_types, valid_types)
         for i in expected_inputs:
             self.assertIn(i, hidden_inputs.keys())
-        self.assertEqual(expected_date_format, user_date_format)  # failure may be due to account switch
+
+        # user_date_format should not raise an exception when further processed
+        format_date(date(2020, 12, 31), user_date_format)
 
     @mock.patch.object(Trackable, "_load_log_page")
     @mock.patch.object(Geocaching, "_request")
@@ -102,18 +104,18 @@ class TestMethods(NetworkedTest):
         test_tracking_code = "ABCDEF"
 
         with self.subTest("empty log text"):
-            l = Log(text="", visited=test_log_date, type=LogType.note)
+            log = Log(text="", visited=test_log_date, type=LogType.note)
             with self.assertRaises(PycachingValueError):
-                self.t.post_log(l, test_tracking_code)
+                self.t.post_log(log, test_tracking_code)
 
         with self.subTest("invalid log type"):
-            l = Log(text=test_log_text, visited=test_log_date, type=LogType.grabbed_it)
+            log = Log(text=test_log_text, visited=test_log_date, type=LogType.grabbed_it)
             with self.assertRaises(PycachingValueError):
-                self.t.post_log(l, test_tracking_code)
+                self.t.post_log(log, test_tracking_code)
 
         with self.subTest("valid log"):
-            l = Log(text=test_log_text, visited=test_log_date, type=LogType.discovered_it)
-            self.t.post_log(l, test_tracking_code)
+            log = Log(text=test_log_text, visited=test_log_date, type=LogType.discovered_it)
+            self.t.post_log(log, test_tracking_code)
 
             # test call to _request mock
             expected_post_data = {

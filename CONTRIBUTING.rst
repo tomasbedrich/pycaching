@@ -13,19 +13,25 @@ First time
        git clone https://github.com/tomasbedrich/pycaching.git
        cd pycaching
 
-2. *Optional:* create a virtualenv:
+2. Create a virtualenv:
 
    .. code-block:: bash
 
-       python3 -m venv .
-       source bin/activate  # Unix
-       Scripts\activate  # Windows
+       python3 -m venv .venv
+       source .venv/bin/activate  # Unix
+       .venv\Scripts\activate  # Windows
 
-3. Setup an enviroment:
+3. Install `Flit <https://flit.readthedocs.io/en/latest/>`_:
 
    .. code-block:: bash
 
-       python3 setup.py develop
+       pip install flit
+
+4. Install Pycaching package + dependencies in development mode:
+
+   .. code-block:: bash
+
+       flit install --symlink
 
 
 Typical workflow
@@ -33,23 +39,27 @@ Typical workflow
 
 1. Pick an issue labeled as `"contributors friendly"
    <https://github.com/tomasbedrich/pycaching/issues?q=is:open+is:issue+label:"contributors+friendly">`_
-   or create a new one. **Notify others** that you will solve this problem (write a comment
+   or create a new one. Please **notify others** that you will solve this problem (write a comment
    on GitHub).
-2. *Optional:* Activate the virtualenv:
+
+2. Activate the virtualenv:
 
    .. code-block:: bash
 
-       source bin/activate  # Unix
-       Scripts\activate  # Windows
+       source .venv/bin/activate  # Unix
+       .venv\Scripts\activate  # Windows
 
+3. Write some **code and tests**. After that, don't forget to update the **docs**. See coding style below.
 
-3. Write some **code and tests**. After that, don't forget to update the **docs**. See coding style
-   below.
-4. Run the linter and tests:
+4. Format the code using `Black <https://black.readthedocs.io/en/stable/>`_,
+   lint it using `Flake <https://flake8.pycqa.org/>`_ and
+   run the tests using `pytest <https://docs.pytest.org/>`_:
 
    .. code-block:: bash
 
-       python3 setup.py lint test
+       black
+       flake8
+       pytest
 
    Make sure that:
 
@@ -57,7 +67,35 @@ Typical workflow
    - all tests are passing,
    - the coverage is above 95%.
 
-5. Push your work and create a **pull request**. Yay!
+6. Push your work and create a **pull request**. Yay!
+
+
+Testing
+-------------------------------------------------------------------------------
+
+Pycaching uses `Betamax <https://betamax.readthedocs.io/en/latest/>`__ for testing, which speeds
+it up by recording network requests so that they can be mocked.
+
+If you haven't written or modified any tests, tests can be run just like:
+
+.. code-block:: bash
+
+    pytest
+
+If you have written or modified tests, you must provide a username and password for testing. Don't
+worry, these will not leave your computer. Betamax will insert a placeholder when it records any
+new cassettes. To run new tests, first set up the following environment variables:
+
+.. code-block:: bash
+
+    PYCACHING_TEST_USERNAME="yourusername" PYCACHING_TEST_PASSWORD="yourpassword" pytest
+
+Substitute your username for ``yourusername`` and your password for ``yourpassword``.
+
+To re-record a specific cassette in case of site changes, delete the corresponding JSON file and
+provide username and password as explained above. The missing cassette will be recorded for future
+usages.
+
 
 Coding style
 -------------------------------------------------------------------------------
@@ -65,7 +103,7 @@ Coding style
 - For code, follow `PEP8 <https://www.python.org/dev/peps/pep-0008/>`_.
 
   - Use **double quotes**.
-  - Try to keep line length below **100 characters** (or 120 if absolutely necessary).
+  - Keep line length below 120 characters.
   - Use `.format()` for string formatting.
 
 - For docs, please follow `PEP257 <https://www.python.org/dev/peps/pep-0257/>`_.
