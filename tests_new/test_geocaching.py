@@ -79,7 +79,7 @@ class TestLoadCredentials:
     @contextlib.contextmanager
     def mock_credentials_file(geocaching: Geocaching, contents: Union[bytes, dict, list, str]):
         """Create a temporary credentials file with given contents and mock a Geocaching instance to use it."""
-        with NamedTemporaryFile() as f:
+        with contextlib.closing(NamedTemporaryFile()) as f:
             # bytes are written as-is, others are encoded to JSON
             if type(contents) is bytes:
                 f.write(contents)
