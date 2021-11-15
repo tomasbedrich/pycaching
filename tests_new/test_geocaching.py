@@ -161,9 +161,7 @@ class TestLoadCredentials:
                 username, password = geocaching._load_credentials()
 
     def test_password_cmd(self, geocaching):
-        with self.mock_credentials_file(
-            geocaching, {"username": USERNAME, "password_cmd": "echo '{}'".format(PASSWORD)}
-        ):
+        with self.mock_credentials_file(geocaching, {"username": USERNAME, "password_cmd": "echo {}".format(PASSWORD)}):
             username, password = geocaching._load_credentials()
             assert USERNAME == username
             assert PASSWORD == password
