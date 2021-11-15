@@ -1,5 +1,6 @@
 import contextlib
 import json
+import os
 from subprocess import CalledProcessError
 from tempfile import NamedTemporaryFile
 from typing import Union
@@ -79,19 +80,21 @@ class TestLoadCredentials:
     @contextlib.contextmanager
     def mock_credentials_file(geocaching: Geocaching, contents: Union[bytes, dict, list, str]):
         """Create a temporary credentials file with given contents and mock a Geocaching instance to use it."""
-        with contextlib.closing(NamedTemporaryFile()) as f:
+        backup = geocaching._credentials_file
+        f = NamedTemporaryFile(delete=False)
+        try:
             # bytes are written as-is, others are encoded to JSON
             if type(contents) is bytes:
                 f.write(contents)
             else:
                 f.write(json.dumps(contents).encode("utf-8"))
             f.flush()
-            backup = geocaching._credentials_file
-            try:
-                geocaching._credentials_file = f.name
-                yield
-            finally:
-                geocaching._credentials_file = backup
+            f.close()
+            geocaching._credentials_file = f.name
+            yield
+        finally:
+            os.remove(f.name)
+            geocaching._credentials_file = backup
 
     def test(self, geocaching):
         with self.mock_credentials_file(geocaching, self.credentials):
