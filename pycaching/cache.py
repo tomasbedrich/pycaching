@@ -2584,71 +2584,48 @@ class Country:
         return f'{self.country_name}'
 
     @classmethod
-    def Xfrom_string_country(cls, name, distinct=False):
+    def ids_by_country_name(cls, name):
         results = cls.country_str_id().get(name.lower().strip(), [])
         return results
 
-        '''
-        key = name.lower().strip()
-        if key in cls.country_str_id():
-            r = cls.country_str_id()[key]
-            if distinct and len(r) > 1:
-                raise CountryClassAmbiguityValue(f'Country {name} is ambiguity')
-            return r[0] if distinct else r
-        return None
-        '''
-
-
     @classmethod
-    def Xfrom_string_state(cls, name, distinct=False):
+    def ids_by_state_name(cls, name):
         results = cls.state_str_id().get(name.lower().strip(), [])
         return results
-        '''
-        key = name.lower().strip()
-        if key in cls.state_str_id():
-            r = cls.state_str_id()[key]
-            if distinct and len(r) > 1:
-                raise CountryClassAmbiguityValue(f'State {name} is ambiguity')
-            return r[0] if distinct else r
-
-        return None
-        '''
 
     @classmethod
     def from_string_country(cls, name):
-        _id = cls.Xfrom_string_country(name, distinct=True)
-        if len(_id) == 0:
+        """Return a cache country from its country name."""
+        ids = cls.ids_by_country_name(name)
+        if len(ids) == 0:
             raise CountryClassUnknownName(f'Country {name} is unknown')
-        elif len(_id) > 1:
+        elif len(ids) > 1:
             raise CountryClassAmbiguityValue(f'Country {name} is ambiguity')
 
-        return Country(cid=_id[0], sid=None)
+        return Country(cid=ids[0], sid=None)
 
     @classmethod
     def from_string_state(cls, name):
-        _id = cls.Xfrom_string_state(name, distinct=True)
-        if len(_id) == 0:
+        """Return a cache country from its state name."""
+        ids = cls.ids_by_state_name(name)
+        if len(ids) == 0:
             raise CountryClassUnknownName(f'State {name} is unknown')
-        elif len(_id) > 1:
+        elif len(ids) > 1:
             raise CountryClassAmbiguityValue(f'State {name} is ambiguity')
 
-        return Country(cid=None, sid=_id[0])
-
-
+        return Country(cid=None, sid=ids[0])
 
     @classmethod
     def from_string_country_state(cls, token):
         if len(token) < 2:
             raise ValueError(f'Combination {token} is unknown') ## TODO fehlermeldung
 
-
-        cid = cls.Xfrom_string_country(token[1], distinct=True)
-        sids = cls.Xfrom_string_state(token[0], distinct=False)
-
+        cid = cls.ids_by_country_name(token[1])
+        sids = cls.ids_by_state_name(token[0])
 
         if not (len(cid) == 1 and len(sids) > 0):
-            cid = cls.Xfrom_string_country(token[0], distinct=True)
-            sids = cls.Xfrom_string_state(token[1], distinct=False)
+            cid = cls.ids_by_country_name(token[0])
+            sids = cls.ids_by_state_name(token[1])
 
         if not (len(cid) == 1 and len(sids) > 0):
             raise CountryClassUnknownCombination(f'Combination {token} is unknown')
@@ -2661,6 +2638,8 @@ class Country:
 
     @classmethod
     def from_string(cls, name):
+        """Return a cache country from its name"""
+
         """
         Converts a name into a Country object
 
