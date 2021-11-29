@@ -1199,7 +1199,7 @@ def invert_dictionary(data):
         inv_map[value.lower()] = inv_map.get(value.lower(), []) + [key]
     return inv_map
 
-
+# https://stackoverflow.com/questions/128573/using-property-on-classmethods
 class classproperty(object):
 
     def __init__(self, fget):
@@ -1213,9 +1213,6 @@ class CountryStateDict(object):
     _countries_id_name = __countries__
     _states_id_name = __states__
     _state_country = __state_to_country__
-
-    # https://stackoverflow.com/questions/128573/using-property-on-classmethods
-    # https://stackoverflow.com/questions/128573/using-property-on-classmethods/64738850#64738850
 
     @classproperty
     def countries(cls):
