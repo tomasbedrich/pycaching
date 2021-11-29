@@ -1199,9 +1199,9 @@ def invert_dictionary(data):
         inv_map[value.lower()] = inv_map.get(value.lower(), []) + [key]
     return inv_map
 
-# https://stackoverflow.com/questions/128573/using-property-on-classmethods
-class classproperty(object):
 
+class classproperty(object):
+    # https://stackoverflow.com/questions/128573/using-property-on-classmethods
     def __init__(self, fget):
         self.fget = fget
 
@@ -1250,13 +1250,6 @@ class CountryStateDict(object):
             cls._state_id_by_name = invert_dictionary(cls._states_id_name)
             return cls._state_id_by_name
 
-    @classmethod
-    def country_name_by_id(cls, cid):  # TODO wirklich?
-        return cls._countries_id_name[cid]
-
-    @classmethod
-    def state_name_by_id(cls, cid):  # TODO wirklich?
-        return cls._states_id_name[cid]
 
 
 class CountryStateUnknownName(ValueError):
@@ -1321,6 +1314,13 @@ class CountryState:
 
         return CountryState(cid=None, sid=ids[0])
 
+    '''
+    # TODO
+    @classmethod
+    def from_XstringX_country_state(cls, string, pattern=r'([^,]+),(.+)'):
+        m = re.match(pattern, string)
+    '''
+
     @classmethod
     def from_string_country_state(cls, token):
         if len(token) < 2:
@@ -1383,9 +1383,17 @@ class CountryState:
     def country_id(self):
         return self._cid
 
+    '''
+    @property.setter
+    def country_id(self, cid):
+        # TODO check id if exists
+        # TODO check id valid in context of state
+        self._cid = cid
+    '''
+
     @property
     def country_name(self):
-        return CountryStateDict.country_name_by_id(self._cid) if self._cid else None
+        return CountryStateDict.countries[self._cid] if self._cid else None
 
     @property
     def state_id(self):
@@ -1393,7 +1401,7 @@ class CountryState:
 
     @property
     def state_name(self):
-        return CountryStateDict.state_name_by_id(self._sid) if self._sid else None
+        return CountryStateDict.states[self._sid] if self._sid else None
 
     @property
     def has_state(self):
