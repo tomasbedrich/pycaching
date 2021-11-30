@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import unittest
 
-from pycaching.country import CountryStateDict, CountryState, CountryStateAmbiguityValue, CountryStateUnknownName
+from pycaching.country import CountryStateDict, CountryState, CountryStateAmbiguity, CountryStateUnknown
 
 
 class TestCountryStateDict(unittest.TestCase):
@@ -23,12 +23,18 @@ class TestCountryStateDict(unittest.TestCase):
             self.assertEqual(1, names.count(name), f'State name {name} is not unique')
 
 
-class TestCountryStateProperties(unittest.TestCase):
+class TestCountryState(unittest.TestCase):
     def setUp(self):
         pass
 
     def test_ctor(self):
-        c = CountryState()
+        try:
+            c = CountryState()
+        except ValueError:
+            pass
+        except Exception:
+            self.assertTrue(False)
+
 
         try:
             c = CountryState(4711)
@@ -143,7 +149,7 @@ class TestCountryStateProperties(unittest.TestCase):
             try:
                 c = CountryState.from_string_state(name)
                 self.assertTrue(False, str(c))
-            except CountryStateUnknownName:
+            except CountryStateUnknown:
                 pass
             except Exception:
                 self.assertTrue(False, str(c))
@@ -157,7 +163,7 @@ class TestCountryStateProperties(unittest.TestCase):
             try:
                 c = CountryState.from_string_country(name)
                 self.assertTrue(False, str(c))
-            except CountryStateUnknownName:
+            except CountryStateUnknown:
                 pass
             except Exception:
                 self.assertTrue(False, str(c))
@@ -236,14 +242,14 @@ class TestCountryStateProperties(unittest.TestCase):
             try:
                 c = CountryState.from_string(name)
                 self.assertTrue(False)
-            except CountryStateAmbiguityValue:
+            except CountryStateAmbiguity:
                 pass
 
         with self.subTest(f'from_string_state({name})'):
             try:
                 c = CountryState.from_string_state(name)
                 self.assertTrue(False)
-            except CountryStateAmbiguityValue:
+            except CountryStateAmbiguity:
                 pass
 
         name = 'Limburg, Belgium'
@@ -266,14 +272,14 @@ class TestCountryStateProperties(unittest.TestCase):
             try:
                 c = CountryState.from_string(name)
                 self.assertTrue(False)
-            except CountryStateAmbiguityValue:
+            except CountryStateAmbiguity:
                 pass
 
         with self.subTest(f'from_string_state({name})'):
             try:
                 c = CountryState.from_string_state(name)
                 self.assertTrue(False)
-            except CountryStateAmbiguityValue:
+            except CountryStateAmbiguity:
                 pass
 
         name = 'Distrito Federal, Brazil'

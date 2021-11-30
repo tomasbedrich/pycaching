@@ -1188,15 +1188,16 @@ __state_to_country__ = {
 }
 
 
-def invert_dictionary(data):
-    """Transforms a dictionary (int, string) into a dict (string, list of int)
+def invert_dictionary(data, key_modifier=lambda i: i.lower()):
+    """
+    Inverts a given key-value-dictionary into a value-key-dictionary
 
-    values are not unique, key are in lower case
+    The new key can be modified by key_modifier.
 
     """
     inv_map = {}
     for key, value in data.items():
-        inv_map[value.lower()] = inv_map.get(value.lower(), []) + [key]
+        inv_map[key_modifier(value)] = inv_map.get(key_modifier(value), []) + [key]
     return inv_map
 
 
@@ -1227,14 +1228,6 @@ class CountryStateDict(object):
         return cls._state_country
 
     @classmethod
-    def dict_id_country_name(cls):
-        return cls._countries_id_name
-
-    @classmethod
-    def dict_id_state_name(cls):
-        return cls._states_id_name
-
-    @classmethod
     def dict_country_name_id(cls):
         try:
             return cls._country_id_by_name
@@ -1251,31 +1244,47 @@ class CountryStateDict(object):
             return cls._state_id_by_name
 
 
-
-class CountryStateUnknownName(ValueError):
+class CountryStateUnknown(ValueError):
     pass
 
-
-class CountryStateUnknownCombination(ValueError):
-    pass
-
-
-class CountryStateAmbiguityValue(ValueError):
+class CountryStateAmbiguity(ValueError):
     pass
 
 
 class CountryState:
 
     def __init__(self, cid=None, sid=None):
-        if cid is not None and cid not in CountryStateDict.countries:
-            raise ValueError(f'CountryState id={cid} unknown')
-        if sid is not None and sid not in CountryStateDict.states:
-            raise ValueError(f'State id={sid} unknown')
-        if cid is not None and sid is not None and cid != CountryStateDict.state_country[sid]:
-            raise ValueError(f'Combination of CountryState id={cid} and State id={sid} unknown')
+        self._cid = None
+        self._sid = None
 
-        self._cid = CountryStateDict.state_country[sid] if (cid is None and sid is not None) else cid
-        self._sid = sid
+        if cid is None and sid is None:
+            raise ValueError(f'Once arguemnt of cid/sid required')
+        elif cid is not None and sid is None:
+            cid = int(cid)
+            if cid not in CountryStateDict.countries:
+                raise CountryStateUnknown(f'Country: cid={sid} is unknown')
+            self._cid = cid
+            self._sid = None
+        elif cid is None and sid is not None:
+            sid = int(sid)
+            if sid not in CountryStateDict.states:
+                raise CountryStateUnknown(f'State: sid={sid} is unknown')
+            self._cid = CountryStateDict.state_country[sid]
+            self._sid = sid
+        elif cid is not None and sid is not None:
+            cid = int(cid)
+            sid = int(sid)
+            if cid not in CountryStateDict.countries:
+                raise CountryStateUnknown(f'Country: cid={sid} is unknown')
+            if sid not in CountryStateDict.states:
+                raise CountryStateUnknown(f'State: sid={sid} is unknown')
+            if cid != CountryStateDict.state_country[sid]:
+                raise CountryStateUnknown(f'Combination Country cid={cid} and State sid={sid} doesn\'t match')
+
+            self._cid = cid
+            self._sid = sid
+        else:
+            raise Exception('')
 
     def __str__(self):
         if self.has_state:
@@ -1283,67 +1292,47 @@ class CountryState:
         return f'{self.country_name}'
 
     @classmethod
-    def ids_by_country_name(cls, name):
-        results = CountryStateDict.dict_country_name_id().get(name.lower().strip(), [])
-        return results
-
-    @classmethod
-    def ids_by_state_name(cls, name):
-        results = CountryStateDict.dict_state_name_id().get(name.lower().strip(), [])
-        return results
-
-    @classmethod
     def from_string_country(cls, name):
         """Return a cache country from its country name."""
-        ids = cls.ids_by_country_name(name)
+        ids = CountryStateDict.dict_country_name_id().get(name.lower().strip(), [])
         if len(ids) == 0:
-            raise CountryStateUnknownName(f'CountryState {name} is unknown')
+            raise CountryStateUnknown(f'Country {name} is unknown')
         elif len(ids) > 1:
-            raise CountryStateAmbiguityValue(f'CountryState {name} is ambiguity')
+            raise CountryStateAmbiguity(f'Country {name} is ambiguity')
 
         return CountryState(cid=ids[0], sid=None)
 
     @classmethod
     def from_string_state(cls, name):
         """Return a cache country from its state name."""
-        ids = cls.ids_by_state_name(name)
+        ids = CountryStateDict.dict_state_name_id().get(name.lower().strip(), [])
         if len(ids) == 0:
-            raise CountryStateUnknownName(f'State {name} is unknown')
+            raise CountryStateUnknown(f'State {name} is unknown')
         elif len(ids) > 1:
-            raise CountryStateAmbiguityValue(f'State {name} is ambiguity')
+            raise CountryStateAmbiguity(f'State {name} is ambiguity')
 
         return CountryState(cid=None, sid=ids[0])
 
-    '''
-    # TODO
-    @classmethod
-    def from_XstringX_country_state(cls, string, pattern=r'([^,]+),(.+)'):
-        m = re.match(pattern, string)
-    '''
-
     @classmethod
     def from_string_country_state(cls, token):
-        if len(token) < 2:
-            raise ValueError(f'Combination {token} is unknown')  # TODO fehlermeldung
+        cids = CountryStateDict.dict_country_name_id().get(token[0].lower().strip(), [])
+        if len(cids) == 0:
+            raise CountryStateUnknown(f'Country {token[0]} is unknown')
+        elif len(cids) > 1:
+            raise CountryStateAmbiguity(f'Country {token[0]} is ambiguity')
 
-        cid = cls.ids_by_country_name(token[1])
-        sids = cls.ids_by_state_name(token[0])
-
-        if not (len(cid) == 1 and len(sids) > 0):
-            cid = cls.ids_by_country_name(token[0])
-            sids = cls.ids_by_state_name(token[1])
-
-        if not (len(cid) == 1 and len(sids) > 0):
-            raise CountryStateUnknownCombination(f'Combination {token} is unknown')
+        sids = CountryStateDict.dict_state_name_id().get(token[1].lower().strip(), [])
+        if len(sids) == 0:
+            raise CountryStateUnknown(f'State {token[1]} is unknown')
 
         for sid in sids:
-            if CountryStateDict.state_country[sid] == cid[0]:
-                return CountryState(cid=cid[0], sid=sid)
+            if CountryStateDict.state_country[sid] == cids[0]:
+                return CountryState(cid=cids[0], sid=sid)
 
-        raise CountryStateUnknownCombination(f'Combination {token} is unknown')
+        raise CountryStateUnknown(f'Combination Country/State {token} not found')
 
     @classmethod
-    def from_string(cls, name):
+    def from_string(cls, name, pattern=r'([^,]+),(.+)'):
         """Return a cache country from its name"""
 
         """
@@ -1358,38 +1347,38 @@ class CountryState:
         :param name:
         :return:
         """
-        m = re.match(r'([^,]+),(.+)', name)  # split after the first
+        m = re.match(pattern, name)
         if m:
             try:
                 return cls.from_string_country_state((m[1], m[2]))
-            except CountryStateUnknownName:
+            except CountryStateUnknown:
                 pass
-            except ValueError:
+            except CountryStateAmbiguity:
+                pass
+
+            try:
+                return cls.from_string_country_state((m[2], m[1]))
+            except CountryStateUnknown:
+                pass
+            except CountryStateAmbiguity:
                 pass
 
         try:
             return cls.from_string_country(name)
-        except CountryStateUnknownName:
+        except CountryStateUnknown:
             pass
 
         try:
             return cls.from_string_state(name)
-        except CountryStateUnknownName:
+        except CountryStateUnknown:
             pass
 
-        raise CountryStateUnknownName(f'{name} is unknown')
+        raise CountryStateUnknown(f'{name} is unknown')
 
     @property
     def country_id(self):
         return self._cid
 
-    '''
-    @property.setter
-    def country_id(self, cid):
-        # TODO check id if exists
-        # TODO check id valid in context of state
-        self._cid = cid
-    '''
 
     @property
     def country_name(self):
