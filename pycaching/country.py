@@ -1284,7 +1284,7 @@ class CountryState:
             self._cid = cid
             self._sid = sid
         else:
-            raise Exception('')
+            raise NotImplementedError
 
     def __str__(self):
         if self.has_state:
@@ -1373,7 +1373,7 @@ class CountryState:
         except CountryStateUnknown:
             pass
 
-        raise CountryStateUnknown(f'{name} is unknown')
+        raise CountryStateUnknown(f'{name} is unknown or ambiguity')
 
     @property
     def country_id(self):

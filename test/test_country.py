@@ -50,16 +50,31 @@ class TestCountryState(unittest.TestCase):
             with self.assertRaises(CountryStateUnknown):
                 CountryState(2, 277)
 
+            with self.assertRaises(CountryStateUnknown):
+                CountryState(4177, 12)
+
         with self.subTest('invalid parameters'):
-            c = CountryState(2,27)
-            self.assertEqual(str(c),'Montana, United States')
-            self.assertEqual(c.country_id, 2)
-            self.assertEqual(c.state_id, 27)
+            c = CountryState(100)
+            self.assertEqual(c.country_id, 100)
+            self.assertEqual(str(c),'Côte d\'Ivoire')
 
             c = CountryState(sid=27)
-            self.assertEqual(str(c),'Montana, United States')
             self.assertEqual(c.country_id, 2)
             self.assertEqual(c.state_id, 27)
+            self.assertEqual(str(c), 'Montana, United States')
+
+    def test__str__(self):
+        c = CountryState(cid=27)
+        self.assertEqual(str(c), 'Bermuda')
+        self.assertEqual(c.country_id, 27)
+        self.assertIsNone(c.state_id)
+        self.assertFalse(c.has_state)
+
+        c = CountryState(sid=27)
+        self.assertEqual(str(c), 'Montana, United States')
+        self.assertEqual(c.country_id, 2)
+        self.assertEqual(c.state_id, 27)
+        self.assertTrue(c.has_state)
 
 
     def test_from_string(self):
@@ -125,14 +140,50 @@ class TestCountryState(unittest.TestCase):
             self.assertEqual(c.state_id, 524)
             self.assertTrue(c.has_state)
 
+        with self.subTest('unknown name'):
+            with self.assertRaises(CountryStateUnknown):
+                c = CountryState.from_string('Lummerland')
+
+        with self.subTest('???'):
+            del CountryStateDict._country_id_by_name  # prepare to manipulate CountryStateDict
+            CountryStateDict._countries_id_name[999] = 'Germany'
+
+            with self.assertRaises(CountryStateUnknown):
+                CountryState.from_string('Germany, Bayern')
+
+            with self.assertRaises(CountryStateUnknown):
+                CountryState.from_string('Bayern, Germany')
+
+            del CountryStateDict._countries_id_name[999]
+            del CountryStateDict._country_id_by_name  # reset manipulation of CountryStateDict
+
     def test_from_string_country(self):
-        pass
+        CountryStateDict.dict_country_name_id()
+        del CountryStateDict._country_id_by_name  # prepare to manipulate CountryStateDict
+        CountryStateDict._countries_id_name[999] = 'Germany'
+
+        with self.assertRaises(CountryStateAmbiguity):
+            CountryState.from_string_country('Germany')
+
+        del CountryStateDict._countries_id_name[999]
+        del CountryStateDict._country_id_by_name  # reset manipulation of CountryStateDict
+
 
     def test_from_string_state(self):
         pass
 
     def test_from_string_country_state(self):
-        pass
+        with self.assertRaises(CountryStateUnknown):
+            CountryState.from_string_country_state(('Germany', 'Montana'))
+
+        del CountryStateDict._country_id_by_name  # prepare to manipulate CountryStateDict
+        CountryStateDict._countries_id_name[999] = 'Germany'
+        with self.assertRaises(CountryStateAmbiguity):
+            CountryState.from_string_country_state(('Germany', 'Bayern'))
+
+        del CountryStateDict._countries_id_name[999]
+        del CountryStateDict._country_id_by_name  # reset manipulation of CountryStateDict
+
 
 
 class TestCountryStateData(unittest.TestCase):
