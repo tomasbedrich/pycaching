@@ -27,49 +27,40 @@ class TestCountryState(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_ctor(self):
-        try:
-            c = CountryState()
-        except ValueError:
-            pass
-        except Exception:
-            self.assertTrue(False)
+    def test_init(self):
+        with self.subTest('invalid parameters'):
+            with self.assertRaises(ValueError):
+                CountryState()
 
+            with self.assertRaises(ValueError):
+                CountryState(cid='A string is not a number with base 10')
 
-        try:
-            c = CountryState(4711)
-            self.assertTrue(False)
-        except ValueError:
-            pass
-        except Exception:
-            self.assertTrue(False)
+            with self.assertRaises(ValueError):
+                CountryState(sid='A string is not a number with base 10')
 
-        try:
-            c = CountryState(2, 4711)
-            self.assertTrue(False)
-        except ValueError:
-            pass
-        except Exception:
-            self.assertTrue(False)
+            with self.assertRaises(CountryStateUnknown):
+                CountryState(4711)
 
-        try:
-            c = CountryState(sid=4711)
-            self.assertTrue(False)
-        except ValueError:
-            pass
-        except Exception:
-            self.assertTrue(False)
+            with self.assertRaises(CountryStateUnknown):
+                CountryState(sid=4711)
 
-        try:
-            c = CountryState(2, 77)
-            self.assertTrue(False)
-        except ValueError:
-            pass
-        except Exception:
-            self.assertTrue(False)
+            with self.assertRaises(CountryStateUnknown):
+                CountryState(2, 4711)
 
-        c = CountryState(2,27)
-        self.assertEqual(str(c),'Montana, United States')
+            with self.assertRaises(CountryStateUnknown):
+                CountryState(2, 277)
+
+        with self.subTest('invalid parameters'):
+            c = CountryState(2,27)
+            self.assertEqual(str(c),'Montana, United States')
+            self.assertEqual(c.country_id, 2)
+            self.assertEqual(c.state_id, 27)
+
+            c = CountryState(sid=27)
+            self.assertEqual(str(c),'Montana, United States')
+            self.assertEqual(c.country_id, 2)
+            self.assertEqual(c.state_id, 27)
+
 
     def test_from_string(self):
         with self.subTest('only country'):
@@ -134,12 +125,41 @@ class TestCountryState(unittest.TestCase):
             self.assertEqual(c.state_id, 524)
             self.assertTrue(c.has_state)
 
+    def test_from_string_country(self):
+        pass
+
+    def test_from_string_state(self):
+        pass
+
+    def test_from_string_country_state(self):
+        pass
+
+
+class TestCountryStateData(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def test_count(self):
+        '''
+        country
+        states
+        state_country
+
+        ambiguilty country == 0
+        ambiguilty states == 2 ....
+
+        country as state    Georgia, Luxemburg
+        state as country    Georgia, Luxemburg
+
+        :return:
+        '''
+        pass
+
     def test_all_country(self):
         for country_id, name in CountryStateDict.countries.items():
             with self.subTest(name):
                 c = CountryState.from_string(name)
                 self.assertEqual(c.country_id, country_id)
-
 
     def test_country_as_state(self):
         for country_id, name in CountryStateDict.countries.items():
@@ -154,7 +174,6 @@ class TestCountryState(unittest.TestCase):
             except Exception:
                 self.assertTrue(False, str(c))
 
-
     def test_state_as_country(self):
         for country_id, name in CountryStateDict.states.items():
             if name in ('Luxembourg', 'Georgia'):
@@ -167,8 +186,6 @@ class TestCountryState(unittest.TestCase):
                 pass
             except Exception:
                 self.assertTrue(False, str(c))
-
-
 
     def test_all_state(self):
         for state_id, name in CountryStateDict.states.items():
