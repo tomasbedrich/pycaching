@@ -406,6 +406,19 @@ class TestMethods(LoggedInTest):
                 print(cache.type)
                 self.assertEqual(cache.type, Type.geocaching_hq)
 
+    def test_cache_country_state(self):
+        with self.recorder.use_cassette('cache_type_gigaevent'):
+            cache = self.gc.get_cache('GC7WWWW')
+
+            with self.subTest("country name"):
+                self.assertEqual(cache.country.country_name, "Czechia")
+                self.assertEqual(cache.country.country_id, 56)
+                self.assertEqual(str(cache.country), "Hlavní město Praha, Czechia")
+
+            with self.subTest("state name"):
+                self.assertEqual(cache.country.state_name, "Hlavní město Praha")
+                self.assertEqual(cache.country.state_id, 286)
+
 
 class TestWaypointProperties(unittest.TestCase):
     def setUp(self):

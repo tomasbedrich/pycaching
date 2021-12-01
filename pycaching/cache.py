@@ -9,6 +9,7 @@ import re
 from bs4.element import Script
 
 from pycaching import errors
+from pycaching.country import CountryState
 from pycaching.geo import Point
 from pycaching.log import Log
 from pycaching.log import Type as LogType
@@ -680,6 +681,15 @@ class Cache(object):
     def _trackable_page_url(self, trackable_page_url):
         self.__trackable_page_url = trackable_page_url
 
+    @property
+    @lazy_loaded
+    def country(self):
+        return self._country
+
+    @country.setter
+    def country(self, country):
+        self._country = country
+
     def load(self):
         """Load all possible cache details.
 
@@ -771,6 +781,9 @@ class Cache(object):
         self.hidden = parse_date(hidden.split(":")[-1])
 
         self.location = Point.from_string(root.find(id="uxLatLon").text)
+
+        country = root.find(id='ctl00_ContentBody_Location')
+        self.country = CountryState.from_string(country.text[3:])  # I18N issue
 
         self.state = root.find("ul", "OldWarning") is None
 
