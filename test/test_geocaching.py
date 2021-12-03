@@ -4,8 +4,8 @@ from unittest.mock import patch
 
 from geopy.distance import great_circle
 
-from pycaching import Cache, Point, Rectangle
-from pycaching.errors import PMOnlyException, TooManyRequestsError
+from pycaching import Cache, Point, Rectangle, Geocaching
+from pycaching.errors import PMOnlyException, TooManyRequestsError, NotLoggedInException
 from pycaching.geocaching import SortOrder
 
 from . import LoggedInTest
@@ -104,6 +104,15 @@ class TestMethods(LoggedInTest):
                 self.assertEqual("Nidda: jenseits der Rennstrecke Reloaded", cache_pm.name)
             except PMOnlyException:
                 pass
+
+
+class TestMethodsNotLoggedIn(unittest.TestCase):
+    def test_get_website_language(self):
+        g = Geocaching()
+        with self.assertRaises(NotLoggedInException):
+            l = g.get_website_language()
+            self.assertIsNone(l)
+        pass
 
 
 class TestAPIMethods(LoggedInTest):

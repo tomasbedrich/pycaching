@@ -53,6 +53,7 @@ class Geocaching(object):
         "search_more": "play/search/more-results",
         "my_logs": "my/logs.aspx",
         "api_search": "api/proxy/web/search",
+        "culture_set": "play/culture/set",
     }
     _credentials_file = ".gc_credentials"
 
@@ -60,6 +61,26 @@ class Geocaching(object):
         self._logged_in = False
         self._logged_username = None
         self._session = session or requests.Session()
+
+    def set_website_language(self, language_code):
+        """
+        Change the language of the geocaching.com website.
+
+        :param str language_code: language_TERRITORY
+        :return:
+        """
+        self._request(self._urls["culture_set"], params={"model.SelectedCultureCode": language_code}, expect="raw")
+
+    def get_website_language(self):
+        """
+        Returns the language code from the last request/response of the geocaching.com website.
+
+        :return str: language_TERRITORY
+        """
+        if not self._logged_in:
+            raise NotLoggedInException("Login is needed.")
+
+        return self._session.cookies.get('Culture')
 
     def _request(self, url, *, expect="soup", method="GET", login_check=True, **kwargs):
         """
