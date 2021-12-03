@@ -10,8 +10,8 @@ from bs4.element import Script
 
 from pycaching import errors
 from pycaching.country import CountryState
-from pycaching.i18nhelper import I18NHelperFactory
 from pycaching.geo import Point
+from pycaching.i18nhelper import I18NHelperFactory
 from pycaching.log import Log
 from pycaching.log import Type as LogType
 from pycaching.trackable import Trackable

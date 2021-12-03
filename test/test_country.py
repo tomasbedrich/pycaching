@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import unittest
 
-from pycaching.country import CountryStateDict, CountryState, CountryStateAmbiguity, CountryStateUnknown
+from pycaching.country import CountryState, CountryStateAmbiguity, CountryStateDict, CountryStateUnknown
 
 
 class TestCountryStateDict(unittest.TestCase):

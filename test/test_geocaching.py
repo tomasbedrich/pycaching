@@ -4,8 +4,8 @@ from unittest.mock import patch
 
 from geopy.distance import great_circle
 
-from pycaching import Cache, Point, Rectangle, Geocaching
-from pycaching.errors import PMOnlyException, TooManyRequestsError, NotLoggedInException
+from pycaching import Cache, Geocaching, Point, Rectangle
+from pycaching.errors import NotLoggedInException, PMOnlyException, TooManyRequestsError
 from pycaching.geocaching import SortOrder
 
 from . import LoggedInTest
