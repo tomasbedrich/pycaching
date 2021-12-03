@@ -24,7 +24,7 @@ class TestI18NHelperFactory(unittest.TestCase):
         pass
 
     def test_factory_get_i18nhelper_classes(self):
-        x = I18NHelperFactory.get_i18nhelper_classes()
+        x = I18NHelperFactory._get_i18nhelper_classes()
         self.assertEqual(list, type(x))
 
 
@@ -33,7 +33,7 @@ class TestI18NHelperInterface(unittest.TestCase):
         pass
 
     def test_interface(self):
-        helpers = I18NHelperFactory.get_i18nhelper_classes()
+        helpers = I18NHelperFactory._get_i18nhelper_classes()
         for helper_class in helpers:
             helper = helper_class()
             self.assertEqual(str, type(helper.language))

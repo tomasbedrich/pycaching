@@ -5,22 +5,41 @@ import sys
 
 class I18NHelperFactory:
     @staticmethod
-    def get_i18nhelper_classes():
+    def _get_i18nhelper_classes():
+        """
+        Fetch all I18N helper classes in the module/file.
+
+        :return: A list of I18N helper classes
+        """
         clsmembers = inspect.getmembers(sys.modules[__name__], inspect.isclass)
         i18n = [_class for name, _class in clsmembers if hasattr(_class, "_language")]
         return i18n
 
     @classmethod
-    def create(cls, language, *args, **kwargs):
-        classes = cls.get_i18nhelper_classes()
+    def create(cls, language_code, *args, **kwargs):
+        """
+        Creates an I18N helper for the given language code.
+
+        :param str language_code: The required language_TERRITORY code
+        :param args: Passed to I18N object constructor
+        :param kwargs: Passed to I18N object constructor
+        :return: An I18N helper object
+        """
+        classes = cls._get_i18nhelper_classes()
         for _class in classes:
-            if _class._language == language:
+            if _class._language == language_code:
                 return _class(*args, **kwargs)
-        raise NotImplementedError(f"There is no I18N helper for language: {language}")
+        raise NotImplementedError(f"There is no I18N helper for language: {language_code}")
 
     @classmethod
     def supported_languages(cls):
-        classes = cls.get_i18nhelper_classes()
+        """
+        Returns a list of all supported languages.
+
+        :return: A list of tuples with three elements: language code, name and name in English.
+         The list is alphabetical sorted by language code.
+        """
+        classes = cls._get_i18nhelper_classes()
         languages = [(_class._language, _class._language_name, _class._language_name_en) for _class in classes]
         languages.sort(key=lambda _: _[0])
         return languages
