@@ -8,6 +8,7 @@ from pycaching.errors import LoadError, PMOnlyException
 from pycaching.errors import ValueError as PycachingValueError
 from pycaching.geo import Point
 from pycaching.geocaching import Geocaching
+from pycaching.i18nhelper import I18NHelperFactory
 from pycaching.log import Log
 from pycaching.log import Type as LogType
 from pycaching.util import parse_date
@@ -192,6 +193,71 @@ class TestProperties(unittest.TestCase):
 
     def test_pm_only(self):
         self.assertEqual(self.c.pm_only, False)
+
+
+all_languages = [
+    ("bg-BG", "n/a", "n/a"),
+    ("ca-ES", "n/a", "n/a"),
+    ("cs-CZ", "n/a", "n/a"),
+    ("da-DK", "n/a", "n/a"),
+    ("de-DE", "n/a", "n/a"),
+    ("el-GR", "n/a", "n/a"),
+    ("en-US", "n/a", "n/a"),
+    ("es-ES", "n/a", "n/a"),
+    ("et-EE", "n/a", "n/a"),
+    ("fi-FI", "n/a", "n/a"),
+    ("fr-FR", "n/a", "n/a"),
+    ("hu-HU", "n/a", "n/a"),
+    ("it-IT", "n/a", "n/a"),
+    ("ja-JP", "n/a", "n/a"),
+    ("ko-KR", "n/a", "n/a"),
+    ("lb-LU", "n/a", "n/a"),
+    ("lv-LV", "n/a", "n/a"),
+    ("nb-NO", "n/a", "n/a"),
+    ("nl-NL", "n/a", "n/a"),
+    ("pl-PL", "n/a", "n/a"),
+    ("pt-PT", "n/a", "n/a"),
+    ("ro-RO", "n/a", "n/a"),
+    ("ru-RU", "n/a", "n/a"),
+    ("sk-SK", "n/a", "n/a"),
+    ("sl-SI", "n/a", "n/a"),
+    ("sv-SE", "n/a", "n/a"),
+]
+
+
+class TestMethodsI18N(LoggedInTest):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+    def test_load(self):
+        languages = I18NHelperFactory.supported_languages()  # If you record new cassettes use 'all_languages'
+
+        for code, name, name_en in languages:
+            with self.subTest(f"language {name} ({code})"):
+                with self.recorder.use_cassette(f"cache_GC1FPN1_{code}"):
+                    self.gc.set_website_language(code)
+
+                    cache = Cache(self.gc, "GC1FPN1")
+                    cache.load()
+
+                    self.assertEqual("IlPadrino", cache.author)
+                    self.assertEqual("Germany", cache.country.country_name)
+                    self.assertEqual("Bayern", cache.country.state_name)
+
+    def test_load_premium_only_cache(self):
+        languages = I18NHelperFactory.supported_languages()  # If you record new cassettes use 'all_languages'
+
+        for code, name, name_en in languages:
+            with self.subTest(f"language {name} ({code})"):
+                with self.recorder.use_cassette(f"cache_GC246DN_{code}"):
+                    self.gc.set_website_language(code)
+
+                    cache = Cache(self.gc, "GC246DN")
+                    with self.assertRaises(PMOnlyException):
+                        cache.load()
+
+                    self.assertEqual("MTSK", cache.author)
 
 
 class TestMethods(LoggedInTest):
@@ -405,6 +471,19 @@ class TestMethods(LoggedInTest):
                 cache.load()
                 print(cache.type)
                 self.assertEqual(cache.type, Type.geocaching_hq)
+
+    def test_cache_country_state(self):
+        with self.recorder.use_cassette("cache_type_gigaevent"):
+            cache = self.gc.get_cache("GC7WWWW")
+
+            with self.subTest("country name"):
+                self.assertEqual(cache.country.country_name, "Czechia")
+                self.assertEqual(cache.country.country_id, 56)
+                self.assertEqual(str(cache.country), "Hlavní město Praha, Czechia")
+
+            with self.subTest("state name"):
+                self.assertEqual(cache.country.state_name, "Hlavní město Praha")
+                self.assertEqual(cache.country.state_id, 286)
 
 
 class TestWaypointProperties(unittest.TestCase):
