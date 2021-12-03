@@ -11,12 +11,12 @@ class TestI18NHelperFactory(unittest.TestCase):
         pass
 
     def test_factory_create_helper(self):
-        f = I18NHelperFactory.create('de-DE')
+        f = I18NHelperFactory.create("de-DE")
         pass
 
     def test_factory_create_unsupported_language(self):
         with self.assertRaises(NotImplementedError):
-            f = I18NHelperFactory.create('xx-XX')
+            f = I18NHelperFactory.create("xx-XX")
 
     def test_factory_list_supported_language(self):
         supported_language = I18NHelperFactory.supported_languages()
@@ -41,5 +41,3 @@ class TestI18NHelperInterface(unittest.TestCase):
             self.assertEqual(str, type(helper.language_name_en))
             self.assertEqual(str, type(helper._country_pattern))
             self.assertEqual(str, type(helper._author_pattern))
-
-

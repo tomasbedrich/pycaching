@@ -787,7 +787,7 @@ class Cache(object):
 
         self.location = Point.from_string(root.find(id="uxLatLon").text)
 
-        country = root.find(id='ctl00_ContentBody_Location')
+        country = root.find(id="ctl00_ContentBody_Location")
         self.country = CountryState.from_string(i18nhelper.country(country.text))
 
         self.state = root.find("ul", "OldWarning") is None

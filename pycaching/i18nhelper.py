@@ -7,7 +7,7 @@ class I18NHelperFactory:
     @staticmethod
     def get_i18nhelper_classes():
         clsmembers = inspect.getmembers(sys.modules[__name__], inspect.isclass)
-        i18n = [_class for name, _class in clsmembers if hasattr(_class, '_language')]
+        i18n = [_class for name, _class in clsmembers if hasattr(_class, "_language")]
         return i18n
 
     @classmethod
@@ -16,7 +16,7 @@ class I18NHelperFactory:
         for _class in classes:
             if _class._language == language:
                 return _class(*args, **kwargs)
-        raise NotImplementedError(f'There is no I18N helper for language: {language}')
+        raise NotImplementedError(f"There is no I18N helper for language: {language}")
 
     @classmethod
     def supported_languages(cls):
@@ -31,7 +31,7 @@ class I18NHelperBase:
         pass
 
     def __repr__(self):
-        return f'I18NHelper for {self.language_name_en} ({self.language_name}|{self.language})'
+        return f"I18NHelper for {self.language_name_en} ({self.language_name}|{self.language})"
 
     @property
     def language(self):
@@ -78,12 +78,12 @@ class I18NHelperBase:
         return self._attribute("_author_pattern", text)
 
     def _attribute(self, attribute, text):
-        if not hasattr(self,attribute):
+        if not hasattr(self, attribute):
             raise NotImplementedError(f"{self} has no implementation for {attribute} (text={text})")
         m = re.match(getattr(self, attribute), text)
         if m is None:
             raise ValueError(f"{self.__class__} rule '{getattr(self, attribute)}' doesn't match '{text}'")
-        for i in range(1,len(m.groups())+1):
+        for i in range(1, len(m.groups()) + 1):
             if m[i] is not None:
                 return m[i]
         raise Exception
@@ -117,8 +117,8 @@ class I18NHelper_csSZ(I18NHelperBase):
     _language = "cs-CZ"
     _language_name = "Čeština"
     _language_name_en = "Czech"
-    _country_pattern = r'V (.+)'
-    _author_pattern = r'Kešku založil (.+)'
+    _country_pattern = r"V (.+)"
+    _author_pattern = r"Kešku založil (.+)"
 
 
 class I18NHelper_bgBG(I18NHelperBase):

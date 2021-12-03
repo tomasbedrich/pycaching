@@ -80,7 +80,7 @@ class Geocaching(object):
         if not self._logged_in:
             raise NotLoggedInException("Login is needed.")
 
-        return self._session.cookies.get('Culture')
+        return self._session.cookies.get("Culture")
 
     def _request(self, url, *, expect="soup", method="GET", login_check=True, **kwargs):
         """

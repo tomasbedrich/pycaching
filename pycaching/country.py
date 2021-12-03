@@ -1,256 +1,256 @@
 import re
 
 __countries__ = {
-    2: 'United States',
-    3: 'Australia',
-    4: 'Belgium',
-    5: 'Canada',
-    6: 'Chile',
-    7: 'Ireland',
-    8: 'Luxembourg',
-    9: 'New Zealand',
-    10: 'Sweden',
-    11: 'United Kingdom',
-    12: 'Afghanistan',
-    13: 'Antigua and Barbuda',
-    14: 'Algeria',
-    15: 'Armenia',
-    16: 'Andorra',
-    17: 'Angola',
-    18: 'Antarctica',
-    19: 'Argentina',
-    20: 'Aruba',
-    21: 'Azerbaijan',
-    23: 'Bahamas',
-    24: 'Bangladesh',
-    25: 'Barbados',
-    26: 'Benin',
-    27: 'Bermuda',
-    29: 'Bahrain',
-    30: 'Bhutan',
-    31: 'Belize',
-    32: 'Bolivia',
-    33: 'Botswana',
-    34: 'Brazil',
-    35: 'Burundi',
-    36: 'Brunei',
-    37: 'Bulgaria',
-    39: 'British Virgin Islands',
-    40: 'Belarus',
-    41: 'New Caledonia',
-    42: 'Cambodia',
-    43: 'Cameroon',
-    44: 'Cayman Islands',
-    46: 'Central African Republic',
-    47: 'China',
-    48: 'Cook Islands',
-    49: 'Colombia',
-    50: 'Comoros',
-    51: 'Congo',
-    52: 'Costa Rica',
-    53: 'Croatia',
-    54: 'Curaçao',
-    55: 'Cyprus',
-    56: 'Czechia',
-    57: 'Denmark',
-    58: 'Djibouti',
-    59: 'Dominica',
-    60: 'Dominican Republic',
-    61: 'Ecuador',
-    62: 'Equatorial Guinea',
-    63: 'Egypt',
-    64: 'El Salvador',
-    65: 'Eritrea',
-    66: 'Estonia',
-    67: 'Ethiopia',
-    68: 'Faroe Islands',
-    69: 'Falkland Islands',
-    70: 'French Guiana',
-    71: 'Fiji',
-    72: 'Finland',
-    73: 'France',
-    74: 'French Polynesia',
-    75: 'Gabon',
-    76: 'Gambia',
-    77: 'Guadeloupe',
-    78: 'Georgia',
-    79: 'Germany',
-    80: 'Gibraltar',
-    81: 'Grenada',
-    82: 'Greece',
-    83: 'Greenland',
-    84: 'Guatemala',
-    85: 'Guinea-Bissau',
-    86: 'Guernsey',
-    87: 'Guyana',
-    89: 'Haiti',
-    90: 'Honduras',
-    91: 'Hong Kong',
-    92: 'Hungary',
-    93: 'Iceland',
-    94: 'India',
-    95: 'Indonesia',
-    96: 'Iran',
-    97: 'Iraq',
-    98: 'Israel',
-    99: 'Italy',
-    100: 'Côte d\'Ivoire',
-    101: 'Jamaica',
-    102: 'Jersey',
-    103: 'Jordan',
-    104: 'Japan',
-    106: 'Kazakhstan',
-    107: 'Kenya',
-    108: 'Kyrgyzstan',
-    109: 'Kiribati',
-    110: 'Laos',
-    111: 'Latvia',
-    112: 'Libya',
-    113: 'Lebanon',
-    114: 'Lesotho',
-    115: 'Liberia',
-    116: 'Liechtenstein',
-    117: 'Lithuania',
-    119: 'Madagascar',
-    121: 'Malaysia',
-    122: 'Martinique',
-    123: 'Mauritania',
-    124: 'Maldives',
-    125: 'North Macedonia',
-    127: 'Mali',
-    128: 'Malta',
-    129: 'Malawi',
-    130: 'Monaco',
-    131: 'Mongolia',
-    132: 'Morocco',
-    133: 'Mozambique',
-    134: 'Mauritius',
-    135: 'Montserrat',
-    136: 'Myanmar',
-    137: 'Namibia',
-    138: 'Nauru',
-    140: 'Nepal',
-    141: 'Netherlands',
-    143: 'Niger',
-    144: 'Nicaragua',
-    145: 'Nigeria',
-    146: 'North Korea',
-    147: 'Norway',
-    149: 'Niue',
-    150: 'Oman',
-    151: 'Pakistan',
-    152: 'Panama',
-    153: 'Peru',
-    154: 'Philippines',
-    155: 'Pitcairn',
-    156: 'Papua New Guinea',
-    158: 'Poland',
-    159: 'Portugal',
-    160: 'Qatar',
-    161: 'Réunion',
-    162: 'Romania',
-    163: 'Russia',
-    164: 'Rwanda',
-    165: 'South Africa',
-    166: 'Saudi Arabia',
-    167: 'Senegal',
-    168: 'Seychelles',
-    169: 'Saint Barthélemy',
-    171: 'Saint Helena',
-    173: 'Saint Lucia',
-    174: 'Saint Martin',
-    175: 'Saint Pierre and Miquelon',
-    176: 'Sao Tome and Principe',
-    177: 'Saint Vincent and the Grenadines',
-    178: 'Sierra Leone',
-    179: 'Singapore',
-    180: 'South Korea',
-    181: 'Slovenia',
-    182: 'Slovakia',
-    183: 'San Marino',
-    184: 'Solomon Islands',
-    185: 'Somalia',
-    186: 'Spain',
-    187: 'Sri Lanka',
-    188: 'Sudan',
-    189: 'Suriname',
-    190: 'Swaziland',
-    192: 'Switzerland',
-    193: 'Syria',
-    194: 'Taiwan',
-    195: 'Tajikistan',
-    196: 'Tanzania',
-    197: 'Turks and Caicos Islands',
-    198: 'Thailand',
-    199: 'Turkmenistan',
-    200: 'Togo',
-    201: 'Tonga',
-    202: 'Trinidad and Tobago',
-    203: 'Tunisia',
-    204: 'Turkey',
-    205: 'Tuvalu',
-    206: 'United Arab Emirates',
-    207: 'Ukraine',
-    208: 'Uganda',
-    210: 'Uruguay',
-    211: 'Uzbekistan',
-    212: 'Vanuatu',
-    213: 'Vatican City State',
-    214: 'Venezuela',
-    215: 'Vietnam',
-    216: 'Burkina Faso',
-    217: 'Samoa',
-    218: 'Wallis and Futuna Islands',
-    220: 'Yemen',
-    222: 'Serbia',
-    224: 'Zambia',
-    225: 'Zimbabwe',
-    226: 'Puerto Rico',
-    227: 'Austria',
-    228: 'Mexico',
-    229: 'Guam',
-    234: 'Bosnia and Herzegovina',
-    235: 'US Virgin Islands',
-    236: 'Northern Mariana Islands',
-    237: 'Moldova',
-    238: 'Cuba',
-    239: 'Cabo Verde',
-    240: 'Marshall Islands',
-    241: 'Kuwait',
-    242: 'Micronesia',
-    243: 'Isle of Man',
-    244: 'Albania',
-    245: 'American Samoa',
-    246: 'Anguilla',
-    247: 'Bouvet Island',
-    248: 'British Indian Ocean Territory',
-    249: 'Chad',
-    250: 'Christmas Island',
-    251: 'Cocos (Keeling) Islands',
-    252: 'Timor-Leste',
-    253: 'French Southern and Antarctic Territories',
-    254: 'Ghana',
-    255: 'Guinea',
-    256: 'Heard Island and McDonald Islands',
-    257: 'Democratic Republic of the Congo',
-    258: 'Macao',
-    259: 'Mayotte',
-    260: 'Norfolk Island',
-    261: 'Palau',
-    262: 'Paraguay',
-    264: 'Saint Kitts and Nevis',
-    267: 'South Georgia and the South Sandwich Islands',
-    268: 'Svalbard and Jan Mayen Islands',
-    269: 'Tokelau',
-    270: 'US Minor Outlying Islands',
-    271: 'Western Sahara',
-    272: 'Aland Islands',
-    274: 'Montenegro',
-    276: 'Palestine',
-    278: 'South Sudan',
-    279: 'Bonaire, Sint Eustatius and Saba',
-    280: 'Sark',
-    281: 'Sint Maarten',
+    2: "United States",
+    3: "Australia",
+    4: "Belgium",
+    5: "Canada",
+    6: "Chile",
+    7: "Ireland",
+    8: "Luxembourg",
+    9: "New Zealand",
+    10: "Sweden",
+    11: "United Kingdom",
+    12: "Afghanistan",
+    13: "Antigua and Barbuda",
+    14: "Algeria",
+    15: "Armenia",
+    16: "Andorra",
+    17: "Angola",
+    18: "Antarctica",
+    19: "Argentina",
+    20: "Aruba",
+    21: "Azerbaijan",
+    23: "Bahamas",
+    24: "Bangladesh",
+    25: "Barbados",
+    26: "Benin",
+    27: "Bermuda",
+    29: "Bahrain",
+    30: "Bhutan",
+    31: "Belize",
+    32: "Bolivia",
+    33: "Botswana",
+    34: "Brazil",
+    35: "Burundi",
+    36: "Brunei",
+    37: "Bulgaria",
+    39: "British Virgin Islands",
+    40: "Belarus",
+    41: "New Caledonia",
+    42: "Cambodia",
+    43: "Cameroon",
+    44: "Cayman Islands",
+    46: "Central African Republic",
+    47: "China",
+    48: "Cook Islands",
+    49: "Colombia",
+    50: "Comoros",
+    51: "Congo",
+    52: "Costa Rica",
+    53: "Croatia",
+    54: "Curaçao",
+    55: "Cyprus",
+    56: "Czechia",
+    57: "Denmark",
+    58: "Djibouti",
+    59: "Dominica",
+    60: "Dominican Republic",
+    61: "Ecuador",
+    62: "Equatorial Guinea",
+    63: "Egypt",
+    64: "El Salvador",
+    65: "Eritrea",
+    66: "Estonia",
+    67: "Ethiopia",
+    68: "Faroe Islands",
+    69: "Falkland Islands",
+    70: "French Guiana",
+    71: "Fiji",
+    72: "Finland",
+    73: "France",
+    74: "French Polynesia",
+    75: "Gabon",
+    76: "Gambia",
+    77: "Guadeloupe",
+    78: "Georgia",
+    79: "Germany",
+    80: "Gibraltar",
+    81: "Grenada",
+    82: "Greece",
+    83: "Greenland",
+    84: "Guatemala",
+    85: "Guinea-Bissau",
+    86: "Guernsey",
+    87: "Guyana",
+    89: "Haiti",
+    90: "Honduras",
+    91: "Hong Kong",
+    92: "Hungary",
+    93: "Iceland",
+    94: "India",
+    95: "Indonesia",
+    96: "Iran",
+    97: "Iraq",
+    98: "Israel",
+    99: "Italy",
+    100: "Côte d'Ivoire",
+    101: "Jamaica",
+    102: "Jersey",
+    103: "Jordan",
+    104: "Japan",
+    106: "Kazakhstan",
+    107: "Kenya",
+    108: "Kyrgyzstan",
+    109: "Kiribati",
+    110: "Laos",
+    111: "Latvia",
+    112: "Libya",
+    113: "Lebanon",
+    114: "Lesotho",
+    115: "Liberia",
+    116: "Liechtenstein",
+    117: "Lithuania",
+    119: "Madagascar",
+    121: "Malaysia",
+    122: "Martinique",
+    123: "Mauritania",
+    124: "Maldives",
+    125: "North Macedonia",
+    127: "Mali",
+    128: "Malta",
+    129: "Malawi",
+    130: "Monaco",
+    131: "Mongolia",
+    132: "Morocco",
+    133: "Mozambique",
+    134: "Mauritius",
+    135: "Montserrat",
+    136: "Myanmar",
+    137: "Namibia",
+    138: "Nauru",
+    140: "Nepal",
+    141: "Netherlands",
+    143: "Niger",
+    144: "Nicaragua",
+    145: "Nigeria",
+    146: "North Korea",
+    147: "Norway",
+    149: "Niue",
+    150: "Oman",
+    151: "Pakistan",
+    152: "Panama",
+    153: "Peru",
+    154: "Philippines",
+    155: "Pitcairn",
+    156: "Papua New Guinea",
+    158: "Poland",
+    159: "Portugal",
+    160: "Qatar",
+    161: "Réunion",
+    162: "Romania",
+    163: "Russia",
+    164: "Rwanda",
+    165: "South Africa",
+    166: "Saudi Arabia",
+    167: "Senegal",
+    168: "Seychelles",
+    169: "Saint Barthélemy",
+    171: "Saint Helena",
+    173: "Saint Lucia",
+    174: "Saint Martin",
+    175: "Saint Pierre and Miquelon",
+    176: "Sao Tome and Principe",
+    177: "Saint Vincent and the Grenadines",
+    178: "Sierra Leone",
+    179: "Singapore",
+    180: "South Korea",
+    181: "Slovenia",
+    182: "Slovakia",
+    183: "San Marino",
+    184: "Solomon Islands",
+    185: "Somalia",
+    186: "Spain",
+    187: "Sri Lanka",
+    188: "Sudan",
+    189: "Suriname",
+    190: "Swaziland",
+    192: "Switzerland",
+    193: "Syria",
+    194: "Taiwan",
+    195: "Tajikistan",
+    196: "Tanzania",
+    197: "Turks and Caicos Islands",
+    198: "Thailand",
+    199: "Turkmenistan",
+    200: "Togo",
+    201: "Tonga",
+    202: "Trinidad and Tobago",
+    203: "Tunisia",
+    204: "Turkey",
+    205: "Tuvalu",
+    206: "United Arab Emirates",
+    207: "Ukraine",
+    208: "Uganda",
+    210: "Uruguay",
+    211: "Uzbekistan",
+    212: "Vanuatu",
+    213: "Vatican City State",
+    214: "Venezuela",
+    215: "Vietnam",
+    216: "Burkina Faso",
+    217: "Samoa",
+    218: "Wallis and Futuna Islands",
+    220: "Yemen",
+    222: "Serbia",
+    224: "Zambia",
+    225: "Zimbabwe",
+    226: "Puerto Rico",
+    227: "Austria",
+    228: "Mexico",
+    229: "Guam",
+    234: "Bosnia and Herzegovina",
+    235: "US Virgin Islands",
+    236: "Northern Mariana Islands",
+    237: "Moldova",
+    238: "Cuba",
+    239: "Cabo Verde",
+    240: "Marshall Islands",
+    241: "Kuwait",
+    242: "Micronesia",
+    243: "Isle of Man",
+    244: "Albania",
+    245: "American Samoa",
+    246: "Anguilla",
+    247: "Bouvet Island",
+    248: "British Indian Ocean Territory",
+    249: "Chad",
+    250: "Christmas Island",
+    251: "Cocos (Keeling) Islands",
+    252: "Timor-Leste",
+    253: "French Southern and Antarctic Territories",
+    254: "Ghana",
+    255: "Guinea",
+    256: "Heard Island and McDonald Islands",
+    257: "Democratic Republic of the Congo",
+    258: "Macao",
+    259: "Mayotte",
+    260: "Norfolk Island",
+    261: "Palau",
+    262: "Paraguay",
+    264: "Saint Kitts and Nevis",
+    267: "South Georgia and the South Sandwich Islands",
+    268: "Svalbard and Jan Mayen Islands",
+    269: "Tokelau",
+    270: "US Minor Outlying Islands",
+    271: "Western Sahara",
+    272: "Aland Islands",
+    274: "Montenegro",
+    276: "Palestine",
+    278: "South Sudan",
+    279: "Bonaire, Sint Eustatius and Saba",
+    280: "Sark",
+    281: "Sint Maarten",
 }
 __states__ = {
     2: "Alaska",
@@ -717,7 +717,7 @@ __states__ = {
     528: "Vestfold og Telemark",
     529: "Innlandet",
     530: "Viken",
-    531: "Troms og Finnmark"
+    531: "Troms og Finnmark",
 }
 __state_to_country__ = {
     2: 2,
@@ -1184,7 +1184,7 @@ __state_to_country__ = {
     528: 147,
     529: 147,
     530: 147,
-    531: 147
+    531: 147,
 }
 
 
@@ -1247,39 +1247,39 @@ class CountryStateDict(object):
 class CountryStateUnknown(ValueError):
     pass
 
+
 class CountryStateAmbiguity(ValueError):
     pass
 
 
 class CountryState:
-
     def __init__(self, cid=None, sid=None):
         self._cid = None
         self._sid = None
 
         if cid is None and sid is None:
-            raise ValueError(f'Argument cid or sid required')
+            raise ValueError(f"Argument cid or sid required")
         elif cid is not None and sid is None:
             cid = int(cid)
             if cid not in CountryStateDict.countries:
-                raise CountryStateUnknown(f'Country: cid={sid} is unknown')
+                raise CountryStateUnknown(f"Country: cid={sid} is unknown")
             self._cid = cid
             self._sid = None
         elif cid is None and sid is not None:
             sid = int(sid)
             if sid not in CountryStateDict.states:
-                raise CountryStateUnknown(f'State: sid={sid} is unknown')
+                raise CountryStateUnknown(f"State: sid={sid} is unknown")
             self._cid = CountryStateDict.state_country[sid]
             self._sid = sid
         elif cid is not None and sid is not None:
             cid = int(cid)
             sid = int(sid)
             if cid not in CountryStateDict.countries:
-                raise CountryStateUnknown(f'Country: cid={sid} is unknown')
+                raise CountryStateUnknown(f"Country: cid={sid} is unknown")
             if sid not in CountryStateDict.states:
-                raise CountryStateUnknown(f'State: sid={sid} is unknown')
+                raise CountryStateUnknown(f"State: sid={sid} is unknown")
             if cid != CountryStateDict.state_country[sid]:
-                raise CountryStateUnknown(f'Combination Country cid={cid} and State sid={sid} doesn\'t match')
+                raise CountryStateUnknown(f"Combination Country cid={cid} and State sid={sid} doesn't match")
 
             self._cid = cid
             self._sid = sid
@@ -1288,17 +1288,17 @@ class CountryState:
 
     def __str__(self):
         if self.has_state:
-            return f'{self.state_name}, {self.country_name}'
-        return f'{self.country_name}'
+            return f"{self.state_name}, {self.country_name}"
+        return f"{self.country_name}"
 
     @classmethod
     def from_string_country(cls, name):
         """Return a cache country from its country name."""
         ids = CountryStateDict.dict_country_name_id().get(name.lower().strip(), [])
         if len(ids) == 0:
-            raise CountryStateUnknown(f'Country {name} is unknown')
+            raise CountryStateUnknown(f"Country {name} is unknown")
         elif len(ids) > 1:
-            raise CountryStateAmbiguity(f'Country {name} is ambiguity')
+            raise CountryStateAmbiguity(f"Country {name} is ambiguity")
 
         return CountryState(cid=ids[0], sid=None)
 
@@ -1307,9 +1307,9 @@ class CountryState:
         """Return a cache country from its state name."""
         ids = CountryStateDict.dict_state_name_id().get(name.lower().strip(), [])
         if len(ids) == 0:
-            raise CountryStateUnknown(f'State {name} is unknown')
+            raise CountryStateUnknown(f"State {name} is unknown")
         elif len(ids) > 1:
-            raise CountryStateAmbiguity(f'State {name} is ambiguity')
+            raise CountryStateAmbiguity(f"State {name} is ambiguity")
 
         return CountryState(cid=None, sid=ids[0])
 
@@ -1317,22 +1317,22 @@ class CountryState:
     def from_string_country_state(cls, token):
         cids = CountryStateDict.dict_country_name_id().get(token[0].lower().strip(), [])
         if len(cids) == 0:
-            raise CountryStateUnknown(f'Country {token[0]} is unknown')
+            raise CountryStateUnknown(f"Country {token[0]} is unknown")
         elif len(cids) > 1:
-            raise CountryStateAmbiguity(f'Country {token[0]} is ambiguity')
+            raise CountryStateAmbiguity(f"Country {token[0]} is ambiguity")
 
         sids = CountryStateDict.dict_state_name_id().get(token[1].lower().strip(), [])
         if len(sids) == 0:
-            raise CountryStateUnknown(f'State {token[1]} is unknown')
+            raise CountryStateUnknown(f"State {token[1]} is unknown")
 
         for sid in sids:
             if CountryStateDict.state_country[sid] == cids[0]:
                 return CountryState(cid=cids[0], sid=sid)
 
-        raise CountryStateUnknown(f'Combination Country/State {token} not found')
+        raise CountryStateUnknown(f"Combination Country/State {token} not found")
 
     @classmethod
-    def from_string(cls, name, pattern=r'([^,]+),(.+)'):
+    def from_string(cls, name, pattern=r"([^,]+),(.+)"):
         """Return a cache country from its name"""
 
         """
@@ -1373,12 +1373,11 @@ class CountryState:
         except CountryStateUnknown:
             pass
 
-        raise CountryStateUnknown(f'\'{name}\' is unknown or ambiguity')
+        raise CountryStateUnknown(f"'{name}' is unknown or ambiguity")
 
     @property
     def country_id(self):
         return self._cid
-
 
     @property
     def country_name(self):
