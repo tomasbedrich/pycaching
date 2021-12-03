@@ -235,6 +235,7 @@ class Cache(object):
             "guid",
             "visited",
             "log_counts",
+            "country",
         }
 
         for name in known_kwargs:

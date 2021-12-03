@@ -1258,7 +1258,7 @@ class CountryState:
         self._sid = None
 
         if cid is None and sid is None:
-            raise ValueError(f'Once arguemnt of cid/sid required')
+            raise ValueError(f'Argument cid or sid required')
         elif cid is not None and sid is None:
             cid = int(cid)
             if cid not in CountryStateDict.countries:
@@ -1395,6 +1395,3 @@ class CountryState:
     @property
     def has_state(self):
         return self._sid is not None
-
-
-
