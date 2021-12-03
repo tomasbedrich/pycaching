@@ -10,6 +10,7 @@ from bs4.element import Script
 
 from pycaching import errors
 from pycaching.country import CountryState
+from pycaching.i18nhelper import I18NHelperFactory
 from pycaching.geo import Point
 from pycaching.log import Log
 from pycaching.log import Type as LogType
@@ -720,6 +721,9 @@ class Cache(object):
             # probably 404 during cache loading - cache does not exist
             raise errors.LoadError("Error in loading cache") from e
 
+        language = self.geocaching.get_website_language()
+        i18nhelper = I18NHelperFactory.create(language)
+
         # check for PM only caches if using free account
         self.pm_only = root.find("section", "premium-upgrade-widget") is not None
 
@@ -732,8 +736,7 @@ class Cache(object):
 
             self.name = cache_details.find("h1").text.strip()
 
-            author = cache_details.find(id="ctl00_ContentBody_uxCacheBy").text
-            self.author = author[11:]  # 11 = len("A cache by ")
+            self.author = i18nhelper.author(cache_details.find(id="ctl00_ContentBody_uxCacheBy").text.strip())
 
             # parse cache detail list into a python list
             details = cache_details.find("ul", "ul__hide-details").text.split("\n")
@@ -753,7 +756,8 @@ class Cache(object):
                 raise errors.LoadError()
             self.name = cache_details.find("h2").text
 
-            self.author = cache_details("a")[1].text
+            # TODO self.author = i18nhelper.author().text.strip())
+            self.author = cache_details.find(id="ctl00_ContentBody_mcd1").find("a").text.strip()
 
             D_and_T_img = root.find("div", "CacheStarLabels").find_all("img")
             self.difficulty, self.terrain = [float(img.get("alt").split()[0]) for img in D_and_T_img]
@@ -783,7 +787,7 @@ class Cache(object):
         self.location = Point.from_string(root.find(id="uxLatLon").text)
 
         country = root.find(id='ctl00_ContentBody_Location')
-        self.country = CountryState.from_string(country.text[3:])  # I18N issue
+        self.country = CountryState.from_string(i18nhelper.country(country.text))
 
         self.state = root.find("ul", "OldWarning") is None
 

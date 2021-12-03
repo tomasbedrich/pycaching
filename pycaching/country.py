@@ -1373,7 +1373,7 @@ class CountryState:
         except CountryStateUnknown:
             pass
 
-        raise CountryStateUnknown(f'{name} is unknown or ambiguity')
+        raise CountryStateUnknown(f'\'{name}\' is unknown or ambiguity')
 
     @property
     def country_id(self):
