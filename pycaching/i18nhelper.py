@@ -21,9 +21,9 @@ class I18NHelperFactory:
     @classmethod
     def supported_languages(cls):
         classes = cls.get_i18nhelper_classes()
-        l = [(_class._language, _class._language_name, _class._language_name_en) for _class in classes]
-        l.sort(key=lambda _: _[0])
-        return l
+        languages = [(_class._language, _class._language_name, _class._language_name_en) for _class in classes]
+        languages.sort(key=lambda _: _[0])
+        return languages
 
 
 class I18NHelperBase:

@@ -110,8 +110,8 @@ class TestMethodsNotLoggedIn(unittest.TestCase):
     def test_get_website_language(self):
         g = Geocaching()
         with self.assertRaises(NotLoggedInException):
-            l = g.get_website_language()
-            self.assertIsNone(l)
+            languages = g.get_website_language()
+            self.assertIsNone(languages)
         pass
 
 

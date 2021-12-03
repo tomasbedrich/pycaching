@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 import unittest
-from datetime import date
-from unittest import mock
 
 from pycaching.i18nhelper import I18NHelperFactory
 
@@ -11,12 +9,14 @@ class TestI18NHelperFactory(unittest.TestCase):
         pass
 
     def test_factory_create_helper(self):
-        f = I18NHelperFactory.create("de-DE")
+        helper = I18NHelperFactory.create("de-DE")
+        self.assertIsNotNone(helper)
         pass
 
     def test_factory_create_unsupported_language(self):
         with self.assertRaises(NotImplementedError):
-            f = I18NHelperFactory.create("xx-XX")
+            helper = I18NHelperFactory.create("xx-XX")
+            self.assertIsNone(helper)
 
     def test_factory_list_supported_language(self):
         supported_language = I18NHelperFactory.supported_languages()

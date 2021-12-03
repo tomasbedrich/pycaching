@@ -1,6 +1,6 @@
 [flake8]
 max-line-length = 120
-exclude = .venv,dist,docs,build,*.egg,.git,__pycache__
+exclude = .venv,dist,docs,build,*.egg,.git,__pycache__,.eggs,venv
 count = true
 show-source = true
 statistics = true
