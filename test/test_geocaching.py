@@ -106,6 +106,64 @@ class TestMethods(LoggedInTest):
                 pass
 
 
+class TestAdvancedSearch(LoggedInTest):
+    search_parameter = {  # https://www.geocaching.com/play/search?ot=4
+        "options": {"ot": "4"},
+        "sort_by": SortOrder.place_date,
+        "reverse": True,
+    }
+
+    def test_search(self):
+        with self.recorder.use_cassette("advanced_search"):
+            results = self.gc.advanced_search(
+                options={"g": -1, "ot": 4}, limit=50, format="dict"
+            )  # for recording use raw
+            for i in results:
+                print(i)
+
+    def test_caches_owned_by_geocaching_hq(self):
+        with self.recorder.use_cassette("advanced_search_caches_owned_by_hq"):
+            # https://www.geocaching.com/play/search?owner[0]=Geocaching%20HQ&a=0&sort=PlaceDate&asc=False
+            options = {"owner[0]": "Geocaching HQ", "a": "0"}
+            generator = self.gc.advanced_search(
+                options=options, sort_by=SortOrder.place_date, reverse=True, format="cache"
+            )
+            results = [cache for cache in generator]
+            self.assertGreaterEqual(90, len(results))
+            self.assertEqual("GCGV0P", results[-1].wp)
+
+    def __generator_subtest(self, expected_items, **kwargs):
+        with self.subTest(f"limit={kwargs['limit']}"):
+            with self.recorder.use_cassette("advanced_search_1000"):
+                results = self.gc.advanced_search(**kwargs)
+                items = [r for r in results]
+                self.assertEqual(expected_items, len(items))
+
+    def test_caches_1000_raw(self):
+        self.__generator_subtest(20, **self.search_parameter, limit=2000, format="raw")
+        self.__generator_subtest(3, **self.search_parameter, limit=142, format="raw")
+
+    def test_caches_1000_json(self):
+        self.__generator_subtest(20, **self.search_parameter, limit=2000, format="json")
+        self.__generator_subtest(3, **self.search_parameter, limit=142, format="json")
+
+    def test_caches_1000_html(self):
+        self.__generator_subtest(20, **self.search_parameter, limit=2000, format="html")
+        self.__generator_subtest(3, **self.search_parameter, limit=142, format="html")
+
+    def test_caches_1000_soup(self):
+        self.__generator_subtest(20, **self.search_parameter, limit=2000, format="soup")
+        self.__generator_subtest(3, **self.search_parameter, limit=142, format="soup")
+
+    def test_caches_1000_dict(self):
+        self.__generator_subtest(1000, **self.search_parameter, limit=2000, format="dict")
+        self.__generator_subtest(142, **self.search_parameter, limit=142, format="dict")
+
+    def test_caches_1000_cache(self):
+        self.__generator_subtest(1000, **self.search_parameter, limit=2000, format="cache")
+        self.__generator_subtest(142, **self.search_parameter, limit=142, format="cache")
+
+
 class TestAPIMethods(LoggedInTest):
     def test_search_rect(self):
         """Perform search by rect and check found caches."""

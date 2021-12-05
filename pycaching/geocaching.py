@@ -239,6 +239,202 @@ class Geocaching(object):
         m = re.search(r'"username":\s*"(.*)"', js_content)
         return m.group(1) if m else None
 
+    def advanced_search(
+        self,
+        options,
+        sort_by: Union[str, SortOrder] = SortOrder.distance,
+        reverse=False,
+        limit=float("inf"),
+        format="cache",
+    ):
+        """
+        Use the advanced search for www.geocaching.com to search for caches.
+
+        The function returns a generator, which yield objects depends on the argument format.
+
+        For basic members the advanced search is very limited.
+
+        The advanced search doesn't make any consistence checks of the search parameters
+
+        Formats:
+        - raw       returns the raw response from the request
+        - json      returns
+        - html      returns onle HTMLString
+        - soup ?
+        - dict      parse the HTML string and returns results in single dicts
+        - cache     parse the HTML string and returns results in single Cache objects
+
+        How argument limit works: For format dict and cache it limits the number of returned items exactly.
+        For format raw, json, html, soup is returns items ceil to the next 50.
+
+        :param options:
+        :param sort_by:
+        :param reverse: Reverse the sort order of the results
+        :param limit:
+        :param format:
+        :return:
+        """
+        """Return a generator of caches around some point.
+
+        Search for caches around some point by loading search pages and parsing the data from these
+        pages. Yield :class:`.Cache` objects filled with data from search page. You can provide limit
+        as a convenient way to stop generator after certain number of caches.
+
+
+
+
+        formats:
+            raw: raw data from the server
+            rawjson: raw data as json
+            html: raw html
+            json: parsed html as json
+
+            items: each result as a dict
+            caches: each result as a cache object
+
+        :param options:
+        :param sort_by: Order cached by given criterion.
+        :param reverse: Change the sequence of the given ...
+        :param limit: a value between 1 and 1000 or None (unsupported)
+        :param format:
+        :return:
+        """
+        logging.info(f"Searching with {options}, sort={sort_by}, reverse={reverse}, limit={limit}, format={format}")
+
+        params = options.copy()
+
+        if "startIndex" not in params:
+            params["startIndex"] = 0
+        if "selectAll" not in params:
+            params["selectAll"] = "false"
+
+        if not isinstance(sort_by, SortOrder):
+            sort_by = SortOrder(sort_by)
+
+        params.update({"asc": not reverse, "sort": sort_by.value})
+
+        load_more = True
+        while load_more:
+            if limit <= 0:
+                break
+
+            logging.debug(f"Search parameters {params}")
+            res = self._request(self._urls["search_more"], params=params, expect="raw")
+            res_json = res.json()
+
+            if not res_json["ShowLoadMore"]:
+                if res_json["HtmlString"].strip() == "":
+                    break
+                load_more = False
+
+            params["startIndex"] += 50
+
+            if format == "raw":
+                limit -= 50
+                yield res.text
+            elif format == "json":
+                limit -= 50
+                yield res_json
+            elif format == "html":
+                limit -= 50
+                yield res_json["HtmlString"]
+            elif format == "soup":
+                limit -= 50
+                yield bs4.BeautifulSoup(res_json["HtmlString"].strip(), "html.parser")
+            elif format == "dict":
+                for item in self._parser_html_search_results(res_json["HtmlString"]):
+                    if limit <= 0:
+                        return None
+                    limit -= 1
+                    yield item
+            elif format == "cache":
+                for item in self._parser_html_search_results(res_json["HtmlString"]):
+                    if limit <= 0:
+                        return None
+                    limit -= 1
+
+                    properties = {
+                        "type": item["type"],
+                        "name": item["name"],
+                        "favorites": item["FavoritePoint"],
+                        "author": item["owner"],
+                        "pm_only": item["pm_only"],
+                        "found": item["found"],
+                        "state": item["state"],
+                    }
+                    if not item["pm_only"]:
+                        properties.update(
+                            {
+                                "difficulty": item["Difficulty"],
+                                "terrain": item["Terrain"],
+                                "hidden": item["PlaceDate"],
+                                "size": item[
+                                    "ContainerSize"
+                                ],  # TODO I18N issue -> should handled in class Cache or by container size class
+                            }
+                        )
+
+                    yield Cache(self, item["code"], **properties)
+            else:
+                raise Exception(f"unknown output format ({format})")
+
+        return None
+
+    @staticmethod
+    def _parser_html_search_results(html):
+        """
+        Prase the HTML string from advanced search and returns for each HTML table row an dict
+
+        :param html:
+        :return: A list of dicts
+        """
+        data = []
+        dom = bs4.BeautifulSoup(html.strip(), "html.parser")
+
+        for table_row in dom.find_all("tr"):
+            cells = table_row.find_all("td")
+            cache = {
+                "number": int(table_row.attrs["data-rownumber"]),
+                "code": table_row.attrs["data-id"],
+                "name": table_row.attrs["data-name"],
+            }
+
+            badge = table_row.find("svg", class_="badge")
+            cache["found"] = "found" in str(badge) if badge is not None else False
+
+            cache["pm_only"] = False
+            for cell in cells:
+                if "class" not in cell.attrs:
+                    continue
+                if "cache-primary-details" in cell.attrs["class"]:
+                    details = cell.find_all("span", attrs={"cache-details"})[0].text
+                    cache["type"] = details.split("|")[0].strip()
+                    cache["owner"] = cell.find_all("span", attrs={"owner"})[0].text[
+                        3:
+                    ]  # delete "by " I18N issue / TODO use I18N helper if avaialble
+                    status = cell.find_all("span", attrs={"status"})
+                    cache["state"] = (
+                        status[0].text if status else "0"
+                    )  # ist 0 der richtige wert ??? TODO archived / past by events I18N issue
+                elif "pm-upsell" in cell.attrs["class"]:
+                    cache["pm_only"] = True
+                elif "data-column" in cell.attrs:
+                    cache[cell.attrs["data-column"]] = cell.text.strip()
+                else:
+                    pass
+
+            # 10 cells for premium members
+            # 8 cells for basic members and 4 cells is the result a PM only cache
+            if (
+                len(cells) != 10 and len(cells) != 8 and len(cells) != 4
+            ):  # TODO premium 10 / basic 8 / basic only premium 4
+                raise Exception(
+                    f"Number of cells in row-number={cache['number']} unexpected (cells={len(cells)}) ({cache['name']})"
+                )
+
+            data.append(cache)
+        return data
+
     def search(self, point, limit=float("inf")):
         """Return a generator of caches around some point.
 
@@ -246,108 +442,19 @@ class Geocaching(object):
         pages. Yield :class:`.Cache` objects filled with data from search page. You can provide limit
         as a convenient way to stop generator after certain number of caches.
 
+        This method uses method advanced_search and available for backward compatibility.
+
         :param .geo.Point point: Search center point.
-        :param int limit: Maximum number of caches to generate.
         """
         logging.info("Searching at {}".format(point))
-
-        start_index = 0
-        while True:
-            # get one page
-            geocaches_table, whole_page = self._search_get_page(point, start_index)
-            rows = geocaches_table.find_all("tr")
-
-            # leave loop if there are no (more) results
-            if not rows:
-                return
-
-            # prepare language-dependent mappings
-            if start_index == 0:
-                cache_sizes_filter_wrapper = whole_page.find("div", class_="cache-sizes-wrapper")
-                localized_size_mapping = {
-                    # key = "Small" (localized), value = Size.small
-                    label.find("span").text.strip(): Size.from_number(label.find("input").get("value"))
-                    for label in cache_sizes_filter_wrapper.find_all("label")
-                }
-
-            # parse caches in result
-            for start_index, row in enumerate(rows, start_index):
-
-                limit -= 1  # handle limit
-                if limit < 0:
-                    return
-
-                # parse raw data
-                cache_details = row.find("span", "cache-details").text.split("|")
-                wp = cache_details[1].strip()
-
-                # create and fill cache object
-                # values are sanitized and converted in Cache setters
-                c = Cache(self, wp)
-                c.type = cache_details[0]
-                c.name = row.find("span", "cache-name").text
-                badge = row.find("svg", class_="badge")
-                c.found = "found" in str(badge) if badge is not None else False
-                c.favorites = row.find(attrs={"data-column": "FavoritePoint"}).text
-                c.state = not (row.get("class") and "disabled" in row.get("class"))
-                c.pm_only = row.find("td", "pm-upsell") is not None
-
-                if c.pm_only:
-                    # PM only caches doesn't have other attributes filled in
-                    yield c
-                    continue
-
-                c.size = localized_size_mapping[row.find(attrs={"data-column": "ContainerSize"}).text.strip()]
-                c.difficulty = row.find(attrs={"data-column": "Difficulty"}).text
-                c.terrain = row.find(attrs={"data-column": "Terrain"}).text
-                c.hidden = row.find(attrs={"data-column": "PlaceDate"}).text
-                c.author = row.find("span", "owner").text[3:]  # delete "by "
-
-                logging.debug("Cache parsed: {}".format(c))
-                yield c
-
-            start_index += 1
-
-    def _search_get_page(self, point, start_index):
-        """Return one page for standard search as class:`bs4.BeautifulSoup` object.
-
-        :param .geo.Point point: Search center point.
-        :param int start_index: Determines the page. If start_index is greater than zero, this
-            method will use AJAX andpoint which is much faster.
-        """
-        assert hasattr(point, "format") and callable(point.format)
-        logging.debug("Loading page from start_index {}".format(start_index))
-
-        if start_index == 0:
-            # first request has to load normal search page
-            logging.debug("Using normal search endpoint")
-
-            # make request
-            res = self._request(
-                self._urls["search"],
-                params={
-                    "origin": point.format_decimal(),
-                },
-            )
-            return res.find(id="geocaches"), res
-
-        else:
-            # other requests can use AJAX endpoint
-            logging.debug("Using AJAX search endpoint")
-
-            # make request
-            res = self._request(
-                self._urls["search_more"],
-                params={
-                    "origin": point.format_decimal(),
-                    "startIndex": start_index,
-                    "ssvu": 2,
-                    "selectAll": "false",
-                },
-                expect="json",
-            )
-
-            return bs4.BeautifulSoup(res["HtmlString"].strip(), "html.parser"), None
+        results = self.advanced_search(
+            options={
+                "origin": point.format_decimal(),
+            },
+            limit=limit,
+            format="cache",
+        )
+        return results
 
     def search_quick(self, area, *, strict=False, zoom=None):
         """Return a generator of caches in some area.
@@ -391,7 +498,7 @@ class Geocaching(object):
         per_query: int = 200,
         sort_by: Union[str, SortOrder] = SortOrder.date_last_visited,
         origin: Optional[Point] = None,
-        wait_sleep: bool = True
+        wait_sleep: bool = True,
     ):
         """
         Return a generator of caches in given Rectange area.
