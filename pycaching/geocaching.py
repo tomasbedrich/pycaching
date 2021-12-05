@@ -15,7 +15,7 @@ import bs4
 import requests
 from bs4.element import Script
 
-from pycaching.cache import Cache, Size
+from pycaching.cache import Cache
 from pycaching.errors import Error, LoginFailedException, NotLoggedInException, PMOnlyException, TooManyRequestsError
 from pycaching.geo import Point, Rectangle
 from pycaching.log import Log
