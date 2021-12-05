@@ -1270,7 +1270,7 @@ class Type(enum.Enum):
     project_ape = "9"
     geocaching_hq = groundspeak_hq = "3773"
     gps_adventures_exhibit = gps_maze = "1304"
-    groundspeak_block_party = "4738"
+    geocaching_hq_block_party = groundspeak_block_party = "4738"
     locationless = reverse = "12"
     hq_celebration = "3774"
 
@@ -1323,7 +1323,8 @@ class Type(enum.Enum):
             "geocaching hq": cls.geocaching_hq,
             "groundspeak hq": cls.geocaching_hq,
             "gps adventures exhibit": cls.gps_adventures_exhibit,
-            "groundspeak block party": cls.groundspeak_block_party,
+            "groundspeak block party": cls.geocaching_hq_block_party,
+            "geocaching hq block party": cls.geocaching_hq_block_party,
             "locationless (reverse)": cls.locationless,
             "geocaching hq celebration": cls.hq_celebration,
             "community celebration event": cls.community_celebration,
