@@ -357,8 +357,9 @@ class Cache(object):
     def original_location(self):
         """The cache original location.
 
-        :setter: Set a cache original location. If :class:`str` is passed, then
-        :meth:`.Point.from_string` is used and its return value is stored as a location.
+        :setter: Set a cache original location. If :class:`str` is passed,
+            then :meth:`.Point.from_string` is used and its return value is stored as a
+            location.
         :type: :class:`.Point`
         """
         return self._original_location

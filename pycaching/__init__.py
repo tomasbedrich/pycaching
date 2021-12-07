@@ -4,6 +4,8 @@ from pycaching.geocaching import Geocaching  # NOQA
 from pycaching.log import Log  # NOQA
 from pycaching.trackable import Trackable  # NOQA
 
+__version__ = "4.2.2"  # PEP 440
+
 
 def login(username=None, password=None):
     """A shortcut for user login.
