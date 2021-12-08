@@ -81,7 +81,6 @@ and ``password`` from that file as login credentials.
 
 .. code-block:: json
 
-   # sample .gc_credentials JSON file
    { "username": "myusername", "password": "mypassword" }
 
 
@@ -92,7 +91,6 @@ used as default if ``pycaching.login()`` is called without providing a username.
 
 .. code-block:: json
 
-   # sample .gc_credentials JSON file with mutiple users
    [ { "username": "myusername1", "password": "mypassword1" },
      { "username": "myusername2", "password": "mypassword2" } ]
 
@@ -108,7 +106,6 @@ using the ``password_cmd`` key instead of ``password``.
 
 .. code-block:: json
 
-   # sample .gc_credentials JSON file with password command
    { "username": "myusername", "password_cmd": "pass geocaching.com/myUsername" }
 
 Note that the ``password`` and ``password_cmd`` keys are mutually exclusive.
