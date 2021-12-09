@@ -1,0 +1,16 @@
+# Read the Docs configuration file
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+
+version: 2
+
+# Enforce *pip*-based build to install package from *pyproject.toml* file.
+python:
+  version: 3
+  install:
+    - method: pip
+      path: .
+
+sphinx:
+  configuration: docs/conf.py
+  formats:
+    - pdf
