@@ -721,7 +721,7 @@ class Cache(object):
         if self.pm_only:
             self.wp = cache_details.find("li", "li__gccode").text.strip()
 
-            self.name =  cache_details.find(id="ctl00_ContentBody_CacheName").text
+            self.name = cache_details.find(id="ctl00_ContentBody_CacheName").text
 
             author = cache_details.find(id="ctl00_ContentBody_uxCacheBy").text
             self.author = author[11:]  # 11 = len("A cache by ")
@@ -742,7 +742,7 @@ class Cache(object):
                 self.wp = root.title.string.split(" ")[0]
             except ValueError:
                 raise errors.LoadError()
-            self.name =  cache_details.find(id="ctl00_ContentBody_CacheName").text
+            self.name = cache_details.find(id="ctl00_ContentBody_CacheName").text
 
             self.author = cache_details("a")[1].text
 
