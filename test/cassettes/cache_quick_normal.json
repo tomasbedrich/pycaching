@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2021-11-14T01:36:58",
+      "recorded_at": "2022-02-22T16:26:05",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -18,7 +18,7 @@
             "keep-alive"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -51,7 +51,7 @@
       }
     },
     {
-      "recorded_at": "2021-11-14T01:36:58",
+      "recorded_at": "2022-02-22T16:26:05",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -71,7 +71,7 @@
             "gspkauth=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -93,7 +93,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Sun, 14 Nov 2021 01:36:57 GMT"
+            "Tue, 22 Feb 2022 16:26:05 GMT"
           ],
           "Expires": [
             "-1"
@@ -101,17 +101,11 @@
           "Pragma": [
             "no-cache"
           ],
-          "Server": [
-            "Microsoft-IIS/10.0"
-          ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
           ],
           "Vary": [
             "Accept-Encoding"
-          ],
-          "X-AspNet-Version": [
-            "4.0.30319"
           ],
           "X-Content-Type-Options": [
             "nosniff"

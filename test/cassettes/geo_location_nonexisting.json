@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2021-11-14T01:37:02",
+      "recorded_at": "2022-02-22T16:26:10",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -21,7 +21,7 @@
             "gspkauth=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -43,13 +43,10 @@
             "application/json; charset=utf-8"
           ],
           "Date": [
-            "Sun, 14 Nov 2021 01:37:01 GMT"
+            "Tue, 22 Feb 2022 16:26:09 GMT"
           ],
           "Request-Context": [
             "appId=cid-v1:019d82c2-5dd7-44cb-aa94-01e052f0d40c"
-          ],
-          "Server": [
-            "Microsoft-IIS/10.0"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -57,14 +54,11 @@
           "Vary": [
             "Accept-Encoding"
           ],
-          "X-AspNet-Version": [
-            "4.0.30319"
-          ],
           "X-Content-Type-Options": [
             "nosniff"
           ],
           "X-Execution-Time": [
-            "00:00:00.0693277"
+            "00:00:00.0700901"
           ],
           "X-Frame-Options": [
             "SAMEORIGIN"

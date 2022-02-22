@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2021-11-14T01:40:16",
+      "recorded_at": "2022-02-22T16:29:16",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -21,7 +21,7 @@
             "gspkauth=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -50,16 +50,13 @@
             "image/svg+xml"
           ],
           "Date": [
-            "Sun, 14 Nov 2021 01:40:15 GMT"
+            "Tue, 22 Feb 2022 16:29:15 GMT"
           ],
           "ETag": [
-            "\"04bbf2b27d8d71:0\""
+            "\"0db31968223d81:0\""
           ],
           "Last-Modified": [
-            "Sat, 13 Nov 2021 00:41:18 GMT"
-          ],
-          "Server": [
-            "Microsoft-IIS/10.0"
+            "Wed, 16 Feb 2022 22:14:38 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
