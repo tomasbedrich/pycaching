@@ -82,7 +82,7 @@ If you haven't written or modified any tests, tests can be run just like:
 
 .. code-block:: bash
 
-    pytest
+    pytest <test folder name>
 
 If you have written or modified tests, you must provide a username and password for testing. Don't
 worry, these will not leave your computer. Betamax will insert a placeholder when it records any
@@ -90,9 +90,10 @@ new cassettes. To run new tests, first set up the following environment variable
 
 .. code-block:: bash
 
-    PYCACHING_TEST_USERNAME="yourusername" PYCACHING_TEST_PASSWORD="yourpassword" pytest
+    PYCACHING_TEST_USERNAME="yourusername" PYCACHING_TEST_PASSWORD="yourpassword" pytest <test folder name>
 
 Substitute your username for ``yourusername`` and your password for ``yourpassword``.
+NB: for successful test results, you'll need to use a Basic Member account!
 
 To re-record a specific cassette in case of site changes, delete the corresponding JSON file and
 provide username and password as explained above. The missing cassette will be recorded for future
