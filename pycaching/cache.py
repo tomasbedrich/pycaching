@@ -742,7 +742,7 @@ class Cache(object):
                 self.wp = root.title.string.split(" ")[0]
             except ValueError:
                 raise errors.LoadError()
-            self.name = cache_details.find("h2").text
+            self.name = cache_details.find(id="ctl00_ContentBody_CacheName").text
 
             self.author = cache_details("a")[1].text
 
@@ -926,7 +926,7 @@ class Cache(object):
         :param bs4.BeautifulSoup soup: Parsed html document of the cache details page.
         """
         lbl_find_counts = soup.find("span", {"id": "ctl00_ContentBody_lblFindCounts"})
-        log_totals = lbl_find_counts.find("p", "LogTotals")
+        log_totals = lbl_find_counts.find("ul", "LogTotals")
 
         # Text gives numbers separated by a lot of spaces, splitting retrieves the numbers.
         # The values might contain thousand separators, which we have to remove before converting

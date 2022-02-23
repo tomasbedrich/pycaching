@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2021-11-14T01:37:19",
+      "recorded_at": "2022-02-22T16:27:35",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -21,7 +21,7 @@
             "gspkauth=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -29,27 +29,34 @@
       },
       "response": {
         "body": {
+          "base64_string": "H4sIAAAAAAAAA6pWKkotLs0pKVayiq5WykxRsrIwNLQ0MTLVUcpLzE1VslIKSS1KrcrMU3AHcosVjAyMjJR0lJLzU0By7s6W5o4B4UCBgqLU3MzSXP+8nEolq7TEnOJUHaW0xLL8osyS1ID8zDyQBQY6Sump+cmJyRmpIZUFQP0mpsYgo/JKEjPzUosgYmY6SimZaWmZyUBHAY0y1APqKkktKgIqgfJKi1OL3PJL84BuhVoEEnHJTPHLL3HLRBIG2xRcklhSCrG8IL+4JDXFOT+/KCUzL7EkFSharZSTWJJZUgryjamBnqmBuaGOUk5+XjpUzNBEz9DU0MS0FuiqVKAzc4pDi3KAHteHeUQfEQQZicXuqfkl+aVFcBcAhXzy012KEtNK4GIFOYnJqSkuQPuB5oCCU9fATNfQIsTAwsrAAIiAJuWXA4MD5DhoMAcEmZkbhlkAZUA+hcZLallqXkhqYq4S0G05icUl4CCBGmtgYGCoC0YhYDMhxpYUJSZnJyblpDoDlQIdBAySotT0zHxgwCodngUMm+Tsw3sVsosSs8AxDFRTBIwBJeeq1OSMzESgWGJJSVFmUik45KCpxcgEnlDCM1JTc5IzEjOLFBKTk1OLizOBVgF1ZRY7FhTkZCaDbFayKikqTa3VgWgGxjVUb1Bqcn5ubmpeSmqKQlp+kUJ2ZkoxXq0mwHiC6g0uKcrPyUlFtxWnVnNE0k7MBibpHKAmhZKMxDyF/LxUhQxQ/KFrB0cd3NWIvBGZWJSioFFQlFkGDHcFYE7KTEnNS07VRDcAxX5jI7h+p8zkymSg/ejqUUMJEUyg+C7PL8pWAKc9dF2otgBjF6orIDM5LzNZoQSkqFghLzWxKKkSr14jC4Te0iSgEpDXgKGcn0uUdlNLuHa3/PwUQlrANiIixaUoMy87My9doRwYpkWENIO9ikgLzom5BSC9+HTF1sbqKJXklyTmKFlZGlka1gICAAD//w6vtkUEBQAA",
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8398196,\"name\":\"Zem\u011b Kelt\u016f 1\",\"code\":\"GC9GNTF\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":2,\"difficulty\":5.0,\"terrain\":5.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.7063,\"longitude\":13.859133},\"detailsUrl\":\"/geocache/GC9GNTF\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-09-24T00:00:00\",\"owner\":{\"code\":\"PR33HRK\",\"username\":\"oblac\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
+          "string": ""
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
+          "Connection": [
+            "Keep-Alive"
+          ],
+          "Content-Encoding": [
+            "gzip"
+          ],
           "Content-Length": [
-            "498"
+            "747"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "8ac2d76e-8166-4b49-893f-8f96be64c160"
+            "f47f2a03-b814-4abd-949b-92e2508ebf9b"
           ],
           "Date": [
-            "Sun, 14 Nov 2021 01:37:18 GMT"
+            "Tue, 22 Feb 2022 16:27:34 GMT"
           ],
           "Set-Cookie": [
-            "jwt=<AUTH COOKIE>; domain=.geocaching.com; path=/; expires=Sun, 14-Nov-2021 02:36:17 GMT; secure; HttpOnly"
+            "jwt=<AUTH COOKIE>; domain=.geocaching.com; path=/; expires=Tue, 22-Feb-2022 17:26:33 GMT; secure; HttpOnly"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -75,7 +82,7 @@
       }
     },
     {
-      "recorded_at": "2021-11-14T01:37:20",
+      "recorded_at": "2022-02-22T16:27:35",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -95,7 +102,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -104,23 +111,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8119425,\"name\":\"Terezin Games 2022\",\"code\":\"GC97APW\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":453,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.5071,\"longitude\":14.15145},\"detailsUrl\":\"/geocache/GC97APW\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-06-25T08:00:00\",\"owner\":{\"code\":\"PR671V8\",\"username\":\"evenTeam\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
+          "string": "{\"results\":[{\"id\":8451438,\"name\":\"Dobr\u00e9 r\u00e1no na ho\u0159e \u0158\u00edp 2\",\"code\":\"GC9JF6Z\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":2.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.388017,\"longitude\":14.292067},\"detailsUrl\":\"/geocache/GC9JF6Z\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-05-14T06:00:00\",\"owner\":{\"code\":\"PR4FQRZ\",\"username\":\"eMichalek\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"\u00dasteck\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":6,\"name\":\"Recommended for kids\",\"isApplicable\":true},{\"id\":1,\"name\":\"Dogs\",\"isApplicable\":true},{\"id\":25,\"name\":\"Parking nearby\",\"isApplicable\":true},{\"id\":32,\"name\":\"Bicycles\",\"isApplicable\":true},{\"id\":63,\"name\":\"Recommended for tourists\",\"isApplicable\":true}]}],\"total\":9291}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "506"
+            "867"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "940e91c2-80b2-4c62-bd98-29c912b61147"
+            "746aca6f-d558-44f9-92f0-eda71f610482"
           ],
           "Date": [
-            "Sun, 14 Nov 2021 01:37:20 GMT"
+            "Tue, 22 Feb 2022 16:27:35 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -146,7 +153,7 @@
       }
     },
     {
-      "recorded_at": "2021-11-14T01:37:20",
+      "recorded_at": "2022-02-22T16:27:35",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -166,7 +173,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -175,23 +182,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8119425,\"name\":\"Terezin Games 2022\",\"code\":\"GC97APW\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":453,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.5071,\"longitude\":14.15145},\"detailsUrl\":\"/geocache/GC97APW\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-06-25T08:00:00\",\"owner\":{\"code\":\"PR671V8\",\"username\":\"evenTeam\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
+          "string": "{\"results\":[{\"id\":8547077,\"name\":\"ERIK LOUDI HRISKY\",\"code\":\"GC9NNQ3\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":2,\"difficulty\":4.0,\"terrain\":3.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.641917,\"longitude\":14.279433},\"detailsUrl\":\"/geocache/GC9NNQ3\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-02-19T00:00:00\",\"owner\":{\"code\":\"PRTPB6J\",\"username\":\"Wassermani\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"\u00dasteck\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":55,\"name\":\"Short hike (<1 km)\",\"isApplicable\":true},{\"id\":51,\"name\":\"Special tool required\",\"isApplicable\":true},{\"id\":19,\"name\":\"Ticks\",\"isApplicable\":true},{\"id\":39,\"name\":\"Thorns\",\"isApplicable\":true}]}],\"total\":9291}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "506"
+            "798"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "756b1434-99c5-42ea-aaf2-ac83f3e3b493"
+            "b9e7ad52-09d0-4478-8ef5-5bf62d01ef8c"
           ],
           "Date": [
-            "Sun, 14 Nov 2021 01:37:20 GMT"
+            "Tue, 22 Feb 2022 16:27:35 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -217,7 +224,7 @@
       }
     },
     {
-      "recorded_at": "2021-11-14T01:37:21",
+      "recorded_at": "2022-02-22T16:27:35",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -237,7 +244,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -246,23 +253,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8437941,\"name\":\"S KA\u010cEREM NA CEST\u00c1CH-\u0158\u00cdP VII.\",\"code\":\"GC9J15J\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":3.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.386333,\"longitude\":14.289533},\"detailsUrl\":\"/geocache/GC9J15J\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-01-01T10:00:00\",\"owner\":{\"code\":\"PR6VPEQ\",\"username\":\"Fiobaba\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
+          "string": "{\"results\":[{\"id\":8503181,\"name\":\"S Arandurem  na kole v Dominik\u00e1nsk\u00e9 republice\",\"code\":\"GC9M723\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.146683,\"longitude\":14.103583},\"detailsUrl\":\"/geocache/GC9M723\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-02-24T19:15:00\",\"owner\":{\"code\":\"PR671V8\",\"username\":\"evenTeam\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"St\u0159edo\u010desk\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":24,\"name\":\"Wheelchair accessible\",\"isApplicable\":true},{\"id\":25,\"name\":\"Parking nearby\",\"isApplicable\":true},{\"id\":28,\"name\":\"Public restrooms nearby\",\"isApplicable\":true},{\"id\":27,\"name\":\"Drinking water nearby\",\"isApplicable\":true},{\"id\":26,\"name\":\"Public transportation nearby\",\"isApplicable\":true}]}],\"total\":9291}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "521"
+            "928"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "3de488b5-c1f0-4a66-9f64-0168522e209c"
+            "66d69507-1f00-48f8-a39f-858b43129766"
           ],
           "Date": [
-            "Sun, 14 Nov 2021 01:37:21 GMT"
+            "Tue, 22 Feb 2022 16:27:35 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -288,7 +295,7 @@
       }
     },
     {
-      "recorded_at": "2021-11-14T01:37:21",
+      "recorded_at": "2022-02-22T16:27:36",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -308,7 +315,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -316,24 +323,31 @@
       },
       "response": {
         "body": {
+          "base64_string": "H4sIAAAAAAAAA6pWKkotLs0pKVayiq5WykxRsrIwNTE0MTPQUcpLzE1VslIKODrz8Nqc1ILi7MMrFZJKU7IrFYwMjIyUdJSS81NACtydLf3cwiOAAgVFqbmZpbn+eTmVSlZpiTnFqTpKaYll+UWZJakB+Zl5IFuABqen5icnJmekhlQWAPUbGoNMyitJzMxLLYIImekopWSmpWUmAx0GNMlQD6ipJLWoCKhEycoYxCstTi1yyy/NA7oXag9IxCUzxS+/xC0TSRhsUXBJYkkpxO6C/OKS1BTn/PyilMy8xJJUoGi1Uk5iSWZJKcgzpgZ6hqYmJqaWOko5+XnpUFFDEz1jA0tDU/NaoMNSgS7NKQ4tygF6XR/mFX1EIGQkFrun5pfklxbBHQEU8slPdylKTCuBixXkJCanprgAnQA0BxSgugZGukbmIYYmVgYGQAQ0Kb8cGCIg90EDOiDI0sMswgMoA/IsNHqc8rOA/k1UAjotJ7G4BBwoUFMNDAwMdcEoBGwkxNSSosTk7MSknFRnoFKge4CBUpSanpkPDFql4JKjM1NT8o/0pgJje69CdlFiFjiegQqLgBGh5FyVmpyRmQgUSywpKcpMKgUHIDThAGMN6qag1OT83NzUvJTUFIW0/CKF7MyUYqCezGLHgoKczGSQ5UpWJUWlqbU6EK0mhnC9wSVF+Tk5qUUKicnJqcXFmSC1+LQidLrkp6PbgqrU2Aiu1ikzuTI5B+h4fOpNkVxVkJqcmZijUJKfn6NQlFpYmlmUmoKuGdUyE7jmwNJEdP8DhcHpAK7aFK7aPy1Ntyg/MUWhLDUjE92N6DqBoY6wJ6QoNVUhOSczNykzL52QK6H2wjU7w/SlpyYWEdIMjTWEbp/MstTikvzkbIU8oPakSnR9qJYCcxfMyRn5RXnoPkRVbYSINQ9gOgQ5MbEoFZQGseiJrY3VUSrJL0nMUbKyNLI0rAUEAAD//2bpR+HgBAAA",
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8411350,\"name\":\"CITO na z\u00e1mku Veltrusy XXVIII\",\"code\":\"GC9H4FT\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":13,\"containerType\":6,\"difficulty\":1.0,\"terrain\":2.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.277526,\"longitude\":14.331086},\"detailsUrl\":\"/geocache/GC9H4FT\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-21T09:00:00\",\"owner\":{\"code\":\"PR4FQRZ\",\"username\":\"eMichalek\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
+          "string": ""
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
+          "Connection": [
+            "Keep-Alive"
+          ],
+          "Content-Encoding": [
+            "gzip"
+          ],
           "Content-Length": [
-            "521"
+            "738"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "2e29ddf0-8b4e-4ec6-8309-917c4bb9caa5"
+            "23d87a87-f03d-4cf2-a843-49c8d71e9d7a"
           ],
           "Date": [
-            "Sun, 14 Nov 2021 01:37:21 GMT"
+            "Tue, 22 Feb 2022 16:27:36 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -359,7 +373,7 @@
       }
     },
     {
-      "recorded_at": "2021-11-14T01:37:22",
+      "recorded_at": "2022-02-22T16:27:36",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -379,7 +393,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -387,24 +401,31 @@
       },
       "response": {
         "body": {
+          "base64_string": "H4sIAAAAAAAAA6pWKkotLs0pKVayiq5WykxRsrIwNbY0MzLUUcpLzE1VslI60pOafXhhbqpCcarC0QVlqVnZqbkKeYkKZZlFJaWHF+ZklyrpKCXnp4DUujtb+rlEeQEFCopSczNLc/3zciqVrNISc4pTdZTSEsvyizJLUgPyM/NAFhroKKWn5icnJmekhlQWAPWbgQzKK0nMzEstgoukZKalZSYDnQg0yFAPqKcktagIqATEM9VRKi1OLXLLL80DuhxqDUjEJTPFL7/ELRNJGGxPcEliSSnE6oL84pLUFOf8/KKUzLzEklSgaLVSTmJJZkkpyC+mBnpGJgYWxsY6Sjn5eelQUUMTPWNDA0vTWqC7UoEOzSkOLcoBelwf5hF9RBBkJBa7p+aX5JcWwd0AFPLJT3cpSkwrgYsV5CQmp6a4AF0ANMfIwMhI18BI18gixNDcytDUysAAaFJ+OTBAQM6DBnNAkHGQq5cbUAbkV2g8eecDw7wE6BUloONyEotLwKECNdfAwMBQF4xCDAyAhkLMLSlKTM5OTMpJdQYqBboIGCpFqemZ+cCwVQouOTozNSX/SG9qcfbhvQrZRYlZ4HgGKiwCxoSSc1VqckZmIlAssaSkKDOpFByC0DQEjDaoq4JSk/Nzc1PzUlJTFNLyixSyM1OKgXoyix0LCnIyk0GWK1mVFJWm1upAtJogUl5wSVF+Tk5qkUJicnJqcXEmSC0+rQidLvnp6LagKrVAWJKcmpeZDEzNqeV4dZjDdYQkZqcWK+QAXaRQkpGYp5Cfl6qQAYplfNqNgEkVqj8gsSg7My9dIS81sSipEq8uU0u4Lrf8/BRCWsAWIcI+oDQJqEQBGMt5xQX5RcCkD4xavGbE1sbqKJXklyTmKFlZGlka1gICAAD//wS/zmofBAAA",
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8445093,\"name\":\"Krovi, uhni s cesty 4 - Na Piskach\",\"code\":\"GC9J8K9\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":13,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.183367,\"longitude\":14.16075},\"detailsUrl\":\"/geocache/GC9J8K9\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-30T14:30:00\",\"owner\":{\"code\":\"PRFD28\",\"username\":\"Toniczech\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
+          "string": ""
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
+          "Connection": [
+            "Keep-Alive"
+          ],
+          "Content-Encoding": [
+            "gzip"
+          ],
           "Content-Length": [
-            "523"
+            "687"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "7096608d-f28b-43ef-b1cd-dc4de18e591e"
+            "c9370e62-db5d-4962-9a4e-8c5e89ad8ae0"
           ],
           "Date": [
-            "Sun, 14 Nov 2021 01:37:22 GMT"
+            "Tue, 22 Feb 2022 16:27:36 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -430,7 +451,7 @@
       }
     },
     {
-      "recorded_at": "2021-11-14T01:37:22",
+      "recorded_at": "2022-02-22T16:27:37",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -450,7 +471,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -459,23 +480,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8440054,\"name\":\"Zoopark Chomutov - bonus LAB\",\"code\":\"GC9J3BQ\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":2,\"difficulty\":2.0,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":1,\"postedCoordinates\":{\"latitude\":50.4741666666667,\"longitude\":13.42},\"detailsUrl\":\"/geocache/GC9J3BQ\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-05T00:00:00\",\"owner\":{\"code\":\"PRZGD8Z\",\"username\":\"Aaanguaaa\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
+          "string": "{\"results\":[{\"id\":8498038,\"name\":\"BOWLING V \u017dATCI 22022022\",\"code\":\"GC9M1P6\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.3307,\"longitude\":13.538183},\"detailsUrl\":\"/geocache/GC9M1P6\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-02-22T18:00:00\",\"owner\":{\"code\":\"PRH0ZZ6\",\"username\":\"JaraVeve\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"\u00dasteck\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":6,\"name\":\"Recommended for kids\",\"isApplicable\":true},{\"id\":25,\"name\":\"Parking nearby\",\"isApplicable\":true},{\"id\":28,\"name\":\"Public restrooms nearby\",\"isApplicable\":true},{\"id\":59,\"name\":\"Food nearby\",\"isApplicable\":true}]}],\"total\":9291}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "521"
+            "819"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "d2d3671c-2e40-408d-bfea-e22a991a65d3"
+            "b97c05cd-907e-4373-b9f9-e25dc3cb19e3"
           ],
           "Date": [
-            "Sun, 14 Nov 2021 01:37:22 GMT"
+            "Tue, 22 Feb 2022 16:27:36 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -501,7 +522,7 @@
       }
     },
     {
-      "recorded_at": "2021-11-14T01:37:23",
+      "recorded_at": "2022-02-22T16:27:37",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -521,7 +542,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -530,23 +551,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8433962,\"name\":\"Ja tam budu. A co vy?\",\"code\":\"GC9HX17\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.337862,\"longitude\":13.488493},\"detailsUrl\":\"/geocache/GC9HX17\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-17T03:30:00\",\"owner\":{\"code\":\"PR1TNKG\",\"username\":\"Etigo\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
+          "string": "{\"results\":[{\"id\":8543990,\"name\":\"Ukli\u010fme okolo Motolsk\u00fdch rybn\u00edk\u016f\",\"code\":\"GC9NJGG\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":13,\"containerType\":6,\"difficulty\":1.0,\"terrain\":2.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.0679666666667,\"longitude\":14.3372166666667},\"detailsUrl\":\"/geocache/GC9NJGG\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2022-04-05T17:30:00\",\"owner\":{\"code\":\"PRKHNA9\",\"username\":\"renanep\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"Hlavn\u00ed m\u011bsto Praha\",\"country\":\"Czechia\",\"attributes\":[{\"id\":1,\"name\":\"Dogs\",\"isApplicable\":true},{\"id\":63,\"name\":\"Recommended for tourists\",\"isApplicable\":true},{\"id\":26,\"name\":\"Public transportation nearby\",\"isApplicable\":true}]}],\"total\":9291}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "507"
+            "800"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "3fe44f6b-7285-4317-991c-7d164c5170fe"
+            "f0375158-1e24-4f61-b7e3-32b1988dffe7"
           ],
           "Date": [
-            "Sun, 14 Nov 2021 01:37:23 GMT"
+            "Tue, 22 Feb 2022 16:27:37 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -572,7 +593,7 @@
       }
     },
     {
-      "recorded_at": "2021-11-14T01:37:24",
+      "recorded_at": "2022-02-22T16:27:37",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -592,7 +613,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -601,23 +622,23 @@
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8433962,\"name\":\"Ja tam budu. A co vy?\",\"code\":\"GC9HX17\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.337862,\"longitude\":13.488493},\"detailsUrl\":\"/geocache/GC9HX17\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-17T03:30:00\",\"owner\":{\"code\":\"PR1TNKG\",\"username\":\"Etigo\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
+          "string": "{\"results\":[{\"id\":8161589,\"name\":\"Ztracen\u00e1 nad\u011bje\",\"code\":\"GC98QK0\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":2,\"difficulty\":5.0,\"terrain\":4.5,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.659583,\"longitude\":14.164317},\"detailsUrl\":\"/geocache/GC98QK0\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-04-04T00:00:00\",\"owner\":{\"code\":\"PR33HRK\",\"username\":\"oblac\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"\u00dasteck\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":6,\"name\":\"Recommended for kids\",\"isApplicable\":false},{\"id\":56,\"name\":\"Medium hike (1 km\u201310 km)\",\"isApplicable\":true},{\"id\":47,\"name\":\"Field puzzle\",\"isApplicable\":true},{\"id\":14,\"name\":\"Recommended at night\",\"isApplicable\":false},{\"id\":51,\"name\":\"Special tool required\",\"isApplicable\":true},{\"id\":11,\"name\":\"May require wading\",\"isApplicable\":true}]}],\"total\":9291}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "507"
+            "941"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "063db750-ef07-4055-9aee-ec03c8e5f6fe"
+            "a95d2ecc-6c7b-4b09-9f26-4fe90e289d68"
           ],
           "Date": [
-            "Sun, 14 Nov 2021 01:37:24 GMT"
+            "Tue, 22 Feb 2022 16:27:37 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -643,7 +664,7 @@
       }
     },
     {
-      "recorded_at": "2021-11-14T01:37:25",
+      "recorded_at": "2022-02-22T16:27:38",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -663,7 +684,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -671,24 +692,31 @@
       },
       "response": {
         "body": {
+          "base64_string": "H4sIAAAAAAAAA6pWKkotLs0pKVayiq5WykxRsrIwNTYzMTLXUcpLzE1VslLyLso/0puakZNYVpx9eKWCu6t/QWZZvoKxwof5vbtgWElHKTk/BaTc3dnSz9HXAyhQUJSam1ma65+XU6lklZaYU5yqo5SWWJZflFmSGpCfmQey00BHKT01PzkxOSM1pLIAqN8MZFBeSWJmXmoRXCQlMy0tMxnoSqBBhnpAPSWpRUVAJVBeaXFqkVt+aR7Q8VBrQCIumSl++SVumUjCYHuCSxJLSiFWF+QXl6SmOOfnF6Vk5iWWpAJFq5VyEksyS0pBfjE10DM0sjA3NtZRysnPS4eKGproGRqaGZrWAt2VCnRoTnFoUQ7Q4/owj+gjgiAjsdg9Nb8kv7QI7gagkE9+uktRYloJXKwgJzE5NcUF6AKgOUYGRka6Bsa6hgYhhhZWBgZABDQpvxwYICDnQYM5IMjRzd0pBCgD8is0qioTi/JLizNSs5WAjstJLC4BhwrUXAMDA0NdMAoBGwoxt6QoMTk7MSkn1RmoFOgiYKgUpaZn5gPDVim45OjM1BRQ7ANjfq9CdlFiFjiegQqLgDGh5FyVmpyRmQgUSywpKcpMKgWHIDQZGZnAU1B4RmpqTnJGYmaRQmJycmpxcSbQPqCuzGLHgoKczGSQ9UpWJUWlqbU60DQI1xucnJqXmaxQlplajq4DEnowLUamcD0BiUXZmXnpCnmpiUVJlejaUCwyNoLrcspMrkzOAfoAn3ojhMsCSpOAShSA2aekKD8/txjdOmzaTS3h2t3y81MIaQHbCEz/qDYCoyyvuCC/CJiOgfFEyAywtQhXu5Wm5hDSAg4YQ7gW58TcAvTgRI8FuDaETSBtaZnA4EHXgRZviCAJSc1JLcjIz0tFtwqrRjNE1AWnJhbn5yXmQJMXuj40JyICNDgvvzw3PykTPdbR9ViZIRJzSFFqqkJyTmZuEihMilILS4F+TMGv3RSh3TEpMS8F6MUUBWCyKU0uKS1Czwloeg0RJTGw0AR6E5jDFYAFBqj4xK4xtjZWR6kkvyQxR8nK0sjSsBYQAAD//0n5eEfkBQAA",
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8446352,\"name\":\"Fa(k)t tlust\u00e1 z\u00e1bava\",\"code\":\"GC9J9XX\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":49.740733,\"longitude\":13.591667},\"detailsUrl\":\"/geocache/GC9J9XX\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-11-27T09:15:00\",\"owner\":{\"code\":\"PR2JCDN\",\"username\":\"Tesman Pavel\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
+          "string": ""
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
+          "Connection": [
+            "Keep-Alive"
+          ],
+          "Content-Encoding": [
+            "gzip"
+          ],
           "Content-Length": [
-            "515"
+            "813"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "bb82f2c3-3b0a-48f4-b031-5601918151c5"
+            "d2ef3f7b-2ca9-4400-9ded-d9b6d0630e36"
           ],
           "Date": [
-            "Sun, 14 Nov 2021 01:37:24 GMT"
+            "Tue, 22 Feb 2022 16:27:37 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -714,7 +742,7 @@
       }
     },
     {
-      "recorded_at": "2021-11-14T01:37:25",
+      "recorded_at": "2022-02-22T16:27:38",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -734,7 +762,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -756,10 +784,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "67069742-ebb6-4aa0-ad0d-b505c6d35e90"
+            "517bc0bd-648f-4816-94bb-0eba6f4b6e5b"
           ],
           "Date": [
-            "Sun, 14 Nov 2021 01:37:25 GMT"
+            "Tue, 22 Feb 2022 16:27:37 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -777,7 +805,7 @@
             "1"
           ],
           "x-rate-limit-reset": [
-            "35"
+            "22"
           ]
         },
         "status": {
@@ -788,7 +816,7 @@
       }
     },
     {
-      "recorded_at": "2021-11-14T01:38:05",
+      "recorded_at": "2022-02-22T16:28:05",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -808,7 +836,7 @@
             "gspkauth=<AUTH COOKIE>; jwt=<AUTH COOKIE>; __RequestVerificationToken=<AUTH COOKIE>"
           ],
           "User-Agent": [
-            "python-requests/2.26.0"
+            "python-requests/2.25.1"
           ]
         },
         "method": "GET",
@@ -816,24 +844,31 @@
       },
       "response": {
         "body": {
+          "base64_string": "H4sIAAAAAAAAA6pWKkotLs0pKVayiq5WykxRsjK3MDcAYh2lvMTcVCUrJWfPEH+FgvyUnFSFgqLEvPziksxsBV2FsNS8lNKcRCUdpeT8FJA6d2eLKAMDS6BAQVFqbmZprn9eTqWSVVpiTnGqjlJaYll+UWZJakB+Zh7IMgMdpfTU/OTE5IzUkMoCoH5DY5BJeSWJmXmpRRAhMx2llMy0tMxkoPuAJhnqATWVpBYVAZUoWRmDeKXFqUVu+aV5QGdD7QGJuGSm+OWXuGUiCYMtCi5JLCmF2F0A9EZqinN+flFKZl5iSSpQtFopJ7Eks6QU5BlTAz0DcyMDUx2lnPy8dKigoYmesaWRqYVxLdBdqUCH5hSHFuUAfa4P84k+IgwyEovdU/NL8kuL4G4ACvnkp7sUJaaVwMUKchKTU1NcgC4AmmNkYGSka2Cia2AWYmhuZWxgZWAANCm/HBggIOdBwzkgyMjE3dEQKAPyKzSSShIr8oHGAl2Wk1hcAg4SqKEGBgaGumAUYgAyEWJoSVFicnZiUk6qM1Ap0DnAIClKTc/MBwaskkdOYlne4bUKuUdmF5fkKwQUJWZAohmosggYD0rOVanJGZkgscSSkqLMpFJw+EGTj5EJPOWEZ6Sm5iRnJGYWKSQmJ6cWF2cCLQTqyix2LCjIyUwG2Q8NiVodiG5glEM1B6Um5+fmAhNZaopCWn6RQnZmSjF+vSaGcM3BJUX5OTmp6Pai6C0pKoVrReh0yU8nYA0iZ4QkZqcWK+QALVAoyUjMU8jPS1XIAMU4Xv1GwFQFNSAgsSg7My9dIS81sSipEr82YyO4NqfM5MpkoLXoGtCCAxERbsBEkZGTmZ5RolCUWliaWZSagq4XJThMkUKyIDU5MzFHoSQ/P4eQZqj/LBD+K00CKgFqKwbGR35uMbpHsWpHJAGodmBazSsuyC8C5l5gAiXKDGBZAovPxLz01KL80mKFxKJUUJJF14Xka0SAOSYl5qUAozNFAejy0uSS0iIC6ccSkSgyk7PRYwZNMSIFAUvD4vw8kOuABQGoXMSnzxjJkoz8ojwcqmNrY3WUSvJLEnOUrCyNLA1rAQEAAP//c8ET+uMFAAA=",
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8153625,\"name\":\"Hynkova krabice\",\"code\":\"GC98FA3\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":8,\"difficulty\":5.0,\"terrain\":5.0,\"userFound\":false,\"userDidNotFind\":false,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.60915,\"longitude\":14.075483},\"detailsUrl\":\"/geocache/GC98FA3\",\"hasGeotour\":false,\"hasLogDraft\":false,\"placedDate\":\"2021-03-31T00:00:00\",\"owner\":{\"code\":\"PR33HRK\",\"username\":\"oblac\"},\"lastFoundDate\":\"0001-01-01T00:00:00\"}],\"total\":9250}"
+          "string": ""
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
+          "Connection": [
+            "Keep-Alive"
+          ],
+          "Content-Encoding": [
+            "gzip"
+          ],
           "Content-Length": [
-            "500"
+            "830"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "3755e6cb-52aa-4e39-856d-372a31283fc8"
+            "a62dff7f-c8a8-416a-a7a9-5237e38b99f1"
           ],
           "Date": [
-            "Sun, 14 Nov 2021 01:38:05 GMT"
+            "Tue, 22 Feb 2022 16:28:05 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
