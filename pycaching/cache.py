@@ -721,7 +721,7 @@ class Cache(object):
         if self.pm_only:
             self.wp = cache_details.find("li", "li__gccode").text.strip()
 
-            self.name = cache_details.find(id="ctl00_ContentBody_CacheName").text
+            self.name = cache_details.find("h1").text.strip()
 
             author = cache_details.find(id="ctl00_ContentBody_uxCacheBy").text
             self.author = author[11:]  # 11 = len("A cache by ")
