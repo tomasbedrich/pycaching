@@ -93,7 +93,7 @@ new cassettes. To run new tests, first set up the following environment variable
     PYCACHING_TEST_USERNAME="yourusername" PYCACHING_TEST_PASSWORD="yourpassword" pytest <test folder name>
 
 Substitute your username for ``yourusername`` and your password for ``yourpassword``.
-NB: for successful test results, you'll need to use a Basic Member account!
+This requires you to use a basic member account, otherwise you might see unexpected test failures.
 
 To re-record a specific cassette in case of site changes, delete the corresponding JSON file and
 provide username and password as explained above. The missing cassette will be recorded for future
