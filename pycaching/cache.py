@@ -145,7 +145,6 @@ class Cache(object):
             content.find(class_="HalfRight AlignRight").p.text.strip().partition(":")[2].strip()
         )
         cache_info["location"] = Point.from_string(content.find(class_="LatLong").text.strip())
-        cache_info["state"] = None  # not on the page
         attributes = [
             img["src"].split("/")[-1].partition(".")[0].rpartition("-")
             for img in content.find(class_="sortables").find_all("img")
@@ -415,10 +414,6 @@ class Cache(object):
         :type: :class:`bool`
         """
         return self._status == Status.enabled
-
-    @state.setter
-    def state(self, state):
-        self._state = bool(state)
 
     @property
     @lazy_loaded
@@ -797,8 +792,6 @@ class Cache(object):
         self.hidden = parse_date(hidden.split(":")[-1])
 
         self.location = Point.from_string(root.find(id="uxLatLon").text)
-
-        self.state = root.find("ul", "OldWarning") is None
 
         # Cache status
         if root.find(id="ctl00_ContentBody_disabledMessage"):
