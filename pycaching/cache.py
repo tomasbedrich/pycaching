@@ -798,6 +798,18 @@ class Cache(object):
 
         self.state = root.find("ul", "OldWarning") is None
 
+        # Cache status
+        if root.find(id="ctl00_ContentBody_disabledMessage"):
+            self.status = Status.disabled
+        elif root.find(id="ctl00_ContentBody_archivedMessage"):
+            self.status = Status.archived
+        elif root.find(id="unpublishedMessage") or root.find(id="unpublishedReviewerNoteMessage"):
+            self.status = Status.unpublished
+        elif root.find(id="ctl00_ContentBody_lockedMessage"):
+            self.status = Status.locked
+        else:
+            self.status = Status.enabled
+
         log_image = root.find(id="ctl00_ContentBody_GeoNav_logTypeImage")
         if log_image:
             log_image_filename = log_image.get("src").split("/")[-1].rsplit(".", 1)[0]  # filename w/o extension
