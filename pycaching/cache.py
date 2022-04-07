@@ -1412,3 +1412,4 @@ class Status(enum.IntEnum):
     disabled = 1
     archived = 2
     unpublished = 3
+    locked = 4
