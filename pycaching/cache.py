@@ -13,7 +13,7 @@ from pycaching.geo import Point
 from pycaching.log import Log
 from pycaching.log import Type as LogType
 from pycaching.trackable import Trackable
-from pycaching.util import lazy_loaded, parse_date, rot13
+from pycaching.util import deprecated, lazy_loaded, parse_date, rot13
 
 # prefix _type() function to avoid collisions with cache type
 _type = type
@@ -406,6 +406,7 @@ class Cache(object):
 
     @property
     @lazy_loaded
+    @deprecated
     def state(self):
         """The cache status.
 
