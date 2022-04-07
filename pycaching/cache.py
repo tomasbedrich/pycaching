@@ -867,6 +867,7 @@ class Cache(object):
         Use information from geocaching map tooltips. Therefore loading is very quick, but
         the only loaded properties are: `name`, `type`, `state`, `size`, `difficulty`, `terrain`,
         `hidden`, `author`, `favorites` and `pm_only`.
+        It also loads `status`, however locked caches are considered archived.
 
         :raise .LoadError: If cache loading fails (probably because of not existing cache).
         """
@@ -881,7 +882,12 @@ class Cache(object):
         # prettify data
         self.name = data["name"]
         self.type = Type.from_string(data["type"]["text"])
-        self.state = data["available"]
+
+        if data["available"]:
+            self.status = Status.enabled
+        else:
+            self.status = Status.archived if data["archived"] else Status.disabled
+
         self.size = Size.from_string(data["container"]["text"])
         self.difficulty = data["difficulty"]["text"]
         self.terrain = data["terrain"]["text"]
