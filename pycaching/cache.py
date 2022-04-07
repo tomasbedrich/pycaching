@@ -420,6 +420,22 @@ class Cache(object):
 
     @property
     @lazy_loaded
+    def status(self):
+        """The cache status (Enabled, Disabled, Archived, Unpublished, Locked).
+
+        :type: :class:`.cache.Status`
+        """
+        return self._status
+
+    @status.setter
+    def status(self, status):
+        if isinstance(status, Status):
+            self._status = status
+        else:
+            raise errors.ValueError("Passed object is not Status instance.")
+
+    @property
+    @lazy_loaded
     def found(self):
         """The cache found status.
 
