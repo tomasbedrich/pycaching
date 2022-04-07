@@ -410,11 +410,11 @@ class Cache(object):
     def state(self):
         """The cache status.
 
-        :code:`True` if cache is enabled, :code:`False` if cache is disabled.
+        :code:`True` if cache is enabled, otherwise :code:`False`.
 
         :type: :class:`bool`
         """
-        return self._state
+        return self._status == Status.enabled
 
     @state.setter
     def state(self, state):
