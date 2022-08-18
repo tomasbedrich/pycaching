@@ -153,7 +153,10 @@ class Trackable(object):
 
     @type.setter
     def type(self, type):
-        self._type = type.strip()
+        if type is None:
+            self._type = ""
+        else:
+          self._type = type.strip()
 
     def get_KML(self):
         """Return the KML route of the trackable.
