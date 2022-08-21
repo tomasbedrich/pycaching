@@ -146,3 +146,16 @@ class TestMethods(LoggedInTest):
         self.assertTrue("#tbTravelStyle" in kml)
         self.assertTrue("<visibility>1</visibility>" in kml)
         self.assertTrue("</Placemark></Document></kml>" in kml)
+
+
+class TestIssues(LoggedInTest):
+    def test_load__type(self):
+        with self.subTest("existing"):
+            trackable = Trackable(self.gc, "TB1KEZ9")
+            with self.recorder.use_cassette("trackable_load__existing_type"):
+                self.assertEqual("SwedenHawk Geocoin", trackable.type)
+
+        with self.subTest("missing"):
+            trackable = Trackable(self.gc, "TB7WZD9")
+            with self.recorder.use_cassette("trackable_load__missing_type"):
+                self.assertEqual(None, trackable.type)

@@ -144,7 +144,7 @@ class Geocaching(object):
         post = {"UsernameOrEmail": username, "Password": password, token_field_name: token_value}
 
         # login to the site
-        logging.debug("Submiting login form.")
+        logging.debug("Submitting login form.")
         after_login_page = self._request(self._urls["login_page"], method="POST", data=post, login_check=False)
 
         logging.debug("Checking the result.")

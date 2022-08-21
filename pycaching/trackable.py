@@ -152,8 +152,10 @@ class Trackable(object):
         return self._type
 
     @type.setter
-    def type(self, type):
-        self._type = type.strip()
+    def type(self, type_):
+        if type_ is not None:
+            type_ = type_.strip()
+        self._type = type_
 
     def get_KML(self):
         """Return the KML route of the trackable.
@@ -171,7 +173,7 @@ class Trackable(object):
            This method is called automatically when you access a property which isn't yet filled in
            (so-called "lazy loading"). You don't have to call it explicitly.
 
-        :raise .LoadError: If trackable loading fails (probably because of not existing cache).
+        :raise .LoadError: If trackable loading fails (probably because of not existing trackable).
         """
         # pick url based on what info we have right now
         if hasattr(self, "url"):
