@@ -113,7 +113,7 @@ class Point(geopy.Point):
         else:
             dx, dy = 0, 0
 
-        n = 2.0 ** tile.z
+        n = 2.0**tile.z
         lon_deg = (tile.x + dx) / n * 360.0 - 180.0
         lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * (tile.y + dy) / n)))
         lat_deg = math.degrees(lat_rad)
@@ -132,7 +132,7 @@ class Point(geopy.Point):
         lat_deg = self.latitude
         lon_deg = self.longitude
         lat_rad = math.radians(lat_deg)
-        n = 2.0 ** zoom
+        n = 2.0**zoom
         x = int((lon_deg + 180.0) / 360.0 * n)
         y = int((1.0 - math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
         return Tile(geocaching, x, y, zoom)

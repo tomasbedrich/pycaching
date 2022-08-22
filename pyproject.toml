@@ -41,7 +41,7 @@ dev = [
     "pytest-cov ~= 3.0",
     "betamax ~= 0.8",
     "betamax-serializers ~= 0.2",
-    "black ~= 21.10b0",
+    "black ~= 22.6.0",
     "flake8 ~= 4.0",
     "isort ~= 5.10"
 ]
