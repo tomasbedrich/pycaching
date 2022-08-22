@@ -407,6 +407,19 @@ class TestMethods(LoggedInTest):
                 self.assertEqual(cache.type, Type.geocaching_hq)
 
 
+class TestCacheIssues(LoggedInTest):
+    def test_author(self):
+        with self.subTest("normal"):
+            cache = Cache(self.gc, "GC4808G")
+            with self.recorder.use_cassette("cache_author_normal"):
+                self.assertEqual("Bifurkační tým", cache.author)
+
+        with self.subTest("deleted"):
+            cache = Cache(self.gc, "GC1MX0C")
+            with self.recorder.use_cassette("cache_author_deleted"):
+                self.assertIsNone(cache.author)
+
+
 class TestWaypointProperties(unittest.TestCase):
     def setUp(self):
         self.w = Waypoint("id", "Parking", Point("N 56° 50.006′ E 13° 56.423′"), "This is a test")

@@ -506,7 +506,8 @@ class Cache(object):
 
     @author.setter
     def author(self, author):
-        author = str(author).strip()
+        if author is not None:
+            author = str(author).strip()
         self._author = author
 
     @property
@@ -744,7 +745,13 @@ class Cache(object):
                 raise errors.LoadError()
             self.name = cache_details.find(id="ctl00_ContentBody_CacheName").text
 
-            self.author = cache_details("a")[1].text
+            try:
+                self.author = cache_details("a")[1].text
+            except IndexError:
+                if "[DELETED_USER]" in cache_details.find("div", id="ctl00_ContentBody_mcd1").text:
+                    self.author = None
+                else:
+                    raise
 
             D_and_T_img = root.find("div", "CacheStarLabels").find_all("img")
             self.difficulty, self.terrain = [float(img.get("alt").split()[0]) for img in D_and_T_img]
@@ -762,7 +769,7 @@ class Cache(object):
         if self.pm_only:
             raise errors.PMOnlyException()
 
-        # details not avaliable for basic members for PM only caches ------------------------------
+        # details not available for basic members for PM only caches
         pm_only_warning = root.find("p", "Warning NoBottomSpacing")
         self.pm_only = pm_only_warning and ("Premium Member Only" in pm_only_warning.text) or False
 
