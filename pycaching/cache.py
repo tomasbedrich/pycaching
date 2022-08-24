@@ -792,17 +792,7 @@ class Cache(object):
 
         self.location = Point.from_string(root.find(id="uxLatLon").text)
 
-        # Cache status
-        if root.find(id="ctl00_ContentBody_disabledMessage"):
-            self.status = Status.disabled
-        elif root.find(id="ctl00_ContentBody_archivedMessage"):
-            self.status = Status.archived
-        elif root.find(id="unpublishedMessage") or root.find(id="unpublishedReviewerNoteMessage"):
-            self.status = Status.unpublished
-        elif root.find(id="ctl00_ContentBody_lockedMessage"):
-            self.status = Status.locked
-        else:
-            self.status = Status.enabled
+        self.status = Status.from_cache_details(root)
 
         log_image = root.find(id="ctl00_ContentBody_GeoNav_logTypeImage")
         if log_image:
@@ -1443,3 +1433,16 @@ class Status(enum.IntEnum):
     archived = 2
     unpublished = 3
     locked = 4
+
+    @classmethod
+    def from_cache_details(cls, soup):
+        if soup.find(id="ctl00_ContentBody_disabledMessage"):
+            return Status.disabled
+        elif soup.find(id="ctl00_ContentBody_archivedMessage"):
+            return Status.archived
+        elif soup.find(id="unpublishedMessage") or soup.find(id="unpublishedReviewerNoteMessage"):
+            return Status.unpublished
+        elif soup.find(id="ctl00_ContentBody_lockedMessage"):
+            return Status.locked
+        else:
+            return Status.enabled
