@@ -3,7 +3,7 @@ import unittest
 from datetime import date
 from unittest import mock
 
-from pycaching.cache import Cache, Size, Type, Waypoint, Status
+from pycaching.cache import Cache, Size, Status, Type, Waypoint
 from pycaching.errors import LoadError, PMOnlyException
 from pycaching.errors import ValueError as PycachingValueError
 from pycaching.geo import Point
