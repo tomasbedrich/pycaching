@@ -3,7 +3,7 @@ import unittest
 from datetime import date
 from unittest import mock
 
-from pycaching.cache import Cache, Size, Type, Waypoint
+from pycaching.cache import Cache, Size, Type, Waypoint, Status
 from pycaching.errors import LoadError, PMOnlyException
 from pycaching.errors import ValueError as PycachingValueError
 from pycaching.geo import Point
@@ -24,7 +24,7 @@ class TestProperties(unittest.TestCase):
             name="Testing",
             type=Type.traditional,
             location=Point(),
-            state=True,
+            status=Status.enabled,
             found=False,
             size=Size.micro,
             difficulty=1.5,
@@ -114,6 +114,12 @@ class TestProperties(unittest.TestCase):
 
     def test_state(self):
         self.assertEqual(self.c.state, True)
+
+    def test_status(self):
+        self.assertEqual(self.c.status, Status.enabled)
+
+    def test_status_name(self):
+        self.assertEqual(self.c.status.name, "enabled")
 
     def test_found(self):
         self.assertEqual(self.c.found, False)
