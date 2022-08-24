@@ -169,7 +169,6 @@ class Cache(object):
             wp=record["code"],
             name=record["name"],
             type=Type.from_number(record["geocacheType"]),
-            state=Status(record["cacheStatus"]) == Status.enabled,
             status=Status(record["cacheStatus"]),
             found=record["userFound"],
             size=Size.from_number(record["containerType"]),
