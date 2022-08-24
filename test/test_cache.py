@@ -469,3 +469,26 @@ class TestWaypointProperties(unittest.TestCase):
 
     def test_str(self):
         self.assertEqual(str(self.w), "id")
+
+
+class TestCacheStatus(LoggedInTest):
+    def test_cache_status(self):
+        with self.subTest("Enabled"):
+            cache = Cache(self.gc, "GC8CKQQ")
+            with self.recorder.use_cassette("cache_status_enabled"):
+                self.assertEqual(Status.enabled, cache.status)
+
+        with self.subTest("Disabled"):
+            cache = Cache(self.gc, "GC7Y77T")
+            with self.recorder.use_cassette("cache_status_disabled"):
+                self.assertEqual(Status.disabled, cache.status)
+
+        with self.subTest("Archived"):
+            cache = Cache(self.gc, "GC1PAR2")
+            with self.recorder.use_cassette("cache_status_archived"):
+                self.assertEqual(Status.archived, cache.status)
+
+        with self.subTest("Locked"):
+            cache = Cache(self.gc, "GC10")
+            with self.recorder.use_cassette("cache_status_locked"):
+                self.assertEqual(Status.locked, cache.status)
