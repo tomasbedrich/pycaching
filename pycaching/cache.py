@@ -861,9 +861,11 @@ class Cache(object):
         """Load basic cache details.
 
         Use information from geocaching map tooltips. Therefore loading is very quick, but
-        the only loaded properties are: `name`, `type`, `state`, `size`, `difficulty`, `terrain`,
+        the only loaded properties are: `name`, `type`, `size`, `difficulty`, `terrain`,
         `hidden`, `author`, `favorites` and `pm_only`.
-        It also loads `status`, however locked caches are considered archived.
+        It also loads `status`, but only for enabled caches. For other states, it can't be
+        completely determined (can't distinguish between archived and locked caches), so
+        lazy loading is used.
 
         :raise .LoadError: If cache loading fails (probably because of not existing cache).
         """
