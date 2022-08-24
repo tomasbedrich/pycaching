@@ -879,10 +879,10 @@ class Cache(object):
         self.name = data["name"]
         self.type = Type.from_string(data["type"]["text"])
 
+        # We can fill in status correctly only for enabled caches
+        # (locked caches are considered archived)
         if data["available"]:
             self.status = Status.enabled
-        else:
-            self.status = Status.archived if data["archived"] else Status.disabled
 
         self.size = Size.from_string(data["container"]["text"])
         self.difficulty = data["difficulty"]["text"]
