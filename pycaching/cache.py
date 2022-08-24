@@ -212,7 +212,6 @@ class Cache(object):
             "type",
             "location",
             "original_location",
-            "state",
             "status",
             "found",
             "size",
