@@ -492,3 +492,9 @@ class TestCacheStatus(LoggedInTest):
             cache = Cache(self.gc, "GC10")
             with self.recorder.use_cassette("cache_status_locked"):
                 self.assertEqual(Status.locked, cache.status)
+
+        with self.subTest("Enabled > Quick load"):
+            cache = Cache(self.gc, "GC8CKQQ")
+            with self.recorder.use_cassette("cache_status_enabled_load_quick"):
+                cache.load_quick()
+                self.assertEqual(Status.enabled, cache.status)
