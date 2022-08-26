@@ -156,7 +156,7 @@ class Cache(object):
         cache_info["summary"] = content.find("h2", text="Short Description").find_next("div").text
         cache_info["description"] = content.find("h2", text="Long Description").find_next("div").text
         hint = content.find(id="uxEncryptedHint")
-        cache_info["hint"] = hint.text.strip() if hint else None
+        cache_info["hint"] = hint.get_text(separator="\n") if hint else None
         cache_info["waypoints"] = Waypoint.from_html(content, table_id="Waypoints")
         cache_info["log_counts"] = Cache._get_log_counts_from_print_page(soup)
         return Cache(geocaching, **cache_info)
@@ -813,7 +813,7 @@ class Cache(object):
         self.summary = root.find(id="ctl00_ContentBody_ShortDescription").text
         self.description = root.find(id="ctl00_ContentBody_LongDescription").text
 
-        self.hint = rot13(root.find(id="div_hint").text.strip())
+        self.hint = rot13(root.find(id="div_hint").get_text(separator="\n"))
 
         favorites = root.find("span", "favorite-value")
         if favorites:
@@ -937,7 +937,7 @@ class Cache(object):
 
         self.description = content.find("h2", text="Long Description").find_next("div").text
 
-        self.hint = content.find(id="uxEncryptedHint").text
+        self.hint = content.find(id="uxEncryptedHint").get_text(separator="\n")
 
         self.favorites = content.find("strong", text=re.compile("Favorites:")).parent.text.split()[-1]
 
