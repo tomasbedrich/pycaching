@@ -61,7 +61,12 @@ def rot13(text):
     """Return a text encoded by rot13 cipher."""
     # Translate only the text outside of the square brackets
     text = re.sub(r"\[.*?\]", lambda x: x.group(0).translate(_rot13codeTable), text)
-    return text.translate(_rot13codeTable).replace("[", "").replace("]", "")
+    return remove_brackets(text.translate(_rot13codeTable))
+
+
+def remove_brackets(text):
+    """Remove square brackets from the text."""
+    return text.replace("[", "").replace("]", "")
 
 
 def parse_date(raw):
