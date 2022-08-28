@@ -15,7 +15,7 @@ import bs4
 import requests
 from bs4.element import Script
 
-from pycaching.cache import Cache, Size
+from pycaching.cache import Cache, Size, Status
 from pycaching.errors import Error, LoginFailedException, NotLoggedInException, PMOnlyException, TooManyRequestsError
 from pycaching.geo import Point, Rectangle
 from pycaching.log import Log
@@ -289,7 +289,8 @@ class Geocaching(object):
                 badge = row.find("svg", class_="badge")
                 c.found = "found" in str(badge) if badge is not None else False
                 c.favorites = row.find(attrs={"data-column": "FavoritePoint"}).text
-                c.state = not (row.get("class") and "disabled" in row.get("class"))
+                if not (row.get("class") and "disabled" in row.get("class")):
+                    c.status = Status.enabled
                 c.pm_only = row.find("td", "pm-upsell") is not None
 
                 if c.pm_only:

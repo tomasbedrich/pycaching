@@ -3,7 +3,7 @@ import unittest
 from datetime import date
 from unittest import mock
 
-from pycaching.cache import Cache, Size, Type, Waypoint
+from pycaching.cache import Cache, Size, Status, Type, Waypoint
 from pycaching.errors import LoadError, PMOnlyException
 from pycaching.errors import ValueError as PycachingValueError
 from pycaching.geo import Point
@@ -24,7 +24,7 @@ class TestProperties(unittest.TestCase):
             name="Testing",
             type=Type.traditional,
             location=Point(),
-            state=True,
+            status=Status.enabled,
             found=False,
             size=Size.micro,
             difficulty=1.5,
@@ -114,6 +114,12 @@ class TestProperties(unittest.TestCase):
 
     def test_state(self):
         self.assertEqual(self.c.state, True)
+
+    def test_status(self):
+        self.assertEqual(self.c.status, Status.enabled)
+
+    def test_status_name(self):
+        self.assertEqual(self.c.status.name, "enabled")
 
     def test_found(self):
         self.assertEqual(self.c.found, False)
@@ -463,3 +469,32 @@ class TestWaypointProperties(unittest.TestCase):
 
     def test_str(self):
         self.assertEqual(str(self.w), "id")
+
+
+class TestCacheStatus(LoggedInTest):
+    def test_cache_status(self):
+        with self.subTest("Enabled"):
+            cache = Cache(self.gc, "GC8CKQQ")
+            with self.recorder.use_cassette("cache_status_enabled"):
+                self.assertEqual(Status.enabled, cache.status)
+
+        with self.subTest("Disabled"):
+            cache = Cache(self.gc, "GC7Y77T")
+            with self.recorder.use_cassette("cache_status_disabled"):
+                self.assertEqual(Status.disabled, cache.status)
+
+        with self.subTest("Archived"):
+            cache = Cache(self.gc, "GC1PAR2")
+            with self.recorder.use_cassette("cache_status_archived"):
+                self.assertEqual(Status.archived, cache.status)
+
+        with self.subTest("Locked"):
+            cache = Cache(self.gc, "GC10")
+            with self.recorder.use_cassette("cache_status_locked"):
+                self.assertEqual(Status.locked, cache.status)
+
+        with self.subTest("Enabled > Quick load"):
+            cache = Cache(self.gc, "GC8CKQQ")
+            with self.recorder.use_cassette("cache_status_enabled_load_quick"):
+                cache.load_quick()
+                self.assertEqual(Status.enabled, cache.status)

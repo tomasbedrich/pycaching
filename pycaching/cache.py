@@ -13,7 +13,7 @@ from pycaching.geo import Point
 from pycaching.log import Log
 from pycaching.log import Type as LogType
 from pycaching.trackable import Trackable
-from pycaching.util import lazy_loaded, parse_date, rot13
+from pycaching.util import deprecated, lazy_loaded, parse_date, rot13
 
 # prefix _type() function to avoid collisions with cache type
 _type = type
@@ -145,7 +145,6 @@ class Cache(object):
             content.find(class_="HalfRight AlignRight").p.text.strip().partition(":")[2].strip()
         )
         cache_info["location"] = Point.from_string(content.find(class_="LatLong").text.strip())
-        cache_info["state"] = None  # not on the page
         attributes = [
             img["src"].split("/")[-1].partition(".")[0].rpartition("-")
             for img in content.find(class_="sortables").find_all("img")
@@ -170,7 +169,7 @@ class Cache(object):
             wp=record["code"],
             name=record["name"],
             type=Type.from_number(record["geocacheType"]),
-            state=Status(record["cacheStatus"]) == Status.enabled,
+            status=Status(record["cacheStatus"]),
             found=record["userFound"],
             size=Size.from_number(record["containerType"]),
             difficulty=record["difficulty"],
@@ -213,7 +212,7 @@ class Cache(object):
             "type",
             "location",
             "original_location",
-            "state",
+            "status",
             "found",
             "size",
             "difficulty",
@@ -405,18 +404,31 @@ class Cache(object):
 
     @property
     @lazy_loaded
+    @deprecated
     def state(self):
         """The cache status.
 
-        :code:`True` if cache is enabled, :code:`False` if cache is disabled.
+        :code:`True` if cache is enabled, otherwise :code:`False`.
 
         :type: :class:`bool`
         """
-        return self._state
+        return self._status == Status.enabled
 
-    @state.setter
-    def state(self, state):
-        self._state = bool(state)
+    @property
+    @lazy_loaded
+    def status(self):
+        """The cache status (Enabled, Disabled, Archived, Unpublished, Locked).
+
+        :type: :class:`.cache.Status`
+        """
+        return self._status
+
+    @status.setter
+    def status(self, status):
+        if isinstance(status, Status):
+            self._status = status
+        else:
+            raise errors.ValueError("Passed object is not Status instance.")
 
     @property
     @lazy_loaded
@@ -780,7 +792,7 @@ class Cache(object):
 
         self.location = Point.from_string(root.find(id="uxLatLon").text)
 
-        self.state = root.find("ul", "OldWarning") is None
+        self.status = Status.from_cache_details(root)
 
         log_image = root.find(id="ctl00_ContentBody_GeoNav_logTypeImage")
         if log_image:
@@ -837,8 +849,11 @@ class Cache(object):
         """Load basic cache details.
 
         Use information from geocaching map tooltips. Therefore loading is very quick, but
-        the only loaded properties are: `name`, `type`, `state`, `size`, `difficulty`, `terrain`,
+        the only loaded properties are: `name`, `type`, `size`, `difficulty`, `terrain`,
         `hidden`, `author`, `favorites` and `pm_only`.
+        It also loads `status`, but only for enabled caches. For other states, it can't be
+        completely determined (can't distinguish between archived and locked caches), so
+        lazy loading is used.
 
         :raise .LoadError: If cache loading fails (probably because of not existing cache).
         """
@@ -853,7 +868,12 @@ class Cache(object):
         # prettify data
         self.name = data["name"]
         self.type = Type.from_string(data["type"]["text"])
-        self.state = data["available"]
+
+        # We can fill in status correctly only for enabled caches
+        # (locked caches are considered archived)
+        if data["available"]:
+            self.status = Status.enabled
+
         self.size = Size.from_string(data["container"]["text"])
         self.difficulty = data["difficulty"]["text"]
         self.terrain = data["terrain"]["text"]
@@ -1412,3 +1432,17 @@ class Status(enum.IntEnum):
     disabled = 1
     archived = 2
     unpublished = 3
+    locked = 4
+
+    @classmethod
+    def from_cache_details(cls, soup):
+        if soup.find(id="ctl00_ContentBody_disabledMessage"):
+            return Status.disabled
+        elif soup.find(id="ctl00_ContentBody_archivedMessage"):
+            return Status.archived
+        elif soup.find(id="unpublishedMessage") or soup.find(id="unpublishedReviewerNoteMessage"):
+            return Status.unpublished
+        elif soup.find(id="ctl00_ContentBody_lockedMessage"):
+            return Status.locked
+        else:
+            return Status.enabled
