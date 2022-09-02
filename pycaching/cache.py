@@ -13,7 +13,7 @@ from pycaching.geo import Point
 from pycaching.log import Log
 from pycaching.log import Type as LogType
 from pycaching.trackable import Trackable
-from pycaching.util import deprecated, lazy_loaded, parse_date, remove_brackets, rot13
+from pycaching.util import deprecated, lazy_loaded, parse_date, rot13
 
 # prefix _type() function to avoid collisions with cache type
 _type = type
@@ -156,7 +156,7 @@ class Cache(object):
         cache_info["summary"] = content.find("h2", text="Short Description").find_next("div").text
         cache_info["description"] = content.find("h2", text="Long Description").find_next("div").text
         hint = content.find(id="uxEncryptedHint")
-        cache_info["hint"] = remove_brackets(hint.get_text(separator="\n")) if hint else None
+        cache_info["hint"] = hint.get_text(separator="\n") if hint else None
         cache_info["waypoints"] = Waypoint.from_html(content, table_id="Waypoints")
         cache_info["log_counts"] = Cache._get_log_counts_from_print_page(soup)
         return Cache(geocaching, **cache_info)
@@ -937,7 +937,7 @@ class Cache(object):
 
         self.description = content.find("h2", text="Long Description").find_next("div").text
 
-        self.hint = remove_brackets(content.find(id="uxEncryptedHint").get_text(separator="\n"))
+        self.hint = content.find(id="uxEncryptedHint").get_text(separator="\n")
 
         self.favorites = content.find("strong", text=re.compile("Favorites:")).parent.text.split()[-1]
 
