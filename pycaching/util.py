@@ -59,7 +59,9 @@ def deprecated(func):
 
 def rot13(text):
     """Return a text encoded by rot13 cipher."""
-    return str.translate(text, _rot13codeTable)
+    # Translate only the text outside of the square brackets
+    text = re.sub(r"\[.*?\]", lambda x: x.group(0).translate(_rot13codeTable), text)
+    return text.translate(_rot13codeTable)
 
 
 def parse_date(raw):

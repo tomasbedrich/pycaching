@@ -12,6 +12,11 @@ class TestModule(LoggedInTest):
     def test_rot13(self):
         self.assertEqual(rot13("Text"), "Grkg")
         self.assertEqual(rot13("abc'ř"), "nop'ř")
+        self.assertEqual(rot13("[EN] Text"), "[EN] Grkg")
+        self.assertEqual(rot13("[EN Text"), "[RA Grkg")
+        self.assertEqual(rot13("EN] Text"), "RA] Grkg")
+        self.assertEqual(rot13("[abc[abc]abc]"), "[abc[abc]nop]")
+        self.assertEqual(rot13("[abc[ab]c]abc]"), "[abc[ab]p]nop]")
 
     def test_parse_date(self):
         dates = datetime.date(2014, 1, 30), datetime.date(2000, 1, 1), datetime.date(2020, 12, 13)

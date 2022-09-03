@@ -498,3 +498,17 @@ class TestCacheStatus(LoggedInTest):
             with self.recorder.use_cassette("cache_status_enabled_load_quick"):
                 cache.load_quick()
                 self.assertEqual(Status.enabled, cache.status)
+
+
+class TestHint(LoggedInTest):
+    def test_hint(self):
+        with self.subTest("Lazy loading"):
+            cache = Cache(self.gc, "GC9HJ2J")
+            with self.recorder.use_cassette("cache_hint_lazy_loading"):
+                self.assertEqual(cache.hint, "[CZ:] plot, nahore, vpravo; fotohint\n[EN:] fence, up, right; photohint")
+
+        with self.subTest("Load by guid"):
+            cache = Cache(self.gc, "GC9HJ2J")
+            with self.recorder.use_cassette("cache_hint_load_by_guid"):
+                cache.load_by_guid()
+                self.assertEqual(cache.hint, "[CZ:] plot, nahore, vpravo; fotohint\n[EN:] fence, up, right; photohint")
