@@ -13,7 +13,7 @@ from urllib.parse import parse_qs, urljoin, urlparse
 
 import bs4
 import requests
-from bs4.element import Script
+from bs4.element import Script  # Direct import as `bs4.Script` requires version >= 4.9.1.
 
 from pycaching.cache import Cache, Size, Status
 from pycaching.errors import Error, LoginFailedException, NotLoggedInException, PMOnlyException, TooManyRequestsError

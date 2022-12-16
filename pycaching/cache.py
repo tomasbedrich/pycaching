@@ -153,8 +153,8 @@ class Cache(object):
         cache_info["attributes"] = {attr_name: attr_setting == "yes" for attr_name, _, attr_setting in attributes}
         if "attribute" in cache_info["attributes"]:  # 'blank' attribute
             del cache_info["attributes"]["attribute"]
-        cache_info["summary"] = content.find("h2", text="Short Description").find_next("div").text
-        cache_info["description"] = content.find("h2", text="Long Description").find_next("div").text
+        cache_info["summary"] = content.find("h2", string="Short Description").find_next("div").text
+        cache_info["description"] = content.find("h2", string="Long Description").find_next("div").text
         hint = content.find(id="uxEncryptedHint")
         cache_info["hint"] = hint.get_text(separator="\n") if hint else None
         cache_info["waypoints"] = Waypoint.from_html(content, table_id="Waypoints")
@@ -922,9 +922,9 @@ class Cache(object):
 
         # TODO do NOT use English phrases like "Placed by" to search for attributes
 
-        self.author = content.find("p", text=re.compile("Placed by:")).text.split("\r\n")[2].strip()
+        self.author = content.find("p", string=re.compile("Placed by:")).text.split("\r\n")[2].strip()
 
-        hidden_p = content.find("p", text=re.compile("Placed Date:"))
+        hidden_p = content.find("p", string=re.compile("Placed Date:"))
         self.hidden = hidden_p.text.replace("Placed Date:", "").strip()
 
         attr_img = content.find_all("img", src=re.compile(r"\/attributes\/"))
@@ -933,13 +933,13 @@ class Cache(object):
             name: appendix.startswith("yes") for name, appendix in attributes_raw if not appendix.startswith("blank")
         }
 
-        self.summary = content.find("h2", text="Short Description").find_next("div").text
+        self.summary = content.find("h2", string="Short Description").find_next("div").text
 
-        self.description = content.find("h2", text="Long Description").find_next("div").text
+        self.description = content.find("h2", string="Long Description").find_next("div").text
 
         self.hint = content.find(id="uxEncryptedHint").get_text(separator="\n")
 
-        self.favorites = content.find("strong", text=re.compile("Favorites:")).parent.text.split()[-1]
+        self.favorites = content.find("strong", string=re.compile("Favorites:")).parent.text.split()[-1]
 
         self.waypoints = Waypoint.from_html(content, "Waypoints")
 
