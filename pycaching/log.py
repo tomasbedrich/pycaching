@@ -143,6 +143,9 @@ class Type(enum.Enum):
         elif filename == "68":
             # 2 different IDs for post_reviewer_note
             return cls.post_reviewer_note
+        elif filename == "1":
+            # 2 different IDs for unarchive
+            return cls.unarchive
 
         try:
             return cls(filename)
