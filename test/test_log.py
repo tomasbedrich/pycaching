@@ -48,6 +48,7 @@ class TestType(unittest.TestCase):
         with self.subTest("special valid types"):
             self.assertEqual(Type.visit, Type.from_filename("1001"))
             self.assertEqual(Type.publish_listing, Type.from_filename("1003"))
+            self.assertEqual(Type.unarchive, Type.from_filename("1"))
 
         with self.subTest("invalid type"):
             with self.assertRaises(PycachingValueError):
