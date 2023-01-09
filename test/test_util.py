@@ -29,7 +29,6 @@ class TestModule(LoggedInTest):
             "%d-%m-%Y",
             "%d-%m-%y",
             "%d.%m.%Y",
-            "%d.%m.%Y г.",
             "%d. %m. %Y",
             "%d.%m.%y",
             "%d/%b/%Y",
