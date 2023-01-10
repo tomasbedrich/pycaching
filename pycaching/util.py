@@ -76,6 +76,7 @@ def parse_date(raw):
         "%d-%m-%Y",
         "%d-%m-%y",
         "%d.%m.%Y",
+        "%d.%m.%Y г.",
         "%d. %m. %Y",
         "%d.%m.%y",
         "%d/%b/%Y",

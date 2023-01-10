@@ -29,6 +29,7 @@ class TestModule(LoggedInTest):
             "%d-%m-%Y",
             "%d-%m-%y",
             "%d.%m.%Y",
+            "%d.%m.%Y г.",
             "%d. %m. %Y",
             "%d.%m.%y",
             "%d/%b/%Y",
@@ -39,7 +40,12 @@ class TestModule(LoggedInTest):
 
         # generate all possible formats for all dates and test equality
         for date, pattern in itertools.product(dates, patterns):
-            formatted_date = datetime.datetime.strftime(date, pattern)
+            # Encoding and decoding is for Windows (https://stackoverflow.com/q/16034060)
+            formatted_date = (
+                datetime.datetime.strftime(date, pattern.encode("unicode-escape").decode())
+                .encode()
+                .decode("unicode-escape")
+            )
             self.assertEqual(date, parse_date(formatted_date))
 
     def test_format_date(self):
