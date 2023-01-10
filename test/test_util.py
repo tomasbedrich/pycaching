@@ -2,6 +2,7 @@
 
 import datetime
 import itertools
+import platform
 
 from pycaching.util import format_date, get_possible_attributes, parse_date, rot13
 
@@ -40,12 +41,16 @@ class TestModule(LoggedInTest):
 
         # generate all possible formats for all dates and test equality
         for date, pattern in itertools.product(dates, patterns):
-            # Encoding and decoding is for Windows (https://stackoverflow.com/q/16034060)
-            formatted_date = (
-                datetime.datetime.strftime(date, pattern.encode("unicode-escape").decode())
-                .encode()
-                .decode("unicode-escape")
-            )
+            if platform.system() == "Windows":
+                # https://stackoverflow.com/q/16034060
+                formatted_date = (
+                    datetime.datetime.strftime(date, pattern.encode("unicode-escape").decode())
+                    .encode()
+                    .decode("unicode-escape")
+                )
+            else:
+                formatted_date = datetime.datetime.strftime(date, pattern)
+
             self.assertEqual(date, parse_date(formatted_date))
 
     def test_format_date(self):
