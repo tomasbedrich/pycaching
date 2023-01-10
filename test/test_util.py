@@ -42,7 +42,7 @@ class TestModule(LoggedInTest):
         # generate all possible formats for all dates and test equality
         for date, pattern in itertools.product(dates, patterns):
             if platform.system() == "Windows":
-                # https://stackoverflow.com/q/16034060
+                # https://stackoverflow.com/a/49791321
                 formatted_date = (
                     datetime.datetime.strftime(date, pattern.encode("unicode-escape").decode())
                     .encode()
