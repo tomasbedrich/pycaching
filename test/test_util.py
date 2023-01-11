@@ -2,6 +2,7 @@
 
 import datetime
 import itertools
+import platform
 
 from pycaching.util import format_date, get_possible_attributes, parse_date, rot13
 
@@ -23,9 +24,15 @@ class TestModule(LoggedInTest):
         patterns = (
             "%Y-%m-%d",
             "%Y/%m/%d",
+            "%Y. %m. %d.",
             "%m/%d/%Y",
             "%d/%m/%Y",
+            "%d-%m-%Y",
+            "%d-%m-%y",
             "%d.%m.%Y",
+            "%d.%m.%Y г.",
+            "%d. %m. %Y",
+            "%d.%m.%y",
             "%d/%b/%Y",
             "%d.%b.%Y",
             "%b/%d/%Y",
@@ -34,7 +41,16 @@ class TestModule(LoggedInTest):
 
         # generate all possible formats for all dates and test equality
         for date, pattern in itertools.product(dates, patterns):
-            formatted_date = datetime.datetime.strftime(date, pattern)
+            if platform.system() == "Windows":
+                # https://stackoverflow.com/a/49791321
+                formatted_date = (
+                    datetime.datetime.strftime(date, pattern.encode("unicode-escape").decode())
+                    .encode()
+                    .decode("unicode-escape")
+                )
+            else:
+                formatted_date = datetime.datetime.strftime(date, pattern)
+
             self.assertEqual(date, parse_date(formatted_date))
 
     def test_format_date(self):
