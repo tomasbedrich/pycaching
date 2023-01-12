@@ -423,7 +423,7 @@ class Geocaching(object):
                 rect.corners[1].longitude,
             ),
             "take": take_amount,
-            "asc": not reverse,
+            "asc": str(not reverse).lower(),
             "skip": 0,
             "sort": sort_by.value,
         }

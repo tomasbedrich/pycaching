@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2023-01-12T17:12:28",
+      "recorded_at": "2023-01-12T18:16:18",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -25,11 +25,11 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=0&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=0&sort=datelastvisited"
       },
       "response": {
         "body": {
-          "base64_string": "H4sIAAAAAAAAA6pWKkotLs0pKVayiq5WykxRsrKwNDKwNDLXUcpLzE1VslJy9gzxVwhOzCvJzMtUMDIwMlbQVfBNLMo8vDCvOPvwQoWQw3vzMpNTlXSUkvNTQBrcnR2NzQODgAIFRam5maW5/nk5lUpWaYk5xak6SmmJZflFmSWpAfmZeSBbDXSU0lPzkxOTM1JDKguA+g2NQSbllSRm5qUWQYTMdJRSMtPSMpOBDgWaZKgH1FSSWlQEVALlgfUHlySWlEKMLMgvLklNcc7PL0rJzEssSQWKVivlJJZklpSC3GhiqWdpYWpsDLQqJz8vHSpqaKxnYmZoVgu0LRVofU5xaFEO0D/6MPfpI3yWkVjsnppfkl9aBPdYQU5icmqKC9AyoB5QOOkamOgaWYYYmloZGAARUFd+OdBLIJdAQyogyCPQ2TEQKFNanFoEDe/cxCJgUOsVl+RnVyoB3ZKTWFzill+aBzPawMDAUBeMQsDmQowuKUpMzk5Mykl1BiotAYdBUWp6Zj4wgJQCcqpSj3YAI2uvQnZRYhY4poCKioBBqeRclZqckZkIFEssKSnKTCoFhxU0KRiZwFNBeEZqak5yRmJmkUJicnJqcXEm0C6grsxix4KCnMxkkNVKViVFpam1OhDNwEiD6g1KTc7PzU3NS0lNUUjLL1LIzkwpxqvVxBCuN7ikKD8nJxXdVpxaETpd8tPRbUFVamQKVxuQWJSdmZeukJeaWJRUia4L1VsIXZGJRSkKGgVFmWXAmFEA5qPMlNS85FRNvPqNjeD6nTKTK5NzgOGNT70pwr7gjPyiEoWMzOxUBQ0bQ4XsXHSb0HQibPLLTM8oUQAnYnQtkOQL9x0wR+CINVBizywGZll0A1DCFBHrAaVJQCUKwISZV1wAdDgw8+XnoYcwuhngEEKUPR75RcXo4YPuZGNElDsn5hagRyNObRYo2tIygfGHrgMtbBC5IaQoNVUhOSczNwlkXVFqYSlQewp+7aYI7Y5JiXkp+XnAgC0Gejy5pLQIPVpgemNrY3WUSvJLEnOUrCzNjCxrAQEAAP//Ii8TZrAFAAA=",
+          "base64_string": "H4sIAAAAAAAAA6pWKkotLs0pKVayiq5WykxRsrKwNDKwNDLXUcpLzE1VslJy9gzxVwhOzCvJzMtUMDIwMlbQVfBNLMo8vDCvOPvwQoWQw3vzMpNTlXSUkvNTQBrcnR2NzQODgAIFRam5maW5/nk5lUpWaYk5xak6SmmJZflFmSWpAfmZeSBbDXSU0lPzkxOTM1JDKguA+g2NQSbllSRm5qUWQYTMdJRSMtPSMpOBDgWaZKgH1FSSWlQEVALlgfUHlySWlEKMLMgvLklNcc7PL0rJzEssSQWKVivlJJZklpSC3GhiqWdpYWpsDLQqJz8vHSpqaKxnYmZoVgu0LRVofU5xaFEO0D/6MPfpI3yWkVjsnppfkl9aBPdYQU5icmqKC9AyoB5QOOkamOgaWYYYmloZGAARUFd+OdBLIJdAQyogyCPQ2TEQKFNanFoEDe/cxCJgUOsVl+RnVyoB3ZKTWFzill+aBzPawMDAUBeMQsDmQowuKUpMzk5Mykl1BiotAYdBUWp6Zj4wgJQCcqpSj3YAI2uvQnZRYhY4poCKioBBqeRclZqckZkIFEssKSnKTCoFhxU0KRiZwFNBeEZqak5yRmJmkUJicnJqcXEm0C6grsxix4KCnMxkkNVKViVFpam1OhDNwEiD6g1KTc7PzU3NS0lNUUjLL1LIzkwpxqvVxBCuN7ikKD8nJxXdVpxaETpd8tPRbUFVamQKVxuQWJSdmZeukJeaWJRUia4L1VsIXZGJRSkKGgVFmWXAmFEA5qPMlNS85FRNvPqNjeD6nTKTK5NzgOGNT70pwr7gjPyiEoWMzOxUBQ0bQ4XsXHSb0HQibPLLTM8oUQAnYnQtkOQL9x0wR+CINVBizywGZll0A1DCFBHrAaVJQCUKwISZV1wAdDgw8+XnoYcwuhngEEKUPR75RcXo4YPuZGNElDsn5hagRyNObRYo2tIygfGHrgMtbBC5IaQoNVUhOSczNwlkXVFqYSlQewp+7aYI7Y5JiXkp+XnAgC0Gejy5pLQIPVpgemNrY3WUSvJLEnOUrCzNjCxqAQEAAP//Yx4If7AFAAA=",
           "encoding": "utf-8",
           "string": ""
         },
@@ -50,13 +50,13 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "5d3ba5f5-0bfa-45e0-8b98-d41427a68d3a"
+            "d8a1c13a-aae9-4ee0-b5f3-26c1a407dc59"
           ],
           "Date": [
-            "Thu, 12 Jan 2023 17:12:28 GMT"
+            "Thu, 12 Jan 2023 18:16:17 GMT"
           ],
           "Set-Cookie": [
-            "jwt=<AUTH COOKIE>; domain=.geocaching.com; path=/; expires=Thu, 12-Jan-2023 18:11:27 GMT; secure; HttpOnly"
+            "jwt=<AUTH COOKIE>; domain=.geocaching.com; path=/; expires=Thu, 12-Jan-2023 19:15:17 GMT; secure; HttpOnly"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -78,11 +78,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=0&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=0&sort=datelastvisited"
       }
     },
     {
-      "recorded_at": "2023-01-12T17:12:28",
+      "recorded_at": "2023-01-12T18:16:18",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -106,12 +106,12 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=1&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=1&sort=datelastvisited"
       },
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8857038,\"name\":\"Narozeninov\u00e9 \u0161pek\u00e1\u010dky\",\"code\":\"GCA138V\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":49.862033,\"longitude\":13.76965},\"detailsUrl\":\"/geocache/GCA138V\",\"hasGeotour\":false,\"placedDate\":\"2023-02-12T10:00:00\",\"owner\":{\"code\":\"PRJW5NK\",\"username\":\"Fischi297\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"Plze\u0148sk\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":24,\"name\":\"Wheelchair accessible\",\"isApplicable\":true},{\"id\":6,\"name\":\"Recommended for kids\",\"isApplicable\":true},{\"id\":41,\"name\":\"Stroller accessible\",\"isApplicable\":true},{\"id\":65,\"name\":\"Yard (private residence)\",\"isApplicable\":true}]}],\"total\":9629}"
+          "string": "{\"results\":[{\"id\":8857038,\"name\":\"Narozeninov\u00e9 \u0161pek\u00e1\u010dky\",\"code\":\"GCA138V\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":49.862033,\"longitude\":13.76965},\"detailsUrl\":\"/geocache/GCA138V\",\"hasGeotour\":false,\"placedDate\":\"2023-02-12T10:00:00\",\"owner\":{\"code\":\"PRJW5NK\",\"username\":\"Fischi297\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"Plze\u0148sk\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":24,\"name\":\"Wheelchair accessible\",\"isApplicable\":true},{\"id\":6,\"name\":\"Recommended for kids\",\"isApplicable\":true},{\"id\":41,\"name\":\"Stroller accessible\",\"isApplicable\":true},{\"id\":65,\"name\":\"Yard (private residence)\",\"isApplicable\":true}]}],\"total\":9628}"
         },
         "headers": {
           "Cache-Control": [
@@ -124,10 +124,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "d2e2c4f9-5733-4533-a308-654858ba4747"
+            "1b277876-05e9-4fa1-a215-e90bd388cb39"
           ],
           "Date": [
-            "Thu, 12 Jan 2023 17:12:28 GMT"
+            "Thu, 12 Jan 2023 18:16:18 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -149,11 +149,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=1&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=1&sort=datelastvisited"
       }
     },
     {
-      "recorded_at": "2023-01-12T17:12:29",
+      "recorded_at": "2023-01-12T18:16:19",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -177,28 +177,28 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=2&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=2&sort=datelastvisited"
       },
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8630552,\"name\":\"Hr\u016fzopt\u00e1k\",\"code\":\"GC9RFJV\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":2,\"difficulty\":4.0,\"terrain\":4.0,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.69935,\"longitude\":14.28095},\"detailsUrl\":\"/geocache/GC9RFJV\",\"hasGeotour\":false,\"placedDate\":\"2022-04-17T00:00:00\",\"owner\":{\"code\":\"PR2J92V\",\"username\":\"Groot62\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"\u00dasteck\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":1,\"name\":\"Dogs\",\"isApplicable\":true},{\"id\":25,\"name\":\"Parking nearby\",\"isApplicable\":true},{\"id\":64,\"name\":\"Tree climbing required\",\"isApplicable\":true},{\"id\":39,\"name\":\"Thorns\",\"isApplicable\":true}]}],\"total\":9629}"
+          "string": "{\"results\":[{\"id\":8911941,\"name\":\"Sch\u016fze OKS 20230126\",\"code\":\"GCA2YCX\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.233567,\"longitude\":14.080483},\"detailsUrl\":\"/geocache/GCA2YCX\",\"hasGeotour\":false,\"placedDate\":\"2023-01-26T17:15:00\",\"owner\":{\"code\":\"PR6D6C6\",\"username\":\"ashberry\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"St\u0159edo\u010desk\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":25,\"name\":\"Parking nearby\",\"isApplicable\":true},{\"id\":28,\"name\":\"Public restrooms nearby\",\"isApplicable\":true},{\"id\":59,\"name\":\"Food nearby\",\"isApplicable\":true},{\"id\":27,\"name\":\"Drinking water nearby\",\"isApplicable\":true},{\"id\":26,\"name\":\"Public transportation nearby\",\"isApplicable\":true}]}],\"total\":9628}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "721"
+            "830"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "ba7ae0f9-65fb-4bca-9ccb-68a27c6407d4"
+            "4dc0cb94-9501-4214-a9e4-6dd58be680ba"
           ],
           "Date": [
-            "Thu, 12 Jan 2023 17:12:28 GMT"
+            "Thu, 12 Jan 2023 18:16:18 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -220,11 +220,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=2&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=2&sort=datelastvisited"
       }
     },
     {
-      "recorded_at": "2023-01-12T17:12:29",
+      "recorded_at": "2023-01-12T18:16:19",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -248,28 +248,28 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=3&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=3&sort=datelastvisited"
       },
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8857038,\"name\":\"Narozeninov\u00e9 \u0161pek\u00e1\u010dky\",\"code\":\"GCA138V\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":49.862033,\"longitude\":13.76965},\"detailsUrl\":\"/geocache/GCA138V\",\"hasGeotour\":false,\"placedDate\":\"2023-02-12T10:00:00\",\"owner\":{\"code\":\"PRJW5NK\",\"username\":\"Fischi297\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"Plze\u0148sk\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":24,\"name\":\"Wheelchair accessible\",\"isApplicable\":true},{\"id\":6,\"name\":\"Recommended for kids\",\"isApplicable\":true},{\"id\":41,\"name\":\"Stroller accessible\",\"isApplicable\":true},{\"id\":65,\"name\":\"Yard (private residence)\",\"isApplicable\":true}]}],\"total\":9629}"
+          "string": "{\"results\":[{\"id\":8911941,\"name\":\"Sch\u016fze OKS 20230126\",\"code\":\"GCA2YCX\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.233567,\"longitude\":14.080483},\"detailsUrl\":\"/geocache/GCA2YCX\",\"hasGeotour\":false,\"placedDate\":\"2023-01-26T17:15:00\",\"owner\":{\"code\":\"PR6D6C6\",\"username\":\"ashberry\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"St\u0159edo\u010desk\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":25,\"name\":\"Parking nearby\",\"isApplicable\":true},{\"id\":28,\"name\":\"Public restrooms nearby\",\"isApplicable\":true},{\"id\":59,\"name\":\"Food nearby\",\"isApplicable\":true},{\"id\":27,\"name\":\"Drinking water nearby\",\"isApplicable\":true},{\"id\":26,\"name\":\"Public transportation nearby\",\"isApplicable\":true}]}],\"total\":9628}"
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
           "Content-Length": [
-            "777"
+            "830"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "3824cef0-58ff-4796-a920-6bcb5342355a"
+            "ac7a844d-fa4f-4810-a19e-1a3e40ffa416"
           ],
           "Date": [
-            "Thu, 12 Jan 2023 17:12:29 GMT"
+            "Thu, 12 Jan 2023 18:16:18 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -291,11 +291,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=3&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=3&sort=datelastvisited"
       }
     },
     {
-      "recorded_at": "2023-01-12T17:12:29",
+      "recorded_at": "2023-01-12T18:16:19",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -319,12 +319,12 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=4&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=4&sort=datelastvisited"
       },
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8828409,\"name\":\"Kru\u0161nohorsk\u00fd krp\u00e1l\",\"code\":\"GCA04FA\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":8,\"difficulty\":5.0,\"terrain\":5.0,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.722117,\"longitude\":13.881683},\"detailsUrl\":\"/geocache/GCA04FA\",\"hasGeotour\":false,\"placedDate\":\"2022-09-23T00:00:00\",\"owner\":{\"code\":\"PR33HRK\",\"username\":\"oblac\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"\u00dasteck\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":56,\"name\":\"Medium hike (1 km\u201310 km)\",\"isApplicable\":true},{\"id\":44,\"name\":\"Flashlight required\",\"isApplicable\":true},{\"id\":15,\"name\":\"Available in winter\",\"isApplicable\":false},{\"id\":3,\"name\":\"Climbing gear required\",\"isApplicable\":true}]}],\"total\":9629}"
+          "string": "{\"results\":[{\"id\":8828409,\"name\":\"Kru\u0161nohorsk\u00fd krp\u00e1l\",\"code\":\"GCA04FA\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":8,\"containerType\":8,\"difficulty\":5.0,\"terrain\":5.0,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.722117,\"longitude\":13.881683},\"detailsUrl\":\"/geocache/GCA04FA\",\"hasGeotour\":false,\"placedDate\":\"2022-09-23T00:00:00\",\"owner\":{\"code\":\"PR33HRK\",\"username\":\"oblac\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"\u00dasteck\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":56,\"name\":\"Medium hike (1 km\u201310 km)\",\"isApplicable\":true},{\"id\":44,\"name\":\"Flashlight required\",\"isApplicable\":true},{\"id\":15,\"name\":\"Available in winter\",\"isApplicable\":false},{\"id\":3,\"name\":\"Climbing gear required\",\"isApplicable\":true}]}],\"total\":9628}"
         },
         "headers": {
           "Cache-Control": [
@@ -337,10 +337,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "8f8f7053-a369-40f6-98ca-43176c771064"
+            "c6cf85d8-f2e3-4792-9db1-b9c2bfa98600"
           ],
           "Date": [
-            "Thu, 12 Jan 2023 17:12:29 GMT"
+            "Thu, 12 Jan 2023 18:16:18 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -362,11 +362,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=4&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=4&sort=datelastvisited"
       }
     },
     {
-      "recorded_at": "2023-01-12T17:12:30",
+      "recorded_at": "2023-01-12T18:16:19",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -390,11 +390,11 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=5&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=5&sort=datelastvisited"
       },
       "response": {
         "body": {
-          "base64_string": "H4sIAAAAAAAAA6pWKkotLs0pKVayiq5WykxRsrKwNDIxMzHVUcpLzE1VslJy9gzxVwhOzCvJzMtUMDIwMlbQVQjISSyuVNJRSs5PASlxd3Y0dvIOAAoUFKXmZpbm+uflVCpZpSXmFKfqKKUlluUXZZakBuRn5oHsMdBRSk/NT05MzkgNqSwA6jc0BpmUV5KYmZdaBBEy01FKyUxLy0wGOg1okqEeUFNJalERUAmUB9YfXJJYUgoxsiC/uCQ1xTk/vyglMy+xJBUoWq2Uk1iSWVIKcqOJpZ6lsYmhmbmOUk5+XjpU1NBYz9gCCIxrgfalAh2QUxxalAP0kT7MhfoIv2UkFrun5pfklxbBvVaQk5icmuICtA6oBxQ2ugYmusYGIYamVgYGQATUlV8O9BTILdCwCgjyCHR2DATKlBanFkHDODexCBi8esUl+dmVSkC3AIO3xC2/NA9mtIGBgaEuGIWAzYUYXVKUmJydmJST6gxUWgIOhaLU9Mx8YBApBeRUpR7tKM4+vFchuygxCxxXQEVFwMBUcq5KTc7ITASKJZaUFGUmlYJDCxr9RibwmA/PSE3NSc5IzCxSSExOTi0uzgTaBdSVWexYUJCTmQyyWsmqpKg0tVYHohkYbVC9QanJ+bm5qXkpqSkKaflFCtmZKcV4tZoYwvUGlxTl5+SkotuKU6sRIrEGJBZlZ+alK+SlJhYlgVIoui4ktyJ0RSYWpShoFBRllgGDWwGYITJTUvOSUzXx6jc2gut3ykyuTM4BBiI+9aYI+4Iz8otKFDIys1MVNGwMFbJz0W1C04mwyS8zPaNEAZwy0bVA0iTcd8A8hSMqQCk4sxiYE9ENQAlTRFQGlCYBlSgAU1tecQHQ4cA8lZ+HHsLoZoBDCJjZoGZ45BcVo4cPupONESnAOTG3AD0acWqzQNGWlgmMP3QdaGGDSOIhRampCsk5mblJIOuKUgtLgdpT8Gs3RWh3TErMS8nPAwZsMdDjySWlRejRAtMbWxuro1SSX5KYo2RlaWZkWQsIAAD//+SI30R5BQAA",
+          "base64_string": "H4sIAAAAAAAAA6pWKkotLs0pKVayiq5WykxRsrKwNDIxMzHVUcpLzE1VslJy9gzxVwhOzCvJzMtUMDIwMlbQVQjISSyuVNJRSs5PASlxd3Y0dvIOAAoUFKXmZpbm+uflVCpZpSXmFKfqKKUlluUXZZakBuRn5oHsMdBRSk/NT05MzkgNqSwA6jc0BpmUV5KYmZdaBBEy01FKyUxLy0wGOg1okqEeUFNJalERUAmUB9YfXJJYUgoxsiC/uCQ1xTk/vyglMy+xJBUoWq2Uk1iSWVIKcqOJpZ6lsYmhmbmOUk5+XjpU1NBYz9gCCIxrgfalAh2QUxxalAP0kT7MhfoIv2UkFrun5pfklxbBvVaQk5icmuICtA6oBxQ2ugYmusYGIYamVgYGQATUlV8O9BTILdCwCgjyCHR2DATKlBanFkHDODexCBi8esUl+dmVSkC3AIO3xC2/NA9mtIGBgaEuGIWAzYUYXVKUmJydmJST6gxUWgIOhaLU9Mx8YBApBeRUpR7tKM4+vFchuygxCxxXQEVFwMBUcq5KTc7ITASKJZaUFGUmlYJDCxr9RibwmA/PSE3NSc5IzCxSSExOTi0uzgTaBdSVWexYUJCTmQyyWsmqpKg0tVYHohkYbVC9QanJ+bm5qXkpqSkKaflFCtmZKcV4tZoYwvUGlxTl5+SkotuKU6sRIrEGJBZlZ+alK+SlJhYlgVIoui4ktyJ0RSYWpShoFBRllgGDWwGYITJTUvOSUzXx6jc2gut3ykyuTM4BBiI+9aYI+4Iz8otKFDIys1MVNGwMFbJz0W1C04mwyS8zPaNEAZwy0bVA0iTcd8A8hSMqQCk4sxiYE9ENQAlTRFQGlCYBlSgAU1tecQHQ4cA8lZ+HHsLoZoBDCJjZoGZ45BcVo4cPupONESnAOTG3AD0acWqzQNGWlgmMP3QdaGGDSOIhRampCsk5mblJIOuKUgtLgdpT8Gs3RWh3TErMS8nPAwZsMdDjySWlRejRAtMbWxuro1SSX5KYo2RlaWZkUQsIAAD//6W5xF15BQAA",
           "encoding": "utf-8",
           "string": ""
         },
@@ -415,10 +415,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "8ccb2f59-a609-48a2-95f3-9b1f2360c9e3"
+            "eeb000bc-9a4d-48ac-a4ee-a4db7e4b5eaa"
           ],
           "Date": [
-            "Thu, 12 Jan 2023 17:12:30 GMT"
+            "Thu, 12 Jan 2023 18:16:19 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -440,11 +440,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=5&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=5&sort=datelastvisited"
       }
     },
     {
-      "recorded_at": "2023-01-12T17:12:30",
+      "recorded_at": "2023-01-12T18:16:20",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -468,28 +468,35 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=6&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=6&sort=datelastvisited"
       },
       "response": {
         "body": {
+          "base64_string": "H4sIAAAAAAAAA6pWKkotLs0pKVayiq5WykxRsrKwNDIxMzHVUcpLzE1VslJy9gzxVwhOzCvJzMtUMDIwMlbQVQjISSyuVNJRSs5PASlxd3Y0dvIOAAoUFKXmZpbm+uflVCpZpSXmFKfqKKUlluUXZZakBuRn5oHsMdBRSk/NT05MzkgNqSwA6jc0BpmUV5KYmZdaBBEy01FKyUxLy0wGOg1okqEeUFNJalERUAmUB9YfXJJYUgoxsiC/uCQ1xTk/vyglMy+xJBUoWq2Uk1iSWVIKcqOJpZ6lsYmhmbmOUk5+XjpU1NBYz9gCCIxrgfalAh2QUxxalAP0kT7MhfoIv2UkFrun5pfklxbBvVaQk5icmuICtA6oBxQ2ugYmusYGIYamVgYGQATUlV8O9BTILdCwCgjyCHR2DATKlBanFkHDODexCBi8esUl+dmVSkC3AIO3xC2/NA9mtIGBgaEuGIWAzYUYXVKUmJydmJST6gxUWgIOhaLU9Mx8YBApBeRUpR7tKM4+vFchuygxCxxXQEVFwMBUcq5KTc7ITASKJZaUFGUmlYJDCxr9RibwmA/PSE3NSc5IzCxSSExOTi0uzgTaBdSVWexYUJCTmQyyWsmqpKg0tVYHohkYbVC9QanJ+bm5qXkpqSkKaflFCtmZKcV4tZoYwvUGlxTl5+SkotuKU6sRIrEGJBZlZ+alK+SlJhYlgVIoui4ktyJ0RSYWpShoFBRllgGDWwGYITJTUvOSUzXx6jc2gut3ykyuTM4BBiI+9aYI+4Iz8otKFDIys1MVNGwMFbJz0W1C04mwyS8zPaNEAZwy0bVA0iTcd8A8hSMqQCk4sxiYE9ENQAlTRFQGlCYBlSgAU1tecQHQ4cA8lZ+HHsLoZoBDCJjZoGZ45BcVo4cPupONESnAOTG3AD0acWqzQNGWlgmMP3QdaGGDSOIhRampCsk5mblJIOuKUgtLgdpT8Gs3RWh3TErMS8nPAwZsMdDjySWlRejRAtMbWxuro1SSX5KYo2RlaWZkUQsIAAD//6W5xF15BQAA",
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8917538,\"name\":\"Discop\u0159\u00edb\u011bh - FILMOV\u00c1 M\u00cdSTA\",\"code\":\"GCA347E\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.0,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.065,\"longitude\":14.30555},\"detailsUrl\":\"/geocache/GCA347E\",\"hasGeotour\":false,\"placedDate\":\"2023-02-06T17:30:00\",\"owner\":{\"code\":\"PR49M20\",\"username\":\"bumbik\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"Hlavn\u00ed m\u011bsto Praha\",\"country\":\"Czechia\",\"attributes\":[{\"id\":24,\"name\":\"Wheelchair accessible\",\"isApplicable\":true},{\"id\":6,\"name\":\"Recommended for kids\",\"isApplicable\":true},{\"id\":41,\"name\":\"Stroller accessible\",\"isApplicable\":true},{\"id\":1,\"name\":\"Dogs\",\"isApplicable\":true},{\"id\":25,\"name\":\"Parking nearby\",\"isApplicable\":true},{\"id\":32,\"name\":\"Bicycles\",\"isApplicable\":true},{\"id\":33,\"name\":\"Motorcycles\",\"isApplicable\":true}]}],\"total\":9629}"
+          "string": ""
         },
         "headers": {
           "Cache-Control": [
             "max-age=60, private"
           ],
+          "Connection": [
+            "Keep-Alive"
+          ],
+          "Content-Encoding": [
+            "gzip"
+          ],
           "Content-Length": [
-            "915"
+            "783"
           ],
           "Content-Type": [
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "bf36eb48-a210-41fe-9062-699c35c7b81b"
+            "20e47caa-c6ff-4201-958d-3f59fed3e7d3"
           ],
           "Date": [
-            "Thu, 12 Jan 2023 17:12:30 GMT"
+            "Thu, 12 Jan 2023 18:16:19 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -511,11 +518,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=6&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=6&sort=datelastvisited"
       }
     },
     {
-      "recorded_at": "2023-01-12T17:12:31",
+      "recorded_at": "2023-01-12T18:16:20",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -539,12 +546,12 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=7&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=7&sort=datelastvisited"
       },
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8935788,\"name\":\"Sch\u016fze OKS 20230222\",\"code\":\"GCA3Q75\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.2363166666667,\"longitude\":14.0819166666667},\"detailsUrl\":\"/geocache/GCA3Q75\",\"hasGeotour\":false,\"placedDate\":\"2023-02-22T17:00:00\",\"owner\":{\"code\":\"PR6D6C6\",\"username\":\"ashberry\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"St\u0159edo\u010desk\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":41,\"name\":\"Stroller accessible\",\"isApplicable\":true},{\"id\":1,\"name\":\"Dogs\",\"isApplicable\":true},{\"id\":8,\"name\":\"Scenic view\",\"isApplicable\":true},{\"id\":7,\"name\":\"Takes less than one hour\",\"isApplicable\":true},{\"id\":25,\"name\":\"Parking nearby\",\"isApplicable\":true},{\"id\":32,\"name\":\"Bicycles\",\"isApplicable\":true},{\"id\":26,\"name\":\"Public transportation nearby\",\"isApplicable\":true},{\"id\":19,\"name\":\"Ticks\",\"isApplicable\":true},{\"id\":39,\"name\":\"Thorns\",\"isApplicable\":true}]}],\"total\":9629}"
+          "string": "{\"results\":[{\"id\":8935788,\"name\":\"Sch\u016fze OKS 20230222\",\"code\":\"GCA3Q75\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.2363166666667,\"longitude\":14.0819166666667},\"detailsUrl\":\"/geocache/GCA3Q75\",\"hasGeotour\":false,\"placedDate\":\"2023-02-22T17:00:00\",\"owner\":{\"code\":\"PR6D6C6\",\"username\":\"ashberry\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"St\u0159edo\u010desk\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":41,\"name\":\"Stroller accessible\",\"isApplicable\":true},{\"id\":1,\"name\":\"Dogs\",\"isApplicable\":true},{\"id\":8,\"name\":\"Scenic view\",\"isApplicable\":true},{\"id\":7,\"name\":\"Takes less than one hour\",\"isApplicable\":true},{\"id\":25,\"name\":\"Parking nearby\",\"isApplicable\":true},{\"id\":32,\"name\":\"Bicycles\",\"isApplicable\":true},{\"id\":26,\"name\":\"Public transportation nearby\",\"isApplicable\":true},{\"id\":19,\"name\":\"Ticks\",\"isApplicable\":true},{\"id\":39,\"name\":\"Thorns\",\"isApplicable\":true}]}],\"total\":9628}"
         },
         "headers": {
           "Cache-Control": [
@@ -557,10 +564,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "46625914-72a7-4d41-a1ca-c67eaac1ffff"
+            "86562425-b245-4267-970b-80e22ac43361"
           ],
           "Date": [
-            "Thu, 12 Jan 2023 17:12:30 GMT"
+            "Thu, 12 Jan 2023 18:16:19 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -582,11 +589,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=7&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=7&sort=datelastvisited"
       }
     },
     {
-      "recorded_at": "2023-01-12T17:12:31",
+      "recorded_at": "2023-01-12T18:16:20",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -610,12 +617,12 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=8&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=8&sort=datelastvisited"
       },
       "response": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"results\":[{\"id\":8912666,\"name\":\"Vindaloo challenge 2023 - Litom\u011b\u0159ice \u201e(VCH2023)\u201c\",\"code\":\"GCA2Z59\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.533283,\"longitude\":14.135833},\"detailsUrl\":\"/geocache/GCA2Z59\",\"hasGeotour\":false,\"placedDate\":\"2023-01-27T17:30:00\",\"owner\":{\"code\":\"PRYCKKE\",\"username\":\"Tulacka2\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"\u00dasteck\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":25,\"name\":\"Parking nearby\",\"isApplicable\":true},{\"id\":32,\"name\":\"Bicycles\",\"isApplicable\":true},{\"id\":55,\"name\":\"Short hike (<1 km)\",\"isApplicable\":true},{\"id\":26,\"name\":\"Public transportation nearby\",\"isApplicable\":true}]}],\"total\":9629}"
+          "string": "{\"results\":[{\"id\":8912666,\"name\":\"Vindaloo challenge 2023 - Litom\u011b\u0159ice \u201e(VCH2023)\u201c\",\"code\":\"GCA2Z59\",\"premiumOnly\":false,\"favoritePoints\":0,\"geocacheType\":6,\"containerType\":6,\"difficulty\":1.0,\"terrain\":1.5,\"cacheStatus\":0,\"postedCoordinates\":{\"latitude\":50.533283,\"longitude\":14.135833},\"detailsUrl\":\"/geocache/GCA2Z59\",\"hasGeotour\":false,\"placedDate\":\"2023-01-27T17:30:00\",\"owner\":{\"code\":\"PRYCKKE\",\"username\":\"Tulacka2\"},\"lastFoundDate\":\"0001-01-01T00:00:00\",\"trackableCount\":0,\"region\":\"\u00dasteck\u00fd kraj\",\"country\":\"Czechia\",\"attributes\":[{\"id\":25,\"name\":\"Parking nearby\",\"isApplicable\":true},{\"id\":32,\"name\":\"Bicycles\",\"isApplicable\":true},{\"id\":55,\"name\":\"Short hike (<1 km)\",\"isApplicable\":true},{\"id\":26,\"name\":\"Public transportation nearby\",\"isApplicable\":true}]}],\"total\":9628}"
         },
         "headers": {
           "Cache-Control": [
@@ -628,10 +635,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "51b7674e-89f1-44b8-a5c0-f76c6d580a8e"
+            "c981e526-87f9-4f25-86c9-bed8f13a7baa"
           ],
           "Date": [
-            "Thu, 12 Jan 2023 17:12:31 GMT"
+            "Thu, 12 Jan 2023 18:16:19 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -653,11 +660,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=8&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=8&sort=datelastvisited"
       }
     },
     {
-      "recorded_at": "2023-01-12T17:12:32",
+      "recorded_at": "2023-01-12T18:16:20",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -681,11 +688,11 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=9&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=9&sort=datelastvisited"
       },
       "response": {
         "body": {
-          "base64_string": "H4sIAAAAAAAAA6pWKkotLs0pKVayiq5WykxRsrIwNTU0MTLUUcpLzE1VslIKyC8tyTu8NlshJV+hqqQoMTk1L1FJRyk5PwUk6+5s6RdmYQ4UKChKzc0szfXPy6lUskpLzClO1VFKSyzLL8osSQ3Iz8wDWWGgo5Semp+cmJyRGlJZANRvATIoryQxMy+1CC6SkpmWlpkMdBTQIFM9oJ6S1KIioBIoD6w9uCSxpBRiYkF+cUlqinN+flFKZl5iSSpQtFopJ7Eks6QU5ERTAz0zSzMLM3MdpZz8vHSoqKGxnoWJuYGxcS3QvlSgA3KKQ4tygB7ShzlQH+G1jMRi99T8kvzSIrjPCnKAAZHiArQOqMfIwMhI18BI18goxMDACoyAuvLLgZ4CuQUaVAFBxsYeQd5AmdLi1CJo6OYnAQ1SAjoiJ7G4xC2/NA9mpoGBgaEuGCGbCQr/7MSknFRnoNISsPeLUtMz84Fho3R4FjAckrMP71XILkrMAkcRUE0RMBCVnKtSkzMyQdGWWFJSlJlUCg4lWITDozoYGLeZyQplmanlQKWZxY4FBTmZySDrlKxKikpTa3UgOkzN4Fp8U1OAka6QkZmdqqBhqJCd+6hhsqEBkNbEa4KhCdyEoNTk/Nzc1LyU1BSFxBKFvMz0jBJ0vZBQh2k2RrjYOTG3IC0TmITx6zA0hetwLAPGNUiJQmaeQjkwWQLjCK9eM4RTQ4pSUxWSczJzkzLz0hWKUgtLgVanoGtH8aiRMVy3S2JeempRfmmxQmJRKigu8OhCZD/nHGBu0Ae6KAdsZ35yNrpf0bQCkwTMq0mJeSn5ecBwzQXmL3RdqPFhifBkJroV6IqNkRRn5BfloatGc5ARXLUHMD2CfIHuf4Se2NpYHaWS/JLEHCUrSzMjy1pAAAAA///uym57oAQAAA==",
+          "base64_string": "H4sIAAAAAAAAA6pWKkotLs0pKVayiq5WykxRsrIwNTU0MTLUUcpLzE1VslIKyC8tyTu8NlshJV+hqqQoMTk1L1FJRyk5PwUk6+5s6RdmYQ4UKChKzc0szfXPy6lUskpLzClO1VFKSyzLL8osSQ3Iz8wDWWGgo5Semp+cmJyRGlJZANRvATIoryQxMy+1CC6SkpmWlpkMdBTQIFM9oJ6S1KIioBIoD6w9uCSxpBRiYkF+cUlqinN+flFKZl5iSSpQtFopJ7Eks6QU5ERTAz0zSzMLM3MdpZz8vHSoqKGxnoWJuYGxcS3QvlSgA3KKQ4tygB7ShzlQH+G1jMRi99T8kvzSIrjPCnKAAZHiArQOqMfIwMhI18BI18goxMDACoyAuvLLgZ4CuQUaVAFBxsYeQd5AmdLi1CJo6OYnAQ1SAjoiJ7G4xC2/NA9mpoGBgaEuGCGbCQr/7MSknFRnoNISsPeLUtMz84Fho3R4FjAckrMP71XILkrMAkcRUE0RMBCVnKtSkzMyQdGWWFJSlJlUCg4lWITDozoYGLeZyQplmanlQKWZxY4FBTmZySDrlKxKikpTa3UgOkzN4Fp8U1OAka6QkZmdqqBhqJCd+6hhsqEBkNbEa4KhCdyEoNTk/Nzc1LyU1BSFxBKFvMz0jBJ0vZBQh2k2RrjYOTG3IC0TmITx6zA0hetwLAPGNUiJQmaeQjkwWQLjCK9eM4RTQ4pSUxWSczJzkzLz0hWKUgtLgVanoGtH8aiRMVy3S2JeempRfmmxQmJRKigu8OhCZD/nHGBu0Ae6KAdsZ35yNrpf0bQCkwTMq0mJeSn5ecBwzQXmL3RdqPFhifBkJroV6IqNkRRn5BfloatGc5ARXLUHMD2CfIHuf4Se2NpYHaWS/JLEHCUrSzMji1pAAAAA//+v+3VioAQAAA==",
           "encoding": "utf-8",
           "string": ""
         },
@@ -706,10 +713,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "2263b5fb-2537-44d9-8c6c-9d77c99847e6"
+            "1d7dbdc5-f860-44ad-8d57-5e475d73049e"
           ],
           "Date": [
-            "Thu, 12 Jan 2023 17:12:31 GMT"
+            "Thu, 12 Jan 2023 18:16:20 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -731,11 +738,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=9&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=9&sort=datelastvisited"
       }
     },
     {
-      "recorded_at": "2023-01-12T17:12:32",
+      "recorded_at": "2023-01-12T18:16:21",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -759,7 +766,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=10&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=10&sort=datelastvisited"
       },
       "response": {
         "body": {
@@ -777,10 +784,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "30cc3f04-282e-4f5f-a96e-3f6f23e09f94"
+            "6f248e3a-2f1e-4957-b65a-c4f0ed32d5ee"
           ],
           "Date": [
-            "Thu, 12 Jan 2023 17:12:32 GMT"
+            "Thu, 12 Jan 2023 18:16:20 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -798,18 +805,18 @@
             "1"
           ],
           "x-rate-limit-reset": [
-            "28"
+            "39"
           ]
         },
         "status": {
           "code": 429,
           "message": ""
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=10&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=10&sort=datelastvisited"
       }
     },
     {
-      "recorded_at": "2023-01-12T17:13:05",
+      "recorded_at": "2023-01-12T18:17:05",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -833,11 +840,11 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=10&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=10&sort=datelastvisited"
       },
       "response": {
         "body": {
-          "base64_string": "H4sIAAAAAAAAA6pWKkotLs0pKVayiq5WykxRsrKwNDKwNDLTUcpLzE1VslIKKC3JLzu8MO/wWoWqRIXgxLySzLzMXAVdBd/EokygeHH24YUKIYf35mUmpyrpKCXnp4B0uTs7GpsHBgIFCopSczNLc/3zciqVrNISc4pTdZTSEsvyizJLUgPyM/NAVhvoKKWn5icnJmekhlQWAPUDrU/OzytJzMxLLYKLpGSmpWUmAx0LNMhQD6inJLWoCKgEygNrDy5JLCmFmFiQX1ySmuKcn1+UkpmXWJIKFK1WykksySwpBTnRxFLP0sLEwtBcRyknPy8dKmporGdiZmRkaF4LtC8V6ICc4tCiHKCH9GEO1Ed4LSOx2D01vyS/tAjus4KcxOTUFBegdUA9RgZGxroGJrpGliGGZlYGBkAE1JVfDvQUyC3QoAoI8gh0dgSZV1qcWgQN9dzEImA46xWX5GdXKgHdkpNYXOKWX5oHM9rAwMBQF4xCwOZCjC4pSkzOTkzKSXUGKi0Bh0JRanpmPjCIlAJyqlKPdgBja69CdlFiFjiqgIqKgIGp5FyVmpyRmQgUSywpKcpMKgWHFjRBGJnA00J4RmpqTnJGYmaRQmJycmpxcSbQLqCuzGLHgoKczGSQ1UpWJUWlqbU6EM2IdBSUmpyfm5ual5KaopCWX6SQnZlSjFeriSFcb3BJUX5OTiq6rTi1InS65Kej24KqFBj9UKUhidmpxQo5QPMVSjIS8xTy81IVMkBxi0+7sRFcv1NmcmUyUDu6etTwMMYZIKB0lFkMzA749KNkzCSgEgVgnOcVF+QXARM+MKIV8lITi5Iq0c1AdTPCzx75RcXoLgaKgxMzXDkiNJ0Tcwsy89LRLcGuzQJFW1omsKDBr8MMEZbBqYnF+XmJOdAIR9eHZhMiTILz8stz85My0aMBXY+VGSJRhxSlpiok52TmJoG8VpRaWAp0agp+7YbAnAVLYbBSCWIGfn2mCGsdkxLzUoBpLEWhGBg5ySWlRehpGqY3tjZWR6kkvyQxR8nK0szIshYQAAD//ylCge21BQAA",
+          "base64_string": "H4sIAAAAAAAAA6pWKkotLs0pKVayiq5WykxRsrKwNDKwNDLTUcpLzE1VslIKKC3JLzu8MO/wWoWqRIXgxLySzLzMXAVdBd/EokygeHH24YUKIYf35mUmpyrpKCXnp4B0uTs7GpsHBgIFCopSczNLc/3zciqVrNISc4pTdZTSEsvyizJLUgPyM/NAVhvoKKWn5icnJmekhlQWAPUDrU/OzytJzMxLLYKLpGSmpWUmAx0LNMhQD6inJLWoCKgEygNrDy5JLCmFmFiQX1ySmuKcn1+UkpmXWJIKFK1WykksySwpBTnRxFLP0sLEwtBcRyknPy8dKmporGdiZmRkaF4LtC8V6ICc4tCiHKCH9GEO1Ed4LSOx2D01vyS/tAjus4KcxOTUFBegdUA9RgZGxroGJrpGliGGZlYGBkAE1JVfDvQUyC3QoAoI8gh0dgSZV1qcWgQN9dzEImA46xWX5GdXKgHdkpNYXOKWX5oHM9rAwMBQF4xCwOZCjC4pSkzOTkzKSXUGKi0Bh0JRanpmPjCIlAJyqlKPdgBja69CdlFiFjiqgIqKgIGp5FyVmpyRmQgUSywpKcpMKgWHFjRBGJnA00J4RmpqTnJGYmaRQmJycmpxcSbQLqCuzGLHgoKczGSQ1UpWJUWlqbU6EM2IdBSUmpyfm5ual5KaopCWX6SQnZlSjFeriSFcb3BJUX5OTiq6rTi1InS65Kej24KqFBj9UKUhidmpxQo5QPMVSjIS8xTy81IVMkBxi0+7sRFcv1NmcmUyUDu6etTwMMYZIKB0lFkMzA749KNkzCSgEgVgnOcVF+QXARM+MKIV8lITi5Iq0c1AdTPCzx75RcXoLgaKgxMzXDkiNJ0Tcwsy89LRLcGuzQJFW1omsKDBr8MMEZbBqYnF+XmJOdAIR9eHZhMiTILz8stz85My0aMBXY+VGSJRhxSlpiok52TmJoG8VpRaWAp0agp+7YbAnAVLYbBSCWIGfn2mCGsdkxLzUoBpLEWhGBg5ySWlRehpGqY3tjZWR6kkvyQxR8nK0szIohYQAAD//2hzmvS1BQAA",
           "encoding": "utf-8",
           "string": ""
         },
@@ -858,10 +865,10 @@
             "application/json; charset=utf-8"
           ],
           "CorrelationGuid": [
-            "25a84382-fe98-48ec-85a3-b537de0e1aa0"
+            "91d59ebb-4f43-4c32-91d1-b93a342b3369"
           ],
           "Date": [
-            "Thu, 12 Jan 2023 17:13:04 GMT"
+            "Thu, 12 Jan 2023 18:17:05 GMT"
           ],
           "Strict-Transport-Security": [
             "max-age=31536000; includeSubDomains"
@@ -883,7 +890,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=True&skip=10&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=50.74%2C13.38%2C49.73%2C14.4&take=1&asc=true&skip=10&sort=datelastvisited"
       }
     }
   ],
