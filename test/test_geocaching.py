@@ -138,7 +138,7 @@ class TestAPIMethods(LoggedInTest):
                         try:
                             distances.append(great_circle(cache.location, origin).meters)
                         except PMOnlyException:
-                            # can happend when getting accurate location
+                            # can happen when getting accurate location
                             continue
                     self.assertEqual(distances, sorted(distances))
 
@@ -154,7 +154,7 @@ class TestAPIMethods(LoggedInTest):
                         try:
                             distances.append(great_circle(cache.location, origin).meters)
                         except PMOnlyException:
-                            # can happend when getting accurate location
+                            # can happen when getting accurate location
                             continue
                     self.assertEqual(distances, sorted(distances, reverse=True))
 
