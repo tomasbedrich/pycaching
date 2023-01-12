@@ -391,6 +391,8 @@ class Geocaching(object):
         *,
         per_query: int = 200,
         sort_by: Union[str, SortOrder] = SortOrder.date_last_visited,
+        reverse: bool = False,
+        limit: int = float("inf"),
         origin: Optional[Point] = None,
         wait_sleep: bool = True
     ):
@@ -400,6 +402,8 @@ class Geocaching(object):
         :param rect: Search area.
         :param int per_query: Number of caches requested in single query.
         :param sort_by: Order cached by given criterion.
+        :param reverse: Reverse sort order.
+        :param limit: Maximum number of caches to return.
         :param origin: Origin point for search by distance.
         :param wait_sleep: In case of rate limits exceeding, wait appropriate time if set True,
             otherwise just yield None.
@@ -407,6 +411,10 @@ class Geocaching(object):
         if not isinstance(sort_by, SortOrder):
             sort_by = SortOrder(sort_by)
 
+        if limit <= 0:
+            return
+
+        take_amount = min(limit, per_query)
         params = {
             "box": "{},{},{},{}".format(
                 rect.corners[0].latitude,
@@ -414,8 +422,8 @@ class Geocaching(object):
                 rect.corners[1].latitude,
                 rect.corners[1].longitude,
             ),
-            "take": per_query,
-            "asc": "true",
+            "take": take_amount,
+            "asc": str(not reverse).lower(),
             "skip": 0,
             "sort": sort_by.value,
         }
@@ -425,7 +433,7 @@ class Geocaching(object):
             params["origin"] = "{},{}".format(origin.latitude, origin.longitude)
 
         total, offset = None, 0
-        while (total is None) or (offset < total):
+        while (offset < limit) and ((total is None) or (offset < total)):
             params["skip"] = offset
 
             try:
@@ -441,7 +449,7 @@ class Geocaching(object):
                 yield Cache._from_api_record(self, record)
 
             total = resp["total"]
-            offset += per_query
+            offset += take_amount
 
     def geocode(self, location):
         """Return a :class:`.Point` object from geocoded location.

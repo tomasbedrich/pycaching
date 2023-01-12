@@ -111,7 +111,7 @@ class TestAPIMethods(LoggedInTest):
         """Perform search by rect and check found caches."""
         rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.39))
 
-        expected = {"GC1TYYG", "GC11PRW", "GC7JRR5", "GC161KR", "GC1GW54", "GC7KDWE", "GC93HA6", "GCZC5D"}
+        expected = {"GC161KR", "GCA29DP", "GCZC5D", "GC11PRW", "GC7JRR5", "GC7KDWE", "GC1GW54"}
 
         orig_wait_for = TooManyRequestsError.wait_for
         with self.recorder.use_cassette("geocaching_search_rect") as vcr:
@@ -138,9 +138,25 @@ class TestAPIMethods(LoggedInTest):
                         try:
                             distances.append(great_circle(cache.location, origin).meters)
                         except PMOnlyException:
-                            # can happend when getting accurate location
+                            # can happen when getting accurate location
                             continue
                     self.assertEqual(distances, sorted(distances))
+
+                with self.subTest("sort by distance reverse"):
+                    origin = Point.from_string("N 49° 44.230 E 013° 22.858")
+                    caches = list(self.gc.search_rect(rect, sort_by=SortOrder.distance, reverse=True, origin=origin))
+                    waypoints = {cache.wp for cache in caches}
+                    self.assertSetEqual(waypoints, expected)
+
+                    # Check if caches are reverse sorted by distance to origin
+                    distances = []
+                    for cache in caches:
+                        try:
+                            distances.append(great_circle(cache.location, origin).meters)
+                        except PMOnlyException:
+                            # can happen when getting accurate location
+                            continue
+                    self.assertEqual(distances, sorted(distances, reverse=True))
 
                 with self.subTest("sort by different criteria"):
                     for sort_by in SortOrder:
