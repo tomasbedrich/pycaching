@@ -170,7 +170,7 @@ class Cache(object):
             name=record["name"],
             type=Type.from_number(record["geocacheType"]),
             status=Status(record["cacheStatus"]),
-            found=record["userFound"],
+            found="userFound" in record,
             size=Size.from_number(record["containerType"]),
             difficulty=record["difficulty"],
             terrain=record["terrain"],
