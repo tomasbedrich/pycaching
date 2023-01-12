@@ -391,6 +391,7 @@ class Geocaching(object):
         *,
         per_query: int = 200,
         sort_by: Union[str, SortOrder] = SortOrder.date_last_visited,
+        reverse: bool = False,
         origin: Optional[Point] = None,
         wait_sleep: bool = True
     ):
@@ -400,6 +401,7 @@ class Geocaching(object):
         :param rect: Search area.
         :param int per_query: Number of caches requested in single query.
         :param sort_by: Order cached by given criterion.
+        :param reverse: Reverse sort order.
         :param origin: Origin point for search by distance.
         :param wait_sleep: In case of rate limits exceeding, wait appropriate time if set True,
             otherwise just yield None.
@@ -415,7 +417,7 @@ class Geocaching(object):
                 rect.corners[1].longitude,
             ),
             "take": per_query,
-            "asc": "true",
+            "asc": not reverse,
             "skip": 0,
             "sort": sort_by.value,
         }
