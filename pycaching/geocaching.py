@@ -302,6 +302,7 @@ class Geocaching(object):
     def search_rect(
         self,
         rect: Rectangle,
+        *,
         per_query: int = 200,
         sort_by: Union[str, SortOrder] = SortOrder.date_last_visited,
         reverse: bool = False,
