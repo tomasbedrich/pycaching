@@ -434,6 +434,45 @@ class Geocaching(object):
             total = resp["total"]
             offset += take_amount
 
+    def advanced_search(
+        self,
+        options: dict,
+        per_query: int = 200,
+        limit: int = float("inf"),
+        wait_sleep: bool = True,
+    ):
+        if limit <= 0:
+            return
+
+        take_amount = min(limit, per_query)
+
+        params = options.copy()
+        params.update(
+            {
+                "take": take_amount,
+                "skip": 0,
+            }
+        )
+
+        total, offset = None, 0
+        while (offset < limit) and ((total is None) or (offset < total)):
+            params["skip"] = offset
+
+            try:
+                resp = self._request(self._urls["api_search"], params=params, expect="json")
+            except TooManyRequestsError as e:
+                if wait_sleep:
+                    e.wait_for()
+                else:
+                    yield None
+                continue
+
+            for record in resp["results"]:
+                yield Cache._from_api_record(self, record)
+
+            total = resp["total"]
+            offset += take_amount
+
     def geocode(self, location):
         """Return a :class:`.Point` object from geocoded location.
 
