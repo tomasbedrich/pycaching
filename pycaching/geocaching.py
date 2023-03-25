@@ -278,8 +278,7 @@ class Geocaching(object):
 
         return self.advanced_search(
             {
-                "origin": point,
-                "limit": limit,
+                "origin": "{},{}".format(point.latitude, point.longitude),
                 "asc": str(not reverse).lower(),
                 "sort": sort_by.value,
             },
@@ -423,7 +422,6 @@ class Geocaching(object):
 
             total = resp["total"]
             offset += take_amount
-
 
     # add some shortcuts ------------------------------------------------------
 
