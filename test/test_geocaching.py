@@ -64,6 +64,31 @@ class TestMethods(LoggedInTest):
                 pass
 
 
+class TestAdvancedSearch(LoggedInTest):
+    def test_search(self):
+        with self.recorder.use_cassette("advanced_search"):
+            # https://www.geocaching.com/play/search?st=Prague%2C+Hlavní+město+Praha&ot=query&asc=false&sort=distance
+            results = self.gc.advanced_search(
+                options={
+                    "st": "Prague, Hlavní město Praha",
+                    "ot": "query",
+                    "asc": "false",
+                    "sort": "distance",
+                },
+                limit=50,
+            )
+            self.assertEqual("GC11JM6", list(results)[0].wp)
+
+    def test_caches_owned_by_geocaching_hq(self):
+        with self.recorder.use_cassette("advanced_search_caches_owned_by_hq"):
+            # https://www.geocaching.com/play/search/?hb=Geocaching+HQ
+            options = {"hb": "Geocaching HQ"}
+            generator = self.gc.advanced_search(options=options)
+            results = list(generator)
+            self.assertGreaterEqual(91, len(results))
+            self.assertEqual("GC1TEZH", results[-1].wp)
+
+
 class TestAPIMethods(LoggedInTest):
     def test_search_rect(self):
         """Perform search by rect and check found caches."""
