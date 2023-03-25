@@ -243,7 +243,15 @@ class Geocaching(object):
         m = re.search(r'"username":\s*"(.*)"', js_content)
         return m.group(1) if m else None
 
-    def search(self, point, limit=float("inf")):
+    def search(
+        self,
+        point,
+        per_query: int = 200,
+        sort_by: Union[str, SortOrder] = SortOrder.date_last_visited,
+        reverse: bool = False,
+        limit=float("inf"),
+        wait_sleep: bool = True,
+    ):
         """Return a generator of caches around some point.
 
         Search for caches around some point by loading search pages and parsing the data from these
@@ -253,106 +261,18 @@ class Geocaching(object):
         :param .geo.Point point: Search center point.
         :param int limit: Maximum number of caches to generate.
         """
-        logging.info("Searching at {}".format(point))
 
-        start_index = 0
-        while True:
-            # get one page
-            geocaches_table, whole_page = self._search_get_page(point, start_index)
-            rows = geocaches_table.find_all("tr")
-
-            # leave loop if there are no (more) results
-            if not rows:
-                return
-
-            # prepare language-dependent mappings
-            if start_index == 0:
-                cache_sizes_filter_wrapper = whole_page.find("div", class_="cache-sizes-wrapper")
-                localized_size_mapping = {
-                    # key = "Small" (localized), value = Size.small
-                    label.find("span").text.strip(): Size.from_number(label.find("input").get("value"))
-                    for label in cache_sizes_filter_wrapper.find_all("label")
-                }
-
-            # parse caches in result
-            for start_index, row in enumerate(rows, start_index):
-
-                limit -= 1  # handle limit
-                if limit < 0:
-                    return
-
-                # parse raw data
-                cache_details = row.find("span", "cache-details").text.split("|")
-                wp = cache_details[1].strip()
-
-                # create and fill cache object
-                # values are sanitized and converted in Cache setters
-                c = Cache(self, wp)
-                c.type = cache_details[0]
-                c.name = row.find("span", "cache-name").text
-                badge = row.find("svg", class_="badge")
-                c.found = "found" in str(badge) if badge is not None else False
-                c.favorites = row.find(attrs={"data-column": "FavoritePoint"}).text
-                if not (row.get("class") and "disabled" in row.get("class")):
-                    c.status = Status.enabled
-                c.pm_only = row.find("td", "pm-upsell") is not None
-
-                if c.pm_only:
-                    # PM only caches doesn't have other attributes filled in
-                    yield c
-                    continue
-
-                c.size = localized_size_mapping[row.find(attrs={"data-column": "ContainerSize"}).text.strip()]
-                c.difficulty = row.find(attrs={"data-column": "Difficulty"}).text
-                c.terrain = row.find(attrs={"data-column": "Terrain"}).text
-                c.hidden = row.find(attrs={"data-column": "PlaceDate"}).text
-                c.author = row.find("span", "owner").text[3:]  # delete "by "
-
-                logging.debug("Cache parsed: {}".format(c))
-                yield c
-
-            start_index += 1
-
-    def _search_get_page(self, point, start_index):
-        """Return one page for standard search as class:`bs4.BeautifulSoup` object.
-
-        :param .geo.Point point: Search center point.
-        :param int start_index: Determines the page. If start_index is greater than zero, this
-            method will use AJAX andpoint which is much faster.
-        """
-        assert hasattr(point, "format") and callable(point.format)
-        logging.debug("Loading page from start_index {}".format(start_index))
-
-        if start_index == 0:
-            # first request has to load normal search page
-            logging.debug("Using normal search endpoint")
-
-            # make request
-            res = self._request(
-                self._urls["search"],
-                params={
-                    "origin": point.format_decimal(),
-                },
-            )
-            return res.find(id="geocaches"), res
-
-        else:
-            # other requests can use AJAX endpoint
-            logging.debug("Using AJAX search endpoint")
-
-            # make request
-            res = self._request(
-                self._urls["search_more"],
-                params={
-                    "origin": point.format_decimal(),
-                    "startIndex": start_index,
-                    "ssvu": 2,
-                    "selectAll": "false",
-                },
-                expect="json",
-            )
-
-            return bs4.BeautifulSoup(res["HtmlString"].strip(), "html.parser"), None
+        return self.advanced_search(
+            {
+                "origin": point,
+                "limit": limit,
+                "asc": str(not reverse).lower(),
+                "sort": sort_by.value,
+            },
+            per_query=per_query,
+            limit=limit,
+            wait_sleep=wait_sleep,
+        )
 
     @deprecated
     def search_quick(self, area):
