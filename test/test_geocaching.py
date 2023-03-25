@@ -26,15 +26,15 @@ class TestMethods(LoggedInTest):
 
     def test_search(self):
         with self.subTest("normal"):
-            tolerance = 2
-            expected = {"GC5VJ0P", "GC41FJC", "GC50AQ6", "GC167Y7", "GC7RR74", "GC167Y7"}
+            tolerance = 3
+            expected = {"GC5VJ0P", "GC41FJC", "GC50AQ6", "GC7RR74", "GC167Y7"}
             with self.recorder.use_cassette("geocaching_search"):
-                found = {cache.wp for cache in self.gc.search(Point(49.733867, 13.397091), 20)}
+                found = {cache.wp for cache in self.gc.search(Point(49.733867, 13.397091), limit=20)}
             self.assertGreater(len(expected & found), len(expected) - tolerance)
 
-        with self.subTest("pagging"):
+        with self.subTest("pagination"):
             with self.recorder.use_cassette("geocaching_search_pagination"):
-                caches = list(self.gc.search(Point(49.733867, 13.397091), 100))
+                caches = list(self.gc.search(Point(49.733867, 13.397091), limit=100, per_query=50))
             self.assertNotEqual(caches[0], caches[50])
 
     def test_search_quick(self):

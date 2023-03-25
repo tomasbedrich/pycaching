@@ -25,7 +25,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=datelastvisited"
       },
       "response": {
         "body": {
@@ -75,7 +75,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=datelastvisited"
       }
     },
     {
@@ -103,7 +103,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=distance&origin=49.73717%2C13.38097"
+        "uri": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=distance&origin=49.73717%2C13.38097"
       },
       "response": {
         "body": {
@@ -153,7 +153,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=distance&origin=49.73717%2C13.38097"
+        "url": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=distance&origin=49.73717%2C13.38097"
       }
     },
     {
@@ -181,7 +181,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=false&skip=0&sort=distance&origin=49.73717%2C13.38097"
+        "uri": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=false&skip=0&sort=distance&origin=49.73717%2C13.38097"
       },
       "response": {
         "body": {
@@ -231,7 +231,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=false&skip=0&sort=distance&origin=49.73717%2C13.38097"
+        "url": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=false&skip=0&sort=distance&origin=49.73717%2C13.38097"
       }
     },
     {
@@ -259,7 +259,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=containersize"
+        "uri": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=containersize"
       },
       "response": {
         "body": {
@@ -309,7 +309,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=containersize"
+        "url": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=containersize"
       }
     },
     {
@@ -337,7 +337,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=datelastvisited"
       },
       "response": {
         "body": {
@@ -387,7 +387,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=datelastvisited"
       }
     },
     {
@@ -415,7 +415,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=difficulty"
+        "uri": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=difficulty"
       },
       "response": {
         "body": {
@@ -465,7 +465,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=difficulty"
+        "url": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=difficulty"
       }
     },
     {
@@ -493,7 +493,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=favoritepoint"
+        "uri": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=favoritepoint"
       },
       "response": {
         "body": {
@@ -543,7 +543,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=favoritepoint"
+        "url": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=favoritepoint"
       }
     },
     {
@@ -571,7 +571,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddate"
+        "uri": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddate"
       },
       "response": {
         "body": {
@@ -617,7 +617,7 @@
           "code": 429,
           "message": ""
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddate"
+        "url": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddate"
       }
     },
     {
@@ -645,7 +645,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddate"
+        "uri": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddate"
       },
       "response": {
         "body": {
@@ -695,7 +695,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddate"
+        "url": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddate"
       }
     },
     {
@@ -723,7 +723,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddateoffoundbyuser"
+        "uri": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddateoffoundbyuser"
       },
       "response": {
         "body": {
@@ -773,7 +773,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddateoffoundbyuser"
+        "url": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=founddateoffoundbyuser"
       }
     },
     {
@@ -801,7 +801,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=geocachename"
+        "uri": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=geocachename"
       },
       "response": {
         "body": {
@@ -851,7 +851,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=geocachename"
+        "url": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=geocachename"
       }
     },
     {
@@ -879,7 +879,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=placedate"
+        "uri": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=placedate"
       },
       "response": {
         "body": {
@@ -929,7 +929,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=placedate"
+        "url": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=placedate"
       }
     },
     {
@@ -957,7 +957,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=terrain"
+        "uri": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=terrain"
       },
       "response": {
         "body": {
@@ -1007,7 +1007,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=terrain"
+        "url": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.39&take=200&asc=true&skip=0&sort=terrain"
       }
     }
   ],
