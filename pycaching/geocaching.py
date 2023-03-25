@@ -14,7 +14,7 @@ import bs4
 import requests
 from bs4.element import Script  # Direct import as `bs4.Script` requires version >= 4.9.1.
 
-from pycaching.cache import Cache, Size, Status
+from pycaching.cache import Cache
 from pycaching.errors import Error, LoginFailedException, NotLoggedInException, PMOnlyException, TooManyRequestsError
 from pycaching.geo import Point, Rectangle
 from pycaching.log import Log
@@ -286,8 +286,6 @@ class Geocaching(object):
 
         return self.search_rect(area)
 
-    # add some shortcuts ------------------------------------------------------
-
     def search_rect(
         self,
         rect: Rectangle,
@@ -296,7 +294,7 @@ class Geocaching(object):
         reverse: bool = False,
         limit: int = float("inf"),
         origin: Optional[Point] = None,
-        wait_sleep: bool = True
+        wait_sleep: bool = True,
     ):
         """
         Return a generator of caches in given Rectange area.
@@ -334,7 +332,6 @@ class Geocaching(object):
             limit=limit,
             wait_sleep=wait_sleep,
         )
-
 
     def advanced_search(
         self,
@@ -374,6 +371,8 @@ class Geocaching(object):
 
             total = resp["total"]
             offset += take_amount
+
+    # add some shortcuts ------------------------------------------------------
 
     def geocode(self, location):
         """Return a :class:`.Point` object from geocoded location.
