@@ -6,7 +6,6 @@ import json
 import logging
 import re
 import subprocess
-import warnings
 from os import path
 from typing import Optional, Union
 from urllib.parse import parse_qs, urljoin, urlparse
