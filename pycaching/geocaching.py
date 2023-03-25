@@ -21,6 +21,7 @@ from pycaching.geo import Point, Rectangle
 from pycaching.log import Log
 from pycaching.log import Type as LogType
 from pycaching.trackable import Trackable
+from pycaching.util import deprecated
 
 
 class SortOrder(enum.Enum):
@@ -350,6 +351,7 @@ class Geocaching(object):
 
             return bs4.BeautifulSoup(res["HtmlString"].strip(), "html.parser"), None
 
+    @deprecated
     def search_quick(self, area):
         """Search for caches in a specified :class:`.Rectangle` area.
 
