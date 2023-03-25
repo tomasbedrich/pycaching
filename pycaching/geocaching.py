@@ -246,28 +246,28 @@ class Geocaching(object):
     def search(
         self,
         point: Point,
-        per_query: int = 200,
+        limit: int = float("inf"),
         sort_by: Union[str, SortOrder] = SortOrder.date_last_visited,
         reverse: bool = False,
-        limit: int = float("inf"),
+        per_query: int = 200,
         wait_sleep: bool = True,
     ) -> Generator[Optional[Cache], None, None]:
         """Search for caches around a specified location using a search API.
 
         :param point: The :class:`.geo.Point` object representing the center point of the search.
         :type point: `geo.Point`
-        :param per_query: The number of caches to request in each query.
-            Defaults to :code:`200`.
-        :type per_query: int, optional
+        :param limit: The maximum number of caches to load.
+            Defaults to infinity.
+        :type limit: int, optional
         :param sort_by: The criterion to sort the caches by.
             Defaults to :code:`SortOrder.date_last_visited`.
         :type sort_by: Union[str, SortOrder], optional
         :param reverse: If :code:`True`, the order of the results is reversed.
             Defaults to :code:`False`.
         :type reverse: bool, optional
-        :param limit: The maximum number of caches to load.
-            Defaults to infinity.
-        :type limit: int, optional
+        :param per_query: The number of caches to request in each query.
+            Defaults to :code:`200`.
+        :type per_query: int, optional
         :param wait_sleep: In case of rate limits exceeding, wait appropriate time
             if set to :code:`True`, otherwise just yield :code:`None`.
             Defaults to :code:`True`.
@@ -303,10 +303,10 @@ class Geocaching(object):
         self,
         rect: Rectangle,
         *,
-        per_query: int = 200,
+        limit: int = float("inf"),
         sort_by: Union[str, SortOrder] = SortOrder.date_last_visited,
         reverse: bool = False,
-        limit: int = float("inf"),
+        per_query: int = 200,
         origin: Optional[Point] = None,
         wait_sleep: bool = True,
     ) -> Generator[Optional[Cache], None, None]:
@@ -314,18 +314,18 @@ class Geocaching(object):
 
         :param rect: The :class:`.Rectangle` object representing the search area.
         :type rect: geo.Rectangle
-        :param per_query: The number of caches to request in each query.
-            Defaults to :code:`200`.
-        :type per_query: int, optional
+        :param limit: The maximum number of caches to load.
+            Defaults to infinity.
+        :type limit: int, optional
         :param sort_by: The criterion to sort the caches by.
             Defaults to :code:`SortOrder.date_last_visited`.
         :type sort_by: Union[str, SortOrder], optional
         :param reverse: If :code:`True`, the order of the results is reversed.
             Defaults to :code:`False`.
         :type reverse: bool, optional
-        :param limit: The maximum number of caches to load.
-            Defaults to infinity.
-        :type limit: int, optional
+        :param per_query: The number of caches to request in each query.
+            Defaults to :code:`200`.
+        :type per_query: int, optional
         :param origin: The origin point for search by distance, required when sorting by distance.
         :type origin: geo.Point, optional
         :param wait_sleep: In case of rate limits exceeding, wait appropriate time
@@ -364,8 +364,8 @@ class Geocaching(object):
     def advanced_search(
         self,
         options: dict,
-        per_query: int = 200,
         limit: int = float("inf"),
+        per_query: int = 200,
         wait_sleep: bool = True,
     ) -> Generator[Optional[Cache], None, None]:
         """Perform an advanced search for geocaches with specific search criteria.
@@ -378,12 +378,12 @@ class Geocaching(object):
 
         :param options: A dictionary of search options.
         :type options: dict
-        :param per_query: The number of caches to request in each query.
-            Defaults to :code:`200`.
-        :type per_query: int, optional
         :param limit: The maximum number of caches to load.
             Defaults to infinity.
         :type limit: int, optional
+        :param per_query: The number of caches to request in each query.
+            Defaults to :code:`200`.
+        :type per_query: int, optional
         :param wait_sleep: In case of rate limits exceeding, wait appropriate time
             if set to :code:`True`, otherwise just yield :code:`None`.
             Defaults to :code:`True`.
