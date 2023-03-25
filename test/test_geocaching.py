@@ -1,5 +1,3 @@
-import itertools
-import unittest
 from unittest.mock import patch
 
 from geopy.distance import great_circle
