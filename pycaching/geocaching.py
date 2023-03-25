@@ -52,7 +52,7 @@ class Geocaching(object):
         "search": "play/search",
         "search_more": "play/search/more-results",
         "my_logs": "my/logs.aspx",
-        "api_search": "api/proxy/web/search",
+        "api_search": "api/proxy/web/search/v2",
     }
     _credentials_file = ".gc_credentials"
 
