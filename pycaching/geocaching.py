@@ -251,7 +251,7 @@ class Geocaching(object):
         reverse: bool = False,
         limit: int = float("inf"),
         wait_sleep: bool = True,
-    ) -> Generator[Cache, None, None]:
+    ) -> Generator[Optional[Cache], None, None]:
         """Search for caches around a specified location using a search API.
 
         :param point: The :class:`.geo.Point` object representing the center point of the search.
@@ -273,7 +273,7 @@ class Geocaching(object):
             Defaults to :code:`True`.
         :type wait_sleep: bool, optional
         :return: A generator that yields :class:`.Cache` objects.
-        :rtype: Generator[Cache, None, None]
+        :rtype: Generator[Optional[Cache], None, None]
         """
 
         return self.advanced_search(
@@ -309,7 +309,7 @@ class Geocaching(object):
         limit: int = float("inf"),
         origin: Optional[Point] = None,
         wait_sleep: bool = True,
-    ) -> Generator[Cache, None, None]:
+    ) -> Generator[Optional[Cache], None, None]:
         """Search for caches in a specified :class:`.Rectangle` area using a search API.
 
         :param rect: The :class:`.Rectangle` object representing the search area.
@@ -333,7 +333,7 @@ class Geocaching(object):
             Defaults to :code:`True`.
         :type wait_sleep: bool, optional
         :return: A generator that yields :class:`.Cache` objects.
-        :rtype: Generator[Cache, None, None]
+        :rtype: Generator[Optional[Cache], None, None]
         """
 
         if not isinstance(sort_by, SortOrder):
@@ -367,7 +367,7 @@ class Geocaching(object):
         per_query: int = 200,
         limit: int = float("inf"),
         wait_sleep: bool = True,
-    ) -> Generator[Cache, None, None]:
+    ) -> Generator[Optional[Cache], None, None]:
         """Perform an advanced search for geocaches with specific search criteria.
 
         The search is performed using the options provided in the :code:`options` parameter.
@@ -389,7 +389,7 @@ class Geocaching(object):
             Defaults to :code:`True`.
         :type wait_sleep: bool, optional
         :return: A generator that yields :class:`.Cache` objects.
-        :rtype: Generator[Cache, None, None]
+        :rtype: Generator[Optional[Cache], None, None]
         """
 
         if limit <= 0:
