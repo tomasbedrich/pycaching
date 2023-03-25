@@ -7,7 +7,7 @@ import logging
 import re
 import subprocess
 from os import path
-from typing import Optional, Union, Generator
+from typing import Generator, Optional, Union
 from urllib.parse import parse_qs, urljoin, urlparse
 
 import bs4
