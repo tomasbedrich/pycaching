@@ -367,7 +367,31 @@ class Geocaching(object):
         per_query: int = 200,
         limit: int = float("inf"),
         wait_sleep: bool = True,
-    ):
+    ) -> Generator[Cache, None, None]:
+        """Perform an advanced search for geocaches with specific search criteria.
+
+        The search is performed using the options provided in the :code:`options` parameter.
+        Example of the :code:`options` parameter::
+
+            # https://www.geocaching.com/play/search?owner[0]=Geocaching%20HQ&a=0
+            options = {"owner[0]": "Geocaching HQ", "a": "0"}
+
+        :param options: A dictionary of search options.
+        :type options: dict
+        :param per_query: The number of caches to request in each query.
+            Defaults to :code:`200`.
+        :type per_query: int, optional
+        :param limit: The maximum number of caches to load.
+            Defaults to infinity.
+        :type limit: int, optional
+        :param wait_sleep: In case of rate limits exceeding, wait appropriate time
+            if set to :code:`True`, otherwise just yield :code:`None`.
+            Defaults to :code:`True`.
+        :type wait_sleep: bool, optional
+        :return: A generator that yields :class:`.Cache` objects.
+        :rtype: Generator[Cache, None, None]
+        """
+
         if limit <= 0:
             return
 
@@ -399,6 +423,7 @@ class Geocaching(object):
 
             total = resp["total"]
             offset += take_amount
+
 
     # add some shortcuts ------------------------------------------------------
 
