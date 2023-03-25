@@ -291,7 +291,6 @@ class Geocaching(object):
     def search_rect(
         self,
         rect: Rectangle,
-        *,
         per_query: int = 200,
         sort_by: Union[str, SortOrder] = SortOrder.date_last_visited,
         reverse: bool = False,
@@ -314,10 +313,6 @@ class Geocaching(object):
         if not isinstance(sort_by, SortOrder):
             sort_by = SortOrder(sort_by)
 
-        if limit <= 0:
-            return
-
-        take_amount = min(limit, per_query)
         params = {
             "box": "{},{},{},{}".format(
                 rect.corners[0].latitude,
@@ -325,9 +320,7 @@ class Geocaching(object):
                 rect.corners[1].latitude,
                 rect.corners[1].longitude,
             ),
-            "take": take_amount,
             "asc": str(not reverse).lower(),
-            "skip": 0,
             "sort": sort_by.value,
         }
 
@@ -335,24 +328,13 @@ class Geocaching(object):
             assert isinstance(origin, Point)
             params["origin"] = "{},{}".format(origin.latitude, origin.longitude)
 
-        total, offset = None, 0
-        while (offset < limit) and ((total is None) or (offset < total)):
-            params["skip"] = offset
+        return self.advanced_search(
+            params,
+            per_query=per_query,
+            limit=limit,
+            wait_sleep=wait_sleep,
+        )
 
-            try:
-                resp = self._request(self._urls["api_search"], params=params, expect="json")
-            except TooManyRequestsError as e:
-                if wait_sleep:
-                    e.wait_for()
-                else:
-                    yield None
-                continue
-
-            for record in resp["results"]:
-                yield Cache._from_api_record(self, record)
-
-            total = resp["total"]
-            offset += take_amount
 
     def advanced_search(
         self,
