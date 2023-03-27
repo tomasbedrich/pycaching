@@ -27,7 +27,28 @@ class TestMethods(LoggedInTest):
     def test_search(self):
         with self.subTest("normal"):
             tolerance = 2
-            expected = {"GC5VJ0P", "GC1M7GP", "GC50AQ6", "GC7RR74", "GC167Y7"}
+            expected = {
+                "GC50AQ6",
+                "GC9T8WJ",
+                "GC8Z14D",
+                "GC167Y7",
+                "GC7TT7T",
+                "GC3TF1K",
+                "GC77PV1",
+                "GC84801",
+                "GC5MGHV",
+                "GC5VJ0P",
+                "GC9PN94",
+                "GC161KR",
+                "GC7GNTE",
+                "GC1M7GP",
+                "GC5EDMF",
+                "GC868VY",
+                "GC44001",
+                "GC3P972",
+                "GC86RK3",
+                "GC9TRPD",
+            }
             with self.recorder.use_cassette("geocaching_search"):
                 found = {cache.wp for cache in self.gc.search(Point(49.733867, 13.397091), limit=20)}
             self.assertGreater(len(expected & found), len(expected) - tolerance)
