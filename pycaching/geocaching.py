@@ -155,6 +155,10 @@ class Geocaching(object):
             return
         else:
             self.logout()
+
+            if after_login_page.find("div", class_="g-recaptcha"):
+                raise LoginFailedException("CAPTCHA is required to login to the site.")
+
             raise LoginFailedException("Cannot login to the site (probably wrong username or password).")
 
     def _load_credentials(self, username=None):
