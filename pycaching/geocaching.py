@@ -256,25 +256,18 @@ class Geocaching(object):
         """Search for caches around a specified location using a search API.
 
         :param point: The :class:`.geo.Point` object representing the center point of the search.
-        :type point: `geo.Point`
         :param limit: The maximum number of caches to load.
             Defaults to infinity.
-        :type limit: int, optional
         :param sort_by: The criterion to sort the caches by.
             Defaults to :code:`SortOrder.date_last_visited`.
-        :type sort_by: Union[str, SortOrder], optional
         :param reverse: If :code:`True`, the order of the results is reversed.
             Defaults to :code:`False`.
-        :type reverse: bool, optional
         :param per_query: The number of caches to request in each query.
             Defaults to :code:`200`.
-        :type per_query: int, optional
         :param wait_sleep: In case of rate limits exceeding, wait appropriate time
             if set to :code:`True`, otherwise just yield :code:`None`.
             Defaults to :code:`True`.
-        :type wait_sleep: bool, optional
         :return: A generator that yields :class:`.Cache` objects.
-        :rtype: Generator[Optional[Cache], None, None]
         """
 
         return self.advanced_search(
@@ -314,27 +307,19 @@ class Geocaching(object):
         """Search for caches in a specified :class:`.Rectangle` area using a search API.
 
         :param rect: The :class:`.Rectangle` object representing the search area.
-        :type rect: geo.Rectangle
         :param limit: The maximum number of caches to load.
             Defaults to infinity.
-        :type limit: int, optional
         :param sort_by: The criterion to sort the caches by.
             Defaults to :code:`SortOrder.date_last_visited`.
-        :type sort_by: Union[str, SortOrder], optional
         :param reverse: If :code:`True`, the order of the results is reversed.
             Defaults to :code:`False`.
-        :type reverse: bool, optional
         :param per_query: The number of caches to request in each query.
             Defaults to :code:`200`.
-        :type per_query: int, optional
         :param origin: The origin point for search by distance, required when sorting by distance.
-        :type origin: geo.Point, optional
         :param wait_sleep: In case of rate limits exceeding, wait appropriate time
             if set to :code:`True`, otherwise just yield :code:`None`.
             Defaults to :code:`True`.
-        :type wait_sleep: bool, optional
         :return: A generator that yields :class:`.Cache` objects.
-        :rtype: Generator[Optional[Cache], None, None]
         """
 
         if not isinstance(sort_by, SortOrder):
@@ -378,19 +363,14 @@ class Geocaching(object):
             options = {"owner[0]": "Geocaching HQ", "a": "0"}
 
         :param options: A dictionary of search options.
-        :type options: dict
         :param limit: The maximum number of caches to load.
             Defaults to infinity.
-        :type limit: int, optional
         :param per_query: The number of caches to request in each query.
             Defaults to :code:`200`.
-        :type per_query: int, optional
         :param wait_sleep: In case of rate limits exceeding, wait appropriate time
             if set to :code:`True`, otherwise just yield :code:`None`.
             Defaults to :code:`True`.
-        :type wait_sleep: bool, optional
         :return: A generator that yields :class:`.Cache` objects.
-        :rtype: Generator[Optional[Cache], None, None]
         """
 
         if limit <= 0:
