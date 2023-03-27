@@ -188,14 +188,8 @@ Geocode address and search around
     for cache in geocaching.search(point, limit=10):
         print(cache.name)
 
-Find caches with their approximate locations in some area
+Find caches in some area
 ---------------------------------------------------------------------------------------------------
-
-.. warning::
-
-    This is currently not working because of
-    `this issue <https://github.com/tomasbedrich/pycaching/issues/75>`__. Contributions are
-    very welcome!
 
 .. code-block:: python
 
@@ -203,9 +197,10 @@ Find caches with their approximate locations in some area
 
     rect = Rectangle(Point(60.15, 24.95), Point(60.17, 25.00))
 
-    for cache in geocaching.search_quick(rect, strict=True):
-        print(cache.name, cache.location.precision)
+    for cache in geocaching.search_rect(rect):
+        print(cache.name)
 
+If you want to search in a larger area, you could use the ``limit`` parameter as described above.
 
 Load trackable details
 ---------------------------------------------------------------------------------------------------

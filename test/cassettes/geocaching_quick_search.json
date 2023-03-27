@@ -1,0 +1,86 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2023-03-25T19:01:14",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "gspkauth=<AUTH COOKIE>; Culture=en-US; __RequestVerificationToken=<AUTH COOKIE>"
+          ],
+          "User-Agent": [
+            "python-requests/2.28.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.4&take=200&asc=true&skip=0&sort=datelastvisited"
+      },
+      "response": {
+        "body": {
+          "base64_string": "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",
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Cache-Control": [
+            "max-age=60, private"
+          ],
+          "Connection": [
+            "Keep-Alive"
+          ],
+          "Content-Encoding": [
+            "gzip"
+          ],
+          "Content-Length": [
+            "2647"
+          ],
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ],
+          "CorrelationGuid": [
+            "05719242-28d1-41f4-a71f-29f36eed56df"
+          ],
+          "Date": [
+            "Sat, 25 Mar 2023 19:01:13 GMT"
+          ],
+          "Set-Cookie": [
+            "jwt=<AUTH COOKIE>; expires=Sat, 25 Mar 2023 20:00:13 GMT; domain=.geocaching.com; path=/; secure; httponly"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubDomains"
+          ],
+          "Vary": [
+            "Accept-Encoding"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.4&take=200&asc=true&skip=0&sort=datelastvisited"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}
