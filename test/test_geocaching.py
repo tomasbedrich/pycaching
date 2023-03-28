@@ -50,12 +50,12 @@ class TestMethods(LoggedInTest):
                 "GC9TRPD",
             }
             with self.recorder.use_cassette("geocaching_search"):
-                found = {cache.wp for cache in self.gc.search(Point(49.733867, 13.397091), limit=20)}
+                found = {cache.wp for cache in self.gc.search(Point(49.733867, 13.397091), 20)}
             self.assertGreater(len(expected & found), len(expected) - tolerance)
 
         with self.subTest("pagination"):
             with self.recorder.use_cassette("geocaching_search_pagination"):
-                caches = list(self.gc.search(Point(49.733867, 13.397091), limit=100, per_query=50))
+                caches = list(self.gc.search(Point(49.733867, 13.397091), 100, per_query=50))
             self.assertNotEqual(caches[0], caches[50])
 
     def test_search_quick(self):
