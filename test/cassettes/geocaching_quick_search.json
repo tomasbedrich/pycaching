@@ -25,7 +25,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.4&take=200&asc=true&skip=0&sort=datelastvisited"
+        "uri": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.4&take=200&asc=true&skip=0&sort=datelastvisited"
       },
       "response": {
         "body": {
@@ -78,7 +78,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.geocaching.com/api/proxy/web/search?box=49.74%2C13.38%2C49.73%2C13.4&take=200&asc=true&skip=0&sort=datelastvisited"
+        "url": "https://www.geocaching.com/api/proxy/web/search/v2?box=49.74%2C13.38%2C49.73%2C13.4&take=200&asc=true&skip=0&sort=datelastvisited"
       }
     }
   ],

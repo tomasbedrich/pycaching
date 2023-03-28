@@ -27,14 +27,35 @@ class TestMethods(LoggedInTest):
     def test_search(self):
         with self.subTest("normal"):
             tolerance = 2
-            expected = {"GC5VJ0P", "GC41FJC", "GC50AQ6", "GC167Y7", "GC7RR74", "GC167Y7"}
+            expected = {
+                "GC50AQ6",
+                "GC9T8WJ",
+                "GC8Z14D",
+                "GC167Y7",
+                "GC7TT7T",
+                "GC3TF1K",
+                "GC77PV1",
+                "GC84801",
+                "GC5MGHV",
+                "GC5VJ0P",
+                "GC9PN94",
+                "GC161KR",
+                "GC7GNTE",
+                "GC1M7GP",
+                "GC5EDMF",
+                "GC868VY",
+                "GC44001",
+                "GC3P972",
+                "GC86RK3",
+                "GC9TRPD",
+            }
             with self.recorder.use_cassette("geocaching_search"):
                 found = {cache.wp for cache in self.gc.search(Point(49.733867, 13.397091), 20)}
             self.assertGreater(len(expected & found), len(expected) - tolerance)
 
-        with self.subTest("pagging"):
+        with self.subTest("pagination"):
             with self.recorder.use_cassette("geocaching_search_pagination"):
-                caches = list(self.gc.search(Point(49.733867, 13.397091), 100))
+                caches = list(self.gc.search(Point(49.733867, 13.397091), 100, per_query=50))
             self.assertNotEqual(caches[0], caches[50])
 
     def test_search_quick(self):
@@ -62,6 +83,31 @@ class TestMethods(LoggedInTest):
                 self.assertEqual("Nidda: jenseits der Rennstrecke Reloaded", cache_pm.name)
             except PMOnlyException:
                 pass
+
+
+class TestAdvancedSearch(LoggedInTest):
+    def test_search(self):
+        with self.recorder.use_cassette("advanced_search"):
+            # https://www.geocaching.com/play/search?st=Prague%2C+Hlavní+město+Praha&ot=query&asc=false&sort=distance
+            results = self.gc.advanced_search(
+                options={
+                    "st": "Prague, Hlavní město Praha",
+                    "ot": "query",
+                    "asc": "false",
+                    "sort": "distance",
+                },
+                limit=50,
+            )
+            self.assertEqual("GC11JM6", list(results)[0].wp)
+
+    def test_caches_owned_by_geocaching_hq(self):
+        with self.recorder.use_cassette("advanced_search_caches_owned_by_hq"):
+            # https://www.geocaching.com/play/search/?hb=Geocaching+HQ
+            options = {"hb": "Geocaching HQ"}
+            generator = self.gc.advanced_search(options=options)
+            results = list(generator)
+            self.assertGreaterEqual(91, len(results))
+            self.assertEqual("GC1TEZH", results[-1].wp)
 
 
 class TestAPIMethods(LoggedInTest):
