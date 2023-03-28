@@ -246,8 +246,8 @@ class Geocaching(object):
     def search(
         self,
         point: Point,
-        *,
         limit: int = float("inf"),
+        *,
         sort_by: Union[str, SortOrder] = SortOrder.date_last_visited,
         reverse: bool = False,
         per_query: int = 200,
@@ -296,8 +296,8 @@ class Geocaching(object):
     def search_rect(
         self,
         rect: Rectangle,
-        *,
         limit: int = float("inf"),
+        *,
         sort_by: Union[str, SortOrder] = SortOrder.date_last_visited,
         reverse: bool = False,
         per_query: int = 200,
