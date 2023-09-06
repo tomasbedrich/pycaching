@@ -223,6 +223,7 @@ class Cache(object):
             "attributes",
             "summary",
             "description",
+            "html_description",
             "hint",
             "favorites",
             "pm_only",
@@ -616,6 +617,20 @@ class Cache(object):
 
     @property
     @lazy_loaded
+    def html_description(self):
+        """The cache long description in raw HTML.
+
+        :type: :class:`str`
+        """
+        return self._description
+
+    @description.setter
+    def html_description(self, description):
+        description = str(description).strip()
+        self._html_description = description
+
+    @property
+    @lazy_loaded
     def hint(self):
         """The cache hint.
 
@@ -813,7 +828,8 @@ class Cache(object):
 
         self.summary = root.find(id="ctl00_ContentBody_ShortDescription").text
         self.description = root.find(id="ctl00_ContentBody_LongDescription").text
-
+        self.html_description = root.find(id="ctl00_ContentBody_LongDescription")
+        
         self.hint = rot13(root.find(id="div_hint").get_text(separator="\n"))
 
         favorites = root.find("span", "favorite-value")
@@ -937,6 +953,8 @@ class Cache(object):
         self.summary = content.find("h2", string="Short Description").find_next("div").text
 
         self.description = content.find("h2", string="Long Description").find_next("div").text
+
+        self.html_description = content.find("h2", string="Long Description").find_next("div")
 
         self.hint = content.find(id="uxEncryptedHint").get_text(separator="\n")
 
