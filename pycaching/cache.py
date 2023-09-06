@@ -155,7 +155,7 @@ class Cache(object):
             del cache_info["attributes"]["attribute"]
         cache_info["summary"] = content.find("h2", string="Short Description").find_next("div").text
         cache_info["description"] = content.find("h2", string="Long Description").find_next("div").text
-        cache_info["html_description"] = content.find("h2", string="Long Description").find_next("div")
+        cache_info["description_html"] = str(content.find("h2", string="Long Description").find_next("div"))
         hint = content.find(id="uxEncryptedHint")
         cache_info["hint"] = hint.get_text(separator="\n") if hint else None
         cache_info["waypoints"] = Waypoint.from_html(content, table_id="Waypoints")
@@ -223,7 +223,7 @@ class Cache(object):
             "attributes",
             "summary",
             "description",
-            "html_description",
+            "description_html",
             "hint",
             "favorites",
             "pm_only",
@@ -617,7 +617,7 @@ class Cache(object):
 
     @property
     @lazy_loaded
-    def html_description(self):
+    def descriptin_html(self):
         """The cache long description in raw HTML.
 
         :type: :class:`str`
@@ -625,9 +625,9 @@ class Cache(object):
         return self._description
 
     @description.setter
-    def html_description(self, description):
+    def descriptin_html(self, description):
         description = str(description).strip()
-        self._html_description = description
+        self._descriptin_html = description
 
     @property
     @lazy_loaded
@@ -828,7 +828,7 @@ class Cache(object):
 
         self.summary = root.find(id="ctl00_ContentBody_ShortDescription").text
         self.description = root.find(id="ctl00_ContentBody_LongDescription").text
-        self.html_description = root.find(id="ctl00_ContentBody_LongDescription")
+        self.descriptin_html = root.find(id="ctl00_ContentBody_LongDescription")
         
         self.hint = rot13(root.find(id="div_hint").get_text(separator="\n"))
 
@@ -954,7 +954,7 @@ class Cache(object):
 
         self.description = content.find("h2", string="Long Description").find_next("div").text
 
-        self.html_description = content.find("h2", string="Long Description").find_next("div")
+        self.descriptin_html = content.find("h2", string="Long Description").find_next("div")
 
         self.hint = content.find(id="uxEncryptedHint").get_text(separator="\n")
 
