@@ -617,7 +617,7 @@ class Cache(object):
 
     @property
     @lazy_loaded
-    def descriptin_html(self):
+    def description_html(self):
         """The cache long description in raw HTML.
 
         :type: :class:`str`
@@ -625,9 +625,9 @@ class Cache(object):
         return self._description
 
     @description.setter
-    def descriptin_html(self, description):
+    def description_html(self, description):
         description = str(description).strip()
-        self._descriptin_html = description
+        self._description_html = description
 
     @property
     @lazy_loaded
