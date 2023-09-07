@@ -34,6 +34,7 @@ class TestProperties(unittest.TestCase):
             attributes={"onehour": True, "kids": False, "available": True},
             summary="text",
             description="long text",
+            description_html="<h1>some header</h1><p>some text</p>",
             hint="rot13",
             favorites=0,
             pm_only=False,
@@ -189,6 +190,9 @@ class TestProperties(unittest.TestCase):
 
     def test_description(self):
         self.assertEqual(self.c.description, "long text")
+        
+    def test_description_html(self):
+        self.assertEqual(self.c.description_html, "<h1>some header</h1><p>some text</p>")
 
     def test_hint(self):
         self.assertEqual(self.c.hint, "rot13")
