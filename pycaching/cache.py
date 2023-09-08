@@ -154,8 +154,9 @@ class Cache(object):
         if "attribute" in cache_info["attributes"]:  # 'blank' attribute
             del cache_info["attributes"]["attribute"]
         cache_info["summary"] = content.find("h2", string="Short Description").find_next("div").text
-        cache_info["description"] = content.find("h2", string="Long Description").find_next("div").text
-        cache_info["description_html"] = str(content.find("h2", string="Long Description").find_next("div"))
+        raw-description = content.find("h2", string="Long Description").find_next("div")
+        cache_info["description"] = long-description.text
+        cache_info["description_html"] = str(long-description)
         hint = content.find(id="uxEncryptedHint")
         cache_info["hint"] = hint.get_text(separator="\n") if hint else None
         cache_info["waypoints"] = Waypoint.from_html(content, table_id="Waypoints")
