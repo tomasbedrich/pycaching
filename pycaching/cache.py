@@ -829,7 +829,7 @@ class Cache(object):
 
         self.summary = root.find(id="ctl00_ContentBody_ShortDescription").text
         self.description = root.find(id="ctl00_ContentBody_LongDescription").text
-        self.descriptin_html = root.find(id="ctl00_ContentBody_LongDescription")
+        self.description_html = root.find(id="ctl00_ContentBody_LongDescription")
         
         self.hint = rot13(root.find(id="div_hint").get_text(separator="\n"))
 
@@ -955,7 +955,7 @@ class Cache(object):
 
         self.description = content.find("h2", string="Long Description").find_next("div").text
 
-        self.descriptin_html = content.find("h2", string="Long Description").find_next("div")
+        self.description_html = content.find("h2", string="Long Description").find_next("div")
 
         self.hint = content.find(id="uxEncryptedHint").get_text(separator="\n")
 
