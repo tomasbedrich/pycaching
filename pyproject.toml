@@ -30,6 +30,7 @@ keywords = [
 requires-python = ">= 3.5"
 dependencies = [
     "requests ~= 2.8",
+    "urllib3 ~= 1.26",  # due to https://github.com/betamaxpy/betamax/issues/200
     "beautifulsoup4 ~= 4.9",
     "geopy ~= 2.2.0",
 ]
