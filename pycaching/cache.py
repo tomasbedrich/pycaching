@@ -830,7 +830,7 @@ class Cache(object):
         self.summary = root.find(id="ctl00_ContentBody_ShortDescription").text
         self.description = root.find(id="ctl00_ContentBody_LongDescription").text
         self.description_html = root.find(id="ctl00_ContentBody_LongDescription")
-        
+
         self.hint = rot13(root.find(id="div_hint").get_text(separator="\n"))
 
         favorites = root.find("span", "favorite-value")
@@ -1098,7 +1098,6 @@ class Cache(object):
                 return
 
             for log_data in logbook_page:
-
                 limit -= 1  # handle limit
                 if limit < 0:
                     return
@@ -1140,7 +1139,6 @@ class Cache(object):
         names = [re.split(r"[\<\>]", str(link))[2] for link in links if "track" in link.get("href")]
 
         for name, url in zip(names, urls):
-
             limit -= 1  # handle limit
             if limit < 0:
                 return

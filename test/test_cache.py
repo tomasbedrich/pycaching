@@ -165,7 +165,6 @@ class TestProperties(unittest.TestCase):
                 self.c.hidden = None
 
     def test_visited(self):
-
         with self.subTest("automatic str conversion"):
             self.c.visited = "1/30/2000"
             self.assertEqual(self.c.visited, date(2000, 1, 30))
@@ -190,7 +189,7 @@ class TestProperties(unittest.TestCase):
 
     def test_description(self):
         self.assertEqual(self.c.description, "long text")
-        
+
     def test_description_html(self):
         self.assertEqual(self.c.description_html, "<h1>some header</h1><p>some text</p>")
 
