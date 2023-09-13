@@ -1022,7 +1022,7 @@ class Cache(object):
         if not element:
             raise errors.ValueError("Log counts could not be found.")
 
-        # Text gives numbers and verbose s of the current values as well as an
+        # Text gives numbers and verbose of the current values as well as an
         # introductory text. So we have to perform number checks for each element and only keep
         # the numbers.
         # The values might contain thousand separators, which we have to remove before converting
