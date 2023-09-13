@@ -625,7 +625,7 @@ class Cache(object):
         """
         return self._description
 
-    @description.setter
+    @description_html.setter
     def description_html(self, description):
         description = str(description).strip()
         self._description_html = description
