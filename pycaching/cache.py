@@ -153,7 +153,7 @@ class Cache(object):
         cache_info["attributes"] = {attr_name: attr_setting == "yes" for attr_name, _, attr_setting in attributes}
         if "attribute" in cache_info["attributes"]:  # 'blank' attribute
             del cache_info["attributes"]["attribute"]
-        cache_info["summary"] = content.find("h2", string="Short ").find_next("div").text
+        cache_info["summary"] = content.find("h2", string="Short Description").find_next("div").text
         raw_description = content.find("h2", string="Long Description").find_next("div")
         cache_info["description"] = raw_description.text
         cache_info["description_html"] = str(raw_description)
