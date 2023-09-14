@@ -623,7 +623,7 @@ class Cache(object):
 
         :type: :class:`str`
         """
-        return self._description
+        return self._description_html
 
     @description_html.setter
     def description_html(self, description):
