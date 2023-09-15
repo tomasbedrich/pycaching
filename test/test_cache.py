@@ -33,8 +33,8 @@ class TestProperties(unittest.TestCase):
             hidden=date(2000, 1, 1),
             attributes={"onehour": True, "kids": False, "available": True},
             summary="text",
-            description="long text",
-            description_html="<h1>some header</h1><p>some text</p>",
+            description="engelmz",
+            description_html="<b><font color="red">engelmz</font></b>",
             hint="rot13",
             favorites=0,
             pm_only=False,
@@ -188,10 +188,10 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.summary, "text")
 
     def test_description(self):
-        self.assertEqual(self.c.description, "long text")
+        self.assertEqual(self.c.description, "engelmz")
 
     def test_description_html(self):
-        self.assertEqual(self.c.description_html, "<p><b>Wir haben das Luftschloss wieder saniert und haben beschlossen ihn nicht mehr zu sanieren, sollte er wieder mutwillig kaputt gemacht werden. Wen es interessiert wie der Cache funktioniert, der kann gerne eine Mail schreiben.</b></p>")
+        self.assertEqual(self.c.description_html, "<b><font color="red">engelmz</font></b>")
 
     def test_hint(self):
         self.assertEqual(self.c.hint, "rot13")
@@ -282,8 +282,8 @@ class TestMethods(LoggedInTest):
                 },
             )
             self.assertEqual(cache.summary, "Gibt es das Luftschloss wirklich?")
-            self.assertIn("Seit dem 16.", cache.description)
-            self.assertIn("<p><b>Wir haben das Luftschloss wieder saniert und haben beschlossen ihn nicht mehr zu sanieren, sollte er wieder mutwillig kaputt gemacht werden. Wen es interessiert wie der Cache funktioniert, der kann gerne eine Mail schreiben.</b></p>", cache.description_html)
+            self.assertIn("engelmz", cache.description)
+            self.assertIn("<b><font color="red">engelmz</font></b>", cache.description_html)
             self.assertEqual(cache.hint, "Das ist nicht nötig")
             self.assertGreater(cache.favorites, 350)
             self.assertEqual(len(cache.waypoints), 2)
