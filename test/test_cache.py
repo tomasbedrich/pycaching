@@ -191,7 +191,7 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.description, "long text")
 
     def test_description_html(self):
-        self.assertEqual(self.c.description_html, "<h1>some header</h1><p>some text</p>")
+        self.assertEqual(self.c.description_html, "<p><b>Wir haben das Luftschloss wieder saniert und haben beschlossen ihn nicht mehr zu sanieren, sollte er wieder mutwillig kaputt gemacht werden. Wen es interessiert wie der Cache funktioniert, der kann gerne eine Mail schreiben.</b></p>")
 
     def test_hint(self):
         self.assertEqual(self.c.hint, "rot13")
