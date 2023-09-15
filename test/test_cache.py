@@ -283,7 +283,7 @@ class TestMethods(LoggedInTest):
             )
             self.assertEqual(cache.summary, "Gibt es das Luftschloss wirklich?")
             self.assertIn("Seit dem 16.", cache.description)
-            self.assertIn("<h1>some header</h1><p>some text</p>", cache.description_html)
+            self.assertIn("<p><b>Wir haben das Luftschloss wieder saniert und haben beschlossen ihn nicht mehr zu sanieren, sollte er wieder mutwillig kaputt gemacht werden. Wen es interessiert wie der Cache funktioniert, der kann gerne eine Mail schreiben.</b></p>", cache.description_html)
             self.assertEqual(cache.hint, "Das ist nicht nötig")
             self.assertGreater(cache.favorites, 350)
             self.assertEqual(len(cache.waypoints), 2)
