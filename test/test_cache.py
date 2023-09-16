@@ -33,8 +33,8 @@ class TestProperties(unittest.TestCase):
             hidden=date(2000, 1, 1),
             attributes={"onehour": True, "kids": False, "available": True},
             summary="text",
-            description="engelmz",
-            description_html="<b><font color="red">engelmz</font></b>",
+            description="Luftballon",
+            description_html="<b>Luftballon</b>",
             hint="rot13",
             favorites=0,
             pm_only=False,
@@ -188,10 +188,10 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.summary, "text")
 
     def test_description(self):
-        self.assertEqual(self.c.description, "engelmz")
+        self.assertEqual(self.c.description, "Luftballon")
 
     def test_description_html(self):
-        self.assertEqual(self.c.description_html, "<b><font color="red">engelmz</font></b>")
+        self.assertEqual(self.c.description_html, "<b>Luftballon</b>")
 
     def test_hint(self):
         self.assertEqual(self.c.hint, "rot13")
@@ -282,8 +282,8 @@ class TestMethods(LoggedInTest):
                 },
             )
             self.assertEqual(cache.summary, "Gibt es das Luftschloss wirklich?")
-            self.assertIn("engelmz", cache.description)
-            self.assertIn("<b><font color="red">engelmz</font></b>", cache.description_html)
+            self.assertIn("Luftballon", cache.description)
+            self.assertIn("<b>Luftballon</b>", cache.description_html)
             self.assertEqual(cache.hint, "Das ist nicht nötig")
             self.assertGreater(cache.favorites, 350)
             self.assertEqual(len(cache.waypoints), 2)
