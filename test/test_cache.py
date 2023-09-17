@@ -240,6 +240,15 @@ class TestMethods(LoggedInTest):
                     cache = Cache(self.gc, "GC123456")
                     cache.load()
 
+        with self.subTest("description"):
+            with self.recorder.use_cassette("cache_normal_normal"):
+                cache = Cache(self.gc, "GC4808G")
+                self.assertIn("Tuhle zprávu ti nepíšu proto, abych ti řekl, že ", cache.description)
+                self.assertIn(
+                    ';background-color:black;border:1px solid black;padding:20px;\">Tuhle zprávu ti nepíšu proto, abych ti řekl, že ',
+                    cache.description_html
+                )
+
     def test_load_quick(self):
         with self.subTest("normal"):
             with self.recorder.use_cassette("cache_quick_normal"):
@@ -282,8 +291,14 @@ class TestMethods(LoggedInTest):
                 },
             )
             self.assertEqual(cache.summary, "Gibt es das Luftschloss wirklich?")
-            self.assertIn("Luftballon", cache.description)
-            self.assertIn("<b>Luftballon</b>", cache.description_html)
+            self.assertIn(
+                " funktioniert, der kann gerne eine Mail schreiben.\r\nSeit dem 16. Jahrhundert steht die Menschheit vor dem ",
+                cache.description_html
+            )
+            self.assertIn(
+                " funktioniert, der kann gerne eine Mail schreiben.</b></p>\r\nSeit dem 16. Jahrhundert steht die Menschheit vor dem ",
+                cache.description_html
+            )
             self.assertEqual(cache.hint, "Das ist nicht nötig")
             self.assertGreater(cache.favorites, 350)
             self.assertEqual(len(cache.waypoints), 2)
