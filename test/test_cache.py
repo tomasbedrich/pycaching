@@ -33,7 +33,8 @@ class TestProperties(unittest.TestCase):
             hidden=date(2000, 1, 1),
             attributes={"onehour": True, "kids": False, "available": True},
             summary="text",
-            description="long text",
+            description="Luftballon",
+            description_html="<b>Luftballon</b>",
             hint="rot13",
             favorites=0,
             pm_only=False,
@@ -164,7 +165,6 @@ class TestProperties(unittest.TestCase):
                 self.c.hidden = None
 
     def test_visited(self):
-
         with self.subTest("automatic str conversion"):
             self.c.visited = "1/30/2000"
             self.assertEqual(self.c.visited, date(2000, 1, 30))
@@ -188,7 +188,10 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(self.c.summary, "text")
 
     def test_description(self):
-        self.assertEqual(self.c.description, "long text")
+        self.assertEqual(self.c.description, "Luftballon")
+
+    def test_description_html(self):
+        self.assertEqual(self.c.description_html, "<b>Luftballon</b>")
 
     def test_hint(self):
         self.assertEqual(self.c.hint, "rot13")
@@ -237,6 +240,18 @@ class TestMethods(LoggedInTest):
                     cache = Cache(self.gc, "GC123456")
                     cache.load()
 
+        with self.subTest("description"):
+            with self.recorder.use_cassette("cache_normal_normal"):
+                cache = Cache(self.gc, "GC4808G")
+                self.assertIn("Tuhle zprávu ti nepíšu proto, abych ti řekl, že ", cache.description)
+                self.assertIn(
+                    (
+                        ';background-color:black;border:1px solid black;padding:20px;">'
+                        "Tuhle zprávu ti nepíšu proto, abych ti řekl, že "
+                    ),
+                    cache.description_html,
+                )
+
     def test_load_quick(self):
         with self.subTest("normal"):
             with self.recorder.use_cassette("cache_quick_normal"):
@@ -279,7 +294,17 @@ class TestMethods(LoggedInTest):
                 },
             )
             self.assertEqual(cache.summary, "Gibt es das Luftschloss wirklich?")
-            self.assertIn("Seit dem 16.", cache.description)
+            self.assertIn(
+                " funktioniert, der kann gerne eine Mail schreiben.\r\nSeit dem 16. Jahrhundert steht die ",
+                cache.description,
+            )
+            self.assertIn(
+                (
+                    " funktioniert, der kann gerne eine Mail schreiben.</b></p>\r\n"
+                    "Seit dem 16. Jahrhundert steht die "
+                ),
+                cache.description_html,
+            )
             self.assertEqual(cache.hint, "Das ist nicht nötig")
             self.assertGreater(cache.favorites, 350)
             self.assertEqual(len(cache.waypoints), 2)
