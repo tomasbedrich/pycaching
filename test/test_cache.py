@@ -247,7 +247,7 @@ class TestMethods(LoggedInTest):
                 self.assertIn(
                     (
                         ';background-color:black;border:1px solid black;padding:20px;">'
-                        'Tuhle zprávu ti nepíšu proto, abych ti řekl, že '
+                        "Tuhle zprávu ti nepíšu proto, abych ti řekl, že "
                     ),
                     cache.description_html,
                 )
