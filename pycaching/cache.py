@@ -956,7 +956,6 @@ class Cache(object):
 
         raw_description = content.find("h2", string="Long Description").find_next("div")
         self.description = raw_description.text
-
         self.description_html = str(raw_description)
 
         self.hint = content.find(id="uxEncryptedHint").get_text(separator="\n")
