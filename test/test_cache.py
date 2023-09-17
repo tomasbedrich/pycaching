@@ -245,7 +245,10 @@ class TestMethods(LoggedInTest):
                 cache = Cache(self.gc, "GC4808G")
                 self.assertIn("Tuhle zprávu ti nepíšu proto, abych ti řekl, že ", cache.description)
                 self.assertIn(
-                    ';background-color:black;border:1px solid black;padding:20px;">Tuhle zprávu ti nepíšu proto, abych ti řekl, že ',
+                    (
+                        ';background-color:black;border:1px solid black;padding:20px;">'
+                        'Tuhle zprávu ti nepíšu proto, abych ti řekl, že '
+                    ),
                     cache.description_html,
                 )
 
@@ -292,11 +295,14 @@ class TestMethods(LoggedInTest):
             )
             self.assertEqual(cache.summary, "Gibt es das Luftschloss wirklich?")
             self.assertIn(
-                " funktioniert, der kann gerne eine Mail schreiben.\r\nSeit dem 16. Jahrhundert steht die Menschheit vor dem ",
+                " funktioniert, der kann gerne eine Mail schreiben.\r\nSeit dem 16. Jahrhundert steht die ",
                 cache.description,
             )
             self.assertIn(
-                " funktioniert, der kann gerne eine Mail schreiben.</b></p>\r\nSeit dem 16. Jahrhundert steht die Menschheit vor dem ",
+                (
+                    " funktioniert, der kann gerne eine Mail schreiben.</b></p>\r\n"
+                    "Seit dem 16. Jahrhundert steht die "
+                ),
                 cache.description_html,
             )
             self.assertEqual(cache.hint, "Das ist nicht nötig")
