@@ -109,3 +109,15 @@ Coding style
   third-party module, please consult it on GitHub before.
 - `Please use regular expressions only as a last resort. <http://imgur.com/j3G9xyP>`_ When possible, use string manipulations,
   such as :code:`split()` and then list operations. It is more readable.
+
+
+Release process
+-------------------------------------------------------------------------------
+
+1. Pick a suitable semantic version number. We adhere to `generic rules <https://docs.npmjs.com/about-semantic-versioning#incrementing-semantic-versions-in-published-packages>`_ with an exception of our `specific deprecation policy <https://github.com/tomasbedrich/pycaching/blob/master/docs/api.rst?plain=1#L7-L11>`_.
+2. If the deprecation policy triggers, remove the deprecated methods. Create a separate PR in that case.
+3. Bump the version number in ``pycaching/__init__.py`` (`example <https://github.com/tomasbedrich/pycaching/commit/1824668110a58afa7085744d975e9c6f3ab6b35f>`_). Feel free to push this bump directly to ``master``, or create a regular PR.
+4. Once the version bump commit equals HEAD of ``master``, `draft a new release <https://github.com/tomasbedrich/pycaching/releases/new>`_ using Github. Using that form, create a new tag corresponding to the version number (no prefixes). Leave release title empty, let Github generate the release notes. Update release notes manually if needed.
+5. Publish the Github release. There is a Github action which publishes the release to Pypi. There are Webhooks which update Readthedocs and Coveralls.
+
+Should there be any issue with the above (most likely stuck release pipeline), please create a Github issue.
