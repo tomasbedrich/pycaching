@@ -58,6 +58,16 @@ class TestMethods(LoggedInTest):
                 caches = list(self.gc.search(Point(49.733867, 13.397091), 100, per_query=50))
             self.assertNotEqual(caches[0], caches[50])
 
+        with self.subTest("sort_str"):
+            with self.recorder.use_cassette("geocaching_search"):
+                caches = list(self.gc.search(Point(49.733867, 13.397091), 20, sort_by="datelastvisited"))
+            self.assertGreater(len(expected & found), len(expected) - tolerance)
+
+        with self.subTest("sort"):
+            with self.recorder.use_cassette("geocaching_search"):
+                caches = list(self.gc.search(Point(49.733867, 13.397091), 20, sort_by=SortOrder.date_last_visited))
+            self.assertGreater(len(expected & found), len(expected) - tolerance)
+
     def test_search_quick(self):
         """Perform quick search and check found caches"""
         rect = Rectangle(Point(49.73, 13.38), Point(49.74, 13.40))

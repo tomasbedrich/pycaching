@@ -270,6 +270,9 @@ class Geocaching(object):
         :return: A generator that yields :class:`.Cache` objects.
         """
 
+        if not isinstance(sort_by, SortOrder):
+            sort_by = SortOrder(sort_by)
+
         return self.advanced_search(
             {
                 "origin": "{},{}".format(point.latitude, point.longitude),
