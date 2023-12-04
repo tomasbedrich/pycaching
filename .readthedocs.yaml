@@ -4,8 +4,12 @@
 version: 2
 
 # Enforce *pip*-based build to install package from *pyproject.toml* file.
+build:
+  os: ubuntu-22.04
+  tools:
+    python: 3
+
 python:
-  version: 3
   install:
     - method: pip
       path: .
