@@ -46,6 +46,10 @@ dev = [
     "flake8 ~= 4.0",
     "isort ~= 5.10"
 ]
+docs = [
+    "sphinx >= 3.5.4",  # Latest version with support for Python 3.5
+    "sphinx-rtd-theme >= 1.1.1"  # Latest version with support for Python 3.5
+]
 
 
 [project.urls]
