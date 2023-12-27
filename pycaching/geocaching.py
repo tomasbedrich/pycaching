@@ -8,7 +8,7 @@ import re
 import subprocess
 from os import path
 from typing import Generator, Optional, Union
-from urllib.parse import parse_qs, urljoin, urlparse
+from urllib.parse import urljoin
 
 import bs4
 import requests
@@ -494,8 +494,8 @@ class Geocaching(object):
                 break
 
             link = row.find(class_="ImageLink")["href"]
-            guid = parse_qs(urlparse(link).query)["guid"][0]
-            current_cache = self._try_getting_cache_from_guid(guid)
+            wp = link.split("/")[4]
+            current_cache = self.get_cache(wp)
             date = row.find_all("td")[2].text.strip()
             current_cache.visited = date
 
