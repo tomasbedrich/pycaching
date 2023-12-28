@@ -494,7 +494,11 @@ class Geocaching(object):
                 break
 
             link = row.find(class_="ImageLink")["href"]
+
+            # This line extracts a GC code from the cache URL
+            # Example: https://www.geocaching.com/geocache/GC12345 -> GC12345
             wp = link.split("/")[4]
+
             current_cache = self.get_cache(wp)
             date = row.find_all("td")[2].text.strip()
             current_cache.visited = date
