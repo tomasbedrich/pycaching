@@ -43,11 +43,13 @@ class TestType(unittest.TestCase):
     def test_from_filename(self):
         with self.subTest("valid types"):
             self.assertEqual(Type.found_it, Type.from_filename("2"))
+            self.assertEqual(Type.archive, Type.from_filename("5"))
             self.assertEqual(Type.visit, Type.from_filename("75"))
 
         with self.subTest("special valid types"):
             self.assertEqual(Type.visit, Type.from_filename("1001"))
             self.assertEqual(Type.publish_listing, Type.from_filename("1003"))
+            self.assertEqual(Type.archive, Type.from_filename("6"))
             self.assertEqual(Type.unarchive, Type.from_filename("1"))
 
         with self.subTest("invalid type"):
