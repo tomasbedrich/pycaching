@@ -66,7 +66,7 @@ class Point(geopy.Point):
         coords = string.replace("N", " ").replace("S", " ").replace("E", " ").replace("W", " ").replace("+", " ")
 
         try:
-            m = re.match(r"\s*(-?\s*\d+)\D+(\d+[\.,]\d+)\D?\s*(-?\s*\d+)\D+(\d+[\.,]\d+)", coords)
+            m = re.match(r"\s*(-?\s*\d+)\D+(\d+[\.,]\d+)\D+(-?\s*\d+)\D+(\d+[\.,]\d+)", coords)
 
             latDeg, latMin, lonDeg, lonMin = [float(part.replace(" ", "").replace(",", ".")) for part in m.groups()]
 

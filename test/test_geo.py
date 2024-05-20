@@ -53,6 +53,9 @@ class TestPoint(LoggedInTest):
         with self.subTest("comma between lat and lon"):
             self.assertEqual(Point.from_string("N 49 45.123, E 013 22.123"), Point(49.75205, 13.36872))
 
+        with self.subTest("comma and space between lat and lon"):
+            self.assertEqual(Point.from_string("N 44° 25.845 , W 72° 02.485"), Point(44.43075, -72.04142))
+
         with self.subTest("marginal values: zeroes"):
             self.assertEqual(Point.from_string("N 49 45.000 E 13 0.0"), Point(49.75, 13.0))
 
