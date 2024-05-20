@@ -38,13 +38,13 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest ~= 6.2",
+    "pytest ~= 8.2.1",
     "pytest-cov ~= 3.0",
     "betamax ~= 0.8",
     "betamax-serializers ~= 0.2",
-    "black ~= 22.6.0",
-    "flake8 ~= 4.0",
-    "isort ~= 5.10"
+    "black ~= 24.4.2",
+    "flake8 ~= 7.0",
+    "isort ~= 5.13.2"
 ]
 docs = [
     "sphinx >= 3.5.4",  # Latest version with support for Python 3.5
