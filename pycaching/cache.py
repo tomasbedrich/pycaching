@@ -974,7 +974,7 @@ class Cache(object):
         :param bs4.BeautifulSoup soup: Parsed html document of the cache details page.
         """
         lbl_find_counts = soup.find("span", {"id": "ctl00_ContentBody_lblFindCounts"})
-        log_totals = lbl_find_counts.find("ul", "LogTotals")
+        log_totals = lbl_find_counts.find("ul", {"aria-labelledby": "LoggedVisits"})
 
         # Text gives numbers separated by a lot of spaces, splitting retrieves the numbers.
         # The values might contain thousand separators, which we have to remove before converting
