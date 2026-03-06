@@ -161,6 +161,41 @@ class Geocaching(object):
 
             raise LoginFailedException("Cannot login to the site (probably wrong username or password).")
 
+    def login_with_cookie(self, cookie, username=None, cookie_name="gspkauth"):
+        """Log in by importing a Geocaching session cookie.
+
+        This is primarily useful when normal programmatic login is blocked by CAPTCHA.
+
+        :param str cookie: Cookie value copied from an authenticated Geocaching session.
+        :param str username: Expected username. If set, the imported session must belong to it.
+        :param str cookie_name: Cookie name to use for the imported value.
+        :raise .LoginFailedException: If the cookie does not represent a logged-in Geocaching session.
+        """
+        logging.info("Logging in from imported cookie.")
+
+        self.logout()
+
+        if not cookie:
+            raise LoginFailedException("Authentication cookie is required.")
+
+        self._session.cookies.set(cookie_name, cookie, domain=".geocaching.com")
+
+        login_page = self._request(self._urls["login_page"], login_check=False)
+        logged_user = self.get_logged_user(login_page)
+
+        if not logged_user:
+            self.logout()
+            raise LoginFailedException("Imported cookie does not represent a logged-in Geocaching session.")
+
+        if username and logged_user != username:
+            self.logout()
+            raise LoginFailedException(
+                "Imported cookie belongs to '{}' instead of '{}'.".format(logged_user, username)
+            )
+
+        self._logged_in = True
+        self._logged_username = logged_user
+
     def _load_credentials(self, username=None):
         """Load credentials from file.
 
