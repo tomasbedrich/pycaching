@@ -189,9 +189,7 @@ class Geocaching(object):
 
         if username and logged_user != username:
             self.logout()
-            raise LoginFailedException(
-                "Imported cookie belongs to '{}' instead of '{}'.".format(logged_user, username)
-            )
+            raise LoginFailedException("Imported cookie belongs to '{}' instead of '{}'.".format(logged_user, username))
 
         self._logged_in = True
         self._logged_username = logged_user
