@@ -100,6 +100,15 @@ used as default if ``pycaching.login()`` is called without providing a username.
     import pycaching
     geocaching = pycaching.login()  # assume the .gc_credentials file is presented
 
+If regular programmatic login is blocked by CAPTCHA, you can reuse the ``gspkauth`` cookie from an
+already authenticated browser session:
+
+.. code-block:: python
+
+    import pycaching
+
+    geocaching = pycaching.login_with_cookie("copied-gspkauth-cookie")
+
 In case you have a password manager in place featuring a command line interface
 (e.g. `GNU pass <https://www.passwordstore.org/>`__) you may specify a password retrieval command
 using the ``password_cmd`` key instead of ``password``.

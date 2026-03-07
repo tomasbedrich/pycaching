@@ -17,3 +17,15 @@ def login(username=None, password=None):
     g = Geocaching()
     g.login(username, password)
     return g
+
+
+def login_with_cookie(cookie, username=None, cookie_name="gspkauth"):
+    """A shortcut for cookie-based user login.
+
+    Create a :class:`.Geocaching` instance and import an authenticated cookie.
+
+    :return: Created :class:`.Geocaching` instance.
+    """
+    g = Geocaching()
+    g.login_with_cookie(cookie=cookie, username=username, cookie_name=cookie_name)
+    return g

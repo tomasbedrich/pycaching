@@ -12,6 +12,7 @@ from pycaching.geocaching import Geocaching
 
 USERNAME = os.environ.get("PYCACHING_TEST_USERNAME") or "USERNAMEPLACEHOLDER"
 PASSWORD = os.environ.get("PYCACHING_TEST_PASSWORD") or "PASSWORDPLACEHOLDER"
+COOKIE = os.environ.get("PYCACHING_TEST_COOKIE")
 CLASSIFIED_COOKIES = (
     "gspkauth",
     "__RequestVerificationToken",
@@ -35,10 +36,11 @@ def betamax_config():
 @pytest.fixture(autouse=True)
 def betamax_forgotten_recording_env_vars_fuse(betamax_recorder: Betamax):
     """Prevent recording failing set of cassettess."""
-    if betamax_recorder.current_cassette.is_recording() and USERNAME == "USERNAMEPLACEHOLDER":
+    if betamax_recorder.current_cassette.is_recording() and USERNAME == "USERNAMEPLACEHOLDER" and not COOKIE:
         pytest.exit(
-            "You tried to record a cassette without providing Geocaching credentials. "
-            "Please provide PYCACHING_TEST_USERNAME and PYCACHING_TEST_PASSWORD to record new cassettes.",
+            "You tried to record a cassette without providing authentication. "
+            "Please provide PYCACHING_TEST_USERNAME and PYCACHING_TEST_PASSWORD, "
+            "or provide PYCACHING_TEST_COOKIE to record new cassettes.",
             returncode=1,
         )
 
@@ -51,7 +53,10 @@ def geocaching(betamax_session: requests.Session):
 @pytest.fixture
 def geocaching_logged_in(betamax_session: requests.Session):
     gc = Geocaching(session=betamax_session)
-    gc.login(USERNAME, PASSWORD)
+    if COOKIE:
+        gc.login_with_cookie(COOKIE)
+    else:
+        gc.login(USERNAME, PASSWORD)
     return gc
 
 

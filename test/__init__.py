@@ -14,6 +14,7 @@ from .helpers import sanitize_cookies
 
 username = os.environ.get("PYCACHING_TEST_USERNAME") or "USERNAMEPLACEHOLDER"
 password = os.environ.get("PYCACHING_TEST_PASSWORD") or "PASSWORDPLACEHOLDER"
+cookie = os.environ.get("PYCACHING_TEST_COOKIE")
 
 
 cassette_dir = Path("test/cassettes")
@@ -45,7 +46,10 @@ class LoggedInTest(NetworkedTest):
     def setUpClass(cls):
         super().setUpClass()
         try:
-            cls.gc.login(username, password)
+            if cookie:
+                cls.gc.login_with_cookie(cookie)
+            else:
+                cls.gc.login(username, password)
         except Error:
             # LoginFailedException is raised with invalid creds; Error is raised
             # with no network connection. This is okay as long as we aren't

@@ -10,7 +10,7 @@ import pytest
 
 from pycaching import Geocaching
 from pycaching.errors import LoginFailedException, NotLoggedInException
-from tests_new.conftest import PASSWORD, USERNAME
+from tests_new.conftest import COOKIE, PASSWORD, USERNAME
 
 
 def test_unauthorized_request(geocaching):
@@ -63,6 +63,16 @@ def test_logout(geocaching):
     assert not geocaching._logged_in
     assert geocaching._logged_username is None
     assert geocaching.get_logged_user() is None
+
+
+def test_login_with_cookie(geocaching):
+    cookie = COOKIE or "COOKIEPLACEHOLDER"
+
+    geocaching.login_with_cookie(cookie)
+
+    assert geocaching._logged_in
+    assert geocaching._logged_username
+    assert geocaching._session.cookies.get("gspkauth") == cookie
 
 
 class TestLoadCredentials:

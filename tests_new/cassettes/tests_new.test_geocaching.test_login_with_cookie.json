@@ -1,0 +1,102 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2026-03-06T23:07:41",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "gspkauth=<AUTH COOKIE>"
+          ],
+          "User-Agent": [
+            "python-requests/2.32.5"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://www.geocaching.com/account/signin"
+      },
+      "response": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "<html><head><title>Object moved</title></head><body>\r\n<h2>Object moved to <a href=\"/play/search\">here</a>.</h2>\r\n</body></html>\r\n"
+        },
+        "headers": {
+          "Content-Length": [
+            "129"
+          ],
+          "Content-Type": [
+            "text/html; charset=utf-8"
+          ],
+          "Location": [
+            "/play/search"
+          ]
+        },
+        "status": {
+          "code": 302,
+          "message": "Found"
+        },
+        "url": "https://www.geocaching.com/account/signin"
+      }
+    },
+    {
+      "recorded_at": "2026-03-06T23:07:43",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "gspkauth=<AUTH COOKIE>"
+          ],
+          "User-Agent": [
+            "python-requests/2.32.5"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://www.geocaching.com/play/search"
+      },
+      "response": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "<!DOCTYPE html><html lang=\"en\"><head><title>Geocaching.com</title></head><body><script id=\"__NEXT_DATA__\" type=\"application/json\">{\"props\":{\"pageProps\":{\"gcUser\":{\"publicGuid\":\"<USER GUID>\",\"referenceCode\":\"<USER CODE>\",\"id\":<USER ID>,\"username\":\"<USERNAME>\"}}}}</script></body></html>"
+        },
+        "headers": {
+          "Content-Length": [
+            "255"
+          ],
+          "Content-Type": [
+            "text/html; charset=utf-8"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.geocaching.com/play/search"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.9.0"
+}

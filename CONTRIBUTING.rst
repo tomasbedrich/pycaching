@@ -95,9 +95,19 @@ new cassettes. To run new tests, first set up the following environment variable
 Substitute your username for ``yourusername`` and your password for ``yourpassword``.
 This requires you to use a basic member account, otherwise you might see unexpected test failures.
 
+If regular programmatic login is blocked by CAPTCHA, you can record most authenticated tests by
+providing the ``gspkauth`` cookie from an already authenticated browser session instead:
+
+.. code-block:: bash
+
+    PYCACHING_TEST_COOKIE="your_gspkauth_cookie" pytest <test folder name>
+
+This works for tests that only need an authenticated session. Tests that explicitly verify the
+username/password login flow still require ``PYCACHING_TEST_USERNAME`` and
+``PYCACHING_TEST_PASSWORD``.
+
 To re-record a specific cassette in case of site changes, delete the corresponding JSON file and
-provide username and password as explained above. The missing cassette will be recorded for future
-usages.
+provide authentication as explained above. The missing cassette will be recorded for future usages.
 
 
 Coding style
