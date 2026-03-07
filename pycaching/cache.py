@@ -802,7 +802,7 @@ class Cache(object):
         pm_only_warning = root.find("p", "Warning NoBottomSpacing")
         self.pm_only = pm_only_warning and ("Premium Member Only" in pm_only_warning.text) or False
 
-        attributes_widget, inventory_widget, *_ = root.find_all("div", "CacheDetailNavigationWidget")
+        attributes_widget, inventory_widget, *_ = root.find_all("div")
 
         hidden = cache_details.find("div", "minorCacheDetails").find_all("div")[1].text
         self.hidden = parse_date(hidden.split(":")[-1])
@@ -974,7 +974,7 @@ class Cache(object):
         :param bs4.BeautifulSoup soup: Parsed html document of the cache details page.
         """
         lbl_find_counts = soup.find("span", {"id": "ctl00_ContentBody_lblFindCounts"})
-        log_totals = lbl_find_counts.find("ul", {"aria-labelledby": "LoggedVisits"})
+        log_totals = lbl_find_counts.find("ul")
 
         # Text gives numbers separated by a lot of spaces, splitting retrieves the numbers.
         # The values might contain thousand separators, which we have to remove before converting
