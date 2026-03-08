@@ -488,8 +488,9 @@ class Geocaching(object):
 
     def _cache_from_guid(self, guid):
         logging.info("Loading cache with GUID {!r}".format(guid))
-        print_page = self._request(Cache._urls["print_page"], params={"guid": guid})
-        return Cache._from_print_page(self, guid, print_page)
+        cache = Cache(self, None, guid=guid)
+        cache.load_by_guid()
+        return cache
 
     def _try_getting_cache_from_guid(self, guid):
         """Try to get a cache from guid page if possible, otherwise from gccode.

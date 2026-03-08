@@ -119,49 +119,12 @@ class Cache(object):
     }
 
     @classmethod
+    @deprecated
     def _from_print_page(cls, geocaching, guid, soup):
         """Create a cache instance from a souped print-page and a GUID."""
-        if soup.find("p", "Warning") is not None:
-            raise errors.PMOnlyException()
-
-        cache_info = dict()
-        cache_info["guid"] = guid
-        cache_info["wp"] = soup.find(class_="HalfRight").find("h1").text.strip()
-        content = soup.find(id="Content")
-        cache_info["name"] = content.find("h2").text.strip()
-        cache_info["type"] = Type.from_filename(content.h2.img["src"].split("/")[-1].partition(".")[0])
-        cache_info["author"] = content.find(class_="Meta").text.partition(":")[2].strip()
-        diff_terr = content.find(class_="DiffTerr").find_all("img")
-        assert len(diff_terr) == 2
-        cache_info["difficulty"] = float(diff_terr[0]["alt"].split()[0])
-        cache_info["terrain"] = float(diff_terr[1]["alt"].split()[0])
-        cache_info["size"] = Size.from_string(content.find(class_="Third AlignCenter").p.img["alt"].partition(":")[2])
-        fav_text = content.find(class_="Third AlignRight").p.contents[2]
-        try:
-            cache_info["favorites"] = int(fav_text)
-        except ValueError:  # element not present when 0 favorites
-            cache_info["favorites"] = 0
-        cache_info["hidden"] = parse_date(
-            content.find(class_="HalfRight AlignRight").p.text.strip().partition(":")[2].strip()
-        )
-        cache_info["location"] = Point.from_string(content.find(class_="LatLong").text.strip())
-        attributes = [
-            img["src"].split("/")[-1].partition(".")[0].rpartition("-")
-            for img in content.find(class_="sortables").find_all("img")
-            if img.get("src") and img["src"].startswith("/images/attributes/")
-        ]
-        cache_info["attributes"] = {attr_name: attr_setting == "yes" for attr_name, _, attr_setting in attributes}
-        if "attribute" in cache_info["attributes"]:  # 'blank' attribute
-            del cache_info["attributes"]["attribute"]
-        cache_info["summary"] = content.find("h2", string="Short Description").find_next("div").text
-        raw_description = content.find("h2", string="Long Description").find_next("div")
-        cache_info["description"] = raw_description.text
-        cache_info["description_html"] = str(raw_description)
-        hint = content.find(id="uxEncryptedHint")
-        cache_info["hint"] = hint.get_text(separator="\n") if hint else None
-        cache_info["waypoints"] = Waypoint.from_html(content, table_id="Waypoints")
-        cache_info["log_counts"] = Cache._get_log_counts_from_print_page(soup)
-        return Cache(geocaching, **cache_info)
+        cache = cls(geocaching, None, guid=guid)
+        cache.load_by_guid()
+        return cache
 
     @classmethod
     def _from_api_record(cls, geocaching, record):
@@ -928,7 +891,7 @@ class Cache(object):
 
         self.name = content.find("h2").text
 
-        self.location = Point.from_string(content.find("p", "LatLong Meta").text)
+        self.location = Point.from_string(content.find(class_="LatLong").text.strip())
 
         type_img = os.path.basename(content.find("img").get("src"))
         self.type = Type.from_filename(os.path.splitext(type_img)[0])
@@ -936,18 +899,20 @@ class Cache(object):
         size_img = content.find("img", src=re.compile(r"\/icons\/container\/"))
         self.size = Size.from_string(size_img.get("alt").split(": ")[1])
 
-        D_and_T_img = content.find("p", "Meta DiffTerr").find_all("img")
-        self.difficulty, self.terrain = [float(img.get("alt").split()[0]) for img in D_and_T_img]
+        diff_terr = content.find(class_="DiffTerr").find_all("img")
+        assert len(diff_terr) == 2
+        self.difficulty = float(diff_terr[0]["alt"].split()[0])
+        self.terrain = float(diff_terr[1]["alt"].split()[0])
 
-        # TODO do NOT use English phrases like "Placed by" to search for attributes
+        self.author = content.find(class_="Meta").text.partition(":")[2].strip()
+        self.hidden = content.find(class_="HalfRight AlignRight").p.text.strip().partition(":")[2].strip()
 
-        self.author = content.find("p", string=re.compile("Placed by:")).text.split("\r\n")[2].strip()
-
-        hidden_p = content.find("p", string=re.compile("Placed Date:"))
-        self.hidden = hidden_p.text.replace("Placed Date:", "").strip()
-
-        attr_img = content.find_all("img", src=re.compile(r"\/attributes\/"))
-        attributes_raw = [os.path.basename(_.get("src")).rsplit("-", 1) for _ in attr_img]
+        attr_img = content.find(class_="sortables").find_all("img")
+        attributes_raw = [
+            os.path.basename(_.get("src")).rsplit("-", 1)
+            for _ in attr_img
+            if _.get("src") and _.get("src").startswith("/images/attributes/")
+        ]
         self.attributes = {
             name: appendix.startswith("yes") for name, appendix in attributes_raw if not appendix.startswith("blank")
         }
@@ -958,13 +923,19 @@ class Cache(object):
         self.description = raw_description.text
         self.description_html = str(raw_description)
 
-        self.hint = content.find(id="uxEncryptedHint").get_text(separator="\n")
+        hint = content.find(id="uxEncryptedHint")
+        self.hint = hint.get_text(separator="\n") if hint else None
 
-        self.favorites = content.find("strong", string=re.compile("Favorites:")).parent.text.split()[-1]
+        fav_text = content.find(class_="Third AlignRight").p.contents[2]
+        try:
+            self.favorites = int(fav_text)
+        except ValueError:  # element not present when 0 favorites
+            self.favorites = 0
 
         self.waypoints = Waypoint.from_html(content, "Waypoints")
 
         self.log_counts = Cache._get_log_counts_from_print_page(res)
+        self.wp = res.find(class_="HalfRight").find("h1").text.strip()
 
     @staticmethod
     def _get_log_counts_from_cache_details(soup):
