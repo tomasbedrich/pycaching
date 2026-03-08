@@ -10,7 +10,7 @@ from requests import Session
 from pycaching.errors import Error
 from pycaching.geocaching import Geocaching
 
-from .helpers import sanitize_cookies
+from .cassette_sanitizer import sanitize_betamax_interaction
 
 username = os.environ.get("PYCACHING_TEST_USERNAME") or "USERNAMEPLACEHOLDER"
 password = os.environ.get("PYCACHING_TEST_PASSWORD") or "PASSWORDPLACEHOLDER"
@@ -25,7 +25,7 @@ config = Betamax.configure()
 config.cassette_library_dir = str(cassette_dir)
 config.define_cassette_placeholder("<USERNAME>", quote_plus(username))
 config.define_cassette_placeholder("<PASSWORD>", quote_plus(password))
-config.before_record(callback=sanitize_cookies)
+config.before_record(callback=sanitize_betamax_interaction)
 Betamax.register_serializer(PrettyJSONSerializer)
 
 
