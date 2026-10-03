@@ -343,6 +343,27 @@ class TestMethods(LoggedInTest):
             trackable_list = list(cache.load_trackables(limit=10))
         self.assertTrue(isinstance(trackable_list, list))
 
+    def test_load_attributes(self):
+        cache = Cache(self.gc, "GCW6EM")  # Archived cache with a mix of positive and negative attributes
+        with self.recorder.use_cassette("cache_attributes"):
+            attributes = cache.attributes
+            self.assertEqual(
+                attributes,
+                {
+                    "available": False,
+                    "field_puzzle": True,
+                    "kids": True,
+                    "night": False,
+                    "onehour": True,
+                    "parking": True,
+                    "phone": True,
+                    "scenic": False,
+                    "stealth": False,
+                    "wheelchair": False,
+                    "winter": True,
+                },
+            )
+
     def test_load_logbook(self):
         with self.recorder.use_cassette("cache_logbook"):
             # limit over 200 tests pagination
