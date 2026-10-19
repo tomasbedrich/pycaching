@@ -100,10 +100,12 @@ class TestMethods(LoggedInTest):
 
 class TestMyLogs(TestCase):
     @staticmethod
-    def _page(first, count=20, has_next=True):
+    def _generate_page_soup(first, count=20, has_next=True):
         rows = "".join(
-            "<tr><td></td><td></td><td> 2026-10-15 </td>"
-            '<td><a class="ImageLink" href="https://www.geocaching.com/geocache/GC{:X}"></a></td></tr>'.format(i)
+            (
+                "<tr><td></td><td></td><td> 2026-10-15 </td>"
+                '<td><a class="ImageLink" href="https://www.geocaching.com/geocache/GC{:X}"></a></td></tr>'.format(i)
+            )
             for i in range(first, first + count)
         )
         next_link = (
@@ -112,12 +114,14 @@ class TestMyLogs(TestCase):
             else '<a class="aspNetDisabled"><b>Next &gt;</b></a>'
         )
         return BeautifulSoup(
-            '<form id="aspnetForm"><input type="hidden" name="__EVENTTARGET" value="" />'
-            '<input type="hidden" name="__EVENTARGUMENT" value="" />'
-            '<input type="hidden" name="__VIEWSTATE" value="state-{}" />'
-            '<input type="hidden" name="__VIEWSTATEGENERATOR" value="85D312FD" />'
-            '<table class="Table"><tbody>{}</tbody></table>{}</form>'
-            '<form id="form-logout"><input type="hidden" name="returnUrl" /></form>'.format(first, rows, next_link),
+            (
+                '<form id="aspnetForm"><input type="hidden" name="__EVENTTARGET" value="" />'
+                '<input type="hidden" name="__EVENTARGUMENT" value="" />'
+                '<input type="hidden" name="__VIEWSTATE" value="state-{}" />'
+                '<input type="hidden" name="__VIEWSTATEGENERATOR" value="85D312FD" />'
+                '<table class="Table"><tbody>{}</tbody></table>{}</form>'
+                '<form id="form-logout"><input type="hidden" name="returnUrl" /></form>'.format(first, rows, next_link)
+            ),
             "html.parser",
         )
 
@@ -130,7 +134,11 @@ class TestMyLogs(TestCase):
             (gc.my_logs, {"log_type": "2"}, "my/logs.aspx?lt=2"),
         ]:
             with self.subTest(method=method.__name__, kwargs=kwargs):
-                pages = [self._page(1), self._page(21), self._page(41, count=1, has_next=False)]
+                pages = [
+                    self._generate_page_soup(1),
+                    self._generate_page_soup(21),
+                    self._generate_page_soup(41, count=1, has_next=False),
+                ]
                 with patch.object(gc, "_request", side_effect=pages) as request:
                     caches = list(method(**kwargs))
                 self.assertEqual([c.wp for c in caches], ["GC{:X}".format(i) for i in range(1, 42)])
@@ -155,7 +163,9 @@ class TestMyLogs(TestCase):
         gc = Geocaching()
         for limit, requests in [(0, 0), (3, 1), (20, 1), (21, 2), (40, 2)]:
             with self.subTest(limit=limit):
-                with patch.object(gc, "_request", side_effect=[self._page(1), self._page(21)]) as request:
+                with patch.object(
+                    gc, "_request", side_effect=[self._generate_page_soup(1), self._generate_page_soup(21)]
+                ) as request:
                     self.assertEqual(len(list(gc.my_finds(limit))), limit)
                 self.assertEqual(request.call_count, requests)
 
