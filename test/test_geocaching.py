@@ -1,8 +1,11 @@
-from unittest.mock import patch
+import datetime
+from unittest import TestCase
+from unittest.mock import call, patch
 
+from bs4 import BeautifulSoup
 from geopy.distance import great_circle
 
-from pycaching import Cache, Point, Rectangle
+from pycaching import Cache, Geocaching, Point, Rectangle
 from pycaching.errors import PMOnlyException, TooManyRequestsError
 from pycaching.geocaching import SortOrder
 
@@ -93,6 +96,84 @@ class TestMethods(LoggedInTest):
                 self.assertEqual("Nidda: jenseits der Rennstrecke Reloaded", cache_pm.name)
             except PMOnlyException:
                 pass
+
+
+class TestMyLogs(TestCase):
+    @staticmethod
+    def _generate_page_soup(first, count=20, has_next=True):
+        rows = "".join(
+            (
+                "<tr><td></td><td></td><td> 2026-10-15 </td>"
+                '<td><a class="ImageLink" href="https://www.geocaching.com/geocache/GC{:X}"></a></td></tr>'.format(i)
+            )
+            for i in range(first, first + count)
+        )
+        next_link = (
+            "<a href=\"javascript:__doPostBack('ctl00$ContentBody$pgrTop$ctl08','')\"><b>Next &gt;</b></a>"
+            if has_next
+            else '<a class="aspNetDisabled"><b>Next &gt;</b></a>'
+        )
+        return BeautifulSoup(
+            (
+                '<form id="aspnetForm"><input type="hidden" name="__EVENTTARGET" value="" />'
+                '<input type="hidden" name="__EVENTARGUMENT" value="" />'
+                '<input type="hidden" name="__VIEWSTATE" value="state-{}" />'
+                '<input type="hidden" name="__VIEWSTATEGENERATOR" value="85D312FD" />'
+                '<table class="Table"><tbody>{}</tbody></table>{}</form>'
+                '<form id="form-logout"><input type="hidden" name="returnUrl" /></form>'.format(first, rows, next_link)
+            ),
+            "html.parser",
+        )
+
+    def test_pagination(self):
+        gc = Geocaching()
+        for method, kwargs, url in [
+            (gc.my_finds, {}, "my/logs.aspx?lt=2"),
+            (gc.my_dnfs, {}, "my/logs.aspx?lt=3"),
+            (gc.my_logs, {}, "my/logs.aspx"),
+            (gc.my_logs, {"log_type": "2"}, "my/logs.aspx?lt=2"),
+        ]:
+            with self.subTest(method=method.__name__, kwargs=kwargs):
+                pages = [
+                    self._generate_page_soup(1),
+                    self._generate_page_soup(21),
+                    self._generate_page_soup(41, count=1, has_next=False),
+                ]
+                with patch.object(gc, "_request", side_effect=pages) as request:
+                    caches = list(method(**kwargs))
+                self.assertEqual([c.wp for c in caches], ["GC{:X}".format(i) for i in range(1, 42)])
+                self.assertTrue(all(c.visited == datetime.date(2026, 10, 15) for c in caches))
+                expected = [call(url)]
+                for first in [1, 21]:
+                    expected.append(
+                        call(
+                            url,
+                            method="POST",
+                            data={
+                                "__EVENTTARGET": "ctl00$ContentBody$pgrTop$ctl08",
+                                "__EVENTARGUMENT": "",
+                                "__VIEWSTATE": "state-{}".format(first),
+                                "__VIEWSTATEGENERATOR": "85D312FD",
+                            },
+                        )
+                    )
+                self.assertEqual(request.call_args_list, expected)
+
+    def test_limit(self):
+        gc = Geocaching()
+        for limit, requests in [(0, 0), (3, 1), (20, 1), (21, 2), (40, 2)]:
+            with self.subTest(limit=limit):
+                with patch.object(
+                    gc, "_request", side_effect=[self._generate_page_soup(1), self._generate_page_soup(21)]
+                ) as request:
+                    self.assertEqual(len(list(gc.my_finds(limit))), limit)
+                self.assertEqual(request.call_count, requests)
+
+    def test_no_logs(self):
+        gc = Geocaching()
+        with patch.object(gc, "_request", return_value=BeautifulSoup("No results found.", "html.parser")) as request:
+            self.assertEqual(list(gc.my_finds()), [])
+        request.assert_called_once_with("my/logs.aspx?lt=2")
 
 
 class TestAdvancedSearch(LoggedInTest):

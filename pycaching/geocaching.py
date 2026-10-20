@@ -517,28 +517,42 @@ class Geocaching(object):
             if isinstance(log_type, LogType):
                 log_type = log_type.value
             url += "?lt={lt}".format(lt=log_type)
-        cache_table = self._request(url).find(class_="Table")
-        if cache_table is None:  # no logs on the account
-            return
-        cache_table = cache_table.tbody
-
+        request_kwargs = {}
         yielded = 0
-        for row in cache_table.find_all("tr"):
-            if yielded >= limit:
-                break
+        while yielded < limit and request_kwargs is not None:
+            page = self._request(url, **request_kwargs)
+            cache_table = page.find(class_="Table")
+            if cache_table is None:  # no logs on the account
+                return
 
-            link = row.find(class_="ImageLink")["href"]
+            for row in cache_table.tbody.find_all("tr"):
+                if yielded >= limit:
+                    return
 
-            # This line extracts a GC code from the cache URL
-            # Example: https://www.geocaching.com/geocache/GC12345 -> GC12345
-            wp = link.split("/")[4]
+                link = row.find(class_="ImageLink")["href"]
 
-            current_cache = self.get_cache(wp)
-            date = row.find_all("td")[2].text.strip()
-            current_cache.visited = date
+                # This line extracts a GC code from the cache URL
+                # Example: https://www.geocaching.com/geocache/GC12345 -> GC12345
+                wp = link.split("/")[4]
 
-            yield current_cache
-            yielded += 1
+                current_cache = self.get_cache(wp)
+                date = row.find_all("td")[2].text.strip()
+                current_cache.visited = date
+
+                yield current_cache
+                yielded += 1
+
+            next_page = page.find("a", href="javascript:__doPostBack('ctl00$ContentBody$pgrTop$ctl08','')")
+            request_kwargs = None
+            if next_page is not None:
+                # ASP.NET requires the current page's hidden fields for each postback.
+                form = page.find("form", id="aspnetForm")
+                post = {
+                    i["name"]: i.get("value", "") for i in form.find_all("input", type="hidden", attrs={"name": True})
+                }
+                post["__EVENTTARGET"] = next_page["href"].split("'")[1]
+                post["__EVENTARGUMENT"] = ""
+                request_kwargs = {"method": "POST", "data": post}
 
     def my_finds(self, limit=float("inf")):
         """Get an iterable of the logged-in user's finds.
