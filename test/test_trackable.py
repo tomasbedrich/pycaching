@@ -4,6 +4,8 @@ import unittest
 from datetime import date
 from unittest import mock
 
+from bs4 import BeautifulSoup
+
 from pycaching import Geocaching, Trackable
 from pycaching.errors import LoadError
 from pycaching.errors import ValueError as PycachingValueError
@@ -26,6 +28,9 @@ class TestProperties(unittest.TestCase):
             owner="human",
             description="long text",
             goal="short text",
+            origin="Bayern, Germany",
+            release_date="Sunday, 01 January 2017",
+            last_logs=[],
         )
         self.t._log_page_url = "/track/details.aspx?id=6359246"
 
@@ -59,6 +64,67 @@ class TestProperties(unittest.TestCase):
     def test_log_page_url(self):
         self.assertEqual(self.t._log_page_url, "/track/details.aspx?id=6359246")
 
+    def test_origin(self):
+        with self.subTest("state and country"):
+            self.assertEqual(self.t.origin, "Bayern, Germany")
+            self.assertEqual(self.t.origin_state, "Bayern")
+            self.assertEqual(self.t.origin_country, "Germany")
+
+        with self.subTest("country only"):
+            self.t.origin = " Germany "
+            self.assertEqual(self.t.origin, "Germany")
+            self.assertEqual(self.t.origin_state, "")
+            self.assertEqual(self.t.origin_country, "Germany")
+
+        with self.subTest("unknown"):
+            self.t.origin = ""
+            self.assertEqual(self.t.origin_state, "")
+            self.assertEqual(self.t.origin_country, "")
+
+    def test_release_date(self):
+        with self.subTest("valid date"):
+            self.assertEqual(self.t.release_date, date(2017, 1, 1))
+
+        with self.subTest("unparsable date"):
+            self.t.release_date = "not a date"
+            self.assertEqual(self.t.release_date, "")
+
+        with self.subTest("missing date"):
+            self.t.release_date = None
+            self.assertEqual(self.t.release_date, "")
+
+    def test_last_logs(self):
+        self.assertEqual(self.t.last_logs, [])
+
+
+class TestLogsFromDetailsPage(unittest.TestCase):
+    def test_no_log_table(self):
+        soup = BeautifulSoup("<html><body></body></html>", "html.parser")
+        self.assertEqual(Trackable._get_logs_from_details_page(soup), [])
+
+    def test_log_without_text(self):
+        html = """
+        <table class="TrackableItemLogTable Table">
+            <tr class="Data BorderTop">
+                <th><img src="/images/logtypes/75.png" title="Visited" /> 12/5/2018</th>
+                <td><a href="https://www.geocaching.com/p/?guid=abc">someone</a> took it to somewhere</td>
+                <td>Bayern, Germany</td>
+                <td><a href="https://www.geocaching.com/track/log.aspx?LUID=1234-abcd">Visit Log</a></td>
+            </tr>
+            <tr class="Data BorderBottom">
+                <td colspan="4"><div class="TrackLogText markdown-output"></div></td>
+            </tr>
+        </table>
+        """
+        logs = Trackable._get_logs_from_details_page(BeautifulSoup(html, "html.parser"))
+
+        self.assertEqual(len(logs), 1)
+        self.assertEqual(logs[0].uuid, "1234-abcd")
+        self.assertEqual(logs[0].type, LogType.visit)
+        self.assertEqual(logs[0].visited, date(2018, 12, 5))
+        self.assertEqual(logs[0].author, "someone")
+        self.assertEqual(logs[0].text, "")
+
 
 class TestMethods(LoggedInTest):
     @classmethod
@@ -84,6 +150,29 @@ class TestMethods(LoggedInTest):
             trackable = Trackable(self.gc, None)
             with self.assertRaises(LoadError):
                 trackable.name
+
+    def test_load_details(self):
+        # self.t is loaded from the "trackable_setup" cassette
+        self.assertEqual("lilagul", self.t.owner)
+        self.assertEqual("In the hands of Alvis02.", self.t.location)
+        self.assertEqual("Germany", self.t.origin)
+        self.assertEqual("", self.t.origin_state)
+        self.assertEqual("Germany", self.t.origin_country)
+        self.assertEqual(date(2007, 5, 29), self.t.release_date)
+
+    def test_load_last_logs(self):
+        logs = self.t.last_logs
+        self.assertEqual(10, len(logs))
+        for log in logs:
+            self.assertIsInstance(log, Log)
+            self.assertIsInstance(log.type, LogType)
+
+        newest = logs[0]
+        self.assertEqual("af927434-392e-4cc9-a48a-89b5940f9e16", newest.uuid)
+        self.assertEqual(LogType.discovered_it, newest.type)
+        self.assertEqual(date(2017, 5, 30), newest.visited)
+        self.assertEqual("smartdiver", newest.author)
+        self.assertTrue(newest.text.startswith("Es ist an der Zeit"))
 
     def test_load_log_page(self):
         expected_types = {t.value for t in (LogType.grabbed_it, LogType.note, LogType.discovered_it)}
@@ -159,3 +248,13 @@ class TestIssues(LoggedInTest):
             trackable = Trackable(self.gc, "TB7WZD9")
             with self.recorder.use_cassette("trackable_load__missing_type"):
                 self.assertEqual(None, trackable.type)
+
+    def test_load__origin_with_state(self):
+        trackable = Trackable(self.gc, "TB7WZD9")
+        with self.recorder.use_cassette("trackable_load__missing_type"):
+            trackable.load()
+        self.assertEqual("Bayern, Germany", trackable.origin)
+        self.assertEqual("Bayern", trackable.origin_state)
+        self.assertEqual("Germany", trackable.origin_country)
+        self.assertEqual(date(2017, 1, 1), trackable.release_date)
+        self.assertEqual("", trackable.last_logs[0].text)  # log without text

@@ -37,6 +37,10 @@ class TestModule(LoggedInTest):
             "%d.%b.%Y",
             "%b/%d/%Y",
             "%d %b %y",
+            "%d %B %Y",
+            "%B %d, %Y",
+            "%A, %B %d, %Y",
+            "%A, %d %B %Y",
         )
 
         # generate all possible formats for all dates and test equality
